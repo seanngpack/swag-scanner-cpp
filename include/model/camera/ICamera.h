@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <librealsense2/rs.hpp>
+#include "CameraTypes.h"
 
 namespace camera {
     /**
@@ -16,9 +17,9 @@ namespace camera {
     public:
         /**
          * Get the camera intrinsics and store them to class fields.
-         * @return a rs2_intrinsics struct of the camera intrinsics.
+         * @return a ss_camera struct of the camera intrinsics.
          */
-        virtual rs2_intrinsics getInstrinsics() = 0;
+        virtual camera::ss_intrinsics getInstrinsics() = 0;
 
         /**
          * Take an image which is a 2d vector of depth values.
@@ -37,6 +38,11 @@ namespace camera {
          * Virtual destructor, must be defined or else it will never call the base class's destructor.
          */
         ~ICamera();
+
+
+    private:
+        camera::ss_intrinsics intrinsics;
+
     };
 
 }
