@@ -2,9 +2,9 @@
 #define SWAG_SCANNER_CPP_ICAMERA_H
 
 #include <vector>
+#include <iostream>
 #include <librealsense2/rs.hpp>
 #include "CameraTypes.h"
-#include <iostream>
 
 namespace camera {
     /**
@@ -19,10 +19,10 @@ namespace camera {
         virtual camera::ss_intrinsics get_instrinsics() = 0;
 
         /**
-         * Take an image which is a 2d vector of depth values.
+         * Get depth frame which is a pointer to array of uint16_t.
          * @return the depth map.
          */
-        virtual rs2::depth_frame get_depth_frame() = 0;
+        virtual const uint16_t *get_depth_frame() = 0;
 
         /**
          * TODO: may not be necessary, let's look at librealsense's return types
@@ -39,9 +39,8 @@ namespace camera {
         }
 
 
-    private:
+    protected:
         camera::ss_intrinsics intrinsics;
-
     };
 
 }

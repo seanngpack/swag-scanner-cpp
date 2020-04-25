@@ -2,7 +2,6 @@
 #define SWAG_SCANNER_SR305_H
 
 #include "ICamera.h"
-#include "CameraTypes.h"
 
 namespace camera {
 
@@ -16,17 +15,26 @@ namespace camera {
 
         camera::ss_intrinsics get_instrinsics() override;
 
-        rs2::depth_frame get_depth_frame() override;
+        const uint16_t *get_depth_frame() override;
+
+//        get_point_cloud() override;
 
         std::vector<float> get_depth_vector() override;
 
         ~SR305();
 
+
     private:
+        rs2::device dev;
+        rs2::pipeline pipe;
+        rs2::pipeline_profile pipe_profile;
+        float depth_scale;
+
         /**
-         * Create a realsense context object
+         * Initialize the pipeline and grab camera parameters for class fields.
          */
         void initialize_camera();
+
     };
 
 
