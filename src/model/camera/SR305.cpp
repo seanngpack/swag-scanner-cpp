@@ -42,7 +42,7 @@ void camera::SR305::initialize_camera() {
 
     // grab the depth scale
     auto sensor = pipe_profile.get_device().first<rs2::depth_sensor>();
-    depth_scale = sensor.get_depth_scale();
+
 
     // grab the intrinsics
     auto intrin = pipe_profile.get_stream(RS2_STREAM_DEPTH)
@@ -53,7 +53,8 @@ void camera::SR305::initialize_camera() {
             .fx = intrin.fx,
             .fy = intrin.fy,
             .ppx = intrin.ppx,
-            .ppy = intrin.ppy
+            .ppy = intrin.ppy,
+            .depth_scale = sensor.get_depth_scale()
     };
 }
 

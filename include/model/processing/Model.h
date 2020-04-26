@@ -35,6 +35,7 @@ namespace model {
         pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud;
 
 
-};
+    };
+}
 
 #endif //SWAG_SCANNER_MODEL_H
