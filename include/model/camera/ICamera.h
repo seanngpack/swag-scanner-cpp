@@ -4,8 +4,6 @@
 #include <vector>
 #include <iostream>
 #include <librealsense2/rs.hpp>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
 #include "CameraTypes.h"
 
 

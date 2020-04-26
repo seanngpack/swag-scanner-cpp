@@ -1,28 +1,46 @@
-#include <Eigen/Dense>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 
 #ifndef SWAG_SCANNER_ALGORITHMS_H
 #define SWAG_SCANNER_ALGORITHMS_H
 
 namespace algos {
 
-    /**
-     * Deproject depth frame to a R X C dynamic matrix.
-     * @param depth_frame a pointer to a vector representing the depth frame obtained from camera.
-     * @return a dynamic matrix with the deprojectoed points.
-     */
-    Eigen::MatrixXf deproject_depth_frame(const uint16_t *depth_frame) {
+    pcl::PointXYZ deproject_pixel_to_point(int x, int y, uint16_t depth, const camera::ss_intrinsics intrinsics);
 
+/**
+     * Create a PointCloudXYZ given a depth frame.
+     * @param depth_frame a pointer to vector of uint16_t. Not converted to meters yet.
+     * @return a pointcloud.
+     */
+    pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const uint16_t *depth_frame,
+                                                           const camera::ss_intrinsics intrinsics) {
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        for (int y = 0; y < intrinsics.height; y++) {
+            for (int x = 0; x < intrinsics.width; x++) {
+                pcl::PointXYZ point;
+                uint16_t depth = depth_frame[y * intrinsics.width + x];
+                if (depth == 0) continue;
+                point = deproject_pixel_to_point(x, y, depth, intrinsics);
+
+                cloud->push_back(point);
+            }
+        }
     }
 
 
-    template <typename Derived>
     /**
-     * Convert a depth matrix to a pointcloud.
-     * @tparam Derived generic eigen object.
-     * @param depth_matrix (row x col) matrix containing values in meters of depth mapping.
-     * @return a boost smart pointer to the formed pointcloud.
+     * Given three points, deproject their pixel coordinates to space coordinates and
+     * then save to a PointXYZ format.
+     * @param x pixel x.
+     * @param y pixel y.
+     * @param z depth (unconverted).
+     * @return a PointXYZ object with the deprojected point in real space.
      */
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr matrix_to_point_cloud(const Eigen::MatrixBase<Derived>& depth_matrix) {
+    pcl::PointXYZ deproject_pixel_to_point(int &x,
+                                           int &y,
+                                           uint16_t &z,
+                                           const camera::ss_intrinsics intrinsics) {
 
     }
 
