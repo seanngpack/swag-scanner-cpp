@@ -1,5 +1,4 @@
 #include <SR305.h>
-#include <Algorithms.h>
 
 camera::SR305::SR305() {
     initialize_camera();
