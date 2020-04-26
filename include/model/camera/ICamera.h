@@ -13,11 +13,12 @@ namespace camera {
      */
     class ICamera {
     public:
+
         /**
-         * Get the camera intrinsics and store them to class fields.
-         * @return a ss_camera struct of the camera intrinsics.
+         * Get pointer to the camera intrinsics and store them to class fields.
+         * @return a pointer to ss_camera struct of the camera intrinsics.
          */
-        virtual camera::ss_intrinsics get_instrinsics() = 0;
+        virtual camera::ss_intrinsics *get_instrinsics() = 0;
 
         /**
          * Get depth frame which is a pointer to array of uint16_t.
@@ -34,7 +35,7 @@ namespace camera {
 
 
     protected:
-        camera::ss_intrinsics intrinsics;
+        camera::ss_intrinsics *intrinsics;
     };
 
 }
