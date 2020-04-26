@@ -28,10 +28,17 @@ namespace model {
          */
         void set_depth_frame(const uint16_t *depth_frame);
 
+        /**
+         * Set the intrinsics to a pointer to its memory address.
+         * @param intrinsics the camera intrinsics.
+         */
+        void set_intrinsics(const camera::ss_intrinsics *intrinsics);
+
         ~Model();
 
     private:
         const uint16_t *depth_frame;
+        const camera::ss_intrinsics *intrinsics;
         pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud;
 
 

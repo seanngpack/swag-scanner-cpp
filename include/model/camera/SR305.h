@@ -13,7 +13,7 @@ namespace camera {
     public:
         SR305();
 
-        camera::ss_intrinsics get_instrinsics() override;
+        camera::ss_intrinsics *get_instrinsics() override;
 
         const uint16_t *get_depth_frame() override;
 

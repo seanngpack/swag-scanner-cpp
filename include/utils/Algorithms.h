@@ -26,6 +26,7 @@ namespace algos {
                 cloud->push_back(point);
             }
         }
+        return cloud;
     }
 
 
@@ -37,9 +38,9 @@ namespace algos {
      * @param z depth (unconverted).
      * @return a PointXYZ object with the deprojected point in real space.
      */
-    pcl::PointXYZ deproject_pixel_to_point(int &x,
-                                           int &y,
-                                           uint16_t &z,
+    pcl::PointXYZ deproject_pixel_to_point(int x,
+                                           int y,
+                                           uint16_t z,
                                            const camera::ss_intrinsics intrinsics) {
         float depth = z * intrinsics.depth_scale;
         float x_d = x - intrinsics.ppx * depth * (1 / intrinsics.fx);
