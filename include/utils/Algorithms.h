@@ -41,7 +41,11 @@ namespace algos {
                                            int &y,
                                            uint16_t &z,
                                            const camera::ss_intrinsics intrinsics) {
-
+        float depth = z * intrinsics.depth_scale;
+        float x_d = x - intrinsics.ppx * depth * (1 / intrinsics.fx);
+        float y_d = y - intrinsics.ppy * depth * (1 / intrinsics.fy);
+        pcl::PointXYZ point = pcl::PointXYZ(x_d, y_d, depth);
+        return point;
     }
 
 

@@ -20,6 +20,7 @@ namespace camera {
         float ppy;              /** pixel coordinates of the principal point (center of projection)  */
         std::string model;            /** model used to calibrate the image */
         float coeffs;            /** coefficients describing the distortion model */
+        float depth_scale;      /** multiply by camera value to get depth in meters */
 
         std::string toString() {
             return "width: " + std::to_string(width) + "\n" +

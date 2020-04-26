@@ -24,7 +24,6 @@ namespace camera {
         rs2::device dev;
         rs2::pipeline pipe;
         rs2::pipeline_profile pipe_profile;
-        float depth_scale;
 
         /**
          * Initialize the pipeline and grab camera parameters for class fields.
