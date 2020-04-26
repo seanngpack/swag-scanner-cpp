@@ -28,13 +28,6 @@ namespace camera {
         virtual const uint16_t *get_depth_frame() = 0;
 
         /**
-         * TODO: may not be necessary, let's look at librealsense's return types
-         * Flatten the 2d depth map and convert to meters if necessary.
-         * @return a 1d vector of the depth values.
-         */
-        virtual std::vector<float> get_depth_vector() = 0;
-
-        /**
          * Virtual destructor, must be defined or else it will never call the base class's destructor.
          */
         virtual ~ICamera() {

@@ -1,4 +1,5 @@
 #include <SR305.h>
+#include <Algorithms.h>
 
 camera::SR305::SR305() {
     initialize_camera();
@@ -11,22 +12,16 @@ camera::ss_intrinsics camera::SR305::get_instrinsics() {
 const uint16_t *camera::SR305::get_depth_frame() {
     rs2::frameset frames = pipe.wait_for_frames();
     rs2::frame frame = frames.first(RS2_STREAM_DEPTH);
-    const uint16_t *depth_image;
+    const uint16_t *depth_frame;
     if (frame) {
-        depth_image = (const uint16_t *) frame.get_data();
-        return depth_image;
+        depth_frame = (const uint16_t *) frame.get_data();
+        return depth_frame;
     }
 
-    return NULL;
+    throw std::runtime_error("Cannot grab depth frame from video stream, something"
+                             "is horribly wrong.");
 }
 
-std::vector<float> camera::SR305::get_depth_vector() {
-    int x = 0;
-}
-
-camera::SR305::~SR305() {
-    std::cout << "calling SR305 destructor \n";
-}
 
 void camera::SR305::initialize_camera() {
     // grab the context and set the device
@@ -61,5 +56,10 @@ void camera::SR305::initialize_camera() {
             .ppx = intrin.ppx,
             .ppy = intrin.ppy
     };
-
 }
+
+
+camera::SR305::~SR305() {
+    std::cout << "calling SR305 destructor \n";
+}
+

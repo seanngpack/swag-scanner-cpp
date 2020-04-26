@@ -17,10 +17,6 @@ namespace camera {
 
         const uint16_t *get_depth_frame() override;
 
-//        get_point_cloud() override;
-
-        std::vector<float> get_depth_vector() override;
-
         ~SR305();
 
 
