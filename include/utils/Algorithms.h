@@ -1,5 +1,6 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+#include "CameraTypes.h"
 
 #ifndef SWAG_SCANNER_ALGORITHMS_H
 #define SWAG_SCANNER_ALGORITHMS_H

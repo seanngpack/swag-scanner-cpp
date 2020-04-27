@@ -10,8 +10,6 @@ set(CAMERA_HEADERS ./include/model/camera)
 set(PROCESSING_HEADERS ./include/model/processing)
 set(UTILS ./include/utils)
 
-#set(OpenCV_DIR "/usr/local/Cellar/opencv/4.2.0_3/lib/cmake/opencv4")
-
 find_package(OpenCV REQUIRED)
 find_package(PCL 1.3 REQUIRED COMPONENTS common io)
 
