@@ -22,6 +22,22 @@ namespace camera {
         float coeffs;            /** coefficients describing the distortion model */
         float depth_scale;      /** multiply by camera value to get depth in meters */
 
+        ss_intrinsics() = default;
+
+        ss_intrinsics(int width,
+                      int height,
+                      float fx,
+                      float fy,
+                      float ppx,
+                      float ppy,
+                      std::string model,
+                      float coeffs,
+                      float depth_scale) : width(width), height(height), fx(fx),
+                                           fy(fy), ppx(ppx), ppy(ppy), model(model),
+                                           coeffs(coeffs), depth_scale(depth_scale) {
+
+        };
+
         ~ss_intrinsics() {
             std::cout << "destroying camera intrinsics...\n";
         }
