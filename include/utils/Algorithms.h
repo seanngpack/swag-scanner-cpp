@@ -20,9 +20,9 @@ namespace algos {
             for (int x = 0; x < intrinsics.width; x++) {
                 pcl::PointXYZ point;
                 uint16_t depth = depth_frame[y * intrinsics.width + x];
-                if (depth == 0) continue;
+                std::cout << depth_frame[y * intrinsics.width + x] << std::endl;
+//                if (depth == 0) continue;
                 point = deproject_pixel_to_point(x, y, depth, intrinsics);
-
                 cloud->push_back(point);
             }
         }

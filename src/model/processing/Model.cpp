@@ -14,6 +14,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud() {
     if (!intrinsics) {
         throw std::runtime_error("cannot create pointcloud, must call set_intrinsics() first.");
     }
+
     point_cloud = algos::create_point_cloud(depth_frame, *intrinsics);
     return point_cloud;
 }

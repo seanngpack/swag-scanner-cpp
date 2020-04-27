@@ -35,7 +35,7 @@ namespace camera {
 
 
     protected:
-        camera::ss_intrinsics *intrinsics;
+        camera::ss_intrinsics intrinsics;
     };
 
 }
