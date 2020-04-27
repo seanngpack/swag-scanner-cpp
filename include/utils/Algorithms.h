@@ -39,16 +39,16 @@ namespace algos {
         cloud->width = intrinsics->width;
         cloud->is_dense = true;
         cloud->points.resize(intrinsics->width * intrinsics->height);
-
         for (int y = 0; y < intrinsics->height; y++) {
             for (int x = 0; x < intrinsics->width; x++) {
                 pcl::PointXYZ point;
                 uint16_t depth = depth_frame[y * intrinsics->width + x];
 //                if (depth == 0) continue; // pretty sure this makes the cloud not dense.
                 point = deproject_pixel_to_point(x, y, depth, intrinsics);
-                cloud->points[y * 640 + x] = point;
+                cloud->points[y * intrinsics->width + x] = point;
             }
         }
+
         return cloud;
     }
 }
