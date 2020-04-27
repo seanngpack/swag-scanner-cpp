@@ -21,8 +21,9 @@ message(STATUS "    version: ${OpenCV_VERSION}")
 message(STATUS "    libraries: ${OpenCV_LIBS}")
 message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 
-add_executable(swag_scanner ${SOURCE_FILES} src/model/camera/SR305.cpp)
+add_subdirectory(test)
 
+add_executable(swag_scanner ${SOURCE_FILES} src/model/camera/SR305.cpp)
 
 include_directories("/opt/librealsense/include" ${OpenCV_INCLUDE_DIRS})
 include_directories(${PCL_INCLUDE_DIRS})
@@ -37,3 +38,4 @@ add_definitions(${PCL_DEFINITIONS})
 
 target_link_libraries(swag_scanner PUBLIC /opt/librealsense/build/librealsense2.dylib PRIVATE ${OpenCV_LIBS})
 target_link_libraries(swag_scanner PUBLIC ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+
