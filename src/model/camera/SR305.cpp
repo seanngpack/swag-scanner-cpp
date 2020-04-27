@@ -60,6 +60,6 @@ void camera::SR305::initialize_camera() {
 
 
 camera::SR305::~SR305() {
-    std::cout << "calling SR305 destructor \n";
+    std::cout << "calling SR305 destructor \n";;
 }
 
