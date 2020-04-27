@@ -5,7 +5,7 @@ camera::SR305::SR305() {
 }
 
 camera::ss_intrinsics * camera::SR305::get_instrinsics() {
-    return intrinsics;
+    return &intrinsics;
 }
 
 const uint16_t *camera::SR305::get_depth_frame() {
@@ -47,7 +47,7 @@ void camera::SR305::initialize_camera() {
     // grab the intrinsics
     auto intrin = pipe_profile.get_stream(RS2_STREAM_DEPTH)
             .as<rs2::video_stream_profile>().get_intrinsics();
-    ss_intrinsics i = (camera::ss_intrinsics) {
+    intrinsics = (camera::ss_intrinsics) {
             .width = intrin.width,
             .height = intrin.height,
             .fx = intrin.fx,
@@ -56,7 +56,6 @@ void camera::SR305::initialize_camera() {
             .ppy = intrin.ppy,
             .depth_scale = sensor.get_depth_scale()
     };
-    intrinsics = &i;
 }
 
 

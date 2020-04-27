@@ -11,7 +11,9 @@ int main() {
     model::Model *model = new model::Model();
     model->set_depth_frame(depth_frame);
     model->set_intrinsics(intrinsics);
-    model->create_point_cloud();
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud =  model->create_point_cloud();
+    std::cout << cloud->width << std::endl;
+    std::cout << cloud->size() << std::endl;
 
     delete camera;
     return 0;
