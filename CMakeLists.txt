@@ -10,8 +10,6 @@ set(CAMERA_HEADERS ./include/model/camera)
 set(PROCESSING_HEADERS ./include/model/processing)
 set(UTILS ./include/utils)
 
-#set(OpenCV_DIR "/usr/local/Cellar/opencv/4.2.0_3/lib/cmake/opencv4")
-
 find_package(OpenCV REQUIRED)
 find_package(PCL 1.3 REQUIRED COMPONENTS common io)
 
@@ -21,8 +19,9 @@ message(STATUS "    version: ${OpenCV_VERSION}")
 message(STATUS "    libraries: ${OpenCV_LIBS}")
 message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 
-add_executable(swag_scanner ${SOURCE_FILES} src/model/camera/SR305.cpp)
+add_subdirectory(test)
 
+add_executable(swag_scanner ${SOURCE_FILES} src/model/camera/SR305.cpp)
 
 include_directories("/opt/librealsense/include" ${OpenCV_INCLUDE_DIRS})
 include_directories(${PCL_INCLUDE_DIRS})
@@ -37,3 +36,4 @@ add_definitions(${PCL_DEFINITIONS})
 
 target_link_libraries(swag_scanner PUBLIC /opt/librealsense/build/librealsense2.dylib PRIVATE ${OpenCV_LIBS})
 target_link_libraries(swag_scanner PUBLIC ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
+
