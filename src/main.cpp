@@ -12,16 +12,19 @@ int main() {
     model::Model *model = new model::Model();
     model->set_depth_frame(depth_frame);
     model->set_intrinsics(intrinsics);
+
     auto t1 = std::chrono::high_resolution_clock::now();
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud();
     auto t2 = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
     std::cout << "deprojection and cloud creation done in: ";
     std::cout << duration;
     std::cout << " milliseconds" << std::endl;
     std::cout << cloud->width << std::endl;
     std::cout << cloud->height << std::endl;
     std::cout << cloud->size() << std::endl;
+
+
 
     delete camera;
     return 0;
