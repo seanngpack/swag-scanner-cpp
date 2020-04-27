@@ -23,7 +23,7 @@ namespace camera {
         float depth_scale;      /** multiply by camera value to get depth in meters */
 
         ~ss_intrinsics() {
-//            std::cout << "destroying camera intrinsics...\n";
+            std::cout << "destroying camera intrinsics...\n";
         }
 
         std::string toString() {
