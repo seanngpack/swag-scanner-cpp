@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include <pcl/point_types.h>
 #include "Algorithms.h"
+#include <librealsense2/h/rs_types.h>
+
 
 class AlgosFixture : public ::testing::Test {
 
@@ -10,18 +12,19 @@ protected:
     std::vector<uint16_t> frame;
 
     virtual void SetUp() {
-        float no_distortion[5] = {0,0,0,0,0};
+        float no_distortion[5] = {0, 0, 0, 0, 0};
         float distortion[5] = {.139, .124, .0043, .00067, -.034};
         intrinsics_no_distoration = new camera::ss_intrinsics(640, 480,
-                                               475.07, 475.07,
-                                               309.931, 245.011,
-                                               "brown", no_distortion,
-                                               0.0001);
-        intrinsics_distoration = new camera::ss_intrinsics(640, 480,
                                                               475.07, 475.07,
                                                               309.931, 245.011,
-                                                              "brown", distortion,
+                                                              RS2_DISTORTION_INVERSE_BROWN_CONRADY,
+                                                              no_distortion,
                                                               0.0001);
+        intrinsics_distoration = new camera::ss_intrinsics(640, 480,
+                                                           475.07, 475.07,
+                                                           309.931, 245.011,
+                                                           RS2_DISTORTION_INVERSE_BROWN_CONRADY, distortion,
+                                                           0.0001);
 
 
         for (float i = 0; i < intrinsics_no_distoration->width * intrinsics_no_distoration->height; i++) {
@@ -46,7 +49,7 @@ TEST_F(AlgosFixture, TestDeprojectNoDistortion) {
 
     pcl::PointXYZ expected;
     expected.x = -.0063134059;
-    expected.y = -.0049468712;
+    expected.y = -.0049468707;
     expected.z = .01;
 
     ASSERT_FLOAT_EQ(expected.x, actual.x);
@@ -61,8 +64,8 @@ TEST_F(AlgosFixture, TestDeprojectDistortion) {
     pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, intrinsics_distoration);
 
     pcl::PointXYZ expected;
-    expected.x = -.0071082721;
-    expected.y = -.0055454033;
+    expected.x = -.0063134059;
+    expected.y = -.0049468707;
     expected.z = .01;
 
     ASSERT_FLOAT_EQ(expected.x, actual.x);
