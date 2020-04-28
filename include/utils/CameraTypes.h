@@ -19,7 +19,7 @@ namespace camera {
         float ppx;              /** pixel coordinates of the principal point (center of projection)  */
         float ppy;              /** pixel coordinates of the principal point (center of projection)  */
         std::string model;            /** model used to calibrate the image */
-        float coeffs;            /** coefficients describing the distortion model */
+        float *coeffs;            /** coefficients describing the distortion model */
         float depth_scale;      /** multiply by camera value to get depth in meters */
 
         ss_intrinsics() = default;
@@ -31,7 +31,7 @@ namespace camera {
                       float ppx,
                       float ppy,
                       std::string model,
-                      float coeffs,
+                      float coeffs[5],
                       float depth_scale) : width(width), height(height), fx(fx),
                                            fy(fy), ppx(ppx), ppy(ppy), model(model),
                                            coeffs(coeffs), depth_scale(depth_scale) {

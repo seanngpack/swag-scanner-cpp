@@ -26,8 +26,8 @@ int main() {
     std::cout << cloud->size() << std::endl;
 
     delete camera;
-    visual::Visualizer viewer;
-    viewer.start_visualization(cloud);
+//    visual::Visualizer viewer;
+//    viewer.start_visualization(cloud);
 
     return 0;
 }
