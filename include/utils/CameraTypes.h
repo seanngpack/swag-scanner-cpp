@@ -3,6 +3,7 @@
  */
 
 #include <iostream>
+#include <librealsense2/h/rs_types.h>
 
 #ifndef SWAG_SCANNER_CAMERATYPES_H
 #define SWAG_SCANNER_CAMERATYPES_H
@@ -18,7 +19,7 @@ namespace camera {
         float fy;               /** focal length of image, as a multiple of pixel width & height */
         float ppx;              /** pixel coordinates of the principal point (center of projection)  */
         float ppy;              /** pixel coordinates of the principal point (center of projection)  */
-        std::string model;            /** model used to calibrate the image */
+        rs2_distortion model;            /** model used to calibrate the image */
         float *coeffs;            /** coefficients describing the distortion model */
         float depth_scale;      /** multiply by camera value to get depth in meters */
 
@@ -30,7 +31,7 @@ namespace camera {
                       float fy,
                       float ppx,
                       float ppy,
-                      std::string model,
+                      rs2_distortion model,
                       float coeffs[5],
                       float depth_scale) : width(width), height(height), fx(fx),
                                            fy(fy), ppx(ppx), ppy(ppy), model(model),
@@ -48,8 +49,7 @@ namespace camera {
                    "fx: " + std::to_string(fx) + "\n" +
                    " fy: " + std::to_string(fy) + "\n" +
                    "ppx: " + std::to_string(ppx) + "\n" +
-                   "ppy: " + std::to_string(ppy) + "\n" +
-                   "model: " + model;
+                   "ppy: " + std::to_string(ppy) + "\n";
         }
     } ss_intrinsics;
 }

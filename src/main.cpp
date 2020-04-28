@@ -17,7 +17,7 @@ int main() {
     auto t1 = std::chrono::high_resolution_clock::now();
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud();
     auto t2 = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
     std::cout << "deprojection and cloud creation done in: ";
     std::cout << duration;
     std::cout << " milliseconds" << std::endl;
@@ -26,8 +26,8 @@ int main() {
     std::cout << cloud->size() << std::endl;
 
     delete camera;
-//    visual::Visualizer viewer;
-//    viewer.start_visualization(cloud);
+    visual::Visualizer viewer;
+    viewer.start_visualization(cloud);
 
     return 0;
 }

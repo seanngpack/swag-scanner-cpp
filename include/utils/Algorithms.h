@@ -1,9 +1,11 @@
+#ifndef SWAG_SCANNER_ALGORITHMS_H
+#define SWAG_SCANNER_ALGORITHMS_H
+
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include "CameraTypes.h"
-
-#ifndef SWAG_SCANNER_ALGORITHMS_H
-#define SWAG_SCANNER_ALGORITHMS_H
+#include <librealsense2/rs.hpp>
+#include <librealsense2/rsutil.h>
 
 namespace algos {
 
@@ -15,13 +17,16 @@ namespace algos {
      * @param z depth (unconverted).
      * @return a PointXYZ object with the deprojected point in real space.
      */
-    pcl::PointXYZ deproject_pixel_to_point(int x,
-                                           int y,
-                                           uint16_t z,
+    pcl::PointXYZ deproject_pixel_to_point(float x_pixel,
+                                           float y_pixel,
+                                           float z,
                                            const camera::ss_intrinsics *intrinsics) {
         float depth = z * intrinsics->depth_scale;
-        float ux = (x - intrinsics->ppx) * (1 / intrinsics->fx) * depth;
-        float uy = (y - intrinsics->ppy) * (1 / intrinsics->fy) * depth;
+        float x = (x_pixel - intrinsics->ppx) / intrinsics->fx;
+        float y = (y_pixel - intrinsics->ppy) / intrinsics->fy;
+        float ux = x * depth;
+        float uy = y * depth;
+
         pcl::PointXYZ point = pcl::PointXYZ(ux, uy, depth);
         return point;
     }
@@ -41,10 +46,23 @@ namespace algos {
         cloud->points.resize(intrinsics->width * intrinsics->height);
         for (int y = 0; y < intrinsics->height; y++) {
             for (int x = 0; x < intrinsics->width; x++) {
-                pcl::PointXYZ point;
+
                 uint16_t depth = depth_frame[y * intrinsics->width + x];
-//                if (depth == 0) continue; // pretty sure this makes the cloud not dense.
-                point = deproject_pixel_to_point(x, y, depth, intrinsics);
+                float depth_in_meters = depth * intrinsics->depth_scale;
+                if (depth == 0) continue;
+//                point = deproject_pixel_to_point((float)x, (float)y, (float)depth, intrinsics);
+                float pixel[2] = {(float) x, (float) y};
+                float point_array[3] = {(float) x, (float) y, 0};
+                const rs2_intrinsics intrin = {intrinsics->width, intrinsics->height,
+                                               intrinsics->ppx, intrinsics->ppy,
+                                               intrinsics->fx, intrinsics->fy,
+                                               intrinsics->model, *intrinsics->coeffs};
+                const rs2_intrinsics *ptr = &intrin;
+                rs2_deproject_pixel_to_point(point_array, ptr, pixel, depth_in_meters);
+                pcl::PointXYZ point;
+                point.x = point_array[0];
+                point.y = point_array[1];
+                point.z = point_array[2];
                 cloud->points[y * intrinsics->width + x] = point;
             }
         }
