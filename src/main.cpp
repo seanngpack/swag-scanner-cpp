@@ -1,13 +1,14 @@
 #include <iostream>
-#include <Model.h>
+#include "Model.h"
 #include "SR305.h"
+#include "Visualizer.h"
 #include <chrono>
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
     camera::ICamera *camera = new camera::SR305();
     const uint16_t *depth_frame = camera->get_depth_frame();
-    camera::ss_intrinsics *intrinsics = camera->get_instrinsics();
+    const camera::ss_intrinsics *intrinsics = camera->get_instrinsics();
 
     model::Model *model = new model::Model();
     model->set_depth_frame(depth_frame);
@@ -24,8 +25,9 @@ int main() {
     std::cout << cloud->height << std::endl;
     std::cout << cloud->size() << std::endl;
 
-
-
     delete camera;
+    visual::Visualizer viewer;
+    viewer.start_visualization(cloud);
+
     return 0;
 }

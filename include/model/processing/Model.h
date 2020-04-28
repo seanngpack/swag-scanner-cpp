@@ -40,8 +40,6 @@ namespace model {
         const uint16_t *depth_frame;
         const camera::ss_intrinsics *intrinsics;
         pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud;
-
-
     };
 }
 

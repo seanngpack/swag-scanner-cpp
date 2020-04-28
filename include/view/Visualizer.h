@@ -17,12 +17,13 @@ namespace visual {
 
         Visualizer();
 
-//        pcl::visualization::PCLVisualizer::Ptr simpleVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
+        pcl::visualization::PCLVisualizer::Ptr simpleVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
 
-//        void start_visualization(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+        void start_visualization(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 
         void stop_visualization();
-
+    private:
+        pcl::visualization::PCLVisualizer::Ptr view_instance;
     };
 }
 
