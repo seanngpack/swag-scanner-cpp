@@ -7,6 +7,15 @@ model::Model::Model() {
     intrinsics = nullptr;
 }
 
+
+void model::Model::set_depth_frame(const uint16_t *depth_frame) {
+    this->depth_frame = depth_frame;
+}
+
+void model::Model::set_intrinsics(const camera::ss_intrinsics *intrinsics) {
+    this->intrinsics = intrinsics;
+}
+
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud() {
     if (!depth_frame) {
         throw std::runtime_error("cannot create pointcloud, must call set_depth_frame() first.");
@@ -19,10 +28,15 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud() {
     return point_cloud;
 }
 
-void model::Model::set_depth_frame(const uint16_t *depth_frame) {
-    this->depth_frame = depth_frame;
+pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+    pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
+    pcl::IntegralImageNormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
+    ne.setNormalEstimationMethod(ne.AVERAGE_3D_GRADIENT);
+    ne.setMaxDepthChangeFactor(0.02f);
+    ne.setNormalSmoothingSize(10.0f);
+    ne.setInputCloud(cloud);
+    ne.compute(*normals);
+
+    return normals;
 }
 
-void model::Model::set_intrinsics(const camera::ss_intrinsics *intrinsics) {
-    this->intrinsics = intrinsics;
-}
