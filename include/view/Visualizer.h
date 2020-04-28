@@ -19,9 +19,10 @@ namespace visual {
 
         pcl::visualization::PCLVisualizer::Ptr simpleVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
 
-        void start_visualization(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+        pcl::visualization::PCLVisualizer::Ptr normalsVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud,
+                                                          pcl::PointCloud<pcl::Normal>::ConstPtr normals);
 
-        void stop_visualization();
+
     private:
         pcl::visualization::PCLVisualizer::Ptr view_instance;
     };

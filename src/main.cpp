@@ -25,9 +25,11 @@ int main() {
     std::cout << cloud->height << std::endl;
     std::cout << cloud->size() << std::endl;
 
+    pcl::PointCloud<pcl::Normal>::Ptr normals = model->estimate_normal_cloud(cloud);
+
     delete camera;
     visual::Visualizer viewer;
-    viewer.start_visualization(cloud);
+    viewer.normalsVis(cloud, normals);
 
     return 0;
 }
