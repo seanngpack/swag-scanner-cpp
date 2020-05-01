@@ -17,7 +17,7 @@ namespace algos {
      * @param z depth (unconverted).
      * @return a PointXYZ object with the deprojected point in real space.
      */
-    pcl::PointXYZ deproject_pixel_to_point(float x_pixel,
+    inline pcl::PointXYZ deproject_pixel_to_point(float x_pixel,
                                            float y_pixel,
                                            float z,
                                            const camera::ss_intrinsics *intrinsics) {
@@ -36,7 +36,7 @@ namespace algos {
      * @param depth_frame a pointer to vector of uint16_t. Not converted to meters yet.
      * @return a pointcloud.
      */
-    pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const uint16_t *depth_frame,
+    inline pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const uint16_t *depth_frame,
                                                            const camera::ss_intrinsics *intrinsics) {
         // cloud setup
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);

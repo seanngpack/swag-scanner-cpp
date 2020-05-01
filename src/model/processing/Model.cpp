@@ -21,11 +21,25 @@ void model::Model::set_intrinsics(const camera::ss_intrinsics *intrinsics) {
     this->intrinsics = intrinsics;
 }
 
+const uint16_t *model::Model::get_depth_frame() {
+    if (!depth_frame) {
+        throw std::runtime_error("cannot get depth frame, it is not set yet");
+    }
+    return this->depth_frame;
+}
+
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::get_point_cloud() {
     if (!point_cloud) {
-        throw std::runtime_error("cannot get pointcloud, it is not initialized.")
+        throw std::runtime_error("cannot get pointcloud, it is not initialized.");
     }
     return this->point_cloud;
+}
+
+const camera::ss_intrinsics *model::Model::get_intrinsics() {
+    if (!intrinsics) {
+        throw std::runtime_error("cannot get intrinsics, they are not set yet.");
+    }
+    return this->intrinsics;
 }
 
 
@@ -51,5 +65,9 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud() {
     ne.compute(*normals);
 
     return normals;
+}
+
+model::Model::~Model() {
+    std::cout << "calling model destructor \n";;
 }
 

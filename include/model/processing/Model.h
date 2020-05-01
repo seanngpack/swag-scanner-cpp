@@ -36,10 +36,24 @@ namespace model {
         void set_intrinsics(const camera::ss_intrinsics *intrinsics);
 
         /**
+         * Get the depth frame.
+         * @return the depth frame.
+         * @throws Runtime error if a depth frame is not set yet.
+         */
+        const uint16_t *get_depth_frame();
+
+        /**
          * Return the pointer to point cloud.
          * @returns pointcloud.
          */
         pcl::PointCloud<pcl::PointXYZ>::Ptr get_point_cloud();
+
+        /**
+         * Get the intrinsics.
+         * @return the intrinsics.
+         * @throws runtime error is the intrinsics is not set yet.
+         */
+        const camera::ss_intrinsics *get_intrinsics();
 
         /**
         * Create a new PointCloudXYZ using the instance variable depth_frame.
