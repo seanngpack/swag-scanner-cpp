@@ -24,10 +24,22 @@ namespace model {
         void set_depth_frame(const uint16_t *depth_frame);
 
         /**
+         * Give the point cloud for the class to hold onto.
+         * @param cloud the cloud you want to set.
+         */
+        void set_point_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+
+        /**
          * Set the intrinsics to a pointer to its memory address.
          * @param intrinsics the camera intrinsics.
          */
         void set_intrinsics(const camera::ss_intrinsics *intrinsics);
+
+        /**
+         * Return the pointer to point cloud.
+         * @returns pointcloud.
+         */
+        pcl::PointCloud<pcl::PointXYZ>::Ptr get_point_cloud();
 
         /**
         * Create a new PointCloudXYZ using the instance variable depth_frame.
@@ -38,10 +50,9 @@ namespace model {
         /**
          * Take in a pointcloud, calculate the normals, and return a normal cloud.
          * Using integral images to compute normals much faster than standard plane fitting.
-         * @param cloud the pointcloud you want to calculate normals for.
          * @return a normal cloud.
          */
-        pcl::PointCloud<pcl::Normal>::Ptr estimate_normal_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+        pcl::PointCloud<pcl::Normal>::Ptr estimate_normal_cloud();
 
 
         ~Model();

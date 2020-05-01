@@ -45,11 +45,12 @@ namespace camera {
 
         std::string toString() {
             return "width: " + std::to_string(width) + "\n" +
-                   "height:" + std::to_string(height) + "\n" +
+                   "height: " + std::to_string(height) + "\n" +
                    "fx: " + std::to_string(fx) + "\n" +
-                   " fy: " + std::to_string(fy) + "\n" +
+                   "fy: " + std::to_string(fy) + "\n" +
                    "ppx: " + std::to_string(ppx) + "\n" +
-                   "ppy: " + std::to_string(ppy) + "\n";
+                   "ppy: " + std::to_string(ppy) + "\n" +
+                    "depth scale: " + std::to_string(depth_scale);
         }
     } ss_intrinsics;
 }

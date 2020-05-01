@@ -12,9 +12,22 @@ void model::Model::set_depth_frame(const uint16_t *depth_frame) {
     this->depth_frame = depth_frame;
 }
 
+
+void model::Model::set_point_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+    this->point_cloud = cloud;
+}
+
 void model::Model::set_intrinsics(const camera::ss_intrinsics *intrinsics) {
     this->intrinsics = intrinsics;
 }
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::get_point_cloud() {
+    if (!point_cloud) {
+        throw std::runtime_error("cannot get pointcloud, it is not initialized.")
+    }
+    return this->point_cloud;
+}
+
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud() {
     if (!depth_frame) {
@@ -28,13 +41,13 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud() {
     return point_cloud;
 }
 
-pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud() {
     pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
     pcl::IntegralImageNormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
     ne.setNormalEstimationMethod(ne.AVERAGE_3D_GRADIENT);
     ne.setMaxDepthChangeFactor(0.02f);
     ne.setNormalSmoothingSize(10.0f);
-    ne.setInputCloud(cloud);
+    ne.setInputCloud(point_cloud);
     ne.compute(*normals);
 
     return normals;
