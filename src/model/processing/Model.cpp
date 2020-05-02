@@ -4,6 +4,7 @@
 model::Model::Model() {
     depth_frame = nullptr;
     point_cloud = nullptr;
+    normal_cloud = nullptr;
     intrinsics = nullptr;
 }
 
@@ -35,6 +36,13 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::get_point_cloud() {
     return this->point_cloud;
 }
 
+pcl::PointCloud<pcl::Normal>::Ptr model::Model::get_normal_cloud() {
+    if (!normal_cloud) {
+        throw std::runtime_error("cannot get normal cloud, it is not set.");
+    }
+    return this->normal_cloud;
+}
+
 const camera::ss_intrinsics *model::Model::get_intrinsics() {
     if (!intrinsics) {
         throw std::runtime_error("cannot get intrinsics, they are not set yet.");
@@ -56,6 +64,9 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud() {
 }
 
 pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud() {
+    if (!point_cloud) {
+        throw std::runtime_error("cannot create normals, pointcloud not set.");
+    }
     pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
     pcl::IntegralImageNormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
     ne.setNormalEstimationMethod(ne.AVERAGE_3D_GRADIENT);
@@ -64,6 +75,7 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud() {
     ne.setInputCloud(point_cloud);
     ne.compute(*normals);
 
+    normal_cloud = normals;
     return normals;
 }
 

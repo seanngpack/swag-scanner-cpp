@@ -49,6 +49,12 @@ namespace model {
         pcl::PointCloud<pcl::PointXYZ>::Ptr get_point_cloud();
 
         /**
+         * Return the pointer to a normal cloud.
+         * @return normal cloud.
+         */
+        pcl::PointCloud<pcl::Normal>::Ptr get_normal_cloud();
+
+        /**
          * Get the intrinsics.
          * @return the intrinsics.
          * @throws runtime error is the intrinsics is not set yet.
@@ -75,6 +81,7 @@ namespace model {
         const uint16_t *depth_frame;
         const camera::ss_intrinsics *intrinsics;
         pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud;
+        pcl::PointCloud<pcl::Normal>::Ptr normal_cloud;
     };
 }
 
