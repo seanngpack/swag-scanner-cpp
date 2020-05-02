@@ -1,12 +1,11 @@
 #include "Model.h"
 #include "Algorithms.h"
 
-model::Model::Model() {
-    depth_frame = nullptr;
-    point_cloud = nullptr;
-    normal_cloud = nullptr;
-    intrinsics = nullptr;
-}
+model::Model::Model()
+        : depth_frame(nullptr),
+          point_cloud(nullptr),
+          normal_cloud(nullptr),
+          intrinsics(nullptr) {}
 
 
 void model::Model::set_depth_frame(const uint16_t *depth_frame) {
@@ -77,6 +76,10 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud() {
 
     normal_cloud = normals;
     return normals;
+}
+
+void model::Model::to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, std::string name) {
+    pcl::io::savePCDFileASCII(name + ".pcd", *cloud);
 }
 
 model::Model::~Model() {

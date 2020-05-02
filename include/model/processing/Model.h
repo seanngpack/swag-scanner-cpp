@@ -1,4 +1,5 @@
 #include <Eigen/Dense>
+#include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/features/integral_image_normal.h>
@@ -73,6 +74,12 @@ namespace model {
          * @return a normal cloud.
          */
         pcl::PointCloud<pcl::Normal>::Ptr estimate_normal_cloud();
+
+        /**
+         * Save pointcloud to file.
+         * @param cloud the cloud you want to save.
+         */
+        void to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, std::string name);
 
 
         ~Model();
