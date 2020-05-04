@@ -1,27 +1,40 @@
 #include "gtest/gtest.h"
 #include <pcl/point_types.h>
 #include "Algorithms.h"
+#include <librealsense2/h/rs_types.h>
+
 
 class AlgosFixture : public ::testing::Test {
 
 protected:
-    camera::ss_intrinsics *intrinsics;
+    camera::ss_intrinsics *intrinsics_no_distoration;
+    camera::ss_intrinsics *intrinsics_distoration;
     std::vector<uint16_t> frame;
 
     virtual void SetUp() {
-        intrinsics = new camera::ss_intrinsics(50, 50,
-                                               50, 50,
-                                               50, 50,
-                                               "brown", 10, .01);
+        float no_distortion[5] = {0, 0, 0, 0, 0};
+        float distortion[5] = {.139, .124, .0043, .00067, -.034};
+        intrinsics_no_distoration = new camera::ss_intrinsics(640, 480,
+                                                              475.07, 475.07,
+                                                              309.931, 245.011,
+                                                              RS2_DISTORTION_INVERSE_BROWN_CONRADY,
+                                                              no_distortion,
+                                                              0.0001);
+        intrinsics_distoration = new camera::ss_intrinsics(640, 480,
+                                                           475.07, 475.07,
+                                                           309.931, 245.011,
+                                                           RS2_DISTORTION_INVERSE_BROWN_CONRADY, distortion,
+                                                           0.0001);
 
 
-        for (int i = 0; i < intrinsics->width * intrinsics->height; i++) {
-            frame.push_back(i);
+        for (float i = 0; i < intrinsics_no_distoration->width * intrinsics_no_distoration->height; i++) {
+            frame.push_back(1);
         }
     }
 
     virtual void TearDown() {
-        delete intrinsics;
+        delete intrinsics_no_distoration;
+        delete intrinsics_distoration;
     }
 
 
@@ -31,13 +44,29 @@ protected:
  * Tests deprojection method to see if a point is being made correctly and see if the math
  * is good.
  */
-TEST_F(AlgosFixture, TestDeproject) {
-    pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, intrinsics);
+TEST_F(AlgosFixture, TestDeprojectNoDistortion) {
+    pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, intrinsics_no_distoration);
 
     pcl::PointXYZ expected;
-    expected.x = 9;
-    expected.y = 9;
-    expected.z = 1;
+    expected.x = -.0063134059;
+    expected.y = -.0049468707;
+    expected.z = .01;
+
+    ASSERT_FLOAT_EQ(expected.x, actual.x);
+    ASSERT_FLOAT_EQ(expected.y, actual.y);
+    ASSERT_FLOAT_EQ(expected.z, actual.z);
+}
+
+/**
+ * Tests deprojection method with distortion coefficients.
+ */
+TEST_F(AlgosFixture, TestDeprojectDistortion) {
+    pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, intrinsics_distoration);
+
+    pcl::PointXYZ expected;
+    expected.x = -.0063134059;
+    expected.y = -.0049468707;
+    expected.z = .01;
 
     ASSERT_FLOAT_EQ(expected.x, actual.x);
     ASSERT_FLOAT_EQ(expected.y, actual.y);
@@ -49,10 +78,10 @@ TEST_F(AlgosFixture, TestDeproject) {
  */
 TEST_F(AlgosFixture, TestCreatePC) {
     uint16_t *swag = frame.data();
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = algos::create_point_cloud(swag, intrinsics);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = algos::create_point_cloud(swag, intrinsics_no_distoration);
 
-    ASSERT_EQ(cloud->width, 50);
-    ASSERT_EQ(cloud->height, 50);
-    ASSERT_EQ(cloud->size(), 2500);
+    ASSERT_EQ(cloud->width, 640);
+    ASSERT_EQ(cloud->height, 480);
+    ASSERT_EQ(cloud->size(), 307200);
     ASSERT_TRUE(cloud->is_dense);
 }

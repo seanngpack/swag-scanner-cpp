@@ -54,8 +54,8 @@ void camera::SR305::initialize_camera() {
             intrin.fy,
             intrin.ppx,
             intrin.ppy,
-            "brown",
-            0,
+            intrin.model,
+            intrin.coeffs,
             sensor.get_depth_scale());
 }
 
