@@ -64,12 +64,14 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolderEmptyCase) {
 }
 
 /**
+ * Note: disable this test when not in use.
  * Test setting the current folder to something valid.
+ * Also see if it creates new folders within it.
  */
 TEST_F(FileHandlerFixture, TestSetFolderPath) {
-    handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff");
-    EXPECT_EQ(handler->get_scan_folder_path(),
-              "/Users/seanngpack/Programming Stuff");
+//    handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff");
+//    EXPECT_EQ(handler->get_scan_folder_path(),
+//              "/Users/seanngpack/Programming Stuff");
 }
 
 /**

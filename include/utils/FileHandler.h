@@ -16,18 +16,22 @@ namespace file {
      */
     class FileHandler {
     public:
+
+
+        inline static const std::string default_data_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files";
+
         /**
          * Default file path argument is my data folder for now.
          */
-        FileHandler(std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files",
-                bool auto_create_flag = false);
+        explicit FileHandler(const std::string &all_data_folder_path = default_data_path,
+                             bool auto_create_flag = false);
 
         /**
          * Set the scan_folder_path instance variable. Should be pointed to the scan folders.
          * E.g user/scanner_data/10
          * @param path the folder path.
          */
-        void set_scan_folder_path(std::string path);
+        void set_scan_folder_path(const std::string &path);
 
         /**
          * Get the current scan folder.
@@ -36,23 +40,28 @@ namespace file {
         std::string get_scan_folder_path();
 
         /**
+         * NOTE: Currently does not support full paths.
          * Save the given cloud to the current output_path.
          * @param cloud the cloud you want to save. This will change the folder
          * path that the cloud gets saved in.
          * @para cloud_type enum for the type of cloud you are saving.
          */
-        void save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                        std::string cloud_name,
+        void save_cloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                        const std::string &cloud_name,
                         CloudType cloud_type);
 
         /**
+         * NOTE: Currently does not support full paths.
          * Load a pointcloud from the current_scan_folder given the name and type.
+         * @param cloud the cloud you want to load the cloud into.
          * @param cloud_name name of the cloud.
          * @param cloud_type type of the cloud.
-         * @return the cloud.
+         *
+         * Example: open_cloud("12.pcd", CloudType::RAW)
          */
-        pcl::PointCloud<pcl::PointXYZ>::Ptr open_cloud(std::string cloud_name,
-                                                       CloudType cloud_type);
+        void open_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                        const std::string &cloud_name,
+                        CloudType cloud_type);
 
     private:
         std::string all_data_folder_path;
@@ -73,7 +82,7 @@ namespace file {
          * @param folder the all data folder.
          *
          */
-        std::string find_scan_folder(std::string folder);
+        std::string find_scan_folder(const std::string &folder);
 
         /**
          * Create the sub folders defined in CloudTypes in the scan_folder_path.
@@ -85,7 +94,15 @@ namespace file {
          * @param folder the folder that houses all the scanner data.
          * @returns true if the input is good.
          */
-        static bool check_input(std::string folder);
+        static bool check_folder_input(const std::string &folder);
+
+        /**
+         * Check to see if a file exists given the path.
+         * @param file_path the path to the file.
+         * @return true if it exists.
+         * @throws illegal argument exception if there isn't a file there.
+         */
+        static bool check_file_input(const std::string &file_path);
     };
 }
 #endif //SWAG_SCANNER_FILEHANDLER_H
