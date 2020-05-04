@@ -14,7 +14,9 @@ include_directories(googletest-master/googlemock/include)
 
 
 add_executable(tests_run ModelTests.cpp AlgosTests.cpp CameraTypesTests.cpp
-        ${swag_scanner_SOURCE_DIR}/src/model/processing/Model.cpp)
+        ${swag_scanner_SOURCE_DIR}/src/model/processing/Model.cpp
+        ${swag_scanner_SOURCE_DIR}/src/utils/FileHandler.cpp
+        FileHandlerTests.cpp mocks/MockFileHandler.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main
