@@ -5,7 +5,7 @@ using namespace boost::filesystem;
 file::FileHandler::FileHandler(std::string all_data_folder_path)
         : all_data_folder_path(check_input(all_data_folder_path) ? all_data_folder_path : nullptr),
           scan_folder_path(find_scan_folder(all_data_folder_path)) {
-// TODO: do some folder creation here.
+//    create_sub_folders();
 }
 
 void file::FileHandler::set_scan_folder_path(std::string path) {
@@ -18,8 +18,15 @@ std::string file::FileHandler::get_scan_folder_path() {
     return this->scan_folder_path;
 }
 
-void file::FileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, CloudType cloud_type) {
+void file::FileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                   std::string cloud_name,
+                                   CloudType cloud_type) {
 
+    std::string out_path = scan_folder_path
+                           + type_path_map.at(cloud_type)
+                           + "/" + cloud_name + ".pcd";
+
+    pcl::io::savePCDFileASCII(out_path, *cloud);
 }
 
 std::string file::FileHandler::find_scan_folder(std::string folder) {
@@ -76,6 +83,16 @@ std::string file::FileHandler::find_scan_folder(std::string folder) {
                                          sizeof(name_count_str) - 1,
                                          name_count_str);
     return name;
+}
+
+void file::FileHandler::create_sub_folders() {
+    for (auto element : type_path_map) {
+        std::string p = scan_folder_path + element.second;
+        if (!exists(p)) {
+            create_directory(p);
+            std::cout << "Creating folder " + p << std::endl;
+        }
+    }
 }
 
 bool file::FileHandler::check_input(std::string folder) {

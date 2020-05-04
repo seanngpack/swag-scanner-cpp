@@ -12,7 +12,7 @@ set(PROCESSING_HEADERS ./include/model/processing)
 set(UTILS ./include/utils)
 
 find_package(OpenCV REQUIRED)
-find_package(PCL 1.3 REQUIRED)
+find_package(PCL 1.10 REQUIRED)
 
 message(STATUS "OpenCV library status:")
 message(STATUS "    config: ${OpenCV_DIR}")

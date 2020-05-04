@@ -3,10 +3,12 @@
 
 #include <boost/filesystem.hpp>
 #include <iostream>
+#include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include "CloudType.h"
 #include <string>
+#include <unordered_map>
 
 namespace file {
     /**
@@ -38,7 +40,9 @@ namespace file {
          * path that the cloud gets saved in.
          * @para cloud_type enum for the type of cloud you are saving.
          */
-        void save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, CloudType cloud_type);
+        void save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                        std::string cloud_name,
+                        CloudType cloud_type);
 
         /**
          * Load a pointcloud from the current_scan_folder given the name and type.
@@ -53,6 +57,14 @@ namespace file {
         std::string all_data_folder_path;
         std::string scan_folder_path;
 
+        const std::unordered_map<CloudType, std::string> type_path_map = {
+                {CloudType::RAW,       "/raw"},
+                {CloudType::FILTERED,  "/filtered"},
+                {CloudType::SEGMENTED, "/segmented"},
+                {CloudType::NORMAL,    "/normal"}
+        };
+
+
         /**
          * Given the all data folder, find the current scan folder.
          * E.g. if there are scans 1->10 in the all data folder, that means the current
@@ -61,6 +73,11 @@ namespace file {
          *
          */
         std::string find_scan_folder(std::string folder);
+
+        /**
+         * Create the sub folders defined in CloudTypes in the scan_folder_path.
+         */
+        void create_sub_folders();
 
         /**
          * Check if the folder exists. If not, then throw an error.
