@@ -37,7 +37,7 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolderInvalidPath) {
  * will break. Figure out a solution later to address this.
  */
 TEST_F(FileHandlerFixture, TestGetCurrentScanFolder) {
-    EXPECT_EQ(handler->get_current_scan_folder(),
+    EXPECT_EQ(handler->get_scan_folder_path(),
               "/Users/seanngpack/Programming Stuff/Projects/scanner_files/17");
 }
 
@@ -45,9 +45,26 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolder) {
  * Test if the file handler is smart enough to make the current scan directory "1" if
  * the directory entereed is empty.
  */
-TEST_F(FileHandlerFixture, TestGetcurrentScanFolderEmptyCase) {
+TEST_F(FileHandlerFixture, TestGetCurrentScanFolderEmptyCase) {
     file::FileHandler *test = new file::FileHandler(
             "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/empty");
-    EXPECT_EQ(test->get_current_scan_folder(),
+    EXPECT_EQ(test->get_scan_folder_path(),
               "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/empty/1");
+}
+
+/**
+ * Test setting the current folder to something valid.
+ */
+TEST_F(FileHandlerFixture, TestSetFolderPath) {
+    handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff");
+    EXPECT_EQ(handler->get_scan_folder_path(),
+              "/Users/seanngpack/Programming Stuff");
+}
+
+/**
+ * Test setting the current folder to something invalid.
+ */
+TEST_F(FileHandlerFixture, TestSetFolderPathInvalid) {
+    EXPECT_THROW(handler->set_scan_folder_path("aboslute nononsense"),
+            std::invalid_argument);
 }

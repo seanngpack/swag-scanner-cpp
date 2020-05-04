@@ -4,26 +4,31 @@ using namespace boost::filesystem;
 
 file::FileHandler::FileHandler(std::string all_data_folder_path)
         : all_data_folder_path(check_input(all_data_folder_path) ? all_data_folder_path : nullptr),
-          current_scan_folder_path(find_current_scan_folder(all_data_folder_path)) {
-
+          scan_folder_path(find_scan_folder(all_data_folder_path)) {
+// TODO: do some folder creation here.
 }
 
-void file::FileHandler::set_folder_path(std::string path) {
+void file::FileHandler::set_scan_folder_path(std::string path) {
     check_input(path);
-    this->current_scan_folder_path = path;
+    //TODO: do some folder creation here.
+    this->scan_folder_path = path;
 }
 
-std::string file::FileHandler::get_current_scan_folder() {
-    return this->current_scan_folder_path;
+std::string file::FileHandler::get_scan_folder_path() {
+    return this->scan_folder_path;
 }
 
-std::string file::FileHandler::find_current_scan_folder(std::string folder) {
+void file::FileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, CloudType cloud_type) {
+
+}
+
+std::string file::FileHandler::find_scan_folder(std::string folder) {
     check_input(folder);
 
     // if folder is empty let's start at 1.
     if (is_empty(folder)) {
         std::string name = folder + "/1";
-        current_scan_folder_path = name;
+        scan_folder_path = name;
         return name;
     }
 
