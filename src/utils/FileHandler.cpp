@@ -2,16 +2,20 @@
 
 using namespace boost::filesystem;
 
-file::FileHandler::FileHandler(std::string all_data_folder_path)
+file::FileHandler::FileHandler(std::string all_data_folder_path, bool auto_create_flag)
         : all_data_folder_path(check_input(all_data_folder_path) ? all_data_folder_path : nullptr),
           scan_folder_path(find_scan_folder(all_data_folder_path)) {
-//    create_sub_folders();
+    // create subfolder (ex. raw, filtered, etc in the scanner folder
+    if (auto_create_flag) {
+        create_directory(scan_folder_path);
+        create_sub_folders();
+    }
 }
 
 void file::FileHandler::set_scan_folder_path(std::string path) {
     check_input(path);
-    //TODO: do some folder creation here.
     this->scan_folder_path = path;
+//    create_sub_folders();
 }
 
 std::string file::FileHandler::get_scan_folder_path() {

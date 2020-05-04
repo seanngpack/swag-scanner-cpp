@@ -19,7 +19,8 @@ namespace file {
         /**
          * Default file path argument is my data folder for now.
          */
-        FileHandler(std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files");
+        FileHandler(std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files",
+                bool auto_create_flag = false);
 
         /**
          * Set the scan_folder_path instance variable. Should be pointed to the scan folders.

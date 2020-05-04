@@ -21,12 +21,23 @@ protected:
 
 
 /**
+ * Comment this test out when not in use.
+ * Tests to see if the constructor actually creates a new folder when
+ * the auto_create flag is set to true.
+ */
+//TEST_F(FileHandlerFixture, TestCreateFolderWithConstructor) {
+//    file::FileHandler *test = new file::FileHandler(
+//            "/Users/seanngpack/Programming Stuff/Projects/scanner_files",
+//            true);
+//}
+
+/**
  * Test the get current scan folder method with an invalid path name.
  * Expecting invalid argument errors.
  */
 TEST_F(FileHandlerFixture, TestGetCurrentScanFolderInvalidPath) {
     ASSERT_THROW(file::FileHandler *test = new file::FileHandler("swagggg"),
-            std::invalid_argument);
+                 std::invalid_argument);
 }
 
 /**
@@ -66,5 +77,5 @@ TEST_F(FileHandlerFixture, TestSetFolderPath) {
  */
 TEST_F(FileHandlerFixture, TestSetFolderPathInvalid) {
     EXPECT_THROW(handler->set_scan_folder_path("aboslute nononsense"),
-            std::invalid_argument);
+                 std::invalid_argument);
 }
