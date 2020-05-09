@@ -11,7 +11,7 @@ set(SOURCE_FILES
         include/utils/Algorithms.h src/model/processing/Model.cpp
         include/model/processing/Model.h include/view/Visualizer.h src/model/view/Visualizer.cpp include/utils/FileHandler.h src/utils/FileHandler.cpp include/utils/CloudType.h include/model/arduino/Arduino.h
         src/model/arduino/Arduino.cpp
-        )
+        include/wrapper/SERVICES.h include/wrapper/CoreBluetoothDelegate.h src/wrapper/CoreBluetoothDelegate.m)
 set(CAMERA_HEADERS ./include/model/camera)
 set(VIEW_HEADERS ./include/view)
 set(PROCESSING_HEADERS ./include/model/processing)

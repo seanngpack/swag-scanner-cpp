@@ -21,7 +21,7 @@ class FileHandlerFixture : public ::testing::Test {
 };
 
 TEST_F(FileHandlerFixture, TestWrapper) {
-    void * p = get_object();
+    void * p = get_wrapper_object();
     std::cout << p << std::endl;
 
     int a = 5;

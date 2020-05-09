@@ -6,6 +6,6 @@
 int MyObjectDoSomethingWith(void *myObjectInstance, void *parameter);
 
 // get object
-void * get_object();
+void * get_wrapper_object();
 
 #endif
