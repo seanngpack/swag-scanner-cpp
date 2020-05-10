@@ -3,22 +3,26 @@ project(swag_scanner)
 
 set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES
+        include/wrapper/SERVICES.h
         include/wrapper/CoreBluetoothWrapper.h
         include/wrapper/CoreBluetoothObjC.h
         src/wrapper/CoreBluetoothObjC.mm
         src/main.cpp src/model/camera/SR305.cpp include/model/camera/ICamera.h
         include/model/camera/SR305.h include/utils/CameraTypes.h
         include/utils/Algorithms.h src/model/processing/Model.cpp
-        include/model/processing/Model.h include/view/Visualizer.h src/model/view/Visualizer.cpp include/utils/FileHandler.h src/utils/FileHandler.cpp include/utils/CloudType.h include/model/arduino/Arduino.h
+        include/model/processing/Model.h include/view/Visualizer.h src/model/view/Visualizer.cpp
+        include/utils/FileHandler.h src/utils/FileHandler.cpp include/utils/CloudType.h
+        include/model/arduino/Arduino.h
         src/model/arduino/Arduino.cpp
-        include/wrapper/SERVICES.h include/wrapper/CoreBluetoothDelegate.h src/wrapper/CoreBluetoothDelegate.m)
+        )
+set(WRAPPERS ./include/wrapper)
 set(CAMERA_HEADERS ./include/model/camera)
 set(VIEW_HEADERS ./include/view)
 set(PROCESSING_HEADERS ./include/model/processing)
 set(UTILS ./include/utils)
-set(CMAKE_EXE_LINKER_FLAGS
-        "-framework CoreFoundation"
-        )
+
+# double check why this fixes core bluetooth linkage issue
+set(CMAKE_EXE_LINKER_FLAGS "-framework CoreBluetooth")
 
 find_package(OpenCV REQUIRED)
 find_package(PCL 1.10 REQUIRED)
@@ -31,10 +35,11 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 
 add_subdirectory(test)
 
-add_executable(swag_scanner ${SOURCE_FILES})
+
 
 include_directories("/opt/librealsense/include" ${OpenCV_INCLUDE_DIRS})
 include_directories(${PCL_INCLUDE_DIRS})
+include_directories(${WRAPPERS})
 include_directories(${CAMERA_HEADERS})
 include_directories(${VIEW_HEADERS})
 include_directories(${PROCESSING_HEADERS})
@@ -45,8 +50,10 @@ link_directories(${PCL_LIBRARY_DIRS})
 
 add_definitions(${PCL_DEFINITIONS})
 
-target_link_libraries(swag_scanner PRIVATE "-framework CoreFoundation"
-                                            "-framework CoreBluetooth")
+add_executable(swag_scanner ${SOURCE_FILES})
+
+target_link_libraries(swag_scanner PUBLIC "-framework CoreFoundation"
+        "-framework CoreBluetooth")
 set_target_properties(swag_scanner PROPERTIES LINK_FLAGS "-Wl,-F/Library/Frameworks")
 target_link_libraries(swag_scanner PUBLIC /opt/librealsense/build/librealsense2.dylib PRIVATE ${OpenCV_LIBS})
 target_link_libraries(swag_scanner PUBLIC ${PCL_LIBRARIES})

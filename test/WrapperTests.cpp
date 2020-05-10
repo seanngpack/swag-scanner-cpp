@@ -21,12 +21,22 @@ class FileHandlerFixture : public ::testing::Test {
 };
 
 TEST_F(FileHandlerFixture, TestWrapper) {
-    void * p = get_wrapper_object();
+    void *p = get_wrapper_object();
+    std::cout << "memory address of object: ";
     std::cout << p << std::endl;
 
     int a = 5;
-    void * param = &a;
+    void *param = &a;
+//
+//    int x = MyObjectDoSomethingWith(p, param);
+//    std::cout << x << std::endl;
 
-    int x = MyObjectDoSomethingWith(p, param);
-    std::cout << x << std::endl;
+//    initialize_bt2(p);
+
 }
+
+//TEST_F(FileHandlerFixture, TestBluetooth) {
+//    void * p = get_wrapper_object();
+//
+//
+//}
