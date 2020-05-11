@@ -8,16 +8,15 @@ using namespace testing;
 class FileHandlerFixture : public ::testing::Test {
 
 
-//protected:
-//    file::FileHandler *handler;
-//
-//    virtual void SetUp() {
-//        handler = new file::FileHandler;
-//    }
-//
-//    virtual void TearDown() {
-//        delete handler;
-//    }
+protected:
+
+    virtual void SetUp() {
+
+    }
+
+    virtual void TearDown() {
+
+    }
 };
 
 TEST_F(FileHandlerFixture, TestWrapper) {
@@ -25,8 +24,10 @@ TEST_F(FileHandlerFixture, TestWrapper) {
     std::cout << "memory address of object: ";
     std::cout << p << std::endl;
 
-    int a = 5;
-    void *param = &a;
+//    int a = 5;
+//    void *param = &a;void *p = get_shared_instance();
+
+
 //
 //    int x = MyObjectDoSomethingWith(p, param);
 //    std::cout << x << std::endl;
@@ -34,9 +35,3 @@ TEST_F(FileHandlerFixture, TestWrapper) {
 //    initialize_bt2(p);
 
 }
-
-//TEST_F(FileHandlerFixture, TestBluetooth) {
-//    void * p = get_wrapper_object();
-//
-//
-//}

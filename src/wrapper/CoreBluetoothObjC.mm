@@ -2,14 +2,8 @@
 #include <iostream>
 
 
-// C "trampoline" function to invoke Objective-C method
-int MyObjectDoSomethingWith(void *ob, void *aParameter) {
-    // Call the Objective-C method using Objective-C syntax
-    return [(id) ob doSomethingWith:aParameter];
-}
-
-void initialize_bt2(void *myObjectInstance) {
-    [(id) myObjectInstance initialize_bt];
+void print_central_address(void *ob) {
+    [(id) ob printCent];
 }
 
 void *get_wrapper_object() {
@@ -17,64 +11,61 @@ void *get_wrapper_object() {
     return obj_ptr;
 }
 
-void *get_shared_instance() {
-    return [MyObject sharedInstance];
-}
 
 @implementation MyObject
 // OBJ C FUNCTIONS HERE
-+ (MyObject *)sharedInstance {
-    DEFINE_SHARED_INSTANCE_USING_BLOCK(^{
-        return [[self alloc] init];
-    });
-}
+
 - (id)init {
     self = [super init];
     if (self) {
-        std::cout << "constructing this bullshit" << std::endl;
-        [self initialize_bt];
+        std::cout << "init ObjC" << std::endl;
+        @autoreleasepool {
+            dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+            dispatch_async(q, ^{
+                std::cout << "making manager" << std::endl;
+                self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+
+            });
+#ifdef CPP
+            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+            while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
+            }
+#endif
+        };
     }
+
     return self;
 }
 
 - (void)dealloc {
-    [super dealloc];
     std::cout << "destructing this bluetooth object";
+    [super dealloc];
 }
 
-
-- (void)initialize_bt {
-    // Note: creating the manager with initWithDelegate immediately calls centralManagerDidUpdateState
-    std::cout << "memory address of central manager before init: ";
+- (void)printCent {
     std::cout << _centralManager << std::endl;
-    std::cout << "memory address of object: ";
-    std::cout << self << std::endl;
-    self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:nil];
-    std::cout << "memory address of central manager after init: ";
-    std::cout << self.centralManager << std::endl;
-
-    std::cout << "central manager created" << std::endl;
-    self.data = [[NSMutableData alloc] init];
 }
 
 
-- (int)doSomethingWith:(void *)aParameter {
-    // The Objective-C function you wanted to call from C++.
-    // do work here..
-    int a = *((int *) aParameter);
-    std::cout << a << std::endl;
-
-
-    NSLog(@"%@", ROTATE_TABLE_CHAR_UUID);
-    return 21 + a; // half of 42
+- (void)pauseScan {
+    // Scanning uses up battery on phone, so pause the scan process for the designated interval.
+    NSLog(@"*** PAUSING SCAN...");
+    [NSTimer scheduledTimerWithTimeInterval:TIMER_PAUSE_INTERVAL target:self selector:@selector(resumeScan) userInfo:nil repeats:NO];
+    [self.centralManager stopScan];
 }
 
-#pragma mark - CBCentralManagerDelegate method
+- (void)resumeScan {
+    if (self.keepScanning) {
+        // Start scanning again...
+        NSLog(@"*** RESUMING SCAN!");
+        [NSTimer scheduledTimerWithTimeInterval:TIMER_SCAN_INTERVAL target:self selector:@selector(pauseScan) userInfo:nil repeats:NO];
+        [self.centralManager scanForPeripheralsWithServices:nil options:nil];
+    }
+}
+
 
 // called immediately after initializing central manager with initWithDelegate.
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-    std::cout << "CALL MEEEW!! called" << std::endl;
-    BOOL showAlert = YES;
     NSString *state = @"";
     switch ([central state]) {
         case CBManagerStateUnsupported:
@@ -90,7 +81,6 @@ void *get_shared_instance() {
             state = @"The BLE Manager is resetting; a state update is pending.";
             break;
         case CBManagerStatePoweredOn:
-            showAlert = NO;
             state = @"Bluetooth LE is turned on and ready for communication.";
             NSLog(@"%@", state);
             self.keepScanning = YES;
@@ -103,11 +93,6 @@ void *get_shared_instance() {
         default:
             state = @"The state of the BLE Manager is unknown.";
     }
-
-    if (showAlert) {
-        NSLog(@"Central Manager State: %@", state);
-    }
-
 }
 
 // call this during scanning when it finds a peripheral

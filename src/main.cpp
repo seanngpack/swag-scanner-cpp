@@ -3,7 +3,7 @@
 #include "SR305.h"
 #include "Visualizer.h"
 #include <chrono>
-#import "CoreFoundation/CoreFoundation.h"
+
 
 
 int main() {
