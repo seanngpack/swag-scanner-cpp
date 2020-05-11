@@ -9,23 +9,22 @@ static bool finished = false;
 
 void print_crap() {
     while (!finished) {
-//        std::cout << "working in background thread?: " << std::this_thread::get_id() << std::endl;
+        std::cout << "background thread: " << std::this_thread::get_id() << std::endl;
         std::this_thread::sleep_for(1s);
     }
+}
 
+void run_bt() {
+    std::cout << "bt thread: " << std::this_thread::get_id() << std::endl;
+    void *p = get_wrapper_object();
 }
 
 int main() {
-    std::thread worker(print_crap);
-    void *p = get_wrapper_object();
-
-    // these never get called because my bluetooth object is blocking main thread
-    std::cout << "memory address of object: ";
-    std::cout << p << std::endl;
-    print_central_address(p);
-    std::cout << std::this_thread::get_id();
-
-
+    std::cout << "main thread: " << std::this_thread::get_id() << std::endl;
+    std::thread worker(run_bt);
+    print_crap();
+//    void *p = get_wrapper_object();
+//    std::thread worker2(get_wrapper_object);
 
     return 0;
 }

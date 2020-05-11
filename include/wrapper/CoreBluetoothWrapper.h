@@ -5,6 +5,6 @@
 void *get_wrapper_object();
 
 
-void print_central_address(void *ob);
+void spawn_bt(void* ob);
 
 #endif

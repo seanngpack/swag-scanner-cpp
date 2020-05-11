@@ -1,10 +1,8 @@
 #import "../../include/wrapper/CoreBluetoothObjC.h"
 #include <iostream>
+#include <thread>
 
 
-void print_central_address(void *ob) {
-    [(id) ob printCent];
-}
 
 void *get_wrapper_object() {
     void *obj_ptr = [[MyObject alloc] init];
@@ -13,7 +11,7 @@ void *get_wrapper_object() {
 
 
 @implementation MyObject
-// OBJ C FUNCTIONS HERE
+
 
 - (id)init {
     self = [super init];
@@ -27,9 +25,17 @@ void *get_wrapper_object() {
 
             });
 #ifdef CPP
+            std::cout << "bt thread: " << std::this_thread::get_id() << std::endl;
             NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
             while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
+//                if ([NSThread isMainThread]) {
+//                    std::cout << "we're on the main thread" << std::endl;
+//                }
+//                else {
+//                    std::cout << "we're not on the main thread" << std::endl;
+//                }
             }
+
 #endif
         };
     }
@@ -57,9 +63,10 @@ void *get_wrapper_object() {
 - (void)resumeScan {
     if (self.keepScanning) {
         // Start scanning again...
+        std::cout << "current thread: " << std::this_thread::get_id() << std::endl;
         NSLog(@"*** RESUMING SCAN!");
-        [NSTimer scheduledTimerWithTimeInterval:TIMER_SCAN_INTERVAL target:self selector:@selector(pauseScan) userInfo:nil repeats:NO];
-        [self.centralManager scanForPeripheralsWithServices:nil options:nil];
+//        [NSTimer scheduledTimerWithTimeInterval:TIMER_SCAN_INTERVAL target:self selector:@selector(pauseScan) userInfo:nil repeats:NO];
+//        [self.centralManager scanForPeripheralsWithServices:nil options:nil];
     }
 }
 
