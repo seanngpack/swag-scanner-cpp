@@ -5,6 +5,4 @@
 void *get_wrapper_object();
 
 
-void spawn_bt(void* ob);
-
 #endif

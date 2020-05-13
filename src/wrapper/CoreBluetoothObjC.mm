@@ -3,9 +3,10 @@
 #include <thread>
 
 
-
 void *get_wrapper_object() {
     void *obj_ptr = [[MyObject alloc] init];
+
+    std::cout << "object id: " << obj_ptr << std::endl;
     return obj_ptr;
 }
 
@@ -17,27 +18,28 @@ void *get_wrapper_object() {
     self = [super init];
     if (self) {
         std::cout << "init ObjC" << std::endl;
+        std::cout << "ObjC running on: " << std::this_thread::get_id() << std::endl;
+        if ([NSThread isMainThread]) {
+            std::cout << "we're on the main thread" << std::endl;
+        } else {
+            std::cout << "we're not on the main thread" << std::endl;
+        }
+        _centralQueue = dispatch_queue_create("centralmanager", DISPATCH_QUEUE_SERIAL);
+
         @autoreleasepool {
-            dispatch_queue_t q = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
-            dispatch_async(q, ^{
-                std::cout << "making manager" << std::endl;
-                self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+            dispatch_async(_centralQueue, ^{
+                std::cout << "inside here";
+                self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:_centralQueue options:nil];
 
+
+//            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+//            while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
+//            }
+//                [[NSRunLoop currentRunLoop] run];
             });
-#ifdef CPP
-            std::cout << "bt thread: " << std::this_thread::get_id() << std::endl;
-            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-            while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
-//                if ([NSThread isMainThread]) {
-//                    std::cout << "we're on the main thread" << std::endl;
-//                }
-//                else {
-//                    std::cout << "we're not on the main thread" << std::endl;
-//                }
-            }
 
-#endif
         };
+
     }
 
     return self;
@@ -55,6 +57,7 @@ void *get_wrapper_object() {
 
 - (void)pauseScan {
     // Scanning uses up battery on phone, so pause the scan process for the designated interval.
+    std::cout << "PAUSING SCAN!!!" << std::endl;
     NSLog(@"*** PAUSING SCAN...");
     [NSTimer scheduledTimerWithTimeInterval:TIMER_PAUSE_INTERVAL target:self selector:@selector(resumeScan) userInfo:nil repeats:NO];
     [self.centralManager stopScan];
@@ -74,6 +77,7 @@ void *get_wrapper_object() {
 // called immediately after initializing central manager with initWithDelegate.
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
     NSString *state = @"";
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], CBCentralManagerScanOptionAllowDuplicatesKey, nil];
     switch ([central state]) {
         case CBManagerStateUnsupported:
             state = @"This device does not support Bluetooth Low Energy.";
@@ -91,8 +95,31 @@ void *get_wrapper_object() {
             state = @"Bluetooth LE is turned on and ready for communication.";
             NSLog(@"%@", state);
             self.keepScanning = YES;
-            [NSTimer scheduledTimerWithTimeInterval:TIMER_SCAN_INTERVAL target:self selector:@selector(pauseScan) userInfo:nil repeats:NO];
-            [self.centralManager scanForPeripheralsWithServices:nil options:nil];
+            std::cout << "scanning now" << std::endl;
+//            [NSTimer scheduledTimerWithTimeInterval:TIMER_SCAN_INTERVAL
+//                                             target:self
+//                                           selector:@selector(pauseScan)
+//                                           userInfo:nil
+//                                            repeats:NO];
+
+
+
+            [[NSRunLoop mainRunLoop] addTimer:[NSTimer timerWithTimeInterval:3
+                                                                         target:self
+                                                                       selector:@selector(pauseScan)
+                                                                       userInfo:nil
+                                                                        repeats:YES]
+                                         forMode:NSDefaultRunLoopMode];
+
+//            dispatch_async(_centralQueue, ^{
+//                std::cout << "inside the queue" << std::endl;
+//                // @[[CBUUID UUIDWithString:UART_SERVICE_UUID]]
+//                [_centralManager scanForPeripheralsWithServices: nil
+//                                                        options:options];
+//            });
+            [_centralManager scanForPeripheralsWithServices: nil
+                                                    options:nil];
+
             break;
         case CBManagerStateUnknown:
             state = @"The state of the BLE Manager is unknown.";
