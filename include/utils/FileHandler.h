@@ -22,13 +22,23 @@ namespace file {
 
         /**
          * Default file path argument is my data folder for now.
+         * @param all_data_folder_path path to the folder containing all your pointcloud data.
+         * @param auto_create_flag if true, create the folders at runtime, if false then don't.
          */
         explicit FileHandler(const std::string &all_data_folder_path = default_data_path,
                              bool auto_create_flag = false);
 
         /**
+         * Overloaded constructor for only passing in a auto_create_flag.
+         * Uses the default_data_path as the default path.
+         * @param auto_create_flag if true, create the folders at runtime, if false then don't.
+         */
+        FileHandler(bool auto_create_flag);
+
+        /**
          * Set the scan_folder_path instance variable. Should be pointed to the scan folders.
          * E.g user/scanner_data/10
+         * Note: current behavior is it should create the new sub folders
          * @param path the folder path.
          */
         void set_scan_folder_path(const std::string &path);
@@ -46,9 +56,9 @@ namespace file {
          * path that the cloud gets saved in.
          * @para cloud_type enum for the type of cloud you are saving.
          */
-        void save_cloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+        void save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
                         const std::string &cloud_name,
-                        CloudType cloud_type);
+                        CloudType::Type cloud_type);
 
         /**
          * NOTE: Currently does not support full paths.
@@ -61,18 +71,11 @@ namespace file {
          */
         void open_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                         const std::string &cloud_name,
-                        CloudType cloud_type);
+                        CloudType::Type cloud_type);
 
     private:
         std::string all_data_folder_path;
         std::string scan_folder_path;
-
-        const std::unordered_map<CloudType, std::string> type_path_map = {
-                {CloudType::RAW,       "/raw"},
-                {CloudType::FILTERED,  "/filtered"},
-                {CloudType::SEGMENTED, "/segmented"},
-                {CloudType::NORMAL,    "/normal"}
-        };
 
 
         /**

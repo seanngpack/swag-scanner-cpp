@@ -71,7 +71,7 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolderEmptyCase) {
 TEST_F(FileHandlerFixture, TestSetFolderPath) {
 //    handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff");
 //    EXPECT_EQ(handler->get_scan_folder_path(),
-//              "/Users/seanngpack/Programming Stuff");
+//              "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing");
 }
 
 /**

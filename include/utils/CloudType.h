@@ -8,11 +8,33 @@
  * SEGMENTED = cloud that is both FILTERED and has its plane removed.
  * NORMAL = normal cloud.
  */
-enum class CloudType {
-    RAW,
-    FILTERED,
-    SEGMENTED,
-    NORMAL
-};
+namespace CloudType {
+    enum class Type {
+        RAW,
+        FILTERED,
+        SEGMENTED,
+        NORMAL
+    };
+
+    static const Type All[] = {CloudType::Type::RAW,
+                               CloudType::Type::FILTERED,
+                               CloudType::Type::SEGMENTED,
+                               CloudType::Type::NORMAL};
+
+    inline std::string String(CloudType::Type type) {
+        switch (type) {
+            case CloudType::Type::RAW:
+                return "raw";
+            case CloudType::Type::FILTERED:
+                return "filtered";
+            case CloudType::Type::SEGMENTED:
+                return "segmented";
+            case CloudType::Type::NORMAL:
+                return "normal";
+            default:
+                return "error, enum not defined for cloudtype";
+        }
+    }
+}
 
 #endif //SWAG_SCANNER_CLOUDTYPE_H

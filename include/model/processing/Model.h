@@ -3,7 +3,9 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/features/integral_image_normal.h>
+#include <FileHandler.h>
 #include <CameraTypes.h>
+#include <CloudType.h>
 
 #ifndef SWAG_SCANNER_MODEL_H
 #define SWAG_SCANNER_MODEL_H
@@ -79,7 +81,9 @@ namespace model {
          * Save pointcloud to file.
          * @param cloud the cloud you want to save.
          */
-        void to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, std::string name);
+        void to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                     const std::string &name,
+                     CloudType::Type cloud_type);
 
 
         ~Model();
@@ -87,8 +91,10 @@ namespace model {
     private:
         const uint16_t *depth_frame;
         const camera::ss_intrinsics *intrinsics;
+        file::FileHandler fileHandler;
         pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud;
         pcl::PointCloud<pcl::Normal>::Ptr normal_cloud;
+
     };
 }
 
