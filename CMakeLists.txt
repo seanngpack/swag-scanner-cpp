@@ -5,7 +5,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES src/main.cpp src/model/camera/SR305.cpp include/model/camera/ICamera.h
         include/model/camera/SR305.h include/utils/CameraTypes.h
         include/utils/Algorithms.h src/model/processing/Model.cpp
-        include/model/processing/Model.h include/view/Visualizer.h src/model/view/Visualizer.cpp include/utils/FileHandler.h src/utils/FileHandler.cpp include/utils/CloudType.h)
+        include/model/processing/Model.h include/view/Visualizer.h src/model/view/Visualizer.cpp
+        include/utils/FileHandler.h src/utils/FileHandler.cpp
+        include/utils/CloudType.h
+        include/model/arduino/Arduino.h src/model/arduino/Arduino.cpp)
 set(CAMERA_HEADERS ./include/model/camera)
 set(VIEW_HEADERS ./include/view)
 set(PROCESSING_HEADERS ./include/model/processing)
