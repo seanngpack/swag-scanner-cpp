@@ -32,10 +32,10 @@ void *get_wrapper_object() {
                 self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:_centralQueue options:nil];
 
 
-//            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-//            while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
-//            }
-//                [[NSRunLoop currentRunLoop] run];
+            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+            while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
+            }
+                [[NSRunLoop currentRunLoop] run];
             });
 
         };

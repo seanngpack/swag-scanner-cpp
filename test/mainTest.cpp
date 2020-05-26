@@ -24,8 +24,11 @@ int main() {
     std::cout << "main thread: " << std::this_thread::get_id() << std::endl;
 //    std::thread worker(run_bt);
 //    worker.detach();
-    run_bt();
+    std::thread worker(run_bt);
+    worker.detach();
     print_crap();
+
+
 
 
 //    std::thread worker(run_bt);
