@@ -13,10 +13,10 @@ include_directories(googletest-master/googlemock/include)
 #link_directories("/opt/librealsense/build/librealsense2.dylib")
 
 
-add_executable(tests_run ModelTests.cpp AlgosTests.cpp CameraTypesTests.cpp
+add_executable(tests_run ModelTests.cpp utilsTests/AlgosTests.cpp typeTests/CameraTypesTests.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/processing/Model.cpp
         ${swag_scanner_SOURCE_DIR}/src/utils/FileHandler.cpp
-        FileHandlerTests.cpp mocks/MockFileHandler.cpp typeTests/CloudTypeTests.cpp)
+        utilsTests/FileHandlerTests.cpp mocks/MockFileHandler.cpp typeTests/CloudTypeTests.cpp utilsTests/FileHandlerPhysicalTests.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main

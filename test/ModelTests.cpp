@@ -135,6 +135,4 @@ TEST_F(ModelFixture, TestEstimateNormals) {
 
     ASSERT_EQ(mod->get_normal_cloud()->width, 10);
     ASSERT_EQ(mod->get_normal_cloud()->height, 10);
-
-
 }
