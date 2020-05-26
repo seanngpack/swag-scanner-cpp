@@ -32,9 +32,9 @@ void *get_wrapper_object() {
                 self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:_centralQueue options:nil];
 
 
-            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-            while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
-            }
+                NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+                while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
+                }
                 [[NSRunLoop currentRunLoop] run];
             });
 
@@ -50,34 +50,11 @@ void *get_wrapper_object() {
     [super dealloc];
 }
 
-- (void)printCent {
-    std::cout << _centralManager << std::endl;
-}
-
-
-- (void)pauseScan {
-    // Scanning uses up battery on phone, so pause the scan process for the designated interval.
-    std::cout << "PAUSING SCAN!!!" << std::endl;
-    NSLog(@"*** PAUSING SCAN...");
-    [NSTimer scheduledTimerWithTimeInterval:TIMER_PAUSE_INTERVAL target:self selector:@selector(resumeScan) userInfo:nil repeats:NO];
-    [self.centralManager stopScan];
-}
-
-- (void)resumeScan {
-    if (self.keepScanning) {
-        // Start scanning again...
-        std::cout << "current thread: " << std::this_thread::get_id() << std::endl;
-        NSLog(@"*** RESUMING SCAN!");
-//        [NSTimer scheduledTimerWithTimeInterval:TIMER_SCAN_INTERVAL target:self selector:@selector(pauseScan) userInfo:nil repeats:NO];
-//        [self.centralManager scanForPeripheralsWithServices:nil options:nil];
-    }
-}
-
 
 // called immediately after initializing central manager with initWithDelegate.
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
     NSString *state = @"";
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], CBCentralManagerScanOptionAllowDuplicatesKey, nil];
+    NSDictionary *options = @{CBCentralManagerScanOptionAllowDuplicatesKey: @YES};
     switch ([central state]) {
         case CBManagerStateUnsupported:
             state = @"This device does not support Bluetooth Low Energy.";
@@ -94,32 +71,11 @@ void *get_wrapper_object() {
         case CBManagerStatePoweredOn:
             state = @"Bluetooth LE is turned on and ready for communication.";
             NSLog(@"%@", state);
-            self.keepScanning = YES;
+            self.keepScanning = true;
             std::cout << "scanning now" << std::endl;
-//            [NSTimer scheduledTimerWithTimeInterval:TIMER_SCAN_INTERVAL
-//                                             target:self
-//                                           selector:@selector(pauseScan)
-//                                           userInfo:nil
-//                                            repeats:NO];
 
-
-
-            [[NSRunLoop mainRunLoop] addTimer:[NSTimer timerWithTimeInterval:3
-                                                                         target:self
-                                                                       selector:@selector(pauseScan)
-                                                                       userInfo:nil
-                                                                        repeats:YES]
-                                         forMode:NSDefaultRunLoopMode];
-
-//            dispatch_async(_centralQueue, ^{
-//                std::cout << "inside the queue" << std::endl;
-//                // @[[CBUUID UUIDWithString:UART_SERVICE_UUID]]
-//                [_centralManager scanForPeripheralsWithServices: nil
-//                                                        options:options];
-//            });
-            [_centralManager scanForPeripheralsWithServices: nil
+            [_centralManager scanForPeripheralsWithServices:nil
                                                     options:nil];
-
             break;
         case CBManagerStateUnknown:
             state = @"The state of the BLE Manager is unknown.";
@@ -135,9 +91,10 @@ void *get_wrapper_object() {
 
     NSString *peripheralName = [advertisementData objectForKey:@"kCBAdvDataLocalName"];
     NSLog(@"NEXT PERIPHERAL: %@ (%@)", peripheralName, peripheral.identifier.UUIDString);
+    NSLog(@"NAME: %@ ", peripheral.name);
     if (peripheralName) {
         if ([peripheralName isEqualToString:SWAG_SCANNER_NAME]) {
-            self.keepScanning = NO;
+            self.keepScanning = false;
 
             // save a reference to the sensor tag
             self.swagScanner = peripheral;
@@ -154,10 +111,9 @@ void *get_wrapper_object() {
     NSLog(@"**** SUCCESSFULLY CONNECTED TO SWAG SCANNER");
     NSLog(@"Connected");
 
-    // Now that we've successfully connected to the SensorTag, let's discover the services.
-    // - NOTE:  we pass nil here to request ALL services be discovered.
-    //          If there was a subset of services we were interested in, we could pass the UUIDs here.
-    //          Doing so saves batter life and saves time.
+    [_centralManager stopScan];
+    NSLog(@"Scanning stopped");
+
     [peripheral discoverServices:nil];
 }
 
@@ -190,15 +146,21 @@ void *get_wrapper_object() {
         uint8_t enableValue = 1;
         NSData *enableBytes = [NSData dataWithBytes:&enableValue length:sizeof(uint8_t)];
 
+        // rotate table
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:ROTATE_TABLE_CHAR_UUID]]) {
+            NSLog(@"Enabled table rotation characteristic: %@", characteristic);
+            [self.swagScanner writeValue:enableBytes forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+        }
+
         // table position
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:TABLE_POSITION_CHAR_UUID]]) {
-            // Enable Table position notification
+            NSLog(@"Enabled table position characteristic with notifications: %@", characteristic);
             [self.swagScanner setNotifyValue:YES forCharacteristic:characteristic];
         }
 
         // table rotation
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:IS_TABLE_ROTATING_CHAR_UUID]]) {
-            // Enable Table rotation notification
+            NSLog(@"Enabled is table rotation? characteristic with notifications: %@", characteristic);
             [self.swagScanner setNotifyValue:YES forCharacteristic:characteristic];
         }
 
