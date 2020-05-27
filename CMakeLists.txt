@@ -12,8 +12,6 @@ set(SOURCE_FILES
         include/utils/Algorithms.h src/model/processing/Model.cpp
         include/model/processing/Model.h include/view/Visualizer.h src/model/view/Visualizer.cpp
         include/utils/FileHandler.h src/utils/FileHandler.cpp include/utils/CloudType.h
-        include/model/arduino/Arduino.h
-        src/model/arduino/Arduino.cpp
         )
 set(WRAPPERS ./include/wrapper)
 set(CAMERA_HEADERS ./include/model/camera)
@@ -34,8 +32,6 @@ message(STATUS "    libraries: ${OpenCV_LIBS}")
 message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 
 add_subdirectory(test)
-
-
 
 include_directories("/opt/librealsense/include" ${OpenCV_INCLUDE_DIRS})
 include_directories(${PCL_INCLUDE_DIRS})

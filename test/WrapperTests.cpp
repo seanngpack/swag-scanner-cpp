@@ -24,14 +24,5 @@ TEST_F(FileHandlerFixture, TestWrapper) {
     std::cout << "memory address of object: ";
     std::cout << p << std::endl;
 
-//    int a = 5;
-//    void *param = &a;void *p = get_shared_instance();
-
-
-//
-//    int x = MyObjectDoSomethingWith(p, param);
-//    std::cout << x << std::endl;
-
-//    initialize_bt2(p);
 
 }

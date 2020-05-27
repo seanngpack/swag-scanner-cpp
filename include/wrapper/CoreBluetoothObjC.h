@@ -11,9 +11,8 @@
 
 @property(strong, nonatomic) CBCentralManager *centralManager;
 @property(strong, nonatomic) CBPeripheral *swagScanner;
+@property(strong, nonatomic) CBCharacteristic *rotateTableChar;
 @property(strong, nonatomic) NSMutableData *data;
-@property(strong) NSTimer *backgroundTimer;
-@property(nonatomic, assign) BOOL keepScanning;
 @property(nonatomic, strong) dispatch_queue_t centralQueue;
 
 
@@ -23,6 +22,9 @@
 // destructor override
 - (void)dealloc;
 
+- (void)start_bt;
 
-- (void)printCent;
+- (void)rotate_table:(int) degrees;
+
+
 @end

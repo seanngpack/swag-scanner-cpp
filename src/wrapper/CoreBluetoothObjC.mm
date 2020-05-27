@@ -10,8 +10,24 @@ void *get_wrapper_object() {
     return obj_ptr;
 }
 
+void start_bt(void *obj) {
+    [(id) obj start_bt];
+}
+
+void rotate_table(void *obj, int deg) {
+    [(id) obj rotate_table:deg];
+}
+
 
 @implementation MyObject
+
+- (void)rotate_table:(int)degrees {
+    NSData *bytes = [NSData dataWithBytes:&degrees length:sizeof(degrees)];
+    [_swagScanner
+            writeValue:bytes
+     forCharacteristic:_rotateTableChar
+                  type:CBCharacteristicWriteWithResponse];
+}
 
 
 - (id)init {
@@ -24,25 +40,28 @@ void *get_wrapper_object() {
         } else {
             std::cout << "we're not on the main thread" << std::endl;
         }
-        _centralQueue = dispatch_queue_create("centralmanager", DISPATCH_QUEUE_SERIAL);
-
-        @autoreleasepool {
-            dispatch_async(_centralQueue, ^{
-                std::cout << "inside here";
-                self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:_centralQueue options:nil];
-
-
-                NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-                while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
-                }
-                [[NSRunLoop currentRunLoop] run];
-            });
-
-        };
-
+        return self;
     }
-
     return self;
+}
+
+- (void)start_bt {
+    _centralQueue = dispatch_queue_create("centralmanager", DISPATCH_QUEUE_SERIAL);
+
+    @autoreleasepool {
+        dispatch_async(_centralQueue, ^{
+            std::cout << "inside here";
+            self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:_centralQueue options:nil];
+
+
+            NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+            while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
+            }
+            [[NSRunLoop currentRunLoop] run];
+        });
+
+    };
+
 }
 
 - (void)dealloc {
@@ -71,7 +90,6 @@ void *get_wrapper_object() {
         case CBManagerStatePoweredOn:
             state = @"Bluetooth LE is turned on and ready for communication.";
             NSLog(@"%@", state);
-            self.keepScanning = true;
             std::cout << "scanning now" << std::endl;
 
             [_centralManager scanForPeripheralsWithServices:nil
@@ -94,7 +112,6 @@ void *get_wrapper_object() {
     NSLog(@"NAME: %@ ", peripheral.name);
     if (peripheralName) {
         if ([peripheralName isEqualToString:SWAG_SCANNER_NAME]) {
-            self.keepScanning = false;
 
             // save a reference to the sensor tag
             self.swagScanner = peripheral;
@@ -143,12 +160,13 @@ void *get_wrapper_object() {
 // use this to turn on notifications
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error {
     for (CBCharacteristic *characteristic in service.characteristics) {
-        uint8_t enableValue = 1;
+        uint8_t enableValue = 0;
         NSData *enableBytes = [NSData dataWithBytes:&enableValue length:sizeof(uint8_t)];
 
         // rotate table
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:ROTATE_TABLE_CHAR_UUID]]) {
             NSLog(@"Enabled table rotation characteristic: %@", characteristic);
+            _rotateTableChar = characteristic;
             [self.swagScanner writeValue:enableBytes forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
         }
 
@@ -186,20 +204,10 @@ void *get_wrapper_object() {
 // log the output
 - (void)displayInfo:(NSData *)dataBytes {
 
-    // get the data's length - divide by two since we're creating an array that holds 16-bit (two-byte) values...
-    NSUInteger dataLength = dataBytes.length / 2;
+    int theInteger;
+    [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
 
-    // create an array to contain the 16-bit values
-    uint16_t dataArray[dataLength];
-    for (int i = 0; i < dataLength; i++) {
-        dataArray[i] = 0;
-    }
-
-    // extract the data from the dataBytes object
-    [dataBytes getBytes:&dataArray length:dataLength * sizeof(uint16_t)];
-    uint16_t rawValue = dataArray[0];
-
-    NSLog(@"Output from notification: %d", rawValue);
+    NSLog(@"Output from notification: %d", theInteger);
 }
 
 @end
