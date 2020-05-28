@@ -4,6 +4,8 @@
 #include "Visualizer.h"
 #include <chrono>
 
+
+
 int main() {
     std::cout << "Hello, World!" << std::endl;
     camera::ICamera *camera = new camera::SR305();
