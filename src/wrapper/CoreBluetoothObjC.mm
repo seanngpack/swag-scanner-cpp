@@ -2,24 +2,33 @@
 #include <iostream>
 #include <thread>
 
+/*-------------------------------------------------------
+                 C++ Wrapper functions here
 
-void *get_wrapper_object() {
-    void *obj_ptr = [[MyObject alloc] init];
+---------------------------------------------------------*/
+void *get_bluetooth_obj() {
+    void *obj_ptr = [[CoreBluetoothWrapped alloc] init];
 
     std::cout << "object id: " << obj_ptr << std::endl;
     return obj_ptr;
 }
 
-void start_bt(void *obj) {
-    [(id) obj start_bt];
+void start_bluetooth(void *obj) {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    [(id) obj performSelectorInBackground:@selector(start_bluetooth) withObject:nil];
+    [pool release];
 }
 
 void rotate_table(void *obj, int deg) {
     [(id) obj rotate_table:deg];
 }
 
+/*-------------------------------------------------------
+              Objective-C implementation here
 
-@implementation MyObject
+---------------------------------------------------------*/
+
+@implementation CoreBluetoothWrapped
 
 - (void)rotate_table:(int)degrees {
     NSData *bytes = [NSData dataWithBytes:&degrees length:sizeof(degrees)];
@@ -33,35 +42,23 @@ void rotate_table(void *obj, int deg) {
 - (id)init {
     self = [super init];
     if (self) {
-        std::cout << "init ObjC" << std::endl;
-        std::cout << "ObjC running on: " << std::this_thread::get_id() << std::endl;
-        if ([NSThread isMainThread]) {
-            std::cout << "we're on the main thread" << std::endl;
-        } else {
-            std::cout << "we're not on the main thread" << std::endl;
-        }
         return self;
     }
     return self;
 }
 
-- (void)start_bt {
-    _centralQueue = dispatch_queue_create("centralmanager", DISPATCH_QUEUE_SERIAL);
+- (void)start_bluetooth {
+    _centralQueue = dispatch_queue_create("centralManagerQueue", DISPATCH_QUEUE_SERIAL);
 
     @autoreleasepool {
         dispatch_async(_centralQueue, ^{
-            std::cout << "inside here";
             self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:_centralQueue options:nil];
-
-
             NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
             while (([runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]])) {
             }
             [[NSRunLoop currentRunLoop] run];
         });
-
     };
-
 }
 
 - (void)dealloc {
@@ -90,7 +87,7 @@ void rotate_table(void *obj, int deg) {
         case CBManagerStatePoweredOn:
             state = @"Bluetooth LE is turned on and ready for communication.";
             NSLog(@"%@", state);
-            std::cout << "scanning now" << std::endl;
+            NSLog(@"Scanning for Swag Scanenr now...");
 
             [_centralManager scanForPeripheralsWithServices:nil
                                                     options:nil];
@@ -105,19 +102,13 @@ void rotate_table(void *obj, int deg) {
 
 // call this during scanning when it finds a peripheral
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
-    // Retrieve the peripheral name from the advertisement data using the "kCBAdvDataLocalName" key
-
-    NSString *peripheralName = [advertisementData objectForKey:@"kCBAdvDataLocalName"];
-    NSLog(@"NEXT PERIPHERAL: %@ (%@)", peripheralName, peripheral.identifier.UUIDString);
-    NSLog(@"NAME: %@ ", peripheral.name);
+    NSString *peripheralName = advertisementData[@"kCBAdvDataLocalName"];
+//    NSLog(@"NEXT PERIPHERAL: %@ (%@)", peripheralName, peripheral.identifier.UUIDString);
+//    NSLog(@"NAME: %@ ", peripheral.name);
     if (peripheralName) {
         if ([peripheralName isEqualToString:SWAG_SCANNER_NAME]) {
-
-            // save a reference to the sensor tag
             self.swagScanner = peripheral;
             self.swagScanner.delegate = self;
-
-            // Request a connection to the peripheral
             [self.centralManager connectPeripheral:self.swagScanner options:nil];
         }
     }
@@ -125,12 +116,10 @@ void rotate_table(void *obj, int deg) {
 
 // called after peripheral is connected
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    NSLog(@"**** SUCCESSFULLY CONNECTED TO SWAG SCANNER");
-    NSLog(@"Connected");
-
     [_centralManager stopScan];
     NSLog(@"Scanning stopped");
-
+    NSLog(@"**** SUCCESSFULLY CONNECTED TO SWAG SCANNER");
+    NSLog(@"Now looking for services...");
     [peripheral discoverServices:nil];
 }
 
@@ -140,7 +129,7 @@ void rotate_table(void *obj, int deg) {
 }
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
-    NSLog(@"**** DISCONNECTED FROM SENSOR TAG!!!");
+    NSLog(@"**** DISCONNECTED FROM SWAG SCANNER");
 }
 
 #pragma mark - CBPeripheralDelegate methods

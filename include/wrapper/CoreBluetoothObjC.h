@@ -7,7 +7,7 @@
 #define CPP
 
 // An Objective-C class that needs to be accessed from C++
-@interface MyObject : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate>
+@interface CoreBluetoothWrapped : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate>
 
 @property(strong, nonatomic) CBCentralManager *centralManager;
 @property(strong, nonatomic) CBPeripheral *swagScanner;
@@ -22,8 +22,16 @@
 // destructor override
 - (void)dealloc;
 
-- (void)start_bt;
+/**
+ * Start the bluetooth discovery and initialization process. Will create a CBCentralManager and
+ * actively scan for Swag Scanner's bluetooth service. Then it will subscribe to notifications.
+ */
+- (void)start_bluetooth;
 
+/**
+ * Rotate the table with the given angle in degrees.
+ * @param deg the angle you want to rotate the table in degrees.
+ */
 - (void)rotate_table:(int) degrees;
 
 

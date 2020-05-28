@@ -18,7 +18,7 @@ add_executable(tests_run ModelTests.cpp AlgosTests.cpp CameraTypesTests.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/processing/Model.cpp
         ${swag_scanner_SOURCE_DIR}/src/utils/FileHandler.cpp
         ${swag_scanner_SOURCE_DIR}/src/wrapper/CoreBluetoothObjC.mm
-        FileHandlerTests.cpp mocks/MockFileHandler.cpp WrapperTests.cpp mainTest.cpp)
+        FileHandlerTests.cpp mocks/MockFileHandler.cpp WrapperTests.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main
