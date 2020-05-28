@@ -3,6 +3,7 @@
 #include <pcl/point_types.h>
 #include "Model.h"
 
+
 class ModelFixture : public ::testing::Test {
 
 protected:
