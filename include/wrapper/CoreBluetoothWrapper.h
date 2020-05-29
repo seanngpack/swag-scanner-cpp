@@ -1,11 +1,18 @@
-#ifndef __SWAG_SCANNER_COREBLUETOOTHWRAPPER_H__
-#define __SWAG_SCANNER_COREBLUETOOTHWRAPPER_H__
+#ifndef SWAG_SCANNER_COREBLUETOOTHWRAPPER_H
+#define SWAG_SCANNER_COREBLUETOOTHWRAPPER_H
 
 /**
  * Get the CoreBluetooth object as a void pointer.
  * @return a void *
  */
 void *get_bluetooth_obj();
+
+/**
+ * Calls on objective c function to set the callback to the arduino object.
+ * @param arduino the arduino object.
+ * @param obj the wrapped object.
+ */
+void set_rotation_state_callback(void *arduino, void *obj);
 
 /**
  * Start the bluetooth discovery and initialization process.
@@ -18,6 +25,7 @@ void start_bluetooth(void *obj);
  * @param obj the wrapped object.
  * @param deg the angle you want to rotate the table in degrees.
  */
-void rotate_table(void *obj, int deg);
+void rotate(void *obj, int deg);
+
 
 #endif

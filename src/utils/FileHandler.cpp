@@ -12,6 +12,16 @@ file::FileHandler::FileHandler(const std::string &all_data_folder_path, bool aut
     }
 }
 
+file::FileHandler::FileHandler(bool auto_create_flag) :
+        all_data_folder_path(default_data_path),
+        scan_folder_path(find_scan_folder(all_data_folder_path)) {
+
+    if (auto_create_flag) {
+        create_directory(scan_folder_path);
+        create_sub_folders();
+    }
+}
+
 void file::FileHandler::set_scan_folder_path(const std::string &path) {
     check_folder_input(path);
     this->scan_folder_path = path;
@@ -22,23 +32,27 @@ std::string file::FileHandler::get_scan_folder_path() {
     return this->scan_folder_path;
 }
 
-void file::FileHandler::save_cloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+void file::FileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
                                    const std::string &cloud_name,
-                                   CloudType cloud_type) {
+                                   CloudType::Type cloud_type) {
 
+    std::cout << "saving file to ";
     std::string out_path = scan_folder_path
-                           + type_path_map.at(cloud_type)
+                           + "/"
+                           + CloudType::String(cloud_type)
                            + "/" + cloud_name + ".pcd";
+    std::cout << out_path << std::endl;
 
     pcl::io::savePCDFileASCII(out_path, *cloud);
 }
 
 void file::FileHandler::open_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                    const std::string &cloud_name,
-                                   CloudType cloud_type) {
+                                   CloudType::Type cloud_type) {
     check_file_input(cloud_name);
     std::string open_path = scan_folder_path
-                            + type_path_map.at(cloud_type)
+                            + "/"
+                            + CloudType::String(cloud_type)
                             + "/" + cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path, *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
@@ -102,8 +116,8 @@ std::string file::FileHandler::find_scan_folder(const std::string &folder) {
 }
 
 void file::FileHandler::create_sub_folders() {
-    for (auto element : type_path_map) {
-        std::string p = scan_folder_path + element.second;
+    for (const auto element : CloudType::All) {
+        std::string p = scan_folder_path + "/" + CloudType::String(element);
         if (!exists(p)) {
             create_directory(p);
             std::cout << "Creating folder " + p << std::endl;

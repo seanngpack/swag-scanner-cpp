@@ -1,6 +1,7 @@
 #include <iostream>
-#include "Model.h"
-#include "SR305.h"
+#include <Model.h>
+#include <SR305.h>
+#include <CloudType.h>
 #include "Visualizer.h"
 #include <chrono>
 
@@ -29,7 +30,10 @@ int main() {
 
     pcl::PointCloud<pcl::Normal>::Ptr normals = model->estimate_normal_cloud();
 
+    model->to_file(model->get_point_cloud(), "test", CloudType::Type::RAW);
+
     delete camera;
+
     visual::Visualizer viewer;
     viewer.normalsVis(cloud, normals);
 

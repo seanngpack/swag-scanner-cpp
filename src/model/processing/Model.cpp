@@ -3,9 +3,10 @@
 
 model::Model::Model()
         : depth_frame(nullptr),
+          intrinsics(nullptr),
+          fileHandler(true),
           point_cloud(nullptr),
-          normal_cloud(nullptr),
-          intrinsics(nullptr) {}
+          normal_cloud(nullptr) {}
 
 
 void model::Model::set_depth_frame(const uint16_t *depth_frame) {
@@ -78,8 +79,11 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud() {
     return normals;
 }
 
-void model::Model::to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, std::string name) {
-    pcl::io::savePCDFileASCII(name + ".pcd", *cloud);
+void model::Model::to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                           const std::string &name,
+                           CloudType::Type cloud_type) {
+    fileHandler.save_cloud(cloud, name, cloud_type);
+
 }
 
 model::Model::~Model() {

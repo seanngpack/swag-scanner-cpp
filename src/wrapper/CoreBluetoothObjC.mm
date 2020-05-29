@@ -1,4 +1,5 @@
 #import "../../include/wrapper/CoreBluetoothObjC.h"
+
 #include <iostream>
 #include <thread>
 
@@ -19,8 +20,13 @@ void start_bluetooth(void *obj) {
     [pool release];
 }
 
-void rotate_table(void *obj, int deg) {
+void rotate(void *obj, int deg) {
     [(id) obj rotate_table:deg];
+}
+
+void set_rotation_state_callback(void *arduino, void *obj) {
+    arduino::Arduino *a = static_cast<arduino::Arduino *>(arduino);
+    [(id) obj set_rotation_state_callback:a];
 }
 
 /*-------------------------------------------------------
@@ -31,11 +37,16 @@ void rotate_table(void *obj, int deg) {
 @implementation CoreBluetoothWrapped
 
 - (void)rotate_table:(int)degrees {
+    _arduino->setIsRotating(true);
     NSData *bytes = [NSData dataWithBytes:&degrees length:sizeof(degrees)];
     [_swagScanner
             writeValue:bytes
      forCharacteristic:_rotateTableChar
                   type:CBCharacteristicWriteWithResponse];
+}
+
+- (void)set_rotation_state_callback:(arduino::Arduino *)arduino {
+    _arduino = arduino;
 }
 
 
@@ -170,8 +181,8 @@ void rotate_table(void *obj, int deg) {
             NSLog(@"Enabled is table rotation? characteristic with notifications: %@", characteristic);
             [self.swagScanner setNotifyValue:YES forCharacteristic:characteristic];
         }
-
     }
+    _arduino->setIsConnected(true);
 }
 
 // start receiving data from this method once we set up notifications. Also can be manually
@@ -186,17 +197,27 @@ void rotate_table(void *obj, int deg) {
             [self displayInfo:dataBytes];
         } else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:IS_TABLE_ROTATING_CHAR_UUID]]) {
             [self displayInfo:dataBytes];
+            [self set_arduino_is_rotating:dataBytes];
         }
+    }
+}
+
+- (void)set_arduino_is_rotating:(NSData *)dataBytes {
+    int theInteger;
+    [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
+    if (theInteger == 1) {
+        _arduino->setIsRotating(true);
+    } else {
+        _arduino->setIsRotating(false);
     }
 }
 
 // log the output
 - (void)displayInfo:(NSData *)dataBytes {
-
     int theInteger;
     [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
+    std::cout << "Output from notification " + std::to_string(theInteger) <<std::endl;
 
-    NSLog(@"Output from notification: %d", theInteger);
 }
 
 @end
