@@ -15,8 +15,8 @@ pcl::visualization::PCLVisualizer::Ptr visual::Visualizer::simpleVis(pcl::PointC
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
     viewer->addCoordinateSystem(1.0);
     viewer->initCameraParameters();
-    while (!view_instance->wasStopped()) {
-        view_instance->spinOnce(100);
+    while (!viewer->wasStopped()) {
+        viewer->spinOnce(100);
         std::this_thread::sleep_for(100ms);
     }
     return (viewer);
