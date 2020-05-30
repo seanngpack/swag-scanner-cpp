@@ -77,6 +77,8 @@ namespace model {
          */
         pcl::PointCloud<pcl::Normal>::Ptr estimate_normal_cloud();
 
+
+
         /**
          * Save pointcloud to file.
          * @param cloud the cloud you want to save.

@@ -1,5 +1,5 @@
 #include "Model.h"
-#include "Algorithms.h"
+#include "Depth.h"
 
 model::Model::Model()
         : depth_frame(nullptr),
@@ -59,7 +59,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud() {
         throw std::runtime_error("cannot create pointcloud, must call set_intrinsics() first.");
     }
 
-    point_cloud = algos::create_point_cloud(depth_frame, intrinsics);
+    point_cloud = depth::create_point_cloud(depth_frame, intrinsics);
     return point_cloud;
 }
 
