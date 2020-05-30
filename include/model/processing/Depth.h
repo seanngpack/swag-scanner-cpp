@@ -47,7 +47,6 @@ namespace depth {
                 cloud->points[y * intrinsics->width + x] = point;
             }
         }
-
         return cloud;
     }
 

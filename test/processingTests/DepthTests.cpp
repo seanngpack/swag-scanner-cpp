@@ -1,10 +1,10 @@
 #include "gtest/gtest.h"
 #include <pcl/point_types.h>
-#include "Algorithms.h"
+#include <Depth.h>
 #include <librealsense2/h/rs_types.h>
 
 
-class AlgosFixture : public ::testing::Test {
+class DepthFixture : public ::testing::Test {
 
 protected:
     camera::ss_intrinsics *intrinsics_no_distoration;
@@ -40,37 +40,17 @@ protected:
 
 };
 
-/**
- * Tests deprojection method to see if a point is being made correctly and see if the math
- * is good.
- */
-TEST_F(AlgosFixture, TestDeprojectNoDistortion) {
-    pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, intrinsics_no_distoration);
 
-    pcl::PointXYZ expected;
-    expected.x = -.0063134059;
-    expected.y = -.0049468707;
-    expected.z = .01;
-
-    ASSERT_FLOAT_EQ(expected.x, actual.x);
-    ASSERT_FLOAT_EQ(expected.y, actual.y);
-    ASSERT_FLOAT_EQ(expected.z, actual.z);
-}
 
 /**
- * Tests deprojection method with distortion coefficients.
+ * Test creating a pointcloud and see if its size, height, and width are good.
  */
-TEST_F(AlgosFixture, TestDeprojectDistortion) {
-    pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, intrinsics_distoration);
+TEST_F(DepthFixture, TestCreatePC) {
+    uint16_t *swag = frame.data();
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = depth::create_point_cloud(swag, intrinsics_no_distoration);
 
-    pcl::PointXYZ expected;
-    expected.x = -.0063134059;
-    expected.y = -.0049468707;
-    expected.z = .01;
-
-    ASSERT_FLOAT_EQ(expected.x, actual.x);
-    ASSERT_FLOAT_EQ(expected.y, actual.y);
-    ASSERT_FLOAT_EQ(expected.z, actual.z);
+    ASSERT_EQ(cloud->width, 640);
+    ASSERT_EQ(cloud->height, 480);
+    ASSERT_EQ(cloud->size(), 307200);
+    ASSERT_TRUE(cloud->is_dense);
 }
-
-

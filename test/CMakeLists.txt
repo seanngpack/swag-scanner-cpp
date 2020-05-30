@@ -27,7 +27,7 @@ add_executable(tests_run
         mocks/MockFileHandler.cpp
         typeTests/CloudTypeTests.cpp
         utilsTests/FileHandlerPhysicalTests.cpp
-        WrapperTests.cpp)
+        WrapperTests.cpp processingTests/DepthTests.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main
