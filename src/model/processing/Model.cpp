@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "Depth.h"
+#include "Filtering.h"
 
 model::Model::Model() : fileHandler(true) {}
 
@@ -24,6 +25,13 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
     return normals;
 }
 
+void model::Model::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                              float minX, float maxX,
+                              float minY, float maxY,
+                              float minZ, float maxZ) {
+    filtering::crop_cloud(cloud, minX, maxX, minY, maxY, minZ, maxZ);
+}
+
 void model::Model::to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                            const std::string &name,
                            CloudType::Type cloud_type) {
@@ -34,4 +42,6 @@ void model::Model::to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
 model::Model::~Model() {
     std::cout << "calling model destructor \n";;
 }
+
+
 

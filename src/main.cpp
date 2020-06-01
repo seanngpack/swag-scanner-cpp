@@ -6,7 +6,6 @@
 #include <chrono>
 
 
-
 int main() {
     std::cout << "Hello, World!" << std::endl;
     camera::ICamera *camera = new camera::SR305();
@@ -16,10 +15,14 @@ int main() {
     model::Model *model = new model::Model();
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrinsics);
-//    model->to_file(cloud, "test", CloudType::Type::RAW);
+    model->to_file(cloud, "test", CloudType::Type::RAW);
 //    pcl::PointCloud<pcl::Normal>::Ptr normals = model->estimate_normal_cloud(cloud);
 
     visual::Visualizer viewer;
+    model->crop_cloud(cloud,
+                      -.15, .15,
+                      -100, .08,
+                      -100, .5);
     viewer.simpleVis(cloud);
 //    viewer.normalsVis(cloud, normals);
     delete camera;

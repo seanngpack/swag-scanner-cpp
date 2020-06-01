@@ -38,6 +38,15 @@ namespace model {
         pcl::PointCloud<pcl::Normal>::Ptr estimate_normal_cloud(
                 pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud);
 
+        /**
+         * Applies crop box filtering to remove outside points from cloud.
+         * @param cloud the cloud you want to crop.
+         */
+        void crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                        float minX, float maxX,
+                        float minY, float maxY,
+                        float minZ, float maxZ);
+
 
         /**
          * Save pointcloud to file.
