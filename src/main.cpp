@@ -15,7 +15,7 @@ int main() {
     model::Model *model = new model::Model();
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrinsics);
-    model->to_file(cloud, "test", CloudType::Type::RAW);
+//    model->to_file(cloud, "test", CloudType::Type::RAW);
 //    pcl::PointCloud<pcl::Normal>::Ptr normals = model->estimate_normal_cloud(cloud);
 
     visual::Visualizer viewer;

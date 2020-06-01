@@ -2,7 +2,8 @@
 #include "Depth.h"
 #include "Filtering.h"
 
-model::Model::Model() : fileHandler(true) {}
+model::Model::Model(bool auto_create_folders) :
+        fileHandler(auto_create_folders) {}
 
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud(const uint16_t *depth_frame,
@@ -35,6 +36,10 @@ void model::Model::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
 void model::Model::to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                            const std::string &name,
                            CloudType::Type cloud_type) {
+    if (!auto_create_folders) {
+        // this error should be changed later, read the todo in filehandler.h
+        throw std::runtime_error("Cannot save file, filehandler save path not set");
+    }
     fileHandler.save_cloud(cloud, name, cloud_type);
 
 }

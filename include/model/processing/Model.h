@@ -21,7 +21,7 @@ namespace model {
         /**
          * Constructor for Model.
          */
-        Model();
+        explicit Model(bool auto_create_folders = false);
 
         /**
         * Create a new PointCloudXYZ using the instance variable depth_frame.
@@ -60,6 +60,7 @@ namespace model {
         ~Model();
 
     private:
+        bool auto_create_folders;
         file::FileHandler fileHandler;
     };
 }
