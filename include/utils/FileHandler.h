@@ -13,6 +13,9 @@
 namespace file {
     /**
      * Contains functions to handle file saving and loading.
+     * TODO: do some error handling to make sure you can disable
+     * auto create folders but can still save files if you set the
+     * folder manually.
      */
     class FileHandler {
     public:

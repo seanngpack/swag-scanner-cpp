@@ -24,7 +24,7 @@ namespace visual {
 
 
     private:
-        pcl::visualization::PCLVisualizer::Ptr view_instance;
+
     };
 }
 

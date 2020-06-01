@@ -6,7 +6,6 @@
 #include <chrono>
 
 
-
 int main() {
     std::cout << "Hello, World!" << std::endl;
     camera::ICamera *camera = new camera::SR305();
@@ -14,28 +13,18 @@ int main() {
     const camera::ss_intrinsics *intrinsics = camera->get_instrinsics();
 
     model::Model *model = new model::Model();
-    model->set_depth_frame(depth_frame);
-    model->set_intrinsics(intrinsics);
 
-    auto t1 = std::chrono::high_resolution_clock::now();
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud();
-    auto t2 = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-    std::cout << "deprojection and cloud creation done in: ";
-    std::cout << duration;
-    std::cout << " milliseconds" << std::endl;
-    std::cout << cloud->width << std::endl;
-    std::cout << cloud->height << std::endl;
-    std::cout << cloud->size() << std::endl;
-
-    pcl::PointCloud<pcl::Normal>::Ptr normals = model->estimate_normal_cloud();
-
-    model->to_file(model->get_point_cloud(), "test", CloudType::Type::RAW);
-
-    delete camera;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrinsics);
+//    model->to_file(cloud, "test", CloudType::Type::RAW);
+//    pcl::PointCloud<pcl::Normal>::Ptr normals = model->estimate_normal_cloud(cloud);
 
     visual::Visualizer viewer;
-    viewer.normalsVis(cloud, normals);
-
+    model->crop_cloud(cloud,
+                      -.15, .15,
+                      -100, .08,
+                      -100, .5);
+    viewer.simpleVis(cloud);
+//    viewer.normalsVis(cloud, normals);
+    delete camera;
     return 0;
 }

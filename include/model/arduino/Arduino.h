@@ -39,6 +39,8 @@ namespace arduino {
 
         /**
          * Poll until the connection and subscription is complete.
+         * Blocks the thread the arduino is running on until connection and subscription to
+         * bluetooth device is secured.
          */
         void wait_for_connection();
     };

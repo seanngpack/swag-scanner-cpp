@@ -17,7 +17,7 @@ set(SOURCE_FILES
         include/view/Visualizer.h src/model/view/Visualizer.cpp
         include/utils/FileHandler.h src/utils/FileHandler.cpp
         include/utils/CloudType.h
-        )
+        include/model/processing/Depth.h include/model/processing/Filtering.h)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)

@@ -43,97 +43,31 @@ protected:
     }
 };
 
-/**
- * Test the depth frame getter and setter.
- */
-TEST_F(ModelFixture, TestDepthFrame) {
-    mod->set_depth_frame(depth_frame_ptr);
-    ASSERT_EQ(0, depth_frame_ptr[0]);
-}
-
-/**
- * Test throw error when getting depth frame without setting it first.
- */
-TEST_F(ModelFixture, TestDepthFrameError) {
-    EXPECT_THROW(mod->get_depth_frame(),
-                 std::runtime_error);
-}
-
-/**
- * Test setting and getting pointcloud.
- */
-TEST_F(ModelFixture, TestGetterPointCloud) {
-
-    mod->set_point_cloud(cloud_ptr);
-    EXPECT_TRUE(mod->get_point_cloud()->is_dense);
-    EXPECT_EQ(mod->get_point_cloud()->width, 10);
-    EXPECT_EQ(mod->get_point_cloud()->height, 10);
-}
-
-/**
- * Test getting pointcloud without having it set.
- */
-TEST_F(ModelFixture, TestPointGetterCloudError) {
-    EXPECT_THROW(mod->get_point_cloud(),
-            std::runtime_error);
-}
 
 /**
  * Test creating a point cloud.
  */
 TEST_F(ModelFixture, TestCreatePointCloud) {
     float distortion[5] = {.139, .124, .0043, .00067, -.034};
-    camera::ss_intrinsics *intrinsics_distoration = new camera::ss_intrinsics(10, 10,
-                                                       475.07, 475.07,
-                                                       309.931, 245.011,
-                                                       RS2_DISTORTION_INVERSE_BROWN_CONRADY, distortion,
-                                                       0.0001);
-    mod->set_depth_frame(depth_frame_ptr);
-    mod->set_intrinsics(intrinsics_distoration);
-    mod->create_point_cloud();
-    EXPECT_EQ(mod->get_point_cloud()->width, 10);
-    EXPECT_EQ(mod->get_point_cloud()->height, 10);
-}
-
-/**
- * Test creating a point cloud expecting error because the depth frame or
- * intrinsics are not set yet.
- */
-TEST_F(ModelFixture, TestCreatePointCloudError) {
- EXPECT_THROW(mod->create_point_cloud(),
-         std::runtime_error);
-}
-
-/**
- * Test the intrinsics getters and setters.
- */
-TEST_F(ModelFixture, TestGetterIntrinsics) {
-    float distortion[5] = {.139, .124, .0043, .00067, -.034};
-    camera::ss_intrinsics *intrinsics_distoration = new camera::ss_intrinsics(10, 10,
+    camera::ss_intrinsics *intrinsics_distortion = new camera::ss_intrinsics(10, 10,
                                                                               475.07, 475.07,
                                                                               309.931, 245.011,
-                                                                              RS2_DISTORTION_INVERSE_BROWN_CONRADY, distortion,
+                                                                              RS2_DISTORTION_INVERSE_BROWN_CONRADY,
+                                                                              distortion,
                                                                               0.0001);
-    mod->set_intrinsics(intrinsics_distoration);
-    ASSERT_EQ(mod->get_intrinsics()->width, 10);
-    ASSERT_FLOAT_EQ(mod->get_intrinsics()->ppx, 309.931);
-}
 
-/**
- * Test getting the intrinsics without setting them first, resulting in error.
- */
-TEST_F(ModelFixture, TestIntrinsicsError) {
-    ASSERT_THROW(mod->get_intrinsics(),
-            std::runtime_error);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr test = mod->create_point_cloud(depth_frame_ptr, intrinsics_distortion);
+    EXPECT_EQ(test->width, 10);
+    EXPECT_EQ(test->height, 10);
 }
 
 /**
  * Test creating the normals cloud.
  */
 TEST_F(ModelFixture, TestEstimateNormals) {
-    mod->set_point_cloud(cloud_ptr);
-    mod->estimate_normal_cloud();
+    pcl::PointCloud<pcl::PointXYZ>::Ptr test(new pcl::PointCloud<pcl::PointXYZ>);
+    mod->estimate_normal_cloud(test);
 
-    ASSERT_EQ(mod->get_normal_cloud()->width, 10);
-    ASSERT_EQ(mod->get_normal_cloud()->height, 10);
+    ASSERT_EQ(test->width, 10);
+    ASSERT_EQ(test->height, 10);
 }
