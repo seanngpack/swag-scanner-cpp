@@ -29,7 +29,7 @@ namespace file {
          * @param auto_create_flag if true, create the folders at runtime, if false then don't.
          */
         explicit FileHandler(const std::string &all_data_folder_path = default_data_path,
-                             bool auto_create_flag = false);
+                             bool auto_create_flag = true);
 
         /**
          * Overloaded constructor for only passing in a auto_create_flag.
@@ -70,15 +70,27 @@ namespace file {
          * @param cloud_name name of the cloud.
          * @param cloud_type type of the cloud.
          *
-         * Example: open_cloud("12.pcd", CloudType::RAW)
+         * Example: load_cloud("12.pcd", CloudType::RAW)
          */
-        void open_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+        void load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                         const std::string &cloud_name,
                         CloudType::Type cloud_type);
+
+
+        /**
+         * Loads all clouds in the current scan folder into a vector.
+         * @param cloud_vector the vector you want to load the clouds into.
+         * @param cloud_type determines which folder to search for.
+         */
+        void load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
+                Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
+                         CloudType::Type cloud_type,
+                         const std::string &folder_path = std::string());
 
     private:
         std::string all_data_folder_path;
         std::string scan_folder_path;
+        bool auto_create_flag;
 
 
         /**

@@ -4,7 +4,8 @@ using namespace boost::filesystem;
 
 file::FileHandler::FileHandler(const std::string &all_data_folder_path, bool auto_create_flag)
         : all_data_folder_path(check_folder_input(all_data_folder_path) ? all_data_folder_path : nullptr),
-          scan_folder_path(find_scan_folder(all_data_folder_path)) {
+          scan_folder_path(find_scan_folder(all_data_folder_path)),
+          auto_create_flag(auto_create_flag) {
     // create subfolder (ex. raw, filtered, etc in the scanner folder
     if (auto_create_flag) {
         create_directory(scan_folder_path);
@@ -14,7 +15,8 @@ file::FileHandler::FileHandler(const std::string &all_data_folder_path, bool aut
 
 file::FileHandler::FileHandler(bool auto_create_flag) :
         all_data_folder_path(default_data_path),
-        scan_folder_path(find_scan_folder(all_data_folder_path)) {
+        scan_folder_path(find_scan_folder(all_data_folder_path)),
+        auto_create_flag(auto_create_flag) {
 
     if (auto_create_flag) {
         create_directory(scan_folder_path);
@@ -46,7 +48,7 @@ void file::FileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
     pcl::io::savePCDFileASCII(out_path, *cloud);
 }
 
-void file::FileHandler::open_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+void file::FileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                    const std::string &cloud_name,
                                    CloudType::Type cloud_type) {
     check_file_input(cloud_name);
@@ -56,6 +58,36 @@ void file::FileHandler::open_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                             + "/" + cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path, *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
+    }
+}
+
+void file::FileHandler::load_clouds(
+        std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
+        CloudType::Type cloud_type,
+        const std::string &folder_path) {
+    if (folder_path == "" && !auto_create_flag) {
+        throw std::runtime_error("Error, auto folder creation is not set so you must"
+                                 "enter a valid folder path when loading clouds");
+    }
+    check_folder_input(folder_path);
+    std::string load_path;
+    if (folder_path.empty()) {
+         load_path = folder_path + "/" + CloudType::String(cloud_type);
+    }
+    else {
+        load_path = scan_folder_path + "/" + CloudType::String(cloud_type);;
+    }
+    check_folder_input(load_path);
+    for (auto &p : boost::filesystem::directory_iterator(load_path)) {
+        if(p.path().extension() == ".pcd") {
+            pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
+            if (pcl::io::loadPCDFile<pcl::PointXYZ> (p.path().string(), *cloud) == -1)
+            {
+                PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+            }
+            cloud_vector.push_back(cloud);
+        }
+
     }
 }
 
@@ -102,7 +134,6 @@ std::string file::FileHandler::find_scan_folder(const std::string &folder) {
               }
     );
 
-
     // get the last item in list, convert to string, convert to int, then add 1
     int name_count = std::stoi(v.back().filename().string()) + 1;
     std::string name_count_str = std::to_string(name_count);
@@ -127,14 +158,16 @@ void file::FileHandler::create_sub_folders() {
 
 bool file::FileHandler::check_folder_input(const std::string &folder) {
     if (!is_directory(folder)) {
-        throw std::invalid_argument("Error, the folder path you entered does not exist.");
+        throw std::invalid_argument("Folder path error, " + folder + " does not exist.");
     }
     return true;
 }
 
 bool file::FileHandler::check_file_input(const std::string &file_path) {
     if (!exists(file_path)) {
-        throw std::invalid_argument("Error, the file you provided does not exist");
+        throw std::invalid_argument("File path error, " + file_path + " does not exist");
     }
     return true;
 }
+
+

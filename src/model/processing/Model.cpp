@@ -34,15 +34,22 @@ void model::Model::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
     filtering::crop_cloud(cloud, minX, maxX, minY, maxY, minZ, maxZ);
 }
 
-void model::Model::to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                           const std::string &name,
-                           CloudType::Type cloud_type) {
+void model::Model::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                              const std::string &name,
+                              CloudType::Type cloud_type) {
     if (!auto_create_folders) {
         // this error should be changed later, read the todo in filehandler.h
         throw std::runtime_error("Cannot save file, filehandler save path not set");
     }
     fileHandler.save_cloud(cloud, name, cloud_type);
 
+}
+
+void model::Model::load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
+        Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
+                 CloudType::Type cloud_type,
+                 const std::string &folder_path) {
+    fileHandler.load_clouds(cloud_vector, cloud_type, folder_path);
 }
 
 model::Model::~Model() {

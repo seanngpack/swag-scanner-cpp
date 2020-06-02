@@ -47,15 +47,27 @@ namespace model {
                         float minY, float maxY,
                         float minZ, float maxZ);
 
+        void register_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+                             pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut);
 
         /**
          * Save pointcloud to file.
          * @param cloud the cloud you want to save.
          */
-        void to_file(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                     const std::string &name,
-                     CloudType::Type cloud_type);
+        void save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                        const std::string &name,
+                        CloudType::Type cloud_type);
 
+        /**
+         * Load the clouds from a folder into a vector of clouds. Will throw error
+         * if auto_create_folder is false AND you try to load clouds without specifying a path.
+         * @param cloud_vector vector storing the loaded clouds.
+         * @param cloud_type tells function which sub folder to look for.
+         * @param folder_path path to the main scan folder.
+         */
+        void load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
+                         CloudType::Type cloud_type,
+                         const std::string &folder_path = std::string());
 
         ~Model();
 

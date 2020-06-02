@@ -19,7 +19,7 @@ void controller::Controller::scan(int degs) {
         std::string name = std::to_string(i*degs);
         const uint16_t *depth_frame = camera->get_depth_frame();
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
-        model->to_file(cloud, name, CloudType::Type::RAW);
+        model->save_cloud(cloud, name, CloudType::Type::RAW);
         arduino->rotate_table(degs);
     }
 
