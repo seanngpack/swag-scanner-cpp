@@ -4,13 +4,15 @@
 #include "Model.h"
 #include "Arduino.h"
 #include "SR305.h"
+#include "Visualizer.h"
 
 namespace controller {
     class Controller {
     public:
         Controller(camera::ICamera *camera,
                    arduino::Arduino *arduino,
-                   model::Model *model)s;
+                   model::Model *model,
+                   visual::Visualizer *viewer);
 
 
         /**
@@ -24,6 +26,8 @@ namespace controller {
          */
         void process_data();
 
+        void visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+
 
         ~Controller();
 
@@ -31,6 +35,7 @@ namespace controller {
         camera::ICamera *camera;
         arduino::Arduino *arduino;
         model::Model *model;
+        visual::Visualizer *viewer;
     };
 }
 

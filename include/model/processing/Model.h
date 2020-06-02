@@ -21,7 +21,7 @@ namespace model {
         /**
          * Constructor for Model.
          */
-        explicit Model(bool auto_create_folders = false);
+        explicit Model(bool auto_create_folders = true);
 
         /**
         * Create a new PointCloudXYZ using the instance variable depth_frame.

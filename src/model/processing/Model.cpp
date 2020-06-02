@@ -3,6 +3,7 @@
 #include "Filtering.h"
 
 model::Model::Model(bool auto_create_folders) :
+        auto_create_folders(auto_create_folders),
         fileHandler(auto_create_folders) {}
 
 
