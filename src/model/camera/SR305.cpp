@@ -4,7 +4,7 @@ camera::SR305::SR305() {
     initialize_camera();
 }
 
-camera::ss_intrinsics *camera::SR305::get_instrinsics() {
+camera::ss_intrinsics *camera::SR305::get_intrinsics() {
     return &intrinsics;
 }
 

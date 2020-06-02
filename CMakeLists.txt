@@ -17,13 +17,15 @@ set(SOURCE_FILES
         include/view/Visualizer.h src/model/view/Visualizer.cpp
         include/utils/FileHandler.h src/utils/FileHandler.cpp
         include/utils/CloudType.h
-        include/model/processing/Depth.h include/model/processing/Filtering.h)
+        include/model/processing/Depth.h include/model/processing/Filtering.h
+        src/controller/Controller.cpp include/controller/Controller.h)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)
 set(CAMERA_HEADERS ./include/model/camera)
 set(ARDUINO_HEADERS ./include/model/arduino)
 set(PROCESSING_HEADERS ./include/model/processing)
+set(CONTROLLER_HEADERS ./include/controller)
 set(UTILS ./include/utils)
 
 # double check why this fixes core bluetooth linkage issue
@@ -47,6 +49,7 @@ include_directories(${VIEW_HEADERS})
 include_directories(${CAMERA_HEADERS})
 include_directories(${ARDUINO_HEADERS})
 include_directories(${PROCESSING_HEADERS})
+include_directories(${CONTROLLER_HEADERS})
 include_directories(${UTILS})
 
 link_directories("/opt/librealsense/build/librealsense2.dylib")

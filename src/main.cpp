@@ -10,7 +10,7 @@ int main() {
     std::cout << "Hello, World!" << std::endl;
     camera::ICamera *camera = new camera::SR305();
     const uint16_t *depth_frame = camera->get_depth_frame();
-    const camera::ss_intrinsics *intrinsics = camera->get_instrinsics();
+    const camera::ss_intrinsics *intrinsics = camera->get_intrinsics();
 
     model::Model *model = new model::Model();
 

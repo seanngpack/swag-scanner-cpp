@@ -71,3 +71,5 @@ TEST_F(ModelFixture, TestEstimateNormals) {
     ASSERT_EQ(test->width, 10);
     ASSERT_EQ(test->height, 10);
 }
+
+
