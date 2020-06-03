@@ -34,6 +34,21 @@ void model::Model::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
     filtering::crop_cloud(cloud, minX, maxX, minY, maxY, minZ, maxZ);
 }
 
+Eigen::Matrix4f model::Model::register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+                                                   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut) {
+    pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
+    icp.setInputSource(cloudIn);
+    icp.setInputTarget(cloudOut);
+    pcl::PointCloud<pcl::PointXYZ> Final;
+    std::cout << "registering clouds..." << std::endl;
+    icp.align(Final);
+    std::cout << "has converged:" << icp.hasConverged() << " score: " <<
+              icp.getFitnessScore() << std::endl;
+    return icp.getFinalTransformation();
+
+}
+
+
 void model::Model::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                               const std::string &name,
                               CloudType::Type cloud_type) {
@@ -45,16 +60,24 @@ void model::Model::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
 
 }
 
+void model::Model::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, const std::string &cloud_name,
+                              CloudType::Type cloud_type) {
+    fileHandler.load_cloud(cloud, cloud_name, cloud_type);
+}
+
 void model::Model::load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
         Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
-                 CloudType::Type cloud_type,
-                 const std::string &folder_path) {
+                               CloudType::Type cloud_type,
+                               const std::string &folder_path) {
     fileHandler.load_clouds(cloud_vector, cloud_type, folder_path);
 }
 
 model::Model::~Model() {
     std::cout << "calling model destructor \n";;
 }
+
+
+
 
 
 

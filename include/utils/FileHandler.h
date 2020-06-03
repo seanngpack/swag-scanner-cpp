@@ -65,6 +65,7 @@ namespace file {
 
         /**
          * NOTE: Currently does not support full paths.
+         * TODO: Give this method same optional path functionality as laod_clouds
          * Load a pointcloud from the current_scan_folder given the name and type.
          * @param cloud the cloud you want to load the cloud into.
          * @param cloud_name name of the cloud.
@@ -79,6 +80,9 @@ namespace file {
 
         /**
          * Loads all clouds in the current scan folder into a vector.
+         * If the folder path is not given and the auto_create_flag is false, then
+         * throw and error because the path is not set. If you give the method a parameter for the
+         * folder_path then it will ignore scan_folder_path and use the inputted path.
          * @param cloud_vector the vector you want to load the clouds into.
          * @param cloud_type determines which folder to search for.
          */

@@ -22,11 +22,15 @@ void controller::Controller::scan(int degs) {
         model->save_cloud(cloud, name, CloudType::Type::RAW);
         arduino->rotate_table(degs);
     }
-
-
 }
 
 void controller::Controller::process_data() {
+}
+
+void controller::Controller::register_all_clouds(std::string folder_path, CloudType::Type cloud_type) {
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
+            Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > data;
+    model->load_clouds(data, CloudType::Type::RAW, folder_path);
 }
 
 void controller::Controller::visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {

@@ -26,6 +26,20 @@ namespace controller {
          */
         void process_data();
 
+        /**
+         * Register all point clouds in given folder location.
+         * @param folder_path the path to the scan folder.
+         * @param cloud_type the type of the cloud, tells which folder to look into for clouds.
+         */
+        void register_all_clouds(std::string folder_path, CloudType::Type cloud_type);
+
+        /**
+         * Register all point clouds in the current working folder. Default folder to register
+         * is in the /raw folder.
+         * TODO: Change the default folder from /raw to something else.
+         */
+        void register_all_clouds();
+
         void visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 
 

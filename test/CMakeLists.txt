@@ -20,14 +20,14 @@ add_executable(tests_run
         ${swag_scanner_SOURCE_DIR}/src/utils/FileHandler.cpp
         ${swag_scanner_SOURCE_DIR}/src/wrapper/CoreBluetoothObjC.mm
         ${swag_scanner_SOURCE_DIR}/src/model/arduino/Arduino.cpp
-        ModelTests.cpp
+        processingTests/ModelTests.cpp
         utilsTests/AlgosTests.cpp
         typeTests/CameraTypesTests.cpp
         utilsTests/FileHandlerTests.cpp
         mocks/MockFileHandler.cpp
         typeTests/CloudTypeTests.cpp
         utilsTests/FileHandlerPhysicalTests.cpp
-        WrapperTests.cpp processingTests/DepthTests.cpp)
+        WrapperTests.cpp processingTests/DepthTests.cpp processingTests/ModelPhysicalTests.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main
