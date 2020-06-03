@@ -34,6 +34,11 @@ void model::Model::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
     filtering::crop_cloud(cloud, minX, maxX, minY, maxY, minZ, maxZ);
 }
 
+pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                                                    float leafSize) {
+    filtering::voxel_grid_filter(cloud, leafSize);
+}
+
 Eigen::Matrix4f model::Model::register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                                    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut) {
     pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
