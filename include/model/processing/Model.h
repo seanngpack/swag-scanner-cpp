@@ -53,14 +53,15 @@ namespace model {
                         float minZ, float maxZ);
 
         pcl::PointCloud<pcl::PointXYZ>::Ptr voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                                                                     float leafSize = .01);
+                                                              float leafSize = .01);
 
         /**
          * Use ICP to register an input and target cloud.
          * @returns a transformation matrix from the source to target cloud.
          */
         Eigen::Matrix4f register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
-                                 pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut);
+                                             pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut,
+                                             pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud);
 
         /**
          * Save pointcloud to file.

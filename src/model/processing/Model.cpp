@@ -36,17 +36,23 @@ void model::Model::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                                                     float leafSize) {
-    filtering::voxel_grid_filter(cloud, leafSize);
+    return filtering::voxel_grid_filter(cloud, leafSize);
 }
 
 Eigen::Matrix4f model::Model::register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
-                                                   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut) {
+                                                   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut,
+                                                   pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud) {
     pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
     icp.setInputSource(cloudIn);
     icp.setInputTarget(cloudOut);
-    pcl::PointCloud<pcl::PointXYZ> Final;
+//    icp.setMaximumIterations (50);
+//    icp.setTransformationEpsilon (1e-9);
+//    icp.setMaxCorrespondenceDistance (0.05);
+//    icp.setEuclideanFitnessEpsilon (1);
+//    icp.setRANSACOutlierRejectionThreshold (1.5);
+//    pcl::PointCloud<pcl::PointXYZ> Final;
     std::cout << "registering clouds..." << std::endl;
-    icp.align(Final);
+    icp.align(*transformedCloud);
     std::cout << "has converged:" << icp.hasConverged() << " score: " <<
               icp.getFitnessScore() << std::endl;
     return icp.getFinalTransformation();

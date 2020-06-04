@@ -17,9 +17,20 @@ namespace visual {
 
         Visualizer();
 
-        pcl::visualization::PCLVisualizer::Ptr simpleVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
 
-        pcl::visualization::PCLVisualizer::Ptr normalsVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud,
+        /**
+         * Visualize one pointcloud
+         * @param cloud pointcloud you want to visualize
+         */
+        void simpleVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
+
+        /**
+         * Visualize pointclouds. first cloud is white and then green to successive darker greens
+         * @param clouds vector of pointcloud you want to visualize
+         */
+        void simpleVis(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds);
+
+        void normalsVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud,
                                                           pcl::PointCloud<pcl::Normal>::ConstPtr normals);
 
 

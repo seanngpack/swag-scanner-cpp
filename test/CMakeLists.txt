@@ -7,6 +7,7 @@ add_subdirectory(googletest-master)
 include_directories(${swag_scanner_SOURCE_DIR}/include/utils
                     ${swag_scanner_SOURCE_DIR}/include/model/processing
                     ${swag_scanner_SOURCE_DIR}/include/wrapper
+                    ${swag_scanner_SOURCE_DIR}/include/view
                     ${swag_scanner_SOURCE_DIR}/include/model/arduino)
 
 include_directories("/opt/librealsense/include")
