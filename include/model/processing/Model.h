@@ -55,6 +55,9 @@ namespace model {
         pcl::PointCloud<pcl::PointXYZ>::Ptr voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                                               float leafSize = .01);
 
+        void remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut);
+
         /**
          * Use ICP to register an input and target cloud.
          * @returns a transformation matrix from the source to target cloud.

@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "Depth.h"
 #include "Filtering.h"
+#include "Segmentation.h"
 
 model::Model::Model(bool auto_create_folders) :
         auto_create_folders(auto_create_folders),
@@ -37,6 +38,11 @@ void model::Model::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                                                     float leafSize) {
     return filtering::voxel_grid_filter(cloud, leafSize);
+}
+
+void model::Model::remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+                                pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut) {
+    segmentation::remove_plane(cloudIn, cloudOut);
 }
 
 Eigen::Matrix4f model::Model::register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
@@ -86,6 +92,8 @@ void model::Model::load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
 model::Model::~Model() {
     std::cout << "calling model destructor \n";;
 }
+
+
 
 
 
