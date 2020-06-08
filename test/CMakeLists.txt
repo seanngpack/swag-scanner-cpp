@@ -30,7 +30,8 @@ add_executable(tests_run
         typeTests/CloudTypeTests.cpp
         utilsTests/FileHandlerPhysicalTests.cpp
         WrapperTests.cpp processingTests/DepthTests.cpp
-        processingTests/ModelPhysicalTests.cpp)
+        processingTests/ModelPhysicalTests.cpp
+        processingTests/SegmentationPhysicalTets.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main

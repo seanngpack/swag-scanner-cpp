@@ -10,6 +10,8 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/features/integral_image_normal.h>
+#include <pcl/features/normal_3d.h>
+#include <pcl/features/fpfh.h>
 #include <pcl/registration/icp.h>
 #include <FileHandler.h>
 #include <CameraTypes.h>
@@ -44,6 +46,16 @@ namespace model {
                 pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud);
 
         /**
+         * Given a cloud and its normal, calculate the features.
+         * @param sourceCloud the cloud you want to find features for.
+         * @param sourceNormalCloud normlas of cloud.
+         * @param features features.
+         */
+        void computeLocalFeatures(pcl::PointCloud<pcl::PointXYZ>::Ptr sourceCloud,
+                                  pcl::PointCloud<pcl::Normal>::Ptr sourceNormalCloud,
+                                  pcl::PointCloud<pcl::FPFHSignature33>::Ptr features);
+
+        /**
          * Applies crop box filtering to remove outside points from cloud.
          * @param cloud the cloud you want to crop.
          */
@@ -55,8 +67,8 @@ namespace model {
         pcl::PointCloud<pcl::PointXYZ>::Ptr voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                                               float leafSize = .01);
 
-        void remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
-                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut);
+        void remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn,
+                          pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudOut);
 
         /**
          * Use ICP to register an input and target cloud.
@@ -65,6 +77,16 @@ namespace model {
         Eigen::Matrix4f register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                              pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut,
                                              pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud);
+
+        /**
+         * Use SAC to get initial cloud alignment.
+         * @param cloudIn input cloud for template.
+         * @param cloudTarget align to template.
+         * @param cloudAligned output, should be the input cloud aligned to template.
+         */
+        void align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
+                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned);
 
         /**
          * Save pointcloud to file.

@@ -8,12 +8,14 @@
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/extract_indices.h>
+#include <pcl/visualization/pcl_visualizer.h>
+//#include <Eigen/Dense>
 
 namespace segmentation {
 
 
-    inline void remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
-                            pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut) {
+    inline void remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn,
+                             pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudOut) {
         pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
         pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInliers(new pcl::PointCloud<pcl::PointXYZ>);
@@ -26,7 +28,7 @@ namespace segmentation {
         // Mandatory
         seg.setModelType(pcl::SACMODEL_PLANE);
         seg.setMethodType(pcl::SAC_RANSAC);
-        seg.setDistanceThreshold(0.01);
+        seg.setDistanceThreshold(0.005);
 
         seg.setInputCloud(cloudIn);
         seg.segment(*inliers, *coefficients);
@@ -52,7 +54,10 @@ namespace segmentation {
         extract.setNegative(true);                // Extract the outliers
         extract.filter(*cloudOutliers);        // cloud_outliers contains everything but the plane
         cloudOut = cloudOutliers;
-
+        std::cout << cloudOut->size() << std::endl;
+        std::cout << cloudOut->points[100] << std::endl;
     }
+
+}
 
 #endif //SWAG_SCANNER_SEGMENTATION_H
