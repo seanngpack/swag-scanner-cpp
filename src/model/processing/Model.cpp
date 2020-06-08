@@ -19,22 +19,23 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
 
     pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
-    pcl::IntegralImageNormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
-    ne.setNormalEstimationMethod(ne.AVERAGE_3D_GRADIENT);
-    ne.setMaxDepthChangeFactor(0.02f);
-    ne.setNormalSmoothingSize(10.0f);
+    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ> ());
+    ne.setSearchMethod (tree);
+    ne.setRadiusSearch (0.03);
+
     ne.setInputCloud(cloud);
     ne.compute(*normals);
     return normals;
 }
 
-void model::Model::computeLocalFeatures(pcl::PointCloud<pcl::PointXYZ>::Ptr sourceCloud,
-                          pcl::PointCloud<pcl::Normal>::Ptr sourceNormalCloud,
-                          pcl::PointCloud<pcl::FPFHSignature33>::Ptr features) {
-    pcl::search::KdTree<pcl::PointXYZ>::Ptr searchMethod(new pcl::search::KdTree <pcl::PointXYZ>);
+void model::Model::computeLocalFeatures(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                        pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
+                                        pcl::PointCloud<pcl::FPFHSignature33>::Ptr features) {
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr searchMethod(new pcl::search::KdTree<pcl::PointXYZ>);
     pcl::FPFHEstimation<pcl::PointXYZ, pcl::Normal, pcl::FPFHSignature33> fpfh_est;
-    fpfh_est.setInputCloud(sourceCloud);
-    fpfh_est.setInputNormals(sourceNormalCloud);
+    fpfh_est.setInputCloud(cloud);
+    fpfh_est.setInputNormals(normalCloud);
     fpfh_est.setSearchMethod(searchMethod);
     fpfh_est.setRadiusSearch(.05);
     fpfh_est.compute(*features);
@@ -78,10 +79,44 @@ Eigen::Matrix4f model::Model::register_pair_clouds(pcl::PointCloud<pcl::PointXYZ
 
 void model::Model::align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                 pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
+                                pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures,
+                                pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudOutFeatures,
                                 pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned) {
+    pcl::SampleConsensusInitialAlignment<pcl::PointXYZ, pcl::PointXYZ, pcl::FPFHSignature33> reg;
+    reg.setMinSampleDistance(0.05f);
+    reg.setMaxCorrespondenceDistance(0.1);
+    reg.setMaximumIterations(1000);
 
+    reg.setInputSource(cloudIn);
+    reg.setInputTarget(cloudTarget);
+    reg.setSourceFeatures(cloudInFeatures);
+    reg.setTargetFeatures(cloudOutFeatures);
+    reg.align(*cloudAligned);
 }
 
+void model::Model::align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+                                pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
+                                pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned) {
+    pcl::PointCloud<pcl::Normal>::Ptr cloudInNormal = estimate_normal_cloud(cloudIn);
+    pcl::PointCloud<pcl::Normal>::Ptr cloudTargetNormal = estimate_normal_cloud(cloudTarget);
+    pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures(new pcl::PointCloud<pcl::FPFHSignature33>);
+    pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudTargetFeatures(new pcl::PointCloud<pcl::FPFHSignature33>);
+
+    computeLocalFeatures(cloudIn, cloudInNormal, cloudInFeatures);
+    computeLocalFeatures(cloudTarget, cloudTargetNormal, cloudTargetFeatures);
+
+
+    pcl::SampleConsensusInitialAlignment<pcl::PointXYZ, pcl::PointXYZ, pcl::FPFHSignature33> reg;
+    reg.setMinSampleDistance(0.05f);
+    reg.setMaxCorrespondenceDistance(0.1);
+    reg.setMaximumIterations(1000);
+
+    reg.setInputSource(cloudIn);
+    reg.setInputTarget(cloudTarget);
+    reg.setSourceFeatures(cloudInFeatures);
+    reg.setTargetFeatures(cloudTargetFeatures);
+    reg.align(*cloudAligned);
+}
 
 void model::Model::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                               const std::string &name,

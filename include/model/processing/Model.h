@@ -13,6 +13,7 @@
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/fpfh.h>
 #include <pcl/registration/icp.h>
+#include <pcl/registration/ia_ransac.h>
 #include <FileHandler.h>
 #include <CameraTypes.h>
 #include <CloudType.h>
@@ -39,7 +40,6 @@ namespace model {
 
         /**
          * Take in a pointcloud, calculate the normals, and return a normal cloud.
-         * Using integral images to compute normals much faster than standard plane fitting.
          * @return a normal cloud.
          */
         pcl::PointCloud<pcl::Normal>::Ptr estimate_normal_cloud(
@@ -47,12 +47,12 @@ namespace model {
 
         /**
          * Given a cloud and its normal, calculate the features.
-         * @param sourceCloud the cloud you want to find features for.
-         * @param sourceNormalCloud normlas of cloud.
+         * @param cloud the cloud you want to find features for.
+         * @param normalCloud normlas of cloud.
          * @param features features.
          */
-        void computeLocalFeatures(pcl::PointCloud<pcl::PointXYZ>::Ptr sourceCloud,
-                                  pcl::PointCloud<pcl::Normal>::Ptr sourceNormalCloud,
+        void computeLocalFeatures(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                  pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
                                   pcl::PointCloud<pcl::FPFHSignature33>::Ptr features);
 
         /**
@@ -86,8 +86,20 @@ namespace model {
          */
         void align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                           pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
+                          pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures,
+                          pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudOutFeatures,
                           pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned);
 
+
+        /**
+         * Overloaded method that will calculate the features given just the in and target clouds.
+         * @param cloudIn
+         * @param cloudTarget
+         * @param cloudAligned
+         */
+        void align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
+                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned);
         /**
          * Save pointcloud to file.
          * @param cloud the cloud you want to save.
