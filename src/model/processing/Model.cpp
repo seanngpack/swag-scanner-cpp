@@ -20,9 +20,9 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
 
     pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
     pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
-    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ> ());
-    ne.setSearchMethod (tree);
-    ne.setRadiusSearch (0.03);
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
+    ne.setSearchMethod(tree);
+    ne.setRadiusSearch(0.03);
 
     ne.setInputCloud(cloud);
     ne.compute(*normals);
@@ -41,10 +41,10 @@ void model::Model::computeLocalFeatures(pcl::PointCloud<pcl::PointXYZ>::Ptr clou
     fpfh_est.compute(*features);
 }
 
-void model::Model::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                              float minX, float maxX,
-                              float minY, float maxY,
-                              float minZ, float maxZ) {
+pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                                             float minX, float maxX,
+                                                             float minY, float maxY,
+                                                             float minZ, float maxZ) {
     filtering::crop_cloud(cloud, minX, maxX, minY, maxY, minZ, maxZ);
 }
 
@@ -65,14 +65,15 @@ Eigen::Matrix4f model::Model::register_pair_clouds(pcl::PointCloud<pcl::PointXYZ
     icp.setInputSource(cloudIn);
     icp.setInputTarget(cloudOut);
 //    icp.setMaximumIterations (200);
-//    icp.setTransformationEpsilon (1e-9);
-    icp.setMaxCorrespondenceDistance(0.0001);
+    icp.setTransformationEpsilon(1e-9);
+    icp.setMaxCorrespondenceDistance(0.01);
 //    icp.setEuclideanFitnessEpsilon (1);
 //    icp.setRANSACOutlierRejectionThreshold (1.5);
     std::cout << "registering clouds..." << std::endl;
     icp.align(*transformedCloud);
     std::cout << "has converged:" << icp.hasConverged() << " score: " <<
               icp.getFitnessScore() << std::endl;
+    std::cout << icp.getFinalTransformation() << std::endl;
     return icp.getFinalTransformation();
 
 }
@@ -81,7 +82,8 @@ void model::Model::align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                 pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
                                 pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures,
                                 pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudOutFeatures,
-                                pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned) {
+                                pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned,
+                                Eigen::Matrix4f &transformation) {
     pcl::SampleConsensusInitialAlignment<pcl::PointXYZ, pcl::PointXYZ, pcl::FPFHSignature33> reg;
     reg.setMinSampleDistance(0.05f);
     reg.setMaxCorrespondenceDistance(0.1);
@@ -92,11 +94,13 @@ void model::Model::align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
     reg.setSourceFeatures(cloudInFeatures);
     reg.setTargetFeatures(cloudOutFeatures);
     reg.align(*cloudAligned);
+    transformation = reg.getFinalTransformation();
 }
 
 void model::Model::align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                 pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
-                                pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned) {
+                                pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned,
+                                Eigen::Matrix4f &transformation) {
     pcl::PointCloud<pcl::Normal>::Ptr cloudInNormal = estimate_normal_cloud(cloudIn);
     pcl::PointCloud<pcl::Normal>::Ptr cloudTargetNormal = estimate_normal_cloud(cloudTarget);
     pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures(new pcl::PointCloud<pcl::FPFHSignature33>);
@@ -116,6 +120,7 @@ void model::Model::align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
     reg.setSourceFeatures(cloudInFeatures);
     reg.setTargetFeatures(cloudTargetFeatures);
     reg.align(*cloudAligned);
+    transformation = reg.getFinalTransformation();
 }
 
 void model::Model::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,

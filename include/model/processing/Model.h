@@ -17,6 +17,7 @@
 #include <FileHandler.h>
 #include <CameraTypes.h>
 #include <CloudType.h>
+#include "Visualizer.h"
 
 namespace model {
 
@@ -58,11 +59,13 @@ namespace model {
         /**
          * Applies crop box filtering to remove outside points from cloud.
          * @param cloud the cloud you want to crop.
+         * @param croppedCloud the cropped cloud.
+         * @return the cropped cloud.
          */
-        void crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                        float minX, float maxX,
-                        float minY, float maxY,
-                        float minZ, float maxZ);
+        pcl::PointCloud<pcl::PointXYZ>::Ptr crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                                       float minX, float maxX,
+                                                       float minY, float maxY,
+                                                       float minZ, float maxZ);
 
         pcl::PointCloud<pcl::PointXYZ>::Ptr voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                                               float leafSize = .01);
@@ -88,7 +91,8 @@ namespace model {
                           pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
                           pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures,
                           pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudOutFeatures,
-                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned);
+                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned,
+                          Eigen::Matrix4f &transformation);
 
 
         /**
@@ -99,7 +103,9 @@ namespace model {
          */
         void align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                           pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
-                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned);
+                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned,
+                          Eigen::Matrix4f &transformation);
+
         /**
          * Save pointcloud to file.
          * @param cloud the cloud you want to save.

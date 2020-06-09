@@ -77,13 +77,14 @@ TEST_F(ModelPhysicalFixture, TestAlignment) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutSegmented(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloudICP(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "1.pcd", *cloudIn);
     pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "2.pcd", *cloudOut);
     mod->crop_cloud(cloudIn, -.15, .15,
                     -100, .08,
                     -100, .48);
     std::cout << cloudIn->isOrganized() << std::endl;
-    mod->crop_cloud(cloudOut, -.15, .15,
+    mod->crop_cloud(cloudOut,-.15, .15,
                     -100, .08,
                     -100, .48);
     std::vector<int> indices;
@@ -94,14 +95,17 @@ TEST_F(ModelPhysicalFixture, TestAlignment) {
     cloudOutFiltered = mod->voxel_grid_filter(cloudOut, .0003);
     mod->remove_plane(cloudInFiltered, cloudInSegmented);
     mod->remove_plane(cloudOutFiltered, cloudOutSegmented);
+    mod->remove_plane(cloudOutFiltered, cloudOutSegmented);
 
     mod->align_clouds(cloudInSegmented, cloudOutSegmented, finalCloud);
 
-    mod->register_pair_clouds(finalCloud, cloudOutSegmented, finalCloudICP);
+    Eigen::Matrix4f transform = mod->register_pair_clouds(finalCloud, cloudOutSegmented, finalCloudICP);
+
+    pcl::transformPointCloud(*finalCloud, *transformedCloud, transform);
 
 
     visual::Visualizer visualizer;
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{finalCloud,finalCloudICP};
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudOutSegmented, finalCloudICP};
     visualizer.simpleVis(clouds);
 
 }

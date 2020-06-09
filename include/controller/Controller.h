@@ -27,6 +27,14 @@ namespace controller {
         void process_data();
 
         /**
+         * Crop, downsample, and save the clouds to the /filtered folder
+         * @param folder_path path to the scan folder.
+         * @param which cloud types do you want to crop & filter. You should probably do
+         * the /raw folder.
+         */
+        void filter_clouds(std::string folder_path, CloudType::Type cloud_type);
+
+        /**
          * Register all point clouds in given folder location.
          * @param folder_path the path to the scan folder.
          * @param cloud_type the type of the cloud, tells which folder to look into for clouds.

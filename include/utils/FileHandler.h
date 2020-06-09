@@ -84,6 +84,7 @@ namespace file {
          * throw and error because the path is not set. If you give the method a parameter for the
          * folder_path then it will ignore scan_folder_path and use the inputted path.
          * @param cloud_vector the vector you want to load the clouds into.
+         * TODO: IMPORTANT, MAKE SURE THIS LOADS THE CLOUDS IN THE CORRECT ALPHANUMERIC ORDER!!
          * @param cloud_type determines which folder to search for.
          */
         void load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
