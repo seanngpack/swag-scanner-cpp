@@ -72,17 +72,15 @@ void file::FileHandler::load_clouds(
     check_folder_input(folder_path);
     std::string load_path;
     if (folder_path.empty()) {
-         load_path = folder_path + "/" + CloudType::String(cloud_type);
-    }
-    else {
+        load_path = folder_path + "/" + CloudType::String(cloud_type);
+    } else {
         load_path = scan_folder_path + "/" + CloudType::String(cloud_type);;
     }
     check_folder_input(load_path);
     for (auto &p : boost::filesystem::directory_iterator(load_path)) {
-        if(p.path().extension() == ".pcd") {
-            pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
-            if (pcl::io::loadPCDFile<pcl::PointXYZ> (p.path().string(), *cloud) == -1)
-            {
+        if (p.path().extension() == ".pcd") {
+            pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+            if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.path().string(), *cloud) == -1) {
                 PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
             }
             cloud_vector.push_back(cloud);
@@ -112,27 +110,7 @@ std::string file::FileHandler::find_scan_folder(const std::string &folder) {
     }
 
     // sort them using custom lambda function to order.
-    std::sort(v.begin(), v.end(),
-              [](auto &&path1, auto &&path2) {
-
-                  std::string string1 = path1.string();
-                  std::string string2 = path2.string();
-
-                  // find the ending numbers of string1
-                  size_t last_index = string1.find_last_not_of("0123456789");
-                  std::string result1 = (string1.substr(last_index + 1));
-                  // find the ending numbers of string 2
-                  last_index = string2.find_last_not_of("0123456789");
-                  std::string result2 = string2.substr(last_index + 1);
-
-                  if (result1.length() == 0) {
-                      return true;
-                  } else if (result2.length() == 0) {
-                      return true;
-                  }
-                  return (std::stoi(result1) < std::stoi(result2));
-              }
-    );
+    std::sort(v.begin(), v.end(), file_sort);
 
     // get the last item in list, convert to string, convert to int, then add 1
     int name_count = std::stoi(v.back().filename().string()) + 1;

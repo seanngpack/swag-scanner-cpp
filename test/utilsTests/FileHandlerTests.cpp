@@ -11,7 +11,7 @@ protected:
     file::FileHandler *handler;
 
     virtual void SetUp() {
-        handler = new file::FileHandler;
+        handler = new file::FileHandler(false);
     }
 
     virtual void TearDown() {
@@ -36,7 +36,7 @@ protected:
  * Expecting invalid argument errors.
  */
 TEST_F(FileHandlerFixture, TestGetCurrentScanFolderInvalidPath) {
-    ASSERT_THROW(file::FileHandler *test = new file::FileHandler("swagggg"),
+    ASSERT_THROW(file::FileHandler *test = new file::FileHandler("swagggg", false),
                  std::invalid_argument);
 }
 
@@ -58,7 +58,7 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolder) {
  */
 TEST_F(FileHandlerFixture, TestGetCurrentScanFolderEmptyCase) {
     file::FileHandler *test = new file::FileHandler(
-            "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/empty");
+            "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/empty", false);
     EXPECT_EQ(test->get_scan_folder_path(),
               "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/empty/1");
 }

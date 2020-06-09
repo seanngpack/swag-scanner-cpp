@@ -19,13 +19,13 @@ TEST(SegmentationPhysicalTests, TestRemovePlane) {
     pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "2.pcd", *cloudOut);
 
 
-    segmentation::remove_plane(cloudIn, cloudInSegmented);
-    segmentation::remove_plane(cloudOut, cloudOutSegmented);
+    cloudInSegmented = segmentation::remove_plane(cloudIn);
+    cloudOutSegmented = segmentation::remove_plane(cloudOut);
     std::cout << cloudInSegmented->size() << std::endl;
     std::cout << cloudInSegmented->points[100] << std::endl;
 
-    visual::Visualizer visualizer;
-    visualizer.simpleVis(cloudInSegmented);
+//    visual::Visualizer visualizer;
+//    visualizer.simpleVis(cloudInSegmented);
 }
 
 

@@ -24,6 +24,29 @@ namespace file {
         inline static const std::string default_data_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files";
 
         /**
+         * Sorting function that sorts files and directories in order from lowest to greatest.
+         * @param path1 first path.
+         * @param path2 second path.
+         * @return true if the first file is smaller than the second, false otherwise.
+         */
+        inline static bool file_sort(boost::filesystem::path &path1, boost::filesystem::path &path2) {
+            const std::string& string1 = path1.string();
+            const std::string& string2 = path2.string();
+
+            // find the ending numbers of string1
+            size_t last_index = string1.find_last_not_of("0123456789");
+            std::string result1 = (string1.substr(last_index + 1));
+            // find the ending numbers of string 2
+            last_index = string2.find_last_not_of("0123456789");
+            std::string result2 = string2.substr(last_index + 1);
+
+            if (result1.length() == 0 || result2.length() == 0) {
+                return true;
+            }
+            return (std::stoi(result1) < std::stoi(result2));
+        }
+
+        /**
          * Default file path argument is my data folder for now.
          * @param all_data_folder_path path to the folder containing all your pointcloud data.
          * @param auto_create_flag if true, create the folders at runtime, if false then don't.
