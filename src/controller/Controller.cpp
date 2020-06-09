@@ -55,14 +55,17 @@ void controller::Controller::register_all_clouds(std::string folder_path, CloudT
     model->load_clouds(cloud_vector, CloudType::Type::RAW, folder_path);
     Eigen::Matrix4f global_transform;
     pcl::PointCloud<pcl::PointXYZ>::Ptr alignedInitialCloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloud(new pcl::PointCloud<pcl::PointXYZ>);
 
     // align second cloud to first cloud
     model->align_clouds(cloud_vector[1], cloud_vector[0], alignedInitialCloud, global_transform);
-
-    for (int i = 1; i < cloud_vector.size(); i++) {
-
+    *finalCloud = *cloud_vector[0] + *alignedInitialCloud;
+    for (int i = 2; i < cloud_vector.size(); i++) {
+        // move this elsewhere once we get started with ICP
+        global_transform *= global_transform;
+        pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
+        pcl::transformPointCloud(*cloud_vector[i], *transformedCloud, global_transform);
     }
-
 }
 
 void controller::Controller::visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {

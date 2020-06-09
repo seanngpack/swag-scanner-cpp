@@ -95,7 +95,6 @@ void file::FileHandler::load_clouds(
         if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {
             PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
         }
-        std::cout << p.string() << std::endl;
         cloud_vector.push_back(cloud);
     }
 }

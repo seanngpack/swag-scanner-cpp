@@ -3,6 +3,7 @@
 #include <SR305.h>
 #include "Controller.h"
 #include "Visualizer.h"
+#include "CloudType.h"
 #include <chrono>
 
 
@@ -14,15 +15,10 @@ int main() {
 
     controller::Controller *controller = new controller::Controller(camera,
             arduino, model, viewer);
-    controller->scan(9);
+//    controller->scan(9);
 
-//    pcl::PointCloud<pcl::Normal>::Ptr normals = model->estimate_normal_cloud(cloud);
-
-
-//    model->crop_cloud(cloud,
-//                      -.15, .15,
-//                      -100, .08,
-//                      -100, .5);
+    controller->register_all_clouds("/Users/seanngpack/Programming Stuff/Projects/scanner_files/17",
+            CloudType::Type::RAW);
 
     delete controller;
     return 0;
