@@ -29,12 +29,24 @@ namespace file {
          * @param path2 second path.
          * @return true if the first file is smaller than the second, false otherwise.
          */
-        inline static bool file_sort(boost::filesystem::path &path1, boost::filesystem::path &path2) {
-            const std::string& string1 = path1.string();
-            const std::string& string2 = path2.string();
+        inline static bool path_sort(boost::filesystem::path &path1, boost::filesystem::path &path2) {
+            std::string string1 = path1.string();
+            std::string string2 = path2.string();
+
+            // remove ".pcd" from files
+            if (path1.has_extension()) {
+                size_t idx = string1.find_last_of(".");
+                string1 = string1.substr(0, idx);
+            }
+
+            if (path2.has_extension()) {
+                size_t idx = string2.find_last_of(".");
+                string2 = string2.substr(0, idx);
+            }
 
             // find the ending numbers of string1
             size_t last_index = string1.find_last_not_of("0123456789");
+
             std::string result1 = (string1.substr(last_index + 1));
             // find the ending numbers of string 2
             last_index = string2.find_last_not_of("0123456789");
@@ -103,11 +115,11 @@ namespace file {
 
         /**
          * Loads all clouds in the current scan folder into a vector.
+         * Only works with files that have numbers in the file name.
          * If the folder path is not given and the auto_create_flag is false, then
          * throw and error because the path is not set. If you give the method a parameter for the
          * folder_path then it will ignore scan_folder_path and use the inputted path.
          * @param cloud_vector the vector you want to load the clouds into.
-         * TODO: IMPORTANT, MAKE SURE THIS LOADS THE CLOUDS IN THE CORRECT ALPHANUMERIC ORDER!!
          * @param cloud_type determines which folder to search for.
          */
         void load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,

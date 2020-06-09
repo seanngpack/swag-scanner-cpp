@@ -53,11 +53,13 @@ void controller::Controller::segment_clouds(std::string folder_path, CloudType::
 void controller::Controller::register_all_clouds(std::string folder_path, CloudType::Type cloud_type) {
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     model->load_clouds(cloud_vector, CloudType::Type::RAW, folder_path);
-    Eigen::Matrix4f initial_transform;
+    Eigen::Matrix4f global_transform;
     pcl::PointCloud<pcl::PointXYZ>::Ptr alignedInitialCloud(new pcl::PointCloud<pcl::PointXYZ>);
-    model->align_clouds(cloud_vector[0], cloud_vector[1], alignedInitialCloud, initial_transform);
 
-    for (int i = 0; i < cloud_vector.size(); i++) {
+    // align second cloud to first cloud
+    model->align_clouds(cloud_vector[1], cloud_vector[0], alignedInitialCloud, global_transform);
+
+    for (int i = 1; i < cloud_vector.size(); i++) {
 
     }
 
