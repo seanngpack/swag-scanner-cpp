@@ -67,11 +67,21 @@ namespace model {
                                                        float minY, float maxY,
                                                        float minZ, float maxZ);
 
+        /**
+         * Downsample the given cloud using voxel grid.
+         * @param cloud cloud you want to downsample.
+         * @param leafSize size of leaf.
+         * @return the downsampled cloud.
+         */
         pcl::PointCloud<pcl::PointXYZ>::Ptr voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                                               float leafSize = .01);
 
-        void remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn,
-                          pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudOut);
+        /**
+         * Remove scanning bed plane from the cloud.
+         * @param cloudIn cloud you want to remove the plane from.
+         * @return cloud with the remove plane
+         */
+        pcl::PointCloud<pcl::PointXYZ>::Ptr remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn);
 
         /**
          * Use ICP to register an input and target cloud.

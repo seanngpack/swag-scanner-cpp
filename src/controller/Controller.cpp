@@ -40,7 +40,14 @@ void controller::Controller::filter_clouds(std::string folder_path, CloudType::T
     }
 }
 
-
+void controller::Controller::segment_clouds(std::string folder_path, CloudType::Type cloud_type) {
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
+    model->load_clouds(cloud_vector, cloud_type, folder_path);
+    for (int i = 0; i < cloud_vector.size(); i++) {
+        pcl::PointCloud<pcl::PointXYZ>::Ptr segmentedCloud = model->remove_plane(cloud_vector[i]);
+        model->save_cloud(segmentedCloud, std::to_string(i), CloudType::Type::SEGMENTED);
+    }
+}
 
 
 void controller::Controller::register_all_clouds(std::string folder_path, CloudType::Type cloud_type) {

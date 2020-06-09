@@ -35,6 +35,14 @@ namespace controller {
         void filter_clouds(std::string folder_path, CloudType::Type cloud_type);
 
         /**
+         * Segment and save the clouds in the given folder path to the /segmented folder.
+         * @param folder_path path to the scans.
+         * @param cloud_type type of cloud you want to filter. You should probably do the
+         * /filtered folder.
+         */
+        void segment_clouds(std::string folder_path, CloudType::Type cloud_type);
+
+        /**
          * Register all point clouds in given folder location.
          * @param folder_path the path to the scan folder.
          * @param cloud_type the type of the cloud, tells which folder to look into for clouds.

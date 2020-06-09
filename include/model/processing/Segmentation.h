@@ -14,8 +14,7 @@
 namespace segmentation {
 
 
-    inline void remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn,
-                             pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudOut) {
+    inline pcl::PointCloud<pcl::PointXYZ>::Ptr remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn) {
         pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
         pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInliers(new pcl::PointCloud<pcl::PointXYZ>);
@@ -53,9 +52,7 @@ namespace segmentation {
         // Extract outliers
         extract.setNegative(true);                // Extract the outliers
         extract.filter(*cloudOutliers);        // cloud_outliers contains everything but the plane
-        cloudOut = cloudOutliers;
-        std::cout << cloudOut->size() << std::endl;
-        std::cout << cloudOut->points[100] << std::endl;
+        return cloudOutliers;
     }
 
 }

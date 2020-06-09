@@ -45,7 +45,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::crop_cloud(pcl::PointCloud<pcl
                                                              float minX, float maxX,
                                                              float minY, float maxY,
                                                              float minZ, float maxZ) {
-    filtering::crop_cloud(cloud, minX, maxX, minY, maxY, minZ, maxZ);
+    return filtering::crop_cloud(cloud, minX, maxX, minY, maxY, minZ, maxZ);
 }
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
@@ -53,9 +53,8 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::voxel_grid_filter(pcl::PointCl
     return filtering::voxel_grid_filter(cloud, leafSize);
 }
 
-void model::Model::remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn,
-                                pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudOut) {
-    segmentation::remove_plane(cloudIn, cloudOut);
+pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn) {
+    return segmentation::remove_plane(cloudIn);
 }
 
 Eigen::Matrix4f model::Model::register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
