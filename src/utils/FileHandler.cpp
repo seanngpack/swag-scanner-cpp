@@ -2,27 +2,36 @@
 
 using namespace boost::filesystem;
 
-file::FileHandler::FileHandler(const std::string &all_data_folder_path, bool auto_create_flag)
-        : all_data_folder_path(check_folder_input(all_data_folder_path) ? all_data_folder_path : nullptr),
-          scan_folder_path(find_scan_folder(all_data_folder_path)),
-          auto_create_flag(auto_create_flag) {
-    // create subfolder (ex. raw, filtered, etc in the scanner folder
-    if (auto_create_flag) {
-        create_directory(scan_folder_path);
-        create_sub_folders();
-    }
-}
-
-file::FileHandler::FileHandler(bool auto_create_flag) :
+file::FileHandler::FileHandler() :
         all_data_folder_path(default_data_path),
-        scan_folder_path(find_scan_folder(all_data_folder_path)),
-        auto_create_flag(auto_create_flag) {
+        scan_folder_path(find_scan_folder(all_data_folder_path)) {
+    create_directory(scan_folder_path);
+    create_sub_folders();
+}
 
+file::FileHandler::FileHandler(bool auto_create_flag) {
+    all_data_folder_path = default_data_path;
+    scan_folder_path = find_scan_folder(all_data_folder_path);
     if (auto_create_flag) {
         create_directory(scan_folder_path);
         create_sub_folders();
     }
 }
+
+file::FileHandler::FileHandler(const std::string &folder_path, PathType::Type path_type) {
+    if (path_type == PathType::Type::ALL_DATA_FOLDER) {
+        check_folder_input(folder_path);
+        all_data_folder_path = folder_path;
+        scan_folder_path = find_scan_folder(folder_path);
+        create_directory(scan_folder_path);
+        create_sub_folders();
+    } else if (path_type == PathType::Type::SCAN_FOLDER) {
+        all_data_folder_path = nullptr;
+        check_folder_input(folder_path);
+        scan_folder_path = folder_path;
+    }
+}
+
 
 void file::FileHandler::set_scan_folder_path(const std::string &path) {
     check_folder_input(path);
@@ -65,19 +74,15 @@ void file::FileHandler::load_clouds(
         std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
         CloudType::Type cloud_type,
         const std::string &folder_path) {
-    if (folder_path == "" && !auto_create_flag) {
-        throw std::runtime_error("Error, auto folder creation is not set so you must"
-                                 "enter a valid folder path when loading clouds");
-    }
-    check_folder_input(folder_path);
     std::string load_path;
-    std::vector<path> cloud_paths;
     if (folder_path.empty()) {
         load_path = folder_path + "/" + CloudType::String(cloud_type);
     } else {
+        check_folder_input(folder_path);
         load_path = scan_folder_path + "/" + CloudType::String(cloud_type);;
     }
-    check_folder_input(load_path);
+
+    std::vector<path> cloud_paths;
 
     // load paths into cloud_paths vector
     for (auto &p : boost::filesystem::directory_iterator(load_path)) {
@@ -90,6 +95,7 @@ void file::FileHandler::load_clouds(
     // sort the paths numerically
     std::sort(cloud_paths.begin(), cloud_paths.end(), path_sort);
 
+    // finally we load the clouds into the cloud_vector
     for (auto &p : cloud_paths) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
         if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {

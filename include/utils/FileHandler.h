@@ -7,15 +7,13 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include "CloudType.h"
+#include "PathType.h"
 #include <string>
 #include <unordered_map>
 
 namespace file {
     /**
      * Contains functions to handle file saving and loading.
-     * TODO: do some error handling to make sure you can disable
-     * auto create folders but can still save files if you set the
-     * folder manually.
      */
     class FileHandler {
     public:
@@ -59,24 +57,36 @@ namespace file {
         }
 
         /**
-         * Default file path argument is my data folder for now.
-         * @param all_data_folder_path path to the folder containing all your pointcloud data.
-         * @param auto_create_flag if true, create the folders at runtime, if false then don't.
+         * Default constructor makes a FileHandler using my default path. Only works
+         * on Sean's computer. The default path points to my all data folder then it will
+         * auto generate a scan folder for me.
          */
-        explicit FileHandler(const std::string &all_data_folder_path = default_data_path,
-                             bool auto_create_flag = true);
+        FileHandler();
 
         /**
-         * Overloaded constructor for only passing in a auto_create_flag.
-         * Uses the default_data_path as the default path.
-         * @param auto_create_flag if true, create the folders at runtime, if false then don't.
+         * Constructor takes in a flag and determines whether to create a new scan folder
+         * or not. If the flag is set to true then it is identical to the default constructor.
+         * @param auto_create_flag
          */
         FileHandler(bool auto_create_flag);
 
         /**
+         * Constructor for FileHandler given a folder path and a PathType indicating
+         * whether it is a path to all the scans or a specific scan folder. If it is the former,
+         * will auto create a new scan folder and use that as the current scan folder.
+         * If it is the latter than it will not auto create a new folder and just use
+         * the given scan folder as the current scan folder.
+         * @param folder_path A path to either all the scans or a path to a specific scan folder.
+         * @param path_type whether it is an all data path or specific scan folder path.
+         */
+        FileHandler(const std::string &folder_path,
+                    PathType::Type path_type);
+
+
+        /**
          * Set the scan_folder_path instance variable. Should be pointed to the scan folders.
          * E.g user/scanner_data/10
-         * Note: current behavior is it should create the new sub folders
+         * If the subfolders don't exist then create them.
          * @param path the folder path.
          */
         void set_scan_folder_path(const std::string &path);
@@ -122,28 +132,30 @@ namespace file {
          * @param cloud_vector the vector you want to load the clouds into.
          * @param cloud_type determines which folder to search for.
          */
-        void load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
-                Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
-                         CloudType::Type cloud_type,
-                         const std::string &folder_path = std::string());
+        void load_clouds(
+                std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
+                        Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
+                CloudType::Type cloud_type,
+                const std::string &folder_path = std::string());
 
     private:
         std::string all_data_folder_path;
         std::string scan_folder_path;
-        bool auto_create_flag;
 
 
         /**
          * Given the all data folder, find the current scan folder.
          * E.g. if there are scans 1->10 in the all data folder, that means the current
-         * scan must be 11. Do not make the folder for the current scan yet.
+         * scan must be 11.
+         * Does not make the folder for the current scan.
          * @param folder the all data folder.
          *
          */
         std::string find_scan_folder(const std::string &folder);
 
         /**
-         * Create the sub folders defined in CloudTypes in the scan_folder_path.
+         * Create the sub folders defined in CloudTypes in the scan_folder_path if they
+         * don't exist.
          */
         void create_sub_folders();
 
