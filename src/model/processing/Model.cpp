@@ -3,9 +3,7 @@
 #include "Filtering.h"
 #include "Segmentation.h"
 
-model::Model::Model(bool auto_create_folders) :
-        auto_create_folders(auto_create_folders),
-        fileHandler(auto_create_folders) {}
+model::Model::Model(){}
 
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud(const uint16_t *depth_frame,
@@ -120,29 +118,6 @@ void model::Model::align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
     reg.setTargetFeatures(cloudTargetFeatures);
     reg.align(*cloudAligned);
     transformation = reg.getFinalTransformation();
-}
-
-void model::Model::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                              const std::string &name,
-                              CloudType::Type cloud_type) {
-    if (!auto_create_folders) {
-        // this error should be changed later, read the todo in filehandler.h
-        throw std::runtime_error("Cannot save file, filehandler save path not set");
-    }
-    fileHandler.save_cloud(cloud, name, cloud_type);
-
-}
-
-void model::Model::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, const std::string &cloud_name,
-                              CloudType::Type cloud_type) {
-    fileHandler.load_cloud(cloud, cloud_name, cloud_type);
-}
-
-void model::Model::load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
-        Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
-                               CloudType::Type cloud_type,
-                               const std::string &folder_path) {
-    fileHandler.load_clouds(cloud_vector, cloud_type, folder_path);
 }
 
 model::Model::~Model() {

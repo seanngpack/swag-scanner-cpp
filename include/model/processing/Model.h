@@ -1,6 +1,5 @@
 /**
  * Model for processing point clouds. Holds a reference to the FileHandler for saving.
- * TODO: add field for save data location. Pass this data along to the FileHandler.
  */
 #ifndef SWAG_SCANNER_MODEL_H
 #define SWAG_SCANNER_MODEL_H
@@ -14,7 +13,6 @@
 #include <pcl/features/fpfh.h>
 #include <pcl/registration/icp.h>
 #include <pcl/registration/ia_ransac.h>
-#include <FileHandler.h>
 #include <CameraTypes.h>
 #include <CloudType.h>
 #include "Visualizer.h"
@@ -30,7 +28,7 @@ namespace model {
         /**
          * Constructor for Model.
          */
-        explicit Model(bool auto_create_folders = true);
+        Model();
 
         /**
         * Create a new PointCloudXYZ using the instance variable depth_frame.
@@ -116,48 +114,11 @@ namespace model {
                           pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned,
                           Eigen::Matrix4f &transformation);
 
-        /**
-         * Save pointcloud to file.
-         * @param cloud the cloud you want to save.
-         */
-        void save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                        const std::string &name,
-                        CloudType::Type cloud_type);
-
-
-        /**
-         * Calls on filehandler's load cloud method. Refer to that for full
-         * documentation.
-         * TODO: Check the pass by value warning.
-         * TODO: Make this function like load_clouds where the model method
-         * can take in a path.
-         * @param cloud the cloud you want to load the cloud into.
-         * @param cloud_name name of the cloud.
-         * @param cloud_type type of the cloud.
-         *
-         * Example: load_cloud("12.pcd", CloudType::RAW)
-         */
-        void load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                        const std::string &cloud_name,
-                        CloudType::Type cloud_type);
-
-        /**
-         * Load the clouds from a folder into a vector of clouds. Will throw error
-         * if auto_create_folder is false AND you try to load clouds without specifying a path.
-         * @param cloud_vector vector storing the loaded clouds.
-         * @param cloud_type tells function which sub folder to look for.
-         * @param folder_path path to the main scan folder.
-         */
-        void load_clouds(
-                std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
-                CloudType::Type cloud_type,
-                const std::string &folder_path = std::string());
 
         ~Model();
 
     private:
-        bool auto_create_folders;
-        file::FileHandler fileHandler;
+
     };
 }
 

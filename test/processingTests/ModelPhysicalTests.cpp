@@ -17,7 +17,7 @@ protected:
     std::string test_folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/FileHandlerPhysicalTests";
 
     virtual void SetUp() {
-        mod = new model::Model(false);
+        mod = new model::Model();
     }
 
     virtual void TearDown() {

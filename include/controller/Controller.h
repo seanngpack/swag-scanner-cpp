@@ -5,6 +5,7 @@
 #include "Arduino.h"
 #include "SR305.h"
 #include "Visualizer.h"
+#include "FileHandler.h"
 
 namespace controller {
     class Controller {
@@ -12,7 +13,8 @@ namespace controller {
         Controller(camera::ICamera *camera,
                    arduino::Arduino *arduino,
                    model::Model *model,
-                   visual::Visualizer *viewer);
+                   visual::Visualizer *viewer,
+                   file::FileHandler *file_handler);
 
 
         /**
@@ -66,6 +68,7 @@ namespace controller {
         arduino::Arduino *arduino;
         model::Model *model;
         visual::Visualizer *viewer;
+        file::FileHandler *file_handler;
     };
 }
 

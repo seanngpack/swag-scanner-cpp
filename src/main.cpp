@@ -4,7 +4,7 @@
 #include "Controller.h"
 #include "Visualizer.h"
 #include "CloudType.h"
-#include <chrono>
+#include "FileHandler.h"
 
 
 int main() {
@@ -12,9 +12,11 @@ int main() {
     arduino::Arduino *arduino = new arduino::Arduino();
     model::Model *model = new model::Model();
     visual::Visualizer *viewer = new visual::Visualizer();
+    file::FileHandler *file_handler = new file::FileHandler(true);
+
 
     controller::Controller *controller = new controller::Controller(camera,
-            arduino, model, viewer);
+            arduino, model, viewer, file_handler);
 //    controller->scan(9);
 
     controller->register_all_clouds("/Users/seanngpack/Programming Stuff/Projects/scanner_files/17",
