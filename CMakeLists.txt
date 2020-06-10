@@ -18,7 +18,7 @@ set(SOURCE_FILES
         include/utils/FileHandler.h src/utils/FileHandler.cpp
         include/utils/CloudType.h
         include/model/processing/Depth.h include/model/processing/Filtering.h
-        src/controller/Controller.cpp include/controller/Controller.h include/model/processing/Segmentation.h)
+        src/controller/Controller.cpp include/controller/Controller.h include/model/processing/Segmentation.h include/utils/PathType.h)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)
