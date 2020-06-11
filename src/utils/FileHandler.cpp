@@ -26,7 +26,7 @@ file::FileHandler::FileHandler(const std::string &folder_path, PathType::Type pa
         create_directory(scan_folder_path);
         create_sub_folders();
     } else if (path_type == PathType::Type::SCAN_FOLDER) {
-        all_data_folder_path = nullptr;
+        all_data_folder_path = "";
         check_folder_input(folder_path);
         scan_folder_path = folder_path;
     }
@@ -151,6 +151,7 @@ void file::FileHandler::create_sub_folders() {
 }
 
 bool file::FileHandler::check_folder_input(const std::string &folder) {
+    std::cout << folder << std::endl;
     if (!is_directory(folder)) {
         throw std::invalid_argument("Folder path error, " + folder + " does not exist.");
     }

@@ -76,6 +76,7 @@ namespace file {
          * will auto create a new scan folder and use that as the current scan folder.
          * If it is the latter than it will not auto create a new folder and just use
          * the given scan folder as the current scan folder.
+         *
          * @param folder_path A path to either all the scans or a path to a specific scan folder.
          * @param path_type whether it is an all data path or specific scan folder path.
          */

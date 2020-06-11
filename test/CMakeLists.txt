@@ -26,7 +26,6 @@ add_executable(tests_run
         utilsTests/AlgosTests.cpp
         typeTests/CameraTypesTests.cpp
         utilsTests/FileHandlerTests.cpp
-        mocks/MockFileHandler.cpp
         typeTests/CloudTypeTests.cpp
         utilsTests/FileHandlerPhysicalTests.cpp
         WrapperTests.cpp processingTests/DepthTests.cpp
