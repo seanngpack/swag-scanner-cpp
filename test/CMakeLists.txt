@@ -7,6 +7,7 @@ add_subdirectory(googletest-master)
 include_directories(${swag_scanner_SOURCE_DIR}/include/utils
                     ${swag_scanner_SOURCE_DIR}/include/model/processing
                     ${swag_scanner_SOURCE_DIR}/include/wrapper
+                    ${swag_scanner_SOURCE_DIR}/include/view
                     ${swag_scanner_SOURCE_DIR}/include/model/arduino)
 
 include_directories("/opt/librealsense/include")
@@ -16,18 +17,20 @@ include_directories(googletest-master/googlemock/include)
 
 
 add_executable(tests_run
+        ${swag_scanner_SOURCE_DIR}/src/view/Visualizer.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/processing/Model.cpp
         ${swag_scanner_SOURCE_DIR}/src/utils/FileHandler.cpp
         ${swag_scanner_SOURCE_DIR}/src/wrapper/CoreBluetoothObjC.mm
         ${swag_scanner_SOURCE_DIR}/src/model/arduino/Arduino.cpp
-        ModelTests.cpp
+        processingTests/ModelTests.cpp
         utilsTests/AlgosTests.cpp
         typeTests/CameraTypesTests.cpp
         utilsTests/FileHandlerTests.cpp
-        mocks/MockFileHandler.cpp
         typeTests/CloudTypeTests.cpp
         utilsTests/FileHandlerPhysicalTests.cpp
-        WrapperTests.cpp processingTests/DepthTests.cpp)
+        WrapperTests.cpp processingTests/DepthTests.cpp
+        processingTests/ModelPhysicalTests.cpp
+        processingTests/SegmentationPhysicalTets.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main

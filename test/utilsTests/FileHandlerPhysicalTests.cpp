@@ -15,8 +15,9 @@ protected:
     std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/FileHandlerPhysicalTests";
 
     virtual void SetUp() {
-        handler = new file::FileHandler();
+        handler = new file::FileHandler(false);
         set_up_test_files();
+        handler->set_scan_folder_path(folder_path);
     }
 
     virtual void TearDown() {
@@ -61,5 +62,17 @@ TEST_F(FileHandlerPhysicalFixture, TestLoadCloud) {
     ASSERT_EQ(cloud->height, 10);
     ASSERT_EQ(cloud->width, 10);
     ASSERT_EQ(cloud->size(), 100);
+}
+
+/**
+ * Load clouds from a folder
+ */
+TEST_F(FileHandlerPhysicalFixture, TestLoadClouds) {
+    // make an empty cloud to cloud the file into.
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
+            Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > data;
+    handler->load_clouds(data, CloudType::Type::RAW, folder_path);
+    ASSERT_EQ(data.size(), 4);
+
 
 }

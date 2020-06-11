@@ -2,25 +2,36 @@
 
 using namespace boost::filesystem;
 
-file::FileHandler::FileHandler(const std::string &all_data_folder_path, bool auto_create_flag)
-        : all_data_folder_path(check_folder_input(all_data_folder_path) ? all_data_folder_path : nullptr),
-          scan_folder_path(find_scan_folder(all_data_folder_path)) {
-    // create subfolder (ex. raw, filtered, etc in the scanner folder
-    if (auto_create_flag) {
-        create_directory(scan_folder_path);
-        create_sub_folders();
-    }
-}
-
-file::FileHandler::FileHandler(bool auto_create_flag) :
+file::FileHandler::FileHandler() :
         all_data_folder_path(default_data_path),
         scan_folder_path(find_scan_folder(all_data_folder_path)) {
+    create_directory(scan_folder_path);
+    create_sub_folders();
+}
 
+file::FileHandler::FileHandler(bool auto_create_flag) {
+    all_data_folder_path = default_data_path;
+    scan_folder_path = find_scan_folder(all_data_folder_path);
     if (auto_create_flag) {
         create_directory(scan_folder_path);
         create_sub_folders();
     }
 }
+
+file::FileHandler::FileHandler(const std::string &folder_path, PathType::Type path_type) {
+    if (path_type == PathType::Type::ALL_DATA_FOLDER) {
+        check_folder_input(folder_path);
+        all_data_folder_path = folder_path;
+        scan_folder_path = find_scan_folder(folder_path);
+        create_directory(scan_folder_path);
+        create_sub_folders();
+    } else if (path_type == PathType::Type::SCAN_FOLDER) {
+        all_data_folder_path = "";
+        check_folder_input(folder_path);
+        scan_folder_path = folder_path;
+    }
+}
+
 
 void file::FileHandler::set_scan_folder_path(const std::string &path) {
     check_folder_input(path);
@@ -46,7 +57,7 @@ void file::FileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
     pcl::io::savePCDFileASCII(out_path, *cloud);
 }
 
-void file::FileHandler::open_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+void file::FileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                    const std::string &cloud_name,
                                    CloudType::Type cloud_type) {
     check_file_input(cloud_name);
@@ -57,6 +68,45 @@ void file::FileHandler::open_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path, *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
+}
+
+void file::FileHandler::load_clouds(
+        std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
+        CloudType::Type cloud_type,
+        const std::string &folder_path) {
+    std::string load_path;
+    if (folder_path.empty()) {
+        load_path = scan_folder_path + "/" + CloudType::String(cloud_type);;
+
+    } else {
+        check_folder_input(folder_path);
+        load_path = folder_path + "/" + CloudType::String(cloud_type);
+    }
+
+    std::vector<path> cloud_paths;
+
+    // load paths into cloud_paths vector
+    for (auto &p : boost::filesystem::directory_iterator(load_path)) {
+        // extension must be .pcd and must have number in the filename
+        if (p.path().extension() == ".pcd" && p.path().string().find_first_of("0123456789") != std::string::npos) {
+            cloud_paths.push_back(p.path());
+        }
+    }
+
+    // sort the paths numerically
+    std::sort(cloud_paths.begin(), cloud_paths.end(), path_sort);
+
+    // finally we load the clouds into the cloud_vector
+
+    for (auto &p : cloud_paths) {
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {
+            PCL_ERROR ("Couldn't read file \n");
+        }
+        std::cout << "loading " << p.string() << std::endl;
+        cloud_vector.push_back(cloud);
+    }
+    std::cout << "finished loading clouds" << std::endl;
 }
 
 std::string file::FileHandler::find_scan_folder(const std::string &folder) {
@@ -80,28 +130,7 @@ std::string file::FileHandler::find_scan_folder(const std::string &folder) {
     }
 
     // sort them using custom lambda function to order.
-    std::sort(v.begin(), v.end(),
-              [](auto &&path1, auto &&path2) {
-
-                  std::string string1 = path1.string();
-                  std::string string2 = path2.string();
-
-                  // find the ending numbers of string1
-                  size_t last_index = string1.find_last_not_of("0123456789");
-                  std::string result1 = (string1.substr(last_index + 1));
-                  // find the ending numbers of string 2
-                  last_index = string2.find_last_not_of("0123456789");
-                  std::string result2 = string2.substr(last_index + 1);
-
-                  if (result1.length() == 0) {
-                      return true;
-                  } else if (result2.length() == 0) {
-                      return true;
-                  }
-                  return (std::stoi(result1) < std::stoi(result2));
-              }
-    );
-
+    std::sort(v.begin(), v.end(), path_sort);
 
     // get the last item in list, convert to string, convert to int, then add 1
     int name_count = std::stoi(v.back().filename().string()) + 1;
@@ -127,14 +156,16 @@ void file::FileHandler::create_sub_folders() {
 
 bool file::FileHandler::check_folder_input(const std::string &folder) {
     if (!is_directory(folder)) {
-        throw std::invalid_argument("Error, the folder path you entered does not exist.");
+        throw std::invalid_argument("Folder path error, " + folder + " does not exist.");
     }
     return true;
 }
 
 bool file::FileHandler::check_file_input(const std::string &file_path) {
     if (!exists(file_path)) {
-        throw std::invalid_argument("Error, the file you provided does not exist");
+        throw std::invalid_argument("File path error, " + file_path + " does not exist");
     }
     return true;
 }
+
+
