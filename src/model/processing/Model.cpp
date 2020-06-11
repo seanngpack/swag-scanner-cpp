@@ -23,13 +23,15 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
     ne.setRadiusSearch(0.03);
 
     ne.setInputCloud(cloud);
+    std::cout << "estimating normal cloud" << std::endl;
+    std::cout << cloud->size() << std::endl;
     ne.compute(*normals);
     return normals;
 }
 
-void model::Model::computeLocalFeatures(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                                        pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
-                                        pcl::PointCloud<pcl::FPFHSignature33>::Ptr features) {
+void model::Model::compute_local_features(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                          pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
+                                          pcl::PointCloud<pcl::FPFHSignature33>::Ptr features) {
     pcl::search::KdTree<pcl::PointXYZ>::Ptr searchMethod(new pcl::search::KdTree<pcl::PointXYZ>);
     pcl::FPFHEstimation<pcl::PointXYZ, pcl::Normal, pcl::FPFHSignature33> fpfh_est;
     fpfh_est.setInputCloud(cloud);
@@ -103,8 +105,9 @@ void model::Model::align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
     pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures(new pcl::PointCloud<pcl::FPFHSignature33>);
     pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudTargetFeatures(new pcl::PointCloud<pcl::FPFHSignature33>);
 
-    computeLocalFeatures(cloudIn, cloudInNormal, cloudInFeatures);
-    computeLocalFeatures(cloudTarget, cloudTargetNormal, cloudTargetFeatures);
+    std::cout << "computing local features of cloud" << std::endl;
+    compute_local_features(cloudIn, cloudInNormal, cloudInFeatures);
+    compute_local_features(cloudTarget, cloudTargetNormal, cloudTargetFeatures);
 
 
     pcl::SampleConsensusInitialAlignment<pcl::PointXYZ, pcl::PointXYZ, pcl::FPFHSignature33> reg;
@@ -116,6 +119,7 @@ void model::Model::align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
     reg.setInputTarget(cloudTarget);
     reg.setSourceFeatures(cloudInFeatures);
     reg.setTargetFeatures(cloudTargetFeatures);
+    std::cout << "aligning..." << std::endl;
     reg.align(*cloudAligned);
     transformation = reg.getFinalTransformation();
 }

@@ -35,7 +35,7 @@ void arduino::Arduino::setIsRotating(bool in) {
 
 void arduino::Arduino::wait_for_connection() {
     while(!isConnected) {
-        std::cout << "waiting for bluetooth to finish..." << std::endl;
+        std::cout << "waiting for bluetooth to finish connecting..." << std::endl;
         std::this_thread::sleep_for(2s);
     }
 }

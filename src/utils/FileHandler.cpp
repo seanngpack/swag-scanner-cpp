@@ -76,10 +76,11 @@ void file::FileHandler::load_clouds(
         const std::string &folder_path) {
     std::string load_path;
     if (folder_path.empty()) {
-        load_path = folder_path + "/" + CloudType::String(cloud_type);
+        load_path = scan_folder_path + "/" + CloudType::String(cloud_type);;
+
     } else {
         check_folder_input(folder_path);
-        load_path = scan_folder_path + "/" + CloudType::String(cloud_type);;
+        load_path = folder_path + "/" + CloudType::String(cloud_type);
     }
 
     std::vector<path> cloud_paths;
@@ -96,13 +97,16 @@ void file::FileHandler::load_clouds(
     std::sort(cloud_paths.begin(), cloud_paths.end(), path_sort);
 
     // finally we load the clouds into the cloud_vector
+
     for (auto &p : cloud_paths) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
         if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {
-            PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+            PCL_ERROR ("Couldn't read file \n");
         }
+        std::cout << "loading " << p.string() << std::endl;
         cloud_vector.push_back(cloud);
     }
+    std::cout << "finished loading clouds" << std::endl;
 }
 
 std::string file::FileHandler::find_scan_folder(const std::string &folder) {
@@ -151,7 +155,6 @@ void file::FileHandler::create_sub_folders() {
 }
 
 bool file::FileHandler::check_folder_input(const std::string &folder) {
-    std::cout << folder << std::endl;
     if (!is_directory(folder)) {
         throw std::invalid_argument("Folder path error, " + folder + " does not exist.");
     }

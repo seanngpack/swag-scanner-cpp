@@ -25,8 +25,9 @@ namespace controller {
          * @param folder_path path to the scan folder.
          * @param which cloud types do you want to crop & filter. You should probably do
          * the /raw folder.
+         * @param leaf size.
          */
-        void filter_clouds(std::string folder_path, CloudType::Type cloud_type);
+        void filter_clouds(std::string folder_path, CloudType::Type cloud_type, float leaf_size);
 
         /**
          * Segment and save the clouds in the given folder path to the /segmented folder.

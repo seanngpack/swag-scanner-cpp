@@ -9,25 +9,28 @@
 
 
 int main() {
-    camera::ICamera *camera = new camera::SR305();
-    arduino::Arduino *arduino = new arduino::Arduino();
+//    auto *camera = new camera::SR305();
+//    auto *arduino = new arduino::Arduino();
     std::shared_ptr<model::Model> model = std::make_shared<model::Model>();
-    visual::Visualizer *viewer = new visual::Visualizer();
-    std::shared_ptr<file::FileHandler> file_handler = std::make_shared<file::FileHandler>(true);
+    auto *viewer = new visual::Visualizer();
+    std::shared_ptr<file::FileHandler> file_handler = std::make_shared<file::FileHandler>(false);
+    file_handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff/Projects/scanner_files/17");
 
 
-    controller::ScanController *scanController = new controller::ScanController(camera,
-                                                                                arduino,
-                                                                                model,
-                                                                                file_handler);
-    controller::ProcessingController *processController = new controller::ProcessingController(model,
-                                                                                               viewer,
-                                                                                               file_handler);
+//    auto *scanController = new controller::ScanController(camera,
+//                                                          arduino,
+//                                                          model,
+//                                                          file_handler);
+    auto *processController = new controller::ProcessingController(model,
+                                                                   viewer,
+                                                                   file_handler);
 //    controller->scan(9);
-
+//    processController->filter_clouds(file_handler->get_scan_folder_path(), CloudType::Type::RAW, .0003);
+//    processController->segment_clouds(file_handler->get_scan_folder_path(), CloudType::Type::FILTERED);
     processController->register_all_clouds("/Users/seanngpack/Programming Stuff/Projects/scanner_files/17",
-                                    CloudType::Type::RAW);
+                                           CloudType::Type::SEGMENTED);
 
+//    delete scanController;
     delete processController;
     return 0;
 }

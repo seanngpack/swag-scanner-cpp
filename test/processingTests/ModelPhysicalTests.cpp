@@ -68,34 +68,35 @@ protected:
 ////    visualizer.simpleVis(clouds);
 //}
 
-//TEST_F(ModelPhysicalFixture, TestAlignment) {
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInFiltered(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutFiltered(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInSegmented(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutSegmented(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloud(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloudICP(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "1.pcd", *cloudIn);
-//    pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "2.pcd", *cloudOut);
-//    mod->crop_cloud(cloudIn, -.15, .15,
-//                    -100, .08,
-//                    -100, .48);
-//    std::cout << cloudIn->isOrganized() << std::endl;
-//    mod->crop_cloud(cloudOut,-.15, .15,
-//                    -100, .08,
-//                    -100, .48);
-//    std::vector<int> indices;
-//    pcl::removeNaNFromPointCloud(*cloudIn, *cloudIn, indices);
-//    pcl::removeNaNFromPointCloud(*cloudOut, *cloudOut, indices);
-//
-//    cloudInFiltered = mod->voxel_grid_filter(cloudIn, .0003);
-//    cloudOutFiltered = mod->voxel_grid_filter(cloudOut, .0003);
-//    mod->remove_plane(cloudInFiltered, cloudInSegmented);
-//    mod->remove_plane(cloudOutFiltered, cloudOutSegmented);
-//    mod->remove_plane(cloudOutFiltered, cloudOutSegmented);
+TEST_F(ModelPhysicalFixture, TestAlignment) {
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInCropped(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutCropped(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInFiltered(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutFiltered(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInSegmented(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutSegmented(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloudICP(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "1.pcd", *cloudIn);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "2.pcd", *cloudOut);
+    cloudInCropped = mod->crop_cloud(cloudIn, -.15, .15,
+                    -100, .08,
+                    -100, .48);
+    std::cout << cloudIn->isOrganized() << std::endl;
+    cloudOutCropped = mod->crop_cloud(cloudOut,-.15, .15,
+                    -100, .08,
+                    -100, .48);
+    std::vector<int> indices;
+    pcl::removeNaNFromPointCloud(*cloudInCropped, *cloudInCropped, indices);
+    pcl::removeNaNFromPointCloud(*cloudOutCropped, *cloudOutCropped, indices);
+
+    cloudInFiltered = mod->voxel_grid_filter(cloudInCropped, .0003);
+    cloudOutFiltered = mod->voxel_grid_filter(cloudOutCropped, .0003);
+    cloudInSegmented = mod->remove_plane(cloudInFiltered);
+    cloudOutSegmented = mod->remove_plane(cloudOutFiltered);
 //
 //    mod->align_clouds(cloudInSegmented, cloudOutSegmented, finalCloud);
 //
@@ -108,4 +109,4 @@ protected:
 //    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudOutSegmented, finalCloudICP};
 //    visualizer.simpleVis(clouds);
 //
-//}
+}

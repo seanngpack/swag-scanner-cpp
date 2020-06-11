@@ -50,9 +50,9 @@ namespace model {
          * @param normalCloud normlas of cloud.
          * @param features features.
          */
-        void computeLocalFeatures(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                                  pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
-                                  pcl::PointCloud<pcl::FPFHSignature33>::Ptr features);
+        void compute_local_features(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                    pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
+                                    pcl::PointCloud<pcl::FPFHSignature33>::Ptr features);
 
         /**
          * Applies crop box filtering to remove outside points from cloud.
