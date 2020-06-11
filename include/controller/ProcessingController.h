@@ -1,31 +1,23 @@
-#ifndef SWAG_SCANNER_CONTROLLER_H
-#define SWAG_SCANNER_CONTROLLER_H
+#ifndef SWAG_SCANNER_PROCESSINGCONTROLLER_H
+#define SWAG_SCANNER_PROCESSINGCONTROLLER_H
 
 #include "Model.h"
-#include "Arduino.h"
-#include "SR305.h"
-#include "Visualizer.h"
 #include "FileHandler.h"
+#include "Visualizer.h"
 
+/**
+ * This controller handles data processing commands.
+ */
 namespace controller {
-    class Controller {
+    class ProcessingController {
     public:
-        Controller(camera::ICamera *camera,
-                   arduino::Arduino *arduino,
-                   model::Model *model,
-                   visual::Visualizer *viewer,
-                   file::FileHandler *file_handler);
-
+        ProcessingController(std::shared_ptr<model::Model> model,
+                             visual::Visualizer *viewer,
+                             std::shared_ptr<file::FileHandler> file_handler);
 
         /**
-         * Write folders, run the scan and collect data.
-         * @param degs number of degrees per rotation interval.
-         */
-        void scan(int degs);
-
-        /**
-         * Process the data. Currently will process the most recently scanned.
-         */
+        * Process the data. Currently will process the most recently scanned.
+        */
         void process_data();
 
         /**
@@ -60,16 +52,15 @@ namespace controller {
 
         void visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 
-
-        ~Controller();
+        ~ProcessingController();
 
     private:
-        camera::ICamera *camera;
-        arduino::Arduino *arduino;
-        model::Model *model;
+        std::shared_ptr<model::Model> model;
         visual::Visualizer *viewer;
-        file::FileHandler *file_handler;
+        std::shared_ptr<file::FileHandler> file_handler;
     };
+
+
 }
 
-#endif //SWAG_SCANNER_CONTROLLER_H
+#endif //SWAG_SCANNER_PROCESSINGCONTROLLER_H
