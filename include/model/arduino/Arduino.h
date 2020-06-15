@@ -2,6 +2,7 @@
 #define SWAG_SCANNER_ARDUINO_H
 
 #include <iostream>
+#include "ArduinoEventHandler.h"
 
 namespace arduino {
     class Arduino {
@@ -27,11 +28,14 @@ namespace arduino {
          */
         void setIsConnected(bool in);
 
+        void print_this();
+
 
     private:
         bool isConnected = false;
         bool isRotating = false;
         void *bluetooth_object;
+        handler::ArduinoEventHandler *event_handler;
         std::string UART_SERVICE_UUID = "5ffba521-2363-41da-92f5-46adc56b2d37";
         std::string ROTATE_TABLE_CHAR_UUID = "5ffba522-2363-41da-92f5-46adc56b2d37";
         std::string TABLE_POSITION_CHAR_UUID = "5ffba523-2363-41da-92f5-46adc56b2d37";

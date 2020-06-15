@@ -29,6 +29,13 @@ void set_rotation_state_callback(void *arduino, void *obj) {
     [(id) obj set_rotation_state_callback:a];
 }
 
+void set_handler(void *arduino_event_handler, void *obj) {
+    handler::ArduinoEventHandler *a = static_cast<handler::ArduinoEventHandler *>(arduino_event_handler);
+    [(id) obj set_handler:a];
+}
+
+
+
 /*-------------------------------------------------------
               Objective-C implementation here
 
@@ -47,6 +54,11 @@ void set_rotation_state_callback(void *arduino, void *obj) {
 
 - (void)set_rotation_state_callback:(arduino::Arduino *)arduino {
     _arduino = arduino;
+}
+
+- (void)set_handler:(handler::ArduinoEventHandler *)arduinoEventHandler {
+    _arduinoEventHandler = arduinoEventHandler;
+    _arduinoEventHandler->print_this();
 }
 
 
@@ -182,7 +194,14 @@ void set_rotation_state_callback(void *arduino, void *obj) {
             [self.swagScanner setNotifyValue:YES forCharacteristic:characteristic];
         }
     }
-    _arduino->setIsConnected(true);
+//    _arduino->setIsConnected(true);
+//    _arduino->print_this();
+    std::unique_lock<std::mutex> ul(_arduinoEventHandler->bt_mutex);
+    _arduinoEventHandler->set_is_bt_connected(true);
+    ul.unlock();
+    _arduinoEventHandler->bt_cv.notify_one();
+    ul.lock();
+    _arduinoEventHandler->print_this();
 }
 
 // start receiving data from this method once we set up notifications. Also can be manually

@@ -22,6 +22,7 @@ add_executable(tests_run
         ${swag_scanner_SOURCE_DIR}/src/utils/FileHandler.cpp
         ${swag_scanner_SOURCE_DIR}/src/wrapper/CoreBluetoothObjC.mm
         ${swag_scanner_SOURCE_DIR}/src/model/arduino/Arduino.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/arduino/ArduinoEventHandler.cpp
         processingTests/ModelTests.cpp
         utilsTests/AlgosTests.cpp
         typeTests/CameraTypesTests.cpp

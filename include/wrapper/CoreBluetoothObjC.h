@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include "ArduinoEventHandler.h"
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "CoreBluetoothWrapper.h"
@@ -10,6 +11,7 @@
 @interface CoreBluetoothWrapped : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate>
 
 @property(nonatomic) arduino::Arduino *arduino;
+@property(nonatomic) handler::ArduinoEventHandler *arduinoEventHandler;
 @property(strong, nonatomic) CBCentralManager *centralManager;
 @property(strong, nonatomic) CBPeripheral *swagScanner;
 @property(strong, nonatomic) CBCharacteristic *rotateTableChar;
@@ -29,6 +31,8 @@
  * @param arduino arduino object to make calls on.
  */
 - (void)set_rotation_state_callback:(arduino::Arduino *)arduino;
+
+- (void)set_handler:(handler::ArduinoEventHandler *)arduinoEventHandler;
 
 /**
  * Start the bluetooth discovery and initialization process. Will create a CBCentralManager and

@@ -6,9 +6,12 @@ using namespace std::literals::chrono_literals;
 
 arduino::Arduino::Arduino() {
     bluetooth_object = get_bluetooth_obj();
+    event_handler = new handler::ArduinoEventHandler(bluetooth_object);
     set_rotation_state_callback(this, bluetooth_object);
-    start_bluetooth(bluetooth_object);
-    wait_for_connection();
+    set_handler(event_handler, bluetooth_object);
+//    start_bluetooth(bluetooth_object);
+//    wait_for_connection();
+    event_handler->connect_bluetooth();
 }
 
 void arduino::Arduino::rotate_table(int deg) {
@@ -42,5 +45,9 @@ void arduino::Arduino::wait_for_connection() {
 
 void arduino::Arduino::setIsConnected(bool in) {
     isConnected = in;
+}
+
+void arduino::Arduino::print_this() {
+    std::cout << "the arduino's address is: " << this << std::endl;
 }
 
