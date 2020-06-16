@@ -22,16 +22,10 @@ void rotate(void *obj, int deg) {
     [(id) obj rotate_table:deg];
 }
 
-void set_rotation_state_callback(void *arduino, void *obj) {
-    arduino::Arduino *a = static_cast<arduino::Arduino *>(arduino);
-    [(id) obj set_rotation_state_callback:a];
-}
-
 void set_handler(void *arduino_event_handler, void *obj) {
     handler::ArduinoEventHandler *a = static_cast<handler::ArduinoEventHandler *>(arduino_event_handler);
     [(id) obj set_handler:a];
 }
-
 
 
 /*-------------------------------------------------------
@@ -43,7 +37,6 @@ void set_handler(void *arduino_event_handler, void *obj) {
 
 - (void)rotate_table:(int)degrees {
     _arduinoEventHandler->set_is_table_rotating(true);
-    std::cout << "setting table to true" << std::endl;
     NSData *bytes = [NSData dataWithBytes:&degrees length:sizeof(degrees)];
     [_swagScanner
             writeValue:bytes
@@ -209,15 +202,15 @@ void set_handler(void *arduino_event_handler, void *obj) {
         // extract the data from the characteristic's value property and display the value based on the characteristic type
         NSData *dataBytes = characteristic.value;
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:TABLE_POSITION_CHAR_UUID]]) {
-            [self displayInfo:dataBytes];
+            [self displayTablePosInfo:dataBytes];
         } else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:IS_TABLE_ROTATING_CHAR_UUID]]) {
-            [self displayInfo:dataBytes];
-            [self set_arduino_is_rotating:dataBytes];
+            [self displayRotInfo:dataBytes];
+            [self set_is_rotating:dataBytes];
         }
     }
 }
 
-- (void)set_arduino_is_rotating:(NSData *)dataBytes {
+- (void)set_is_rotating:(NSData *)dataBytes {
     int theInteger;
     [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
     std::unique_lock<std::mutex> ul(_arduinoEventHandler->table_mutex);
@@ -227,12 +220,21 @@ void set_handler(void *arduino_event_handler, void *obj) {
     ul.lock();
 }
 
-// log the output
-- (void)displayInfo:(NSData *)dataBytes {
+- (void)displayRotInfo:(NSData *)dataBytes {
     int theInteger;
     [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
-    std::cout << "Output from notification " + std::to_string(theInteger) <<std::endl;
+//    if (theInteger == 1) {
+//        std::cout << "table is rotating" << std::endl;
+//    }
+//    else {
+//        std::cout << "table is not rotating" << std::endl;
+//    }
+}
 
+- (void)displayTablePosInfo:(NSData *)dataBytes {
+    int theInteger;
+    [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
+    std::cout << "Table is at position: " + std::to_string(theInteger) << std::endl;
 }
 
 @end
