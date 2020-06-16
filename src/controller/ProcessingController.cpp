@@ -38,26 +38,30 @@ void controller::ProcessingController::segment_clouds(std::string folder_path, C
 void controller::ProcessingController::register_all_clouds(std::string folder_path, CloudType::Type cloud_type) {
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, cloud_type, folder_path);
-    Eigen::Matrix4f global_transform;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr alignedInitialCloud(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloud(new pcl::PointCloud<pcl::PointXYZ>);
+    Eigen::Matrix4f global_transform = Eigen::Matrix4f::Identity();
+    pcl::PointCloud<pcl::PointXYZ>::Ptr result(new pcl::PointCloud<pcl::PointXYZ>), source, target;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr global_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
-    std::cout << "aligning clouds" << std::endl;
-    // align second cloud to first cloud
-    model->align_clouds(cloud_vector[1], cloud_vector[0], alignedInitialCloud, global_transform);
-    *finalCloud += *cloud_vector[0];
 
-    for (int i = 1; i < 12; i++) {
+    for (int i = 1; i < cloud_vector.size(); i++) {
 
-        pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-        pcl::transformPointCloud(*cloud_vector[i], *transformed_cloud, global_transform);
-        global_transform *= global_transform;
-        *finalCloud += *transformed_cloud;
-        std::cout << finalCloud->size() << std::endl;
+        source = cloud_vector[i-1];
+        target = cloud_vector[i];
+        pcl::PointCloud<pcl::PointXYZ>::Ptr temp_registered(new pcl::PointCloud<pcl::PointXYZ>);
+
+        Eigen::Matrix4f transform = model->register_pair_clouds(source, target, temp_registered);
+        Eigen::Matrix4f targetToSource = transform.inverse();
+
+        pcl::transformPointCloud(*temp_registered, *result, global_transform);
+
+//        file_handler->save_cloud(result, std::to_string(i), CloudType::Type::NORMAL);
+        *global_cloud += *result;
+        global_transform *= targetToSource;
+
     }
-    std::cout << "visualizing now" << std::endl;
-    std::cout << finalCloud->size() << std::endl;
-    visualize_cloud(finalCloud);
+
+
+    visualize_cloud(global_cloud);
 }
 
 void controller::ProcessingController::visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
