@@ -23,7 +23,7 @@ void rotate(void *obj, int deg) {
 }
 
 void set_handler(void *arduino_event_handler, void *obj) {
-    handler::ArduinoEventHandler *a = static_cast<handler::ArduinoEventHandler *>(arduino_event_handler);
+    auto *a = static_cast<handler::ArduinoEventHandler *>(arduino_event_handler);
     [(id) obj set_handler:a];
 }
 
@@ -44,9 +44,6 @@ void set_handler(void *arduino_event_handler, void *obj) {
                   type:CBCharacteristicWriteWithResponse];
 }
 
-- (void)set_rotation_state_callback:(arduino::Arduino *)arduino {
-    _arduino = arduino;
-}
 
 - (void)set_handler:(handler::ArduinoEventHandler *)arduinoEventHandler {
     _arduinoEventHandler = arduinoEventHandler;

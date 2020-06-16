@@ -13,8 +13,10 @@ int main() {
     auto *a = new arduino::Arduino;
     std::cout << "main thread: " << std::this_thread::get_id() << std::endl;
     a->rotate_table(10);
-    a->rotate_table(30);
     a->rotate_table(10);
+    a->rotate_table(10);
+
+    delete a;
 
 
 //    // keep the main thread alive

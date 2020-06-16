@@ -16,6 +16,8 @@ namespace arduino {
          */
         void rotate_table(int deg);
 
+        ~Arduino();
+
 
     private:
         handler::ArduinoEventHandler *event_handler;
