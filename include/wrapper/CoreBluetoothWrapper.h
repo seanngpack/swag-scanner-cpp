@@ -14,6 +14,8 @@ void *get_bluetooth_obj();
  */
 void set_rotation_state_callback(void *arduino, void *obj);
 
+void set_handler(void *arduino_event_handler, void *obj);
+
 /**
  * Start the bluetooth discovery and initialization process.
  * @param obj the wrapped object.

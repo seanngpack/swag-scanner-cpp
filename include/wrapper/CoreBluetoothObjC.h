@@ -1,15 +1,19 @@
 #include "Arduino.h"
+#include "ArduinoEventHandler.h"
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "CoreBluetoothWrapper.h"
 #import "SERVICES.h"
 
-#define CPP
+/**
+ * TODO: fix memory leak with holding void pointer references
+ */
 
 // An Objective-C class that needs to be accessed from C++
 @interface CoreBluetoothWrapped : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate>
 
 @property(nonatomic) arduino::Arduino *arduino;
+@property(nonatomic) handler::ArduinoEventHandler *arduinoEventHandler;
 @property(strong, nonatomic) CBCentralManager *centralManager;
 @property(strong, nonatomic) CBPeripheral *swagScanner;
 @property(strong, nonatomic) CBCharacteristic *rotateTableChar;
@@ -24,11 +28,7 @@
 - (void)dealloc;
 
 
-/**
- * Set arduino object as callback object.
- * @param arduino arduino object to make calls on.
- */
-- (void)set_rotation_state_callback:(arduino::Arduino *)arduino;
+- (void)set_handler:(handler::ArduinoEventHandler *)arduinoEventHandler;
 
 /**
  * Start the bluetooth discovery and initialization process. Will create a CBCentralManager and
@@ -46,6 +46,18 @@
  * Helper method to call setIsRotating on the Arduino.
  * @param dataBytes the bytes received from isRotating characteristic.
  */
-- (void)set_arduino_is_rotating:(NSData *)dataBytes;
+- (void)set_is_rotating:(NSData *)dataBytes;
+
+/**
+ * Display whether the table is rotating or not.
+ * @param dataBytes bytes from notification.
+ */
+- (void)displayRotInfo:(NSData *)dataBytes;
+
+/**
+ * Display the current position of the table received from the notification.
+ * @param dataBytes bytes from notification.
+ */
+- (void)displayTablePosInfo:(NSData *)dataBytes;
 
 @end

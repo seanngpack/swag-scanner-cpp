@@ -9,8 +9,6 @@
 ---------------------------------------------------------*/
 void *get_bluetooth_obj() {
     void *obj_ptr = [[CoreBluetoothWrapped alloc] init];
-
-    std::cout << "object id: " << obj_ptr << std::endl;
     return obj_ptr;
 }
 
@@ -24,10 +22,11 @@ void rotate(void *obj, int deg) {
     [(id) obj rotate_table:deg];
 }
 
-void set_rotation_state_callback(void *arduino, void *obj) {
-    arduino::Arduino *a = static_cast<arduino::Arduino *>(arduino);
-    [(id) obj set_rotation_state_callback:a];
+void set_handler(void *arduino_event_handler, void *obj) {
+    auto *a = static_cast<handler::ArduinoEventHandler *>(arduino_event_handler);
+    [(id) obj set_handler:a];
 }
+
 
 /*-------------------------------------------------------
               Objective-C implementation here
@@ -37,7 +36,7 @@ void set_rotation_state_callback(void *arduino, void *obj) {
 @implementation CoreBluetoothWrapped
 
 - (void)rotate_table:(int)degrees {
-    _arduino->setIsRotating(true);
+    _arduinoEventHandler->set_is_table_rotating(true);
     NSData *bytes = [NSData dataWithBytes:&degrees length:sizeof(degrees)];
     [_swagScanner
             writeValue:bytes
@@ -45,8 +44,9 @@ void set_rotation_state_callback(void *arduino, void *obj) {
                   type:CBCharacteristicWriteWithResponse];
 }
 
-- (void)set_rotation_state_callback:(arduino::Arduino *)arduino {
-    _arduino = arduino;
+
+- (void)set_handler:(handler::ArduinoEventHandler *)arduinoEventHandler {
+    _arduinoEventHandler = arduinoEventHandler;
 }
 
 
@@ -182,7 +182,12 @@ void set_rotation_state_callback(void *arduino, void *obj) {
             [self.swagScanner setNotifyValue:YES forCharacteristic:characteristic];
         }
     }
-    _arduino->setIsConnected(true);
+
+    std::unique_lock<std::mutex> ul(_arduinoEventHandler->bt_mutex);
+    _arduinoEventHandler->set_is_bt_connected(true);
+    ul.unlock();
+    _arduinoEventHandler->bt_cv.notify_one();
+    ul.lock();
 }
 
 // start receiving data from this method once we set up notifications. Also can be manually
@@ -194,30 +199,39 @@ void set_rotation_state_callback(void *arduino, void *obj) {
         // extract the data from the characteristic's value property and display the value based on the characteristic type
         NSData *dataBytes = characteristic.value;
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:TABLE_POSITION_CHAR_UUID]]) {
-            [self displayInfo:dataBytes];
+            [self displayTablePosInfo:dataBytes];
         } else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:IS_TABLE_ROTATING_CHAR_UUID]]) {
-            [self displayInfo:dataBytes];
-            [self set_arduino_is_rotating:dataBytes];
+            [self displayRotInfo:dataBytes];
+            [self set_is_rotating:dataBytes];
         }
     }
 }
 
-- (void)set_arduino_is_rotating:(NSData *)dataBytes {
+- (void)set_is_rotating:(NSData *)dataBytes {
     int theInteger;
     [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
-    if (theInteger == 1) {
-        _arduino->setIsRotating(true);
-    } else {
-        _arduino->setIsRotating(false);
-    }
+    std::unique_lock<std::mutex> ul(_arduinoEventHandler->table_mutex);
+    _arduinoEventHandler->set_is_table_rotating(theInteger == 1);
+    ul.unlock();
+    _arduinoEventHandler->table_cv.notify_one();
+    ul.lock();
 }
 
-// log the output
-- (void)displayInfo:(NSData *)dataBytes {
+- (void)displayRotInfo:(NSData *)dataBytes {
     int theInteger;
     [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
-    std::cout << "Output from notification " + std::to_string(theInteger) <<std::endl;
+//    if (theInteger == 1) {
+//        std::cout << "table is rotating" << std::endl;
+//    }
+//    else {
+//        std::cout << "table is not rotating" << std::endl;
+//    }
+}
 
+- (void)displayTablePosInfo:(NSData *)dataBytes {
+    int theInteger;
+    [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
+    std::cout << "Table is at position: " + std::to_string(theInteger) << std::endl;
 }
 
 @end
