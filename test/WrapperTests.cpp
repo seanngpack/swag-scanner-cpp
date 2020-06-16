@@ -13,16 +13,16 @@ using namespace std::literals::chrono_literals;
 int main() {
     auto *a = new arduino::Arduino;
     std::cout << "main thread: " << std::this_thread::get_id() << std::endl;
-//    a->rotate_table(10);
-//    a->rotate_table(10);
-//    a->rotate_table(10);
+    a->rotate_table(10);
+    a->rotate_table(10);
+    a->rotate_table(10);
 
 
-    // keep the main thread alive
-    while (true) {
-        std::this_thread::sleep_for(1s);
-//        std::cout << "working..." << std::endl;
-    }
+//    // keep the main thread alive
+//    while (true) {
+//        std::this_thread::sleep_for(1s);
+////        std::cout << "working..." << std::endl;
+//    }
 
     return 0;
 }

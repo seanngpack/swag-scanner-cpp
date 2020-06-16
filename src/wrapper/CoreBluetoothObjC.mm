@@ -9,8 +9,6 @@
 ---------------------------------------------------------*/
 void *get_bluetooth_obj() {
     void *obj_ptr = [[CoreBluetoothWrapped alloc] init];
-
-    std::cout << "object id: " << obj_ptr << std::endl;
     return obj_ptr;
 }
 
@@ -44,7 +42,8 @@ void set_handler(void *arduino_event_handler, void *obj) {
 @implementation CoreBluetoothWrapped
 
 - (void)rotate_table:(int)degrees {
-    _arduino->setIsRotating(true);
+    _arduinoEventHandler->set_is_table_rotating(true);
+    std::cout << "setting table to true" << std::endl;
     NSData *bytes = [NSData dataWithBytes:&degrees length:sizeof(degrees)];
     [_swagScanner
             writeValue:bytes
@@ -58,7 +57,6 @@ void set_handler(void *arduino_event_handler, void *obj) {
 
 - (void)set_handler:(handler::ArduinoEventHandler *)arduinoEventHandler {
     _arduinoEventHandler = arduinoEventHandler;
-    _arduinoEventHandler->print_this();
 }
 
 
@@ -194,14 +192,12 @@ void set_handler(void *arduino_event_handler, void *obj) {
             [self.swagScanner setNotifyValue:YES forCharacteristic:characteristic];
         }
     }
-//    _arduino->setIsConnected(true);
-//    _arduino->print_this();
+
     std::unique_lock<std::mutex> ul(_arduinoEventHandler->bt_mutex);
     _arduinoEventHandler->set_is_bt_connected(true);
     ul.unlock();
     _arduinoEventHandler->bt_cv.notify_one();
     ul.lock();
-    _arduinoEventHandler->print_this();
 }
 
 // start receiving data from this method once we set up notifications. Also can be manually
@@ -224,11 +220,11 @@ void set_handler(void *arduino_event_handler, void *obj) {
 - (void)set_arduino_is_rotating:(NSData *)dataBytes {
     int theInteger;
     [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
-    if (theInteger == 1) {
-        _arduino->setIsRotating(true);
-    } else {
-        _arduino->setIsRotating(false);
-    }
+    std::unique_lock<std::mutex> ul(_arduinoEventHandler->table_mutex);
+    _arduinoEventHandler->set_is_table_rotating(theInteger == 1);
+    ul.unlock();
+    _arduinoEventHandler->table_cv.notify_one();
+    ul.lock();
 }
 
 // log the output
