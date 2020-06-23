@@ -9,6 +9,7 @@
 
 
 TEST(SegmentationPhysicalTests, TestRemovePlane) {
+    GTEST_SKIP();
     std::string test_folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/FileHandlerPhysicalTests";
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
@@ -26,6 +27,48 @@ TEST(SegmentationPhysicalTests, TestRemovePlane) {
 
 //    visual::Visualizer visualizer;
 //    visualizer.simpleVis(cloudInSegmented);
+}
+
+TEST(SegmentationPhysicalTests, TestGetPlanes) {
+    std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/calibration2";
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/filtered/" + "9.pcd", *cloudIn);
+    segmentation::get_calibration_planes_coefs(cloudIn);
+
+//    visual::Visualizer *viewer;
+//    viewer->simpleVis(cloudIn);
+}
+
+TEST(SegmentationPhysicalTests, ViewAxis) {
+    using namespace std::chrono_literals;
+    std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/calibration2";
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/filtered/" + "8.pcd", *cloudIn);
+
+    pcl::PointXYZ p1;
+    p1.x = -0.0002;
+    p1.y = 0.0344;
+    p1.z = 0.4294;
+
+
+    pcl::PointXYZ p2;
+    p2.x = -0.2867;
+    p2.y = -14.6891;
+    p2.z = -8.0644;
+
+
+
+    pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
+    viewer->setBackgroundColor(0, 0, 0);
+    viewer->addPointCloud<pcl::PointXYZ>(cloudIn, "sample cloud");
+    viewer->addLine(p1, p2, std::string("line"), 0);
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
+    viewer->addCoordinateSystem(1.0);
+    viewer->initCameraParameters();
+    while (!viewer->wasStopped()) {
+        viewer->spinOnce(100);
+        std::this_thread::sleep_for(100ms);
+    }
 }
 
 

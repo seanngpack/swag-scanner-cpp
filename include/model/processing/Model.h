@@ -75,6 +75,13 @@ namespace model {
                                                               float leafSize = .01);
 
         /**
+         * Get the coefficients of the base plane of the given cloud.
+         * @param cloud input cloud.
+         * @return vector of size 4 of the plane coefficients.
+         */
+        std::vector<float> get_plane_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+
+        /**
          * Remove scanning bed plane from the cloud.
          * @param cloudIn cloud you want to remove the plane from.
          * @return cloud with the remove plane

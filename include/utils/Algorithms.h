@@ -35,6 +35,39 @@ namespace algos {
         pcl::PointXYZ point = pcl::PointXYZ(ux, uy, depth);
         return point;
     }
+
+    /**
+     * Given a copy of a point from the pointcloud, a point that a line passes through,
+     * and a direction vector, rotate the pointcloud point about that line and return
+     * a copy of the new point.
+     * @param point
+     * @return
+     */
+    inline pcl::PointXYZ rotate_about_line(pcl::PointXYZ point,
+                                           pcl::PointXYZ line_point,
+                                           std::vector<float> line_direction,
+                                           float theta) {
+        float x = point.x;
+        float y = point.y;
+        float z = point.z;
+        float a = line_point.x;
+        float b = line_point.y;
+        float c = line_point.z;
+        float u = line_direction[0];
+        float v = line_direction[1];
+        float w = line_direction[2];
+
+        pcl::PointXYZ p;
+        p.x = (a * (v * v + w * w) - u * (b * v + c * w - u * x - v * y - w * z)) * (1 - cos(theta)) + x * cos(theta) +
+              (-c * v + b * w - w * y + v * z) * sin(theta);
+        p.y = (b * (u * u + w * w) - v * (a * u + c * w - u * x - v * y - w * z)) * (1 - cos(theta)) + y * cos(theta) +
+              (c * u - a * w + w * x - u * z) * sin(theta);
+        p.z = (c * (u * u + v * v) - w * (a * u + b * v - u * x - v * y - w * z)) * (1 - cos(theta)) + z * cos(theta) +
+              (-b * u + a * v - v * x + u * y) * sin(theta);
+
+        return p;
+
+    }
 }
 
 #endif //SWAG_SCANNER_ALGORITHMS_H

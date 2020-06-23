@@ -53,6 +53,10 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::voxel_grid_filter(pcl::PointCl
     return filtering::voxel_grid_filter(cloud, leafSize);
 }
 
+std::vector<float> model::Model::get_plane_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+    return segmentation::get_plane_coefs(cloud);
+}
+
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn) {
     return segmentation::remove_plane(cloudIn);
 }
@@ -64,8 +68,8 @@ Eigen::Matrix4f model::Model::register_pair_clouds(pcl::PointCloud<pcl::PointXYZ
     icp.setInputSource(cloudIn);
     icp.setInputTarget(cloudOut);
 //    icp.setMaximumIterations (200);
-    icp.setTransformationEpsilon(1e-9);
-    icp.setMaxCorrespondenceDistance(0.01);
+//    icp.setTransformationEpsilon(1e-9);
+    icp.setMaxCorrespondenceDistance(0.002); // 2mm
 //    icp.setEuclideanFitnessEpsilon (1);
 //    icp.setRANSACOutlierRejectionThreshold (1.5);
     std::cout << "registering clouds..." << std::endl;

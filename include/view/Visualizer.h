@@ -24,6 +24,8 @@ namespace visual {
          */
         void simpleVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
 
+        void simpleVis(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> clouds);
+
         /**
          * Visualize pointclouds. first cloud is white and then green to successive darker greens
          * @param clouds vector of pointcloud you want to visualize
