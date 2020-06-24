@@ -59,7 +59,7 @@ protected:
 //    pcl::io::savePCDFileASCII(test_folder_path + "/raw/outSeg.pcd", *cloudOutSegmented);
 //
 //
-//    Eigen::Matrix4f transform = mod->register_pair_clouds(cloudInSegmented, cloudOutSegmented, finalCloud);
+//    Eigen::Matrix4f transform = mod->icp_register_pair_clouds(cloudInSegmented, cloudOutSegmented, finalCloud);
 //    std::cout << transform << std::endl;
 //    pcl::transformPointCloud(*cloudInSegmented, *transformedCloud, transform);
 //    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudOutSegmented, finalCloud};
@@ -98,9 +98,9 @@ protected:
 //    cloudInSegmented = mod->remove_plane(cloudInFiltered);
 //    cloudOutSegmented = mod->remove_plane(cloudOutFiltered);
 //
-////    mod->align_clouds(cloudInSegmented, cloudOutSegmented, finalCloud);
+////    mod->sac_align_pair_clouds(cloudInSegmented, cloudOutSegmented, finalCloud);
 //
-//    Eigen::Matrix4f transform = mod->register_pair_clouds(cloudInSegmented, cloudOutSegmented, finalCloudICP);
+//    Eigen::Matrix4f transform = mod->icp_register_pair_clouds(cloudInSegmented, cloudOutSegmented, finalCloudICP);
 //
 //    Eigen::Matrix4f targetToSource = transform.inverse();
 //    pcl::transformPointCloud(*finalCloudICP, *transformedCloud, targetToSource);

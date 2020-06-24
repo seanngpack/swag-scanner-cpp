@@ -11,11 +11,11 @@
 #include <pcl/features/integral_image_normal.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/fpfh.h>
-#include <pcl/registration/icp.h>
-#include <pcl/registration/ia_ransac.h>
 #include <CameraTypes.h>
 #include <CloudType.h>
 #include "Visualizer.h"
+#include "Algorithms.h"
+#include "Registration.h"
 
 namespace model {
 
@@ -88,38 +88,39 @@ namespace model {
          */
         pcl::PointCloud<pcl::PointXYZ>::Ptr remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn);
 
+
+        /**
+         * Rotate a point cloud about a line.
+         * @param cloud the cloud you want to rotate. Must be an unorganized cloud.
+         * @param line_point a point on the axis you want to rotate about.
+         * @param line_direction direction vector for the line (normalized)
+         * @param theta angle in radians you want to rotate.
+         * @return the rotated cloud.
+         */
+        pcl::PointCloud<pcl::PointXYZ>::Ptr rotate_cloud_about_line(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                                                    std::vector<float> line_point,
+                                                                    std::vector<float> line_direction,
+                                                                    float theta);
+
         /**
          * Use ICP to register an input and target cloud.
          * @returns a transformation matrix from the source to target cloud.
          */
-        Eigen::Matrix4f register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
-                                             pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut,
-                                             pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud);
-
-        /**
-         * Use SAC to get initial cloud alignment.
-         * @param cloudIn input cloud for template.
-         * @param cloudTarget align to template.
-         * @param cloudAligned output, should be the input cloud aligned to template.
-         */
-        void align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
-                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
-                          pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures,
-                          pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudOutFeatures,
-                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned,
-                          Eigen::Matrix4f &transformation);
+        Eigen::Matrix4f icp_register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+                                                 pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut,
+                                                 pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud);
 
 
         /**
-         * Overloaded method that will calculate the features given just the in and target clouds.
+         * Find initial alignment of two clouds using FPFH.
          * @param cloudIn
          * @param cloudTarget
          * @param cloudAligned
          */
-        void align_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
-                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
-                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned,
-                          Eigen::Matrix4f &transformation);
+        void sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+                                   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
+                                   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned,
+                                   Eigen::Matrix4f &transformation);
 
 
         ~Model();

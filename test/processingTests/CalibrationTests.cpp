@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Visualizer.h"
 #include "Segmentation.h"
+#include "Algorithms.h"
 
 
 class CalibrationPhysicalFixture : public ::testing::Test {
@@ -33,35 +34,25 @@ TEST_F(CalibrationPhysicalFixture, TestPlaneCalibration) {
 //    std::vector<float> coefs = mod->get_plane_coefs(cloudIn);
 //    mod->get_plane_coefs(cloudOut);
 
-    std::vector<float> coefs = {-0.2685, -14.7235, -8.4938};
+    std::vector<float> origin = {-0.0002, 0.0344, 0.4294};
+    std::vector<float> direction = {-0.0158, -0.8661, -0.4996};
 
     // from 1.pcd -> 4.pcd
     float theta = 0.15708;
-    std::vector<float> temp = {coefs[0], coefs[1], coefs[2]};
-    Eigen::Vector3f axis(temp.data());
 
-//    Eigen::Matrix3f c_matrix;
-//    c_matrix << 0, -axis[2], axis[1],
-//            axis[2], 0, -axis[0],
-//            -axis[1], axis[0], 0;
+    transformed->resize(cloudIn->size());
 
-//    Eigen::Matrix3f iden = Eigen::Matrix3f::Identity();
-//    Eigen::Matrix3f R = iden + (1 - cos(theta)) * c_matrix * c_matrix + sin(theta) * c_matrix;
-//    std::cout << R << std::endl;
-//
-//    Eigen::Matrix4f rot_matrix;
-//    rot_matrix << R(0, 0), R(0, 1), R(0, 2), 0,
-//            R(1, 0), R(1, 1), R(1, 2), 0,
-//            R(2, 0), R(2, 1), R(2, 2), 0,
-//            0, 0, 0, 1;
-//    std::cout << rot_matrix << std::endl;
-//    pcl::transformPointCloud(*cloudIn, *transformed, rot_matrix);
-//
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr transformedICP(new pcl::PointCloud<pcl::PointXYZ>);
-//    mod->register_pair_clouds(transformed, cloudOut, transformedICP);
+    for (int i = 0; i < cloudIn->size(); i++) {
+        transformed->points[i] = algos::rotate_point_about_line(cloudIn->points[i],
+                                                                origin,
+                                                                direction,
+                                                                theta);
+    }
+
+
 
     visual::Visualizer visualizer;
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudOut, transformedICP};
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudOut, transformed};
     visualizer.simpleVis(clouds);
 
 }

@@ -9,10 +9,13 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Mo
 void controller::ProcessingController::process_data() {
 }
 
-void
-controller::ProcessingController::filter_clouds(std::string folder_path, CloudType::Type cloud_type, float leaf_size) {
+void controller::ProcessingController::set_scan_folder_path(std::string folder_path) {
+    file_handler->set_scan_folder_path(folder_path);
+}
+
+void controller::ProcessingController::filter_clouds(CloudType::Type cloud_type, float leaf_size) {
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
-    file_handler->load_clouds(cloud_vector, cloud_type, folder_path);
+    file_handler->load_clouds(cloud_vector, cloud_type, file_handler->get_scan_folder_path());
     for (int i = 0; i < cloud_vector.size(); i++) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr croppedCloud = model->crop_cloud(cloud_vector[i],
                                                                              -.15, .15,
@@ -24,9 +27,9 @@ controller::ProcessingController::filter_clouds(std::string folder_path, CloudTy
     }
 }
 
-void controller::ProcessingController::segment_clouds(std::string folder_path, CloudType::Type cloud_type) {
+void controller::ProcessingController::segment_clouds(CloudType::Type cloud_type) {
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
-    file_handler->load_clouds(cloud_vector, cloud_type, folder_path);
+    file_handler->load_clouds(cloud_vector, cloud_type, file_handler->get_scan_folder_path());
     for (int i = 0; i < cloud_vector.size(); i++) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr segmentedCloud = model->remove_plane(cloud_vector[i]);
         std::cout << "saving segmented cloud" << std::endl;
@@ -35,9 +38,9 @@ void controller::ProcessingController::segment_clouds(std::string folder_path, C
 }
 
 
-void controller::ProcessingController::register_all_clouds(std::string folder_path, CloudType::Type cloud_type) {
+void controller::ProcessingController::register_all_clouds(CloudType::Type cloud_type) {
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
-    file_handler->load_clouds(cloud_vector, cloud_type, folder_path);
+    file_handler->load_clouds(cloud_vector, cloud_type, file_handler->get_scan_folder_path());
     Eigen::Matrix4f global_transform = Eigen::Matrix4f::Identity();
     pcl::PointCloud<pcl::PointXYZ>::Ptr result(new pcl::PointCloud<pcl::PointXYZ>), source, target;
     pcl::PointCloud<pcl::PointXYZ>::Ptr global_cloud(new pcl::PointCloud<pcl::PointXYZ>);
@@ -45,11 +48,11 @@ void controller::ProcessingController::register_all_clouds(std::string folder_pa
 
     for (int i = 1; i < cloud_vector.size(); i++) {
 
-        source = cloud_vector[i-1];
+        source = cloud_vector[i - 1];
         target = cloud_vector[i];
         pcl::PointCloud<pcl::PointXYZ>::Ptr temp_registered(new pcl::PointCloud<pcl::PointXYZ>);
 
-        Eigen::Matrix4f transform = model->register_pair_clouds(source, target, temp_registered);
+        Eigen::Matrix4f transform = model->icp_register_pair_clouds(source, target, temp_registered);
         Eigen::Matrix4f targetToSource = transform.inverse();
 
         pcl::transformPointCloud(*temp_registered, *result, global_transform);
@@ -59,7 +62,6 @@ void controller::ProcessingController::register_all_clouds(std::string folder_pa
         global_transform *= targetToSource;
 
     }
-
 
     visualize_cloud(global_cloud);
 }

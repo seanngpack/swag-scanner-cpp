@@ -40,19 +40,21 @@ namespace algos {
      * Given a copy of a point from the pointcloud, a point that a line passes through,
      * and a direction vector, rotate the pointcloud point about that line and return
      * a copy of the new point.
-     * @param point
-     * @return
+     * @param point the point you want to rotate.
+     * @param line_point point on the line.
+     * @param line_direction direction vector (normalized) of the axis.
+     * @return a new rotated point.
      */
-    inline pcl::PointXYZ rotate_about_line(pcl::PointXYZ point,
-                                           pcl::PointXYZ line_point,
-                                           std::vector<float> line_direction,
-                                           float theta) {
+    inline pcl::PointXYZ rotate_point_about_line(pcl::PointXYZ point,
+                                                 std::vector<float> line_point,
+                                                 std::vector<float> line_direction,
+                                                 float theta) {
         float x = point.x;
         float y = point.y;
         float z = point.z;
-        float a = line_point.x;
-        float b = line_point.y;
-        float c = line_point.z;
+        float a = line_point[0];
+        float b = line_point[1];
+        float c = line_point[2];
         float u = line_direction[0];
         float v = line_direction[1];
         float w = line_direction[2];

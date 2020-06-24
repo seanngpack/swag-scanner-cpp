@@ -27,7 +27,7 @@ int main() {
                                                                    viewer,
                                                                    file_handler);
 //    scanController->scan(9);
-    processController->filter_clouds(file_handler->get_scan_folder_path(), CloudType::Type::RAW, .0003);
+    processController->filter_clouds(CloudType::Type::RAW, .0003);
 //    processController->segment_clouds(file_handler->get_scan_folder_path(), CloudType::Type::FILTERED);
 //    processController->register_all_clouds("/Users/seanngpack/Programming Stuff/Projects/scanner_files/18",
 //                                           CloudType::Type::SEGMENTED);

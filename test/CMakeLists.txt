@@ -36,7 +36,8 @@ add_executable(tests_run
         utilsTests/FileHandlerPhysicalTests.cpp
         WrapperTests.cpp processingTests/DepthTests.cpp
         processingTests/ModelPhysicalTests.cpp
-        processingTests/SegmentationPhysicalTets.cpp processingTests/CalibrationTests.cpp)
+        processingTests/SegmentationPhysicalTets.cpp
+        processingTests/CalibrationTests.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main
