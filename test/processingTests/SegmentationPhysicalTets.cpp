@@ -39,6 +39,7 @@ TEST(SegmentationPhysicalTests, TestGetPlanes) {
 //    viewer->simpleVis(cloudIn);
 }
 
+// view rotation axis on the visualizer
 TEST(SegmentationPhysicalTests, ViewAxis) {
     using namespace std::chrono_literals;
     std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/calibration2";

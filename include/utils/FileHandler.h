@@ -157,6 +157,7 @@ namespace file {
         /**
          * Create the sub folders defined in CloudTypes in the scan_folder_path if they
          * don't exist.
+         * Also creates a /calibration folder with a calibration_info.txt file
          */
         void create_sub_folders();
 

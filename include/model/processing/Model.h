@@ -104,6 +104,9 @@ namespace model {
 
         /**
          * Use ICP to register an input and target cloud.
+         * @param cloudIn input cloud.
+         * @param cloudOut target cloud.
+         * @param transformedCloud the final transformed cloud.
          * @returns a transformation matrix from the source to target cloud.
          */
         Eigen::Matrix4f icp_register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
@@ -113,9 +116,9 @@ namespace model {
 
         /**
          * Find initial alignment of two clouds using FPFH.
-         * @param cloudIn
-         * @param cloudTarget
-         * @param cloudAligned
+         * @param cloudIn pointcloud.
+         * @param cloudTarget target cloud.
+         * @param cloudAligned the aligned cloud.
          */
         void sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,

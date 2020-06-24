@@ -1,4 +1,5 @@
 #include "ProcessingController.h"
+#include <cmath>
 
 controller::ProcessingController::ProcessingController(std::shared_ptr<model::Model> model,
                                                        visual::Visualizer *viewer,
@@ -64,6 +65,26 @@ void controller::ProcessingController::register_all_clouds(CloudType::Type cloud
     }
 
     visualize_cloud(global_cloud);
+}
+
+void controller::ProcessingController::rotate_all_clouds(CloudType::Type cloud_type) {
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
+    file_handler->load_clouds(cloud_vector, cloud_type, file_handler->get_scan_folder_path());
+
+    float theta = -3.0 * (M_PI / 180.0); // TODO: make a file system and retrieve this value from a file
+    std::vector<float> origin = {-0.0002, 0.0344, 0.4294};
+    std::vector<float> direction = {-0.0158, -0.8661, -0.4996};
+    float rot_angle = theta;
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr global(new pcl::PointCloud<pcl::PointXYZ>);
+    *global = *cloud_vector[0];
+    for (int i = 1; i < cloud_vector.size(); i++) {
+        pcl::PointCloud<pcl::PointXYZ>::Ptr rotated(new pcl::PointCloud<pcl::PointXYZ>);
+        rotated = model->rotate_cloud_about_line(cloud_vector[i], origin, direction, rot_angle);
+        rot_angle += theta;
+        *global += *rotated;
+    }
+    viewer->simpleVis(global);
 }
 
 void controller::ProcessingController::visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {

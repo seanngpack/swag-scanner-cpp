@@ -50,6 +50,12 @@ namespace controller {
          */
         void register_all_clouds(CloudType::Type cloud_type);
 
+        /**
+         * Use rotation axis to align all clouds to initial.
+         * @param cloud_type type determines which folder you want to select clouds from.
+         */
+        void rotate_all_clouds(CloudType::Type cloud_type);
+
 
         void visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 
