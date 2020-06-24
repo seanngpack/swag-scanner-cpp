@@ -10,6 +10,8 @@
 #include "PathType.h"
 #include <string>
 #include <unordered_map>
+#include <CoreServices/CoreServices.h>
+
 
 namespace file {
     /**
@@ -19,7 +21,18 @@ namespace file {
     public:
 
 
-        inline static const std::string default_data_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files";
+        inline static const std::string default_swag_scanner_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files";
+        inline static const std::string default_path = [](){
+            FSRef ref;
+            OSType folderType = kApplicationSupportFolderType;
+            char path[PATH_MAX];
+
+            FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
+            FSRefMakePath( &ref, (UInt8*)&path, PATH_MAX );
+            std::string program_folder = "/SwagScanner";
+            program_folder = path + program_folder;
+            return program_folder;}();
+
 
         /**
          * Sorting function that sorts files and directories in order from lowest to greatest.
@@ -140,7 +153,7 @@ namespace file {
                 const std::string &folder_path = std::string());
 
     private:
-        std::string all_data_folder_path;
+        std::string swag_scanner_path;
         std::string scan_folder_path;
 
 
@@ -153,6 +166,12 @@ namespace file {
          *
          */
         std::string find_scan_folder(const std::string &folder);
+
+        /**
+         * Checks to see if a /SwagScanner folder exists in Library/Application Support.
+         * If the folder does not exist, then create one. Otherwise, continue.
+         */
+        void check_program_folder();
 
         /**
          * Create the sub folders defined in CloudTypes in the scan_folder_path if they

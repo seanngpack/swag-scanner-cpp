@@ -3,6 +3,7 @@ project(swag_scanner)
 
 set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES
+        include/utils/json.hpp
         include/model/arduino/Arduino.h src/model/arduino/Arduino.cpp
         include/model/arduino/ArduinoEventHandler.h src/model/arduino/ArduinoEventHandler.cpp
         include/wrapper/SERVICES.h

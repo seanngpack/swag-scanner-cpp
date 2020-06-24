@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include "FileHandler.h"
 #include "PathType.h"
+#include "json.hpp"
 
+using json = nlohmann::json;
 using namespace testing;
 
 
@@ -50,7 +52,7 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolderInvalidPath) {
  */
 TEST_F(FileHandlerFixture, TestGetCurrentScanFolder) {
     EXPECT_EQ(handler->get_scan_folder_path(),
-              "/Users/seanngpack/Programming Stuff/Projects/scanner_files/18");
+              "/Users/seanngpack/Programming Stuff/Projects/scanner_files/19");
 }
 
 /**
@@ -72,6 +74,8 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolderEmptyCase) {
  * Also see if it creates new folders within it.
  */
 TEST_F(FileHandlerFixture, TestSetFolderPath) {
+    std::cout << "UNDER ME IS PATH" << std::endl;
+    std::cout << handler->default_path << std::endl;
 //    handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff");
 //    EXPECT_EQ(handler->get_scan_folder_path(),
 //              "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing");
@@ -83,4 +87,22 @@ TEST_F(FileHandlerFixture, TestSetFolderPath) {
 TEST_F(FileHandlerFixture, TestSetFolderPathInvalid) {
     EXPECT_THROW(handler->set_scan_folder_path("aboslute nononsense"),
                  std::invalid_argument);
+}
+
+TEST_F(FileHandlerFixture, TestJSON) {
+    json j2 = {
+            {"pi", 3.141},
+            {"happy", true},
+            {"name", "Niels"},
+            {"nothing", nullptr},
+            {"answer", {
+                           {"everything", 42}
+                   }},
+            {"list", {1, 0, 2}},
+            {"object", {
+                           {"currency", "USD"},
+                         {"value", 42.99}
+                   }}
+    };
+    std::cout << j2;
 }
