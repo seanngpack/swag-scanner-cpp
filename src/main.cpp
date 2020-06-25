@@ -14,7 +14,9 @@ int main() {
     std::shared_ptr<model::Model> model = std::make_shared<model::Model>();
     auto *viewer = new visual::Visualizer();
     std::shared_ptr<file::FileHandler> file_handler = std::make_shared<file::FileHandler>(false);
-    file_handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff/Projects/scanner_files/17");
+//    file_handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/calibration2");
+//    std::shared_ptr<file::FileHandler> file_handler = std::make_shared<file::FileHandler>(true);
+    file_handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff/Projects/scanner_files/18");
 
 
 //    auto *scanController = new controller::ScanController(camera,
@@ -24,11 +26,14 @@ int main() {
     auto *processController = new controller::ProcessingController(model,
                                                                    viewer,
                                                                    file_handler);
-//    controller->scan(9);
-//    processController->filter_clouds(file_handler->get_scan_folder_path(), CloudType::Type::RAW, .0003);
+//    scanController->scan(9);
+//    processController->filter_clouds(CloudType::Type::RAW, .0003);
 //    processController->segment_clouds(file_handler->get_scan_folder_path(), CloudType::Type::FILTERED);
-    processController->register_all_clouds("/Users/seanngpack/Programming Stuff/Projects/scanner_files/17",
-                                           CloudType::Type::SEGMENTED);
+//    processController->register_all_clouds("/Users/seanngpack/Programming Stuff/Projects/scanner_files/18",
+//                                           CloudType::Type::SEGMENTED);
+    processController->rotate_all_clouds(CloudType::Type::FILTERED);
+
+
 
 //    delete scanController;
     delete processController;

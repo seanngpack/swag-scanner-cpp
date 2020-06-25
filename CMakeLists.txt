@@ -3,7 +3,9 @@ project(swag_scanner)
 
 set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES
+        include/utils/json.hpp
         include/model/arduino/Arduino.h src/model/arduino/Arduino.cpp
+        include/model/arduino/ArduinoEventHandler.h src/model/arduino/ArduinoEventHandler.cpp
         include/wrapper/SERVICES.h
         include/wrapper/CoreBluetoothWrapper.h
         include/wrapper/CoreBluetoothObjC.h
@@ -18,7 +20,9 @@ set(SOURCE_FILES
         include/utils/FileHandler.h src/utils/FileHandler.cpp
         include/utils/CloudType.h
         include/model/processing/Depth.h include/model/processing/Filtering.h
-        src/controller/ScanController.cpp include/controller/ScanController.h include/model/processing/Segmentation.h include/utils/PathType.h include/controller/ProcessingController.h src/controller/ProcessingController.cpp)
+        src/controller/ScanController.cpp include/controller/ScanController.h
+        include/model/processing/Segmentation.h include/controller/ProcessingController.h
+        src/controller/ProcessingController.cpp include/model/processing/Registration.h)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)

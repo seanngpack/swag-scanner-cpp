@@ -7,9 +7,10 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include "CloudType.h"
-#include "PathType.h"
 #include <string>
 #include <unordered_map>
+#include <CoreServices/CoreServices.h>
+
 
 namespace file {
     /**
@@ -18,11 +19,8 @@ namespace file {
     class FileHandler {
     public:
 
-
-        inline static const std::string default_data_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files";
-
         /**
-         * Sorting function that sorts files and directories in order from lowest to greatest.
+         * Sorting function that sorts files and directories numerically in order from lowest to greatest.
          * @param path1 first path.
          * @param path2 second path.
          * @return true if the first file is smaller than the second, false otherwise.
@@ -57,31 +55,29 @@ namespace file {
         }
 
         /**
-         * Default constructor makes a FileHandler using my default path. Only works
-         * on Sean's computer. The default path points to my all data folder then it will
-         * auto generate a scan folder for me.
+         * Default constructor makes a FileHandler. Searches for SwagScanner in the /applications path
+         * and creates a new SwagScanner directory if it doesn't exist. Will also create a folder "1" under
+         * the /data directory and set it as the current scan folder. * Then it will update the settings.json on the
+         * latest scan. If SwagScanner exists, then it will use the current scan folder according to the
+         * settings.json file.
          */
         FileHandler();
 
         /**
          * Constructor takes in a flag and determines whether to create a new scan folder
-         * or not. If the flag is set to true then it is identical to the default constructor.
+         * or not. If the flag is set to true then it will create a new scan folder numerically.
+         * Then it will update the settings.json on the latest scan.
          * @param auto_create_flag
          */
         FileHandler(bool auto_create_flag);
 
         /**
-         * Constructor for FileHandler given a folder path and a PathType indicating
-         * whether it is a path to all the scans or a specific scan folder. If it is the former,
-         * will auto create a new scan folder and use that as the current scan folder.
-         * If it is the latter than it will not auto create a new folder and just use
-         * the given scan folder as the current scan folder.
+         * Crates a scan folder with the given scan name. If the scan is already there,
+         * then just set the current scan folder to it and do not touch anything inside the directory.
          *
-         * @param folder_path A path to either all the scans or a path to a specific scan folder.
-         * @param path_type whether it is an all data path or specific scan folder path.
+         * @param scan_name name of the scan.
          */
-        FileHandler(const std::string &folder_path,
-                    PathType::Type path_type);
+        FileHandler(const char *scan_name);
 
 
         /**
@@ -109,10 +105,8 @@ namespace file {
                         const std::string &cloud_name,
                         CloudType::Type cloud_type);
 
-        /**
-         * NOTE: Currently does not support full paths.
-         * TODO: Give this method same optional path functionality as laod_clouds
-         * Load a pointcloud from the current_scan_folder given the name and type.
+        /*
+         * Load a pointcloud from the scan folder given the name and type.
          * @param cloud the cloud you want to load the cloud into.
          * @param cloud_name name of the cloud.
          * @param cloud_type type of the cloud.
@@ -125,55 +119,87 @@ namespace file {
 
 
         /**
-         * Loads all clouds in the current scan folder into a vector.
+         * Loads all clouds in the current scan folder into a vector given the cloud type.
          * Only works with files that have numbers in the file name.
-         * If the folder path is not given and the auto_create_flag is false, then
-         * throw and error because the path is not set. If you give the method a parameter for the
-         * folder_path then it will ignore scan_folder_path and use the inputted path.
          * @param cloud_vector the vector you want to load the clouds into.
          * @param cloud_type determines which folder to search for.
          */
         void load_clouds(
                 std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
                         Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
-                CloudType::Type cloud_type,
-                const std::string &folder_path = std::string());
+                CloudType::Type cloud_type);
 
     private:
-        std::string all_data_folder_path;
+        std::string swag_scanner_path = []() {
+            FSRef ref;
+            OSType folderType = kApplicationSupportFolderType;
+            char path[PATH_MAX];
+
+            FSFindFolder(kUserDomain, folderType, kCreateFolder, &ref);
+            FSRefMakePath(&ref, (UInt8 *) &path, PATH_MAX);
+            std::string program_folder = "/SwagScanner";
+            program_folder = path + program_folder;
+            return program_folder;
+        }();
         std::string scan_folder_path;
 
 
         /**
-         * Given the all data folder, find the current scan folder.
+         * Go to the SwagScanner/calibration directory and find the latest calibration by date.
+         * @return path to the latest calibration.
+         */
+        std::string find_latest_calibration();
+
+        /**
+         * Finds the last scan folder using the settings.json file in the /settings directory.
+         * @return path to the latest scan.
+         */
+        std::string find_latest_scan_folder();
+
+        /**
+         * Find the current scan folder by sorting the existing scans numerically.
          * E.g. if there are scans 1->10 in the all data folder, that means the current
          * scan must be 11.
          * Does not make the folder for the current scan.
          * @param folder the all data folder.
          *
          */
-        std::string find_scan_folder(const std::string &folder);
+        std::string find_latest_scan_folder_numeric(const std::string &folder);
+
+        /**
+         * Checks to see if a /SwagScanner folder exists in Library/Application Support.
+         * If the folder does not exist, then create one. Otherwise, continue.
+         * @returns true if the program folder is already there. False if it isn't.
+         */
+        bool check_program_folder();
 
         /**
          * Create the sub folders defined in CloudTypes in the scan_folder_path if they
          * don't exist.
+         * Also creates a /calibration folder with a calibration_info.txt file
          */
         void create_sub_folders();
 
         /**
-         * Check if the folder exists. If not, then throw an error.
-         * @param folder the folder that houses all the scanner data.
-         * @returns true if the input is good.
+         * Update the settings.json file "latest_scan" field.
          */
-        static bool check_folder_input(const std::string &folder);
+        void set_settings_latest_scan(std::string &folder_path);
 
         /**
-         * Check to see if a file exists given the path.
-         * @param file_path the path to the file.
-         * @return true if it exists.
-         * @throws illegal argument exception if there isn't a file there.
+         * Update the json file in the latest scan with the given info.
+         * @param date current date and time.
+         * @param angle angle intervals of the scan.
+         * @param cal calibration path.
          */
-        static bool check_file_input(const std::string &file_path);
+        void update_info_json(std::string date, std::string angle, std::string cal);
+
+        /**
+         * Check if the folder exists.
+         * @param folder the folder path.
+         * @returns true if the folder exists, false otherwise.
+         */
+        bool check_folder_input(const std::string &folder);
+
     };
 }
 #endif //SWAG_SCANNER_FILEHANDLER_H
