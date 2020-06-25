@@ -26,9 +26,9 @@ file::FileHandler::FileHandler(bool auto_create_flag) {
 }
 
 file::FileHandler::FileHandler(const char *scan_name) {
-    if (check_folder_input(scan_name)) {
-        scan_folder_path = swag_scanner_path + "/scans/" + scan_name;
-    } else {
+    scan_folder_path = swag_scanner_path + "/scans/" + scan_name;
+    if (!check_folder_input(scan_folder_path)) {
+        std::cout << "gets here";
         scan_folder_path = swag_scanner_path + "/scans/" + scan_name;
         create_directory(scan_folder_path);
         create_sub_folders();
@@ -113,9 +113,8 @@ json file::FileHandler::get_info_json() {
     return info_json;
 }
 
-void file::FileHandler::update_info_json(std::string date, std::string angle, std::string cal) {
+void file::FileHandler::update_info_json(std::string date, int angle, std::string cal) {
     json info_json = get_info_json();
-
     info_json["date"] = date;
     info_json["angle"] = angle;
     info_json["calibration"] = cal;
@@ -172,6 +171,12 @@ std::string file::FileHandler::find_latest_scan_folder_numeric(const std::string
         }
     }
 
+    // if the vector is 0 that means there are no folders with numeric names
+    if (v.empty()) {
+        std::string name = folder + "/1";
+        return name;
+    }
+
     // sort them using custom lambda function to order.
     std::sort(v.begin(), v.end(), path_sort);
 
@@ -226,7 +231,7 @@ void file::FileHandler::create_sub_folders() {
         std::ofstream info(scan_folder_path + "/info/info.json");
         json info_json = {
                 {"date",        "null"},
-                {"angle",       "null"},
+                {"angle",       0},
                 {"calibration", find_latest_calibration()}
         };
         info << std::setw(4) << info_json << std::endl;

@@ -143,7 +143,13 @@ namespace file {
          * @param angle angle intervals of the scan.
          * @param cal calibration path.
          */
-        void update_info_json(std::string date, std::string angle, std::string cal);
+        void update_info_json(std::string date, int angle, std::string cal);
+
+        /**
+         * Go to the SwagScanner/calibration directory and find the latest calibration by date.
+         * @return path to the latest calibration.
+         */
+        std::string find_latest_calibration();
 
     private:
         std::string swag_scanner_path = []() {
@@ -160,11 +166,6 @@ namespace file {
         std::string scan_folder_path;
 
 
-        /**
-         * Go to the SwagScanner/calibration directory and find the latest calibration by date.
-         * @return path to the latest calibration.
-         */
-        std::string find_latest_calibration();
 
         /**
          * Finds the last scan folder using the settings.json file in the /settings directory.

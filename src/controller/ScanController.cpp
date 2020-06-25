@@ -11,6 +11,17 @@ void controller::ScanController::scan(int degs) {
     if (360 % degs != 0) {
         throw std::invalid_argument("Invalid input, scanning input must be a factor of 360");
     }
+
+    // get current time
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%m-%d-%Y %H:%M:%S");
+    auto str = oss.str();
+
+    file_handler->update_info_json(str, degs, file_handler->find_latest_calibration());
+
+
     int num_rotations = 360 / degs;
 
     const camera::ss_intrinsics *intrin = camera->get_intrinsics();
