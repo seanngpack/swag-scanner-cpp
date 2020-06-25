@@ -1,7 +1,5 @@
 #include "FileHandler.h"
-#include "json.hpp"
 
-using json = nlohmann::json;
 using namespace boost::filesystem;
 
 file::FileHandler::FileHandler() {
@@ -106,6 +104,24 @@ void file::FileHandler::load_clouds(
         cloud_vector.push_back(cloud);
     }
     std::cout << "finished loading clouds" << std::endl;
+}
+
+json file::FileHandler::get_info_json() {
+    std::ifstream info(scan_folder_path + "/info/info.json");
+    json info_json;
+    info >> info_json;
+    return info_json;
+}
+
+void file::FileHandler::update_info_json(std::string date, std::string angle, std::string cal) {
+    json info_json = get_info_json();
+
+    info_json["date"] = date;
+    info_json["angle"] = angle;
+    info_json["calibration"] = cal;
+
+    std::ofstream updated_file(scan_folder_path + "/info/info.json");
+    updated_file << std::setw(4) << info_json << std::endl; // write to file
 }
 
 std::string file::FileHandler::find_latest_calibration() {
@@ -228,17 +244,6 @@ void file::FileHandler::set_settings_latest_scan(std::string &folder_path) {
     updated_file << std::setw(4) << settings_json << std::endl; // write to file
 }
 
-void file::FileHandler::update_info_json(std::string date, std::string angle, std::string cal) {
-    std::ifstream info(scan_folder_path + "/info/info.json");
-    json info_json;
-    info >> info_json;
-    info_json["date"] = date;
-    info_json["angle"] = angle;
-    info_json["calibration"] = cal;
-
-    std::ofstream updated_file(scan_folder_path + "/info/info.json");
-    updated_file << std::setw(4) << info_json << std::endl; // write to file
-}
 
 bool file::FileHandler::check_folder_input(const std::string &folder) {
     return is_directory(folder);

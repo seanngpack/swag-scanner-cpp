@@ -10,8 +10,9 @@
 #include <string>
 #include <unordered_map>
 #include <CoreServices/CoreServices.h>
+#include "json.hpp"
 
-
+using json = nlohmann::json;
 namespace file {
     /**
      * Contains functions to handle file saving and loading.
@@ -129,6 +130,21 @@ namespace file {
                         Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
                 CloudType::Type cloud_type);
 
+
+        /**
+         * Get the info.json file.
+         * @return json file.
+         */
+        json get_info_json();
+
+        /**
+         * Update the json file in the latest scan with the given info.
+         * @param date current date and time.
+         * @param angle angle intervals of the scan.
+         * @param cal calibration path.
+         */
+        void update_info_json(std::string date, std::string angle, std::string cal);
+
     private:
         std::string swag_scanner_path = []() {
             FSRef ref;
@@ -185,13 +201,6 @@ namespace file {
          */
         void set_settings_latest_scan(std::string &folder_path);
 
-        /**
-         * Update the json file in the latest scan with the given info.
-         * @param date current date and time.
-         * @param angle angle intervals of the scan.
-         * @param cal calibration path.
-         */
-        void update_info_json(std::string date, std::string angle, std::string cal);
 
         /**
          * Check if the folder exists.
