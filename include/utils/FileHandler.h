@@ -150,6 +150,10 @@ namespace file {
         std::string scan_folder_path;
 
 
+        /**
+         * Go to the SwagScanner/calibration directory and find the latest calibration by date.
+         * @return path to the latest calibration.
+         */
         std::string find_latest_calibration();
 
         /**

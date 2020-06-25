@@ -118,6 +118,29 @@ void file::FileHandler::load_clouds(
     std::cout << "finished loading clouds" << std::endl;
 }
 
+std::string file::FileHandler::find_latest_calibration() {
+
+
+    std::string someDir = swag_scanner_path + "/calibration";
+    typedef std::multimap<std::time_t, std::string> result_set_t;
+    result_set_t result_set;
+
+    // store files in ascending order
+    if ( exists(someDir) && is_directory(someDir))
+    {
+        for(auto &&x : directory_iterator(someDir))
+        {
+            if (is_regular_file(x.status()) && x.path().filename() != ".DS_Store")
+            {
+                result_set.insert(result_set_t::value_type(last_write_time(x.path()), x.path().string()));
+            }
+        }
+    }
+    // get the last element which is the latest date
+    std::string path = result_set.rbegin()->second;
+    return path;
+}
+
 std::string file::FileHandler::find_latest_scan_folder() {
     std::ifstream settings(swag_scanner_path + "/settings/settings.json");
     json settings_json;
@@ -203,7 +226,7 @@ void file::FileHandler::create_sub_folders() {
         json info_json = {
                 {"date",        "null"},
                 {"angle",       "null"},
-                {"calibration", "null"}
+                {"calibration", find_latest_calibration()}
         };
         info << std::setw(4) << info_json << std::endl;
     }
