@@ -69,7 +69,6 @@ void file::FileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
 void file::FileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                    const std::string &cloud_name,
                                    CloudType::Type cloud_type) {
-    check_file_input(cloud_name);
     std::string open_path = scan_folder_path
                             + "/"
                             + CloudType::String(cloud_type)
@@ -81,17 +80,8 @@ void file::FileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
 
 void file::FileHandler::load_clouds(
         std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
-        CloudType::Type cloud_type,
-        const std::string &folder_path) {
-    std::string load_path;
-    if (folder_path.empty()) {
-        load_path = scan_folder_path + "/" + CloudType::String(cloud_type);;
-
-    } else {
-        check_folder_input(folder_path);
-        load_path = folder_path + "/" + CloudType::String(cloud_type);
-    }
-
+        CloudType::Type cloud_type) {
+    std::string load_path = scan_folder_path + "/" + CloudType::String(cloud_type);
     std::vector<path> cloud_paths;
 
     // load paths into cloud_paths vector
@@ -119,19 +109,14 @@ void file::FileHandler::load_clouds(
 }
 
 std::string file::FileHandler::find_latest_calibration() {
-
-
     std::string someDir = swag_scanner_path + "/calibration";
     typedef std::multimap<std::time_t, std::string> result_set_t;
     result_set_t result_set;
 
     // store files in ascending order
-    if ( exists(someDir) && is_directory(someDir))
-    {
-        for(auto &&x : directory_iterator(someDir))
-        {
-            if (is_regular_file(x.status()) && x.path().filename() != ".DS_Store")
-            {
+    if (exists(someDir) && is_directory(someDir)) {
+        for (auto &&x : directory_iterator(someDir)) {
+            if (is_regular_file(x.status()) && x.path().filename() != ".DS_Store") {
                 result_set.insert(result_set_t::value_type(last_write_time(x.path()), x.path().string()));
             }
         }
@@ -258,12 +243,3 @@ void file::FileHandler::update_info_json(std::string date, std::string angle, st
 bool file::FileHandler::check_folder_input(const std::string &folder) {
     return is_directory(folder);
 }
-
-bool file::FileHandler::check_file_input(const std::string &file_path) {
-    if (!exists(file_path)) {
-        throw std::invalid_argument("File path error, " + file_path + " does not exist");
-    }
-    return true;
-}
-
-

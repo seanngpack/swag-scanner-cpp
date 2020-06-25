@@ -20,7 +20,7 @@ namespace file {
     public:
 
         /**
-         * Sorting function that sorts files and directories in order from lowest to greatest.
+         * Sorting function that sorts files and directories numerically in order from lowest to greatest.
          * @param path1 first path.
          * @param path2 second path.
          * @return true if the first file is smaller than the second, false otherwise.
@@ -105,10 +105,8 @@ namespace file {
                         const std::string &cloud_name,
                         CloudType::Type cloud_type);
 
-        /**
-         * NOTE: Currently does not support full paths.
-         * TODO: Give this method same optional path functionality as laod_clouds
-         * Load a pointcloud from the current_scan_folder given the name and type.
+        /*
+         * Load a pointcloud from the scan folder given the name and type.
          * @param cloud the cloud you want to load the cloud into.
          * @param cloud_name name of the cloud.
          * @param cloud_type type of the cloud.
@@ -121,19 +119,15 @@ namespace file {
 
 
         /**
-         * Loads all clouds in the current scan folder into a vector.
+         * Loads all clouds in the current scan folder into a vector given the cloud type.
          * Only works with files that have numbers in the file name.
-         * If the folder path is not given and the auto_create_flag is false, then
-         * throw and error because the path is not set. If you give the method a parameter for the
-         * folder_path then it will ignore scan_folder_path and use the inputted path.
          * @param cloud_vector the vector you want to load the clouds into.
          * @param cloud_type determines which folder to search for.
          */
         void load_clouds(
                 std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
                         Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
-                CloudType::Type cloud_type,
-                const std::string &folder_path = std::string());
+                CloudType::Type cloud_type);
 
     private:
         std::string swag_scanner_path = []() {
@@ -146,7 +140,7 @@ namespace file {
             std::string program_folder = "/SwagScanner";
             program_folder = path + program_folder;
             return program_folder;
-        }();;
+        }();
         std::string scan_folder_path;
 
 
@@ -206,13 +200,6 @@ namespace file {
          */
         bool check_folder_input(const std::string &folder);
 
-        /**
-         * Check to see if a file exists given the path.
-         * @param file_path the path to the file.
-         * @return true if it exists.
-         * @throws illegal argument exception if there isn't a file there.
-         */
-        bool check_file_input(const std::string &file_path);
     };
 }
 #endif //SWAG_SCANNER_FILEHANDLER_H

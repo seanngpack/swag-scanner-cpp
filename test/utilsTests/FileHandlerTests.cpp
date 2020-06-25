@@ -13,7 +13,7 @@ protected:
     file::FileHandler *handler;
 
     virtual void SetUp() {
-        handler = new file::FileHandler();
+        handler = new file::FileHandler(true);
     }
 
     virtual void TearDown() {
