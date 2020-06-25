@@ -7,7 +7,6 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include "CloudType.h"
-#include "PathType.h"
 #include <string>
 #include <unordered_map>
 #include <CoreServices/CoreServices.h>
@@ -58,8 +57,9 @@ namespace file {
         /**
          * Default constructor makes a FileHandler. Searches for SwagScanner in the /applications path
          * and creates a new SwagScanner directory if it doesn't exist. Will also create a folder "1" under
-         * the /data directory and set it as the current scan folder.
-         * If SwagScanner exists, then it will use the current scan folder according to the settings.json file.
+         * the /data directory and set it as the current scan folder. * Then it will update the settings.json on the
+         * latest scan. If SwagScanner exists, then it will use the current scan folder according to the
+         * settings.json file.
          */
         FileHandler();
 
@@ -72,17 +72,12 @@ namespace file {
         FileHandler(bool auto_create_flag);
 
         /**
-         * Constructor for FileHandler given a folder path and a PathType indicating
-         * whether it is a path to all the scans or a specific scan folder. If it is the former,
-         * will auto create a new scan folder and use that as the current scan folder.
-         * If it is the latter than it will not auto create a new folder and just use
-         * the given scan folder as the current scan folder.
+         * Crates a scan folder with the given scan name. If the scan is already there,
+         * then just set the current scan folder to it and do not touch anything inside the directory.
          *
-         * @param folder_path A path to either all the scans or a path to a specific scan folder.
-         * @param path_type whether it is an all data path or specific scan folder path.
+         * @param scan_name name of the scan.
          */
-        FileHandler(const std::string &folder_path,
-                    PathType::Type path_type);
+        FileHandler(const char *scan_name);
 
 
         /**
@@ -186,11 +181,16 @@ namespace file {
         void create_sub_folders();
 
         /**
-         * Check if the folder exists. If not, then throw an error.
-         * @param folder the folder that houses all the scanner data.
-         * @returns true if the input is good.
+         * Update the settings.json file "latest_scan" field.
          */
-        static bool check_folder_input(const std::string &folder);
+        void update_settings_latest_scan(std::string &folder_path);
+
+        /**
+         * Check if the folder exists.
+         * @param folder the folder path.
+         * @returns true if the folder exists, false otherwise.
+         */
+        bool check_folder_input(const std::string &folder);
 
         /**
          * Check to see if a file exists given the path.
@@ -198,7 +198,7 @@ namespace file {
          * @return true if it exists.
          * @throws illegal argument exception if there isn't a file there.
          */
-        static bool check_file_input(const std::string &file_path);
+        bool check_file_input(const std::string &file_path);
     };
 }
 #endif //SWAG_SCANNER_FILEHANDLER_H

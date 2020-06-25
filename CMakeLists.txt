@@ -21,7 +21,7 @@ set(SOURCE_FILES
         include/utils/CloudType.h
         include/model/processing/Depth.h include/model/processing/Filtering.h
         src/controller/ScanController.cpp include/controller/ScanController.h
-        include/model/processing/Segmentation.h include/utils/PathType.h include/controller/ProcessingController.h
+        include/model/processing/Segmentation.h include/controller/ProcessingController.h
         src/controller/ProcessingController.cpp include/model/processing/Registration.h)
 
 set(WRAPPERS ./include/wrapper)

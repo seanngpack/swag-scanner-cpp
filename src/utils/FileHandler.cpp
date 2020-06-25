@@ -7,43 +7,45 @@ using namespace boost::filesystem;
 file::FileHandler::FileHandler() {
     bool exists = check_program_folder();
     if (!exists) {
-        find_latest_scan_folder_numeric(swag_scanner_path + "/data");
+        scan_folder_path = find_latest_scan_folder_numeric(swag_scanner_path + "/scans");
         create_directory(scan_folder_path);
         create_sub_folders();
-    }
-    else {
-        find_latest_scan_folder();
+        update_settings_latest_scan(scan_folder_path);
+    } else {
+        scan_folder_path = find_latest_scan_folder();
     }
 
 }
 
 file::FileHandler::FileHandler(bool auto_create_flag) {
-    scan_folder_path = find_latest_scan_folder_numeric(swag_scanner_path);
+    scan_folder_path = find_latest_scan_folder_numeric(swag_scanner_path + "/scans");
+    std::cout << scan_folder_path << std::endl;
     if (auto_create_flag) {
         create_directory(scan_folder_path);
         create_sub_folders();
+        update_settings_latest_scan(scan_folder_path);
     }
 }
 
-file::FileHandler::FileHandler(const std::string &folder_path, PathType::Type path_type) {
-    if (path_type == PathType::Type::ALL_DATA_FOLDER) {
-        check_folder_input(folder_path);
-        swag_scanner_path = folder_path;
-        scan_folder_path = find_latest_scan_folder_numeric(folder_path);
+file::FileHandler::FileHandler(const char *scan_name) {
+    if (check_folder_input(scan_name)) {
+        scan_folder_path = swag_scanner_path + "/scans/" + scan_name;
+    } else {
+        scan_folder_path = swag_scanner_path + "/scans/" + scan_name;
         create_directory(scan_folder_path);
         create_sub_folders();
-    } else if (path_type == PathType::Type::SCAN_FOLDER) {
-        swag_scanner_path = "";
-        check_folder_input(folder_path);
-        scan_folder_path = folder_path;
+        update_settings_latest_scan(scan_folder_path);
     }
 }
 
 
 void file::FileHandler::set_scan_folder_path(const std::string &path) {
-    check_folder_input(path);
-    this->scan_folder_path = path;
-    create_sub_folders();
+    if (check_folder_input(path)) {
+        this->scan_folder_path = path;
+        create_sub_folders();
+    } else {
+        throw std::invalid_argument("cannot set path, folder does not exist");
+    }
 }
 
 std::string file::FileHandler::get_scan_folder_path() {
@@ -121,16 +123,18 @@ std::string file::FileHandler::find_latest_scan_folder() {
     json settings_json;
     settings >> settings_json;
     std::string latest = settings_json["latest_scan"];
-    return swag_scanner_path + "/data/" + latest;
+    std::cout << "found latest scan in settings.json file to be " << latest << std::endl;
+    return latest;
 }
 
 std::string file::FileHandler::find_latest_scan_folder_numeric(const std::string &folder) {
-    check_folder_input(folder);
+    if (!check_folder_input(folder)) {
+        throw std::invalid_argument("This shouldn't happen");
+    }
 
     // if folder is empty let's start at 1.
     if (is_empty(folder)) {
         std::string name = folder + "/1";
-        scan_folder_path = name;
         return name;
     }
 
@@ -193,11 +197,18 @@ void file::FileHandler::create_sub_folders() {
     }
 }
 
+void file::FileHandler::update_settings_latest_scan(std::string &folder_path) {
+    std::ifstream settings(swag_scanner_path + "/settings/settings.json");
+    json settings_json;
+    settings >> settings_json;
+    settings_json["latest_scan"] = folder_path;
+
+    std::ofstream updated_file(swag_scanner_path + "/settings/settings.json");
+    updated_file << settings_json;
+}
+
 bool file::FileHandler::check_folder_input(const std::string &folder) {
-    if (!is_directory(folder)) {
-        throw std::invalid_argument("Folder path error, " + folder + " does not exist.");
-    }
-    return true;
+    return is_directory(folder);
 }
 
 bool file::FileHandler::check_file_input(const std::string &file_path) {

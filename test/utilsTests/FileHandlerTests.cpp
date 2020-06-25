@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include "FileHandler.h"
-#include "PathType.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -14,7 +13,7 @@ protected:
     file::FileHandler *handler;
 
     virtual void SetUp() {
-        handler = new file::FileHandler(false);
+        handler = new file::FileHandler();
     }
 
     virtual void TearDown() {
@@ -22,26 +21,8 @@ protected:
     }
 };
 
-
-/**
- * Comment this test out when not in use.
- * Tests to see if the constructor actually creates a new folder when
- * the auto_create flag is set to true.
- */
-//TEST_F(FileHandlerFixture, TestCreateFolderWithConstructor) {
-//    file::FileHandler *test = new file::FileHandler(
-//            "/Users/seanngpack/Programming Stuff/Projects/scanner_files",
-//            true);
-//}
-
-/**
- * Test the get current scan folder method with an invalid path name.
- * Expecting invalid argument errors.
- */
-TEST_F(FileHandlerFixture, TestGetCurrentScanFolderInvalidPath) {
-    ASSERT_THROW(file::FileHandler *test = new file::FileHandler("swagggg", PathType::Type::ALL_DATA_FOLDER),
-                 std::invalid_argument);
-}
+// remember to watch out for creating a brand new directory from scratch. See if
+// all folders are being created, files, etc.
 
 /**
  * Test to see if the method sets the correct current scan folder.
@@ -52,20 +33,24 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolderInvalidPath) {
  */
 TEST_F(FileHandlerFixture, TestGetCurrentScanFolder) {
     EXPECT_EQ(handler->get_scan_folder_path(),
-              "/Users/seanngpack/Programming Stuff/Projects/scanner_files/19");
+              "/Users/seanngpack/Library/Application Support/SwagScanner/scans/1");
 }
 
 /**
- * Test if the file handler is smart enough to make the current scan directory "1" if
- * the directory entereed is empty.
+ * Test to see if passing "true" to the constructor will make a new folder
+ * Skip this test when not in use.
  */
-TEST_F(FileHandlerFixture, TestGetCurrentScanFolderEmptyCase) {
+TEST_F(FileHandlerFixture, TestConstructor2) {
     GTEST_SKIP();
-    file::FileHandler *test = new file::FileHandler(
-            "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/empty",
-            PathType::Type::ALL_DATA_FOLDER);
-    EXPECT_EQ(test->get_scan_folder_path(),
-              "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/empty/1");
+    file::FileHandler *handler = new file::FileHandler(true);
+}
+
+/**
+ * Test to see if passing a scan name will work.
+ */
+TEST_F(FileHandlerFixture, TestConstructor3) {
+    GTEST_SKIP();
+    file::FileHandler *handler = new file::FileHandler("swagg");
 }
 
 /**
@@ -74,8 +59,6 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolderEmptyCase) {
  * Also see if it creates new folders within it.
  */
 TEST_F(FileHandlerFixture, TestSetFolderPath) {
-    std::cout << "UNDER ME IS PATH" << std::endl;
-    std::cout << handler->default_path << std::endl;
 //    handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff");
 //    EXPECT_EQ(handler->get_scan_folder_path(),
 //              "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing");
@@ -87,22 +70,4 @@ TEST_F(FileHandlerFixture, TestSetFolderPath) {
 TEST_F(FileHandlerFixture, TestSetFolderPathInvalid) {
     EXPECT_THROW(handler->set_scan_folder_path("aboslute nononsense"),
                  std::invalid_argument);
-}
-
-TEST_F(FileHandlerFixture, TestJSON) {
-    json j2 = {
-            {"pi", 3.141},
-            {"happy", true},
-            {"name", "Niels"},
-            {"nothing", nullptr},
-            {"answer", {
-                           {"everything", 42}
-                   }},
-            {"list", {1, 0, 2}},
-            {"object", {
-                           {"currency", "USD"},
-                         {"value", 42.99}
-                   }}
-    };
-    std::cout << j2;
 }
