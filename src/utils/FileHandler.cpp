@@ -4,16 +4,21 @@
 using json = nlohmann::json;
 using namespace boost::filesystem;
 
-file::FileHandler::FileHandler() :
-        swag_scanner_path(default_swag_scanner_path),
-        scan_folder_path(find_scan_folder(swag_scanner_path)) {
-    create_directory(scan_folder_path);
-    create_sub_folders();
+file::FileHandler::FileHandler() {
+    bool exists = check_program_folder();
+    if (!exists) {
+        find_latest_scan_folder_numeric(swag_scanner_path + "/data");
+        create_directory(scan_folder_path);
+        create_sub_folders();
+    }
+    else {
+        find_latest_scan_folder();
+    }
+
 }
 
 file::FileHandler::FileHandler(bool auto_create_flag) {
-    swag_scanner_path = default_swag_scanner_path;
-    scan_folder_path = find_scan_folder(swag_scanner_path);
+    scan_folder_path = find_latest_scan_folder_numeric(swag_scanner_path);
     if (auto_create_flag) {
         create_directory(scan_folder_path);
         create_sub_folders();
@@ -24,7 +29,7 @@ file::FileHandler::FileHandler(const std::string &folder_path, PathType::Type pa
     if (path_type == PathType::Type::ALL_DATA_FOLDER) {
         check_folder_input(folder_path);
         swag_scanner_path = folder_path;
-        scan_folder_path = find_scan_folder(folder_path);
+        scan_folder_path = find_latest_scan_folder_numeric(folder_path);
         create_directory(scan_folder_path);
         create_sub_folders();
     } else if (path_type == PathType::Type::SCAN_FOLDER) {
@@ -111,7 +116,15 @@ void file::FileHandler::load_clouds(
     std::cout << "finished loading clouds" << std::endl;
 }
 
-std::string file::FileHandler::find_scan_folder(const std::string &folder) {
+std::string file::FileHandler::find_latest_scan_folder() {
+    std::ifstream settings(swag_scanner_path + "/settings/settings.json");
+    json settings_json;
+    settings >> settings_json;
+    std::string latest = settings_json["latest_scan"];
+    return swag_scanner_path + "/data/" + latest;
+}
+
+std::string file::FileHandler::find_latest_scan_folder_numeric(const std::string &folder) {
     check_folder_input(folder);
 
     // if folder is empty let's start at 1.
@@ -146,26 +159,28 @@ std::string file::FileHandler::find_scan_folder(const std::string &folder) {
     return name;
 }
 
-void file::FileHandler::check_program_folder() {
-    if (!exists(default_path)) {
-        std::cout << "No SwagScanner application folder detected, creating one at: " + default_path << std::endl;
-        create_directory(default_path);
-        create_directory(default_path + "/settings");
-        create_directory(default_path + "/scans");
-        create_directory(default_path + "/calibration");
-        std::ofstream settings(default_path + "/settings/settings.json"); // create json file
+bool file::FileHandler::check_program_folder() {
+    if (!exists(swag_scanner_path)) {
+        std::cout << "No SwagScanner application folder detected, creating one at: " + swag_scanner_path << std::endl;
+        create_directory(swag_scanner_path);
+        create_directory(swag_scanner_path + "/settings");
+        create_directory(swag_scanner_path + "/scans");
+        create_directory(swag_scanner_path + "/calibration");
+        std::ofstream settings(swag_scanner_path + "/settings/settings.json"); // create json file
         json settings_json = {
-                {"version", .1},
-                {"current_scan", "none"}
+                {"version",     .1},
+                {"latest_scan", "none"}
         };
         settings << std::setw(4) << settings_json << std::endl; // write to file
-        std::ofstream calibration(default_path + "/calibration/default_calibration.json"); // create json file
+        std::ofstream calibration(swag_scanner_path + "/calibration/default_calibration.json"); // create json file
         json calibration_json = {
-                {"origin point", {-0.0002, 0.0344, 0.4294}},
+                {"origin point",   {-0.0002, 0.0344,  0.4294}},
                 {"axis direction", {-0.0158, -0.8661, -0.4996}}
         };
         calibration << std::setw(4) << calibration_json << std::endl; // write to file
+        return false;
     }
+    return true;
 }
 
 void file::FileHandler::create_sub_folders() {

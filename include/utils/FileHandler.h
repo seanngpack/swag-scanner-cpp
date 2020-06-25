@@ -20,20 +20,6 @@ namespace file {
     class FileHandler {
     public:
 
-
-        inline static const std::string default_swag_scanner_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files";
-        inline static const std::string default_path = [](){
-            FSRef ref;
-            OSType folderType = kApplicationSupportFolderType;
-            char path[PATH_MAX];
-
-            FSFindFolder( kUserDomain, folderType, kCreateFolder, &ref );
-            FSRefMakePath( &ref, (UInt8*)&path, PATH_MAX );
-            std::string program_folder = "/SwagScanner";
-            program_folder = path + program_folder;
-            return program_folder;}();
-
-
         /**
          * Sorting function that sorts files and directories in order from lowest to greatest.
          * @param path1 first path.
@@ -70,15 +56,17 @@ namespace file {
         }
 
         /**
-         * Default constructor makes a FileHandler using my default path. Only works
-         * on Sean's computer. The default path points to my all data folder then it will
-         * auto generate a scan folder for me.
+         * Default constructor makes a FileHandler. Searches for SwagScanner in the /applications path
+         * and creates a new SwagScanner directory if it doesn't exist. Will also create a folder "1" under
+         * the /data directory and set it as the current scan folder.
+         * If SwagScanner exists, then it will use the current scan folder according to the settings.json file.
          */
         FileHandler();
 
         /**
          * Constructor takes in a flag and determines whether to create a new scan folder
-         * or not. If the flag is set to true then it is identical to the default constructor.
+         * or not. If the flag is set to true then it will create a new scan folder numerically.
+         * Then it will update the settings.json on the latest scan.
          * @param auto_create_flag
          */
         FileHandler(bool auto_create_flag);
@@ -153,25 +141,42 @@ namespace file {
                 const std::string &folder_path = std::string());
 
     private:
-        std::string swag_scanner_path;
+        std::string swag_scanner_path = []() {
+            FSRef ref;
+            OSType folderType = kApplicationSupportFolderType;
+            char path[PATH_MAX];
+
+            FSFindFolder(kUserDomain, folderType, kCreateFolder, &ref);
+            FSRefMakePath(&ref, (UInt8 *) &path, PATH_MAX);
+            std::string program_folder = "/SwagScanner";
+            program_folder = path + program_folder;
+            return program_folder;
+        }();;
         std::string scan_folder_path;
 
+        /**
+         * Finds the last scan folder using the settings.json file in the /settings directory.
+         * @return path to the latest scan.
+         */
+        std::string find_latest_scan_folder();
 
         /**
-         * Given the all data folder, find the current scan folder.
+         * TODO: Update this according to new file architecture
+         * Find the current scan folder by sorting the existing scans numerically.
          * E.g. if there are scans 1->10 in the all data folder, that means the current
          * scan must be 11.
          * Does not make the folder for the current scan.
          * @param folder the all data folder.
          *
          */
-        std::string find_scan_folder(const std::string &folder);
+        std::string find_latest_scan_folder_numeric(const std::string &folder);
 
         /**
          * Checks to see if a /SwagScanner folder exists in Library/Application Support.
          * If the folder does not exist, then create one. Otherwise, continue.
+         * @returns true if the program folder is already there. False if it isn't.
          */
-        void check_program_folder();
+        bool check_program_folder();
 
         /**
          * Create the sub folders defined in CloudTypes in the scan_folder_path if they
