@@ -10,7 +10,7 @@ file::FileHandler::FileHandler() {
         scan_folder_path = find_latest_scan_folder_numeric(swag_scanner_path + "/scans");
         create_directory(scan_folder_path);
         create_sub_folders();
-        update_settings_latest_scan(scan_folder_path);
+        set_settings_latest_scan(scan_folder_path);
     } else {
         scan_folder_path = find_latest_scan_folder();
     }
@@ -23,7 +23,7 @@ file::FileHandler::FileHandler(bool auto_create_flag) {
     if (auto_create_flag) {
         create_directory(scan_folder_path);
         create_sub_folders();
-        update_settings_latest_scan(scan_folder_path);
+        set_settings_latest_scan(scan_folder_path);
     }
 }
 
@@ -34,7 +34,7 @@ file::FileHandler::FileHandler(const char *scan_name) {
         scan_folder_path = swag_scanner_path + "/scans/" + scan_name;
         create_directory(scan_folder_path);
         create_sub_folders();
-        update_settings_latest_scan(scan_folder_path);
+        set_settings_latest_scan(scan_folder_path);
     }
 }
 
@@ -195,16 +195,41 @@ void file::FileHandler::create_sub_folders() {
             std::cout << "Creating folder " + p << std::endl;
         }
     }
+    std::string info_p = scan_folder_path + "/info";
+    if (!exists(info_p)) {
+        create_directory(info_p);
+        std::cout << "Creating folder " + info_p << std::endl;
+        std::ofstream info(scan_folder_path + "/info/info.json");
+        json info_json = {
+                {"date",        "null"},
+                {"angle",       "null"},
+                {"calibration", "null"}
+        };
+        info << std::setw(4) << info_json << std::endl;
+    }
+
 }
 
-void file::FileHandler::update_settings_latest_scan(std::string &folder_path) {
+void file::FileHandler::set_settings_latest_scan(std::string &folder_path) {
     std::ifstream settings(swag_scanner_path + "/settings/settings.json");
     json settings_json;
     settings >> settings_json;
     settings_json["latest_scan"] = folder_path;
 
     std::ofstream updated_file(swag_scanner_path + "/settings/settings.json");
-    updated_file << settings_json;
+    updated_file << std::setw(4) << settings_json << std::endl; // write to file
+}
+
+void file::FileHandler::update_info_json(std::string date, std::string angle, std::string cal) {
+    std::ifstream info(scan_folder_path + "/info/info.json");
+    json info_json;
+    info >> info_json;
+    info_json["date"] = date;
+    info_json["angle"] = angle;
+    info_json["calibration"] = cal;
+
+    std::ofstream updated_file(scan_folder_path + "/info/info.json");
+    updated_file << std::setw(4) << info_json << std::endl; // write to file
 }
 
 bool file::FileHandler::check_folder_input(const std::string &folder) {

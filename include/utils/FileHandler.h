@@ -149,6 +149,9 @@ namespace file {
         }();;
         std::string scan_folder_path;
 
+
+        std::string find_latest_calibration();
+
         /**
          * Finds the last scan folder using the settings.json file in the /settings directory.
          * @return path to the latest scan.
@@ -156,7 +159,6 @@ namespace file {
         std::string find_latest_scan_folder();
 
         /**
-         * TODO: Update this according to new file architecture
          * Find the current scan folder by sorting the existing scans numerically.
          * E.g. if there are scans 1->10 in the all data folder, that means the current
          * scan must be 11.
@@ -183,7 +185,15 @@ namespace file {
         /**
          * Update the settings.json file "latest_scan" field.
          */
-        void update_settings_latest_scan(std::string &folder_path);
+        void set_settings_latest_scan(std::string &folder_path);
+
+        /**
+         * Update the json file in the latest scan with the given info.
+         * @param date current date and time.
+         * @param angle angle intervals of the scan.
+         * @param cal calibration path.
+         */
+        void update_info_json(std::string date, std::string angle, std::string cal);
 
         /**
          * Check if the folder exists.
