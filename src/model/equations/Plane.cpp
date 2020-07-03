@@ -1,4 +1,4 @@
-#include "Plane.h"
+#include "../../../include/model/Equations/Plane.h"
 
 
 equations::Plane::Plane(float A, float B, float C, float D) : A(A), B(B), C(C), D(D) {}

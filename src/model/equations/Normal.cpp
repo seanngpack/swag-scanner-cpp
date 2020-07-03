@@ -1,4 +1,4 @@
-#include "Normal.h"
+#include "../../../include/model/Equations/Normal.h"
 
 equations::Normal::Normal(float A, float B, float C) : A(A), B(B), C(C) {}
 

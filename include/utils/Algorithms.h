@@ -10,8 +10,8 @@
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
 #include "../types/CameraTypes.h"
-#include "Normal.h"
-#include "Plane.h"
+#include "../model/Equations/Normal.h"
+#include "../model/Equations/Plane.h"
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
 
@@ -76,25 +76,6 @@ namespace algos {
 
     }
 
-    /**
-     * Calculate the A matrix in Ax = b
-     * @param ground_normal normal vector to the ground plane.
-     * @param upright_planes vector of plane equations for the upright planes.
-     * @return the A matrix (N-1, 3)
-     */
-    inline Eigen::MatrixXf build_A_matrix(pcl::ModelCoefficients::Ptr ground_normal,
-                                          std::vector<pcl::ModelCoefficients::Ptr> upright_planes) {
-        int rows = upright_planes.size() - 1;
-        int cols = 3;
-        Eigen::MatrixXd A(rows, cols);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                A(i,j) = 0;
-            }
-        }
-    }
-
-//    float coeff()
 }
 
 #endif //SWAG_SCANNER_ALGORITHMS_H

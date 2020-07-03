@@ -9,7 +9,8 @@ include_directories(${swag_scanner_SOURCE_DIR}/include/utils
                     ${swag_scanner_SOURCE_DIR}/include/wrapper
                     ${swag_scanner_SOURCE_DIR}/include/view
                     ${swag_scanner_SOURCE_DIR}/include/model/arduino
-                    ${swag_scanner_SOURCE_DIR}/include/types)
+                    ${swag_scanner_SOURCE_DIR}/include/types
+                    ${swag_scanner_SOURCE_DIR}/include/model/equations)
 
 include_directories("/opt/librealsense/include")
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
@@ -29,20 +30,20 @@ add_executable(tests_run
         ${swag_scanner_SOURCE_DIR}/src/wrapper/CoreBluetoothObjC.mm
         ${swag_scanner_SOURCE_DIR}/src/model/arduino/Arduino.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/arduino/ArduinoEventHandler.cpp
-        ${swag_scanner_SOURCE_DIR}/src/types/Normal.cpp
-        ${swag_scanner_SOURCE_DIR}/src/types/Plane.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/equations/Normal.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/equations/Plane.cpp
         processingTests/ModelTests.cpp
         utilsTests/AlgosTests.cpp
-        typeTests/CameraTypesTests.cpp
+        typesTests/CameraTypesTests.cpp
         utilsTests/FileHandlerTests.cpp
-        typeTests/CloudTypeTests.cpp
+        typesTests/CloudTypeTests.cpp
         utilsTests/FileHandlerPhysicalTests.cpp
         WrapperTests.cpp processingTests/DepthTests.cpp
         processingTests/ModelPhysicalTests.cpp
         processingTests/SegmentationPhysicalTets.cpp
         processingTests/CalibrationTests.cpp
-        typesTests/NormalTests.cpp
-        typesTests/PlaneTests.cpp)
+        equationsTests/NormalTests.cpp
+        equationsTests/PlaneTests.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main
