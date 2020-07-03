@@ -6,7 +6,7 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "CloudType.h"
+#include "../types/CloudType.h"
 #include <string>
 #include <unordered_map>
 #include <CoreServices/CoreServices.h>
@@ -136,6 +136,12 @@ namespace file {
          * @return json file.
          */
         json get_info_json();
+
+        /**
+         * Get the latest calibration json file. Finds the latest calibration file via info.json.
+         * @return the calibration json.
+         */
+        json get_calibration_json();
 
         /**
          * Update the json file in the latest scan with the given info.

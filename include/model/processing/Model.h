@@ -11,8 +11,8 @@
 #include <pcl/features/integral_image_normal.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/fpfh.h>
-#include <CameraTypes.h>
-#include <CloudType.h>
+#include "../../types/CameraTypes.h"
+#include "../../types/CloudType.h"
 #include "Visualizer.h"
 #include "Algorithms.h"
 #include "Registration.h"

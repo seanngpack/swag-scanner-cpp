@@ -113,6 +113,15 @@ json file::FileHandler::get_info_json() {
     return info_json;
 }
 
+json file::FileHandler::get_calibration_json() {
+    json info_json = get_info_json();
+    std::string calibration_path = info_json["calibration"];
+    std::ifstream calibration(calibration_path);
+    json calibration_json;
+    calibration >> calibration_json;
+    return calibration_json;
+}
+
 void file::FileHandler::update_info_json(std::string date, int angle, std::string cal) {
     json info_json = get_info_json();
     info_json["date"] = date;

@@ -74,24 +74,20 @@ void controller::ProcessingController::rotate_all_clouds(CloudType::Type cloud_t
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, cloud_type);
     json info_json = file_handler->get_info_json();
+    json calibration_json = file_handler->get_calibration_json();
 
-    float angle = (float) info_json["angle"];
-    std::vector<float> origin = info_json["origin point"];
-//            {-0.0002, 0.0344, 0.4294};
-    std::vector<float> direction = info_json["axis direction"];
-//            {-0.0158, -0.8661, -0.4996};
-    float theta = angle * (M_PI / 180.0);
-    float global_theta = theta;
+    std::vector<float> origin = calibration_json["origin point"];
+    std::vector<float> direction = calibration_json["axis direction"];
+    float theta = -(float) info_json["angle"] * (M_PI / 180.0);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr global(new pcl::PointCloud<pcl::PointXYZ>);
-    *global = *cloud_vector[0];
+    pcl::PointCloud<pcl::PointXYZ>::Ptr global_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    *global_cloud = *cloud_vector[0];
     for (int i = 1; i < cloud_vector.size(); i++) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr rotated(new pcl::PointCloud<pcl::PointXYZ>);
-        rotated = model->rotate_cloud_about_line(cloud_vector[i], origin, direction, global_theta);
-        global_theta += theta; // theta * i, test this out later
-        *global += *rotated;
+        rotated = model->rotate_cloud_about_line(cloud_vector[i], origin, direction, theta * i);
+        *global_cloud += *rotated;
     }
-    viewer->simpleVis(global);
+    viewer->simpleVis(global_cloud);
 }
 
 void controller::ProcessingController::visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {

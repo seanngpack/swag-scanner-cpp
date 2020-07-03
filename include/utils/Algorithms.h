@@ -8,7 +8,10 @@
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "CameraTypes.h"
+#include <pcl/ModelCoefficients.h>
+#include "../types/CameraTypes.h"
+#include "Normal.h"
+#include "Plane.h"
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
 
@@ -40,6 +43,8 @@ namespace algos {
      * Given a copy of a point from the pointcloud, a point that a line passes through,
      * and a direction vector, rotate the pointcloud point about that line and return
      * a copy of the new point.
+     * Equation derived by Glenn Murray.
+     *
      * @param point the point you want to rotate.
      * @param line_point point on the line.
      * @param line_direction direction vector (normalized) of the axis.
@@ -70,6 +75,26 @@ namespace algos {
         return p;
 
     }
+
+    /**
+     * Calculate the A matrix in Ax = b
+     * @param ground_normal normal vector to the ground plane.
+     * @param upright_planes vector of plane equations for the upright planes.
+     * @return the A matrix (N-1, 3)
+     */
+    inline Eigen::MatrixXf build_A_matrix(pcl::ModelCoefficients::Ptr ground_normal,
+                                          std::vector<pcl::ModelCoefficients::Ptr> upright_planes) {
+        int rows = upright_planes.size() - 1;
+        int cols = 3;
+        Eigen::MatrixXd A(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                A(i,j) = 0;
+            }
+        }
+    }
+
+//    float coeff()
 }
 
 #endif //SWAG_SCANNER_ALGORITHMS_H

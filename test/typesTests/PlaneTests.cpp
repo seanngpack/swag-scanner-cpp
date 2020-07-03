@@ -1,0 +1,34 @@
+#ifndef SWAG_SCANNER_PLANETESTS_CPP
+#define SWAG_SCANNER_PLANETESTS_CPP
+
+#include <gtest/gtest.h>
+#include <iostream>
+#include "Plane.h"
+
+TEST(PlaneTests, TestConstructor1) {
+    equations::Plane p(1.1, 1.3, -1.1, 3.1);
+    EXPECT_FLOAT_EQ(p.A, 1.1);
+    EXPECT_FLOAT_EQ(p.B, 1.3);
+    EXPECT_FLOAT_EQ(p.C, -1.1);
+    EXPECT_FLOAT_EQ(p.D, 3.1);
+}
+
+TEST(PlaneTests, TestConstructor2) {
+    std::vector<float> v{1.1, 1.3, -1.1, 3.1};
+    equations::Plane p(v);
+    EXPECT_FLOAT_EQ(p.A, 1.1);
+    EXPECT_FLOAT_EQ(p.B, 1.3);
+    EXPECT_FLOAT_EQ(p.C, -1.1);
+    EXPECT_FLOAT_EQ(p.D, 3.1);
+}
+
+TEST(PlaneTests, TestGetNormal) {
+    std::vector<float> v{1.1, 1.3, -1.1, 3.1};
+    equations::Plane p(v);
+    equations::Normal n = p.get_normal();
+    EXPECT_FLOAT_EQ(n.A, 1.1);
+    EXPECT_FLOAT_EQ(n.B, 1.3);
+    EXPECT_FLOAT_EQ(n.C, -1.1);
+}
+
+#endif //SWAG_SCANNER_PLANETESTS_CPP

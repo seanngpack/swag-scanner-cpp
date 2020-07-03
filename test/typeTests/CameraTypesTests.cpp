@@ -1,4 +1,4 @@
-#include <CameraTypes.h>
+#include "../../include/types/CameraTypes.h"
 #include "gtest/gtest.h"
 
 

@@ -13,16 +13,18 @@ set(SOURCE_FILES
         src/main.cpp
         include/model/camera/ICamera.h
         include/model/camera/SR305.h src/model/camera/SR305.cpp
-        include/utils/CameraTypes.h
+        include/types/CameraTypes.h
         include/utils/Algorithms.h
         src/model/processing/Model.cpp include/model/processing/Model.h
         include/view/Visualizer.h src/view/Visualizer.cpp
         include/utils/FileHandler.h src/utils/FileHandler.cpp
-        include/utils/CloudType.h
+        include/types/CloudType.h
         include/model/processing/Depth.h include/model/processing/Filtering.h
         src/controller/ScanController.cpp include/controller/ScanController.h
         include/model/processing/Segmentation.h include/controller/ProcessingController.h
-        src/controller/ProcessingController.cpp include/model/processing/Registration.h)
+        src/controller/ProcessingController.cpp include/model/processing/Registration.h
+        include/types/Plane.h src/types/Plane.cpp
+        include/types/Normal.h src/types/Normal.cpp)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)
@@ -30,6 +32,7 @@ set(CAMERA_HEADERS ./include/model/camera)
 set(ARDUINO_HEADERS ./include/model/arduino)
 set(PROCESSING_HEADERS ./include/model/processing)
 set(CONTROLLER_HEADERS ./include/controller)
+set(TYPES_HEADERS ./include/types)
 set(UTILS ./include/utils)
 
 # double check why this fixes core bluetooth linkage issue
@@ -54,6 +57,7 @@ include_directories(${CAMERA_HEADERS})
 include_directories(${ARDUINO_HEADERS})
 include_directories(${PROCESSING_HEADERS})
 include_directories(${CONTROLLER_HEADERS})
+include_directories(${TYPES_HEADERS})
 include_directories(${UTILS})
 
 link_directories("/opt/librealsense/build/librealsense2.dylib")
