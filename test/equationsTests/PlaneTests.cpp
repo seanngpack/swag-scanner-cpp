@@ -31,4 +31,15 @@ TEST(PlaneTests, TestGetNormal) {
     EXPECT_FLOAT_EQ(n.C, -1.1);
 }
 
+TEST(PlaneTests, TestAdditionOverload) {
+    std::vector<double> v{1.1, 1.3, -1.1, 3.1};
+    equations::Plane p1(v);
+    equations::Plane p2(v);
+    equations::Plane p3 = p1 + p2;
+    EXPECT_DOUBLE_EQ(p3.A, 2.2);
+    EXPECT_DOUBLE_EQ(p3.B, 2.6);
+    EXPECT_DOUBLE_EQ(p3.C, -2.2);
+    EXPECT_DOUBLE_EQ(p3.D, 6.2);
+}
+
 #endif //SWAG_SCANNER_PLANETESTS_CPP

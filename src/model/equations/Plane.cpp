@@ -12,4 +12,8 @@ equations::Normal equations::Plane::get_normal() {
     return equations::Normal(this->A, this->B, this->C);
 }
 
+equations::Plane equations::Plane::operator+(const equations::Plane &p2) const {
+    return equations::Plane(A + p2.A, B + p2.B, C + p2.C, D + p2.D);
+}
+
 

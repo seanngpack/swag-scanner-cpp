@@ -44,6 +44,13 @@ namespace equations {
          */
         Normal get_normal();
 
+        /**
+         * Overloaded addition + operator.
+         * @param p2 other plane to add.
+         * @return new plane, addition of this and other.
+         */
+        Plane operator+(const Plane &p2) const;
+
     private:
 
     };

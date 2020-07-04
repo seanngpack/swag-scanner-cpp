@@ -36,6 +36,13 @@ namespace equations {
          */
         Normal(pcl::ModelCoefficients::Ptr in);
 
+        /**
+         * Overloaded addition + operator.
+         * @param n2 other normal to add.
+         * @return new normal, addition of this and other.
+         */
+        Normal operator+(const Normal &n2) const;
+
     };
 }
 

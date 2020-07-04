@@ -9,3 +9,7 @@ equations::Normal::Normal(std::vector<double> in) : A(in[0]), B(in[1]), C(in[2])
 }
 
 equations::Normal::Normal(pcl::ModelCoefficients::Ptr in) : A(in->values[0]), B(in->values[1]), C(in->values[2]) {}
+
+equations::Normal equations::Normal::operator+(const equations::Normal &n2) const {
+    return equations::Normal(A + n2.A, B + n2.B, C + n2.C);
+}

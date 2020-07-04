@@ -11,8 +11,9 @@
 #include <pcl/features/integral_image_normal.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/fpfh.h>
-#include "../../types/CameraTypes.h"
-#include "../../types/CloudType.h"
+#include "CameraTypes.h"
+#include "CloudType.h"
+#include "Point.h"
 #include "Visualizer.h"
 #include "Algorithms.h"
 #include "Registration.h"
@@ -87,6 +88,16 @@ namespace model {
          * @return cloud with the remove plane
          */
         pcl::PointCloud<pcl::PointXYZ>::Ptr remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn);
+
+
+        /**
+         * Calculate the origin point of the turntable using clouds for the ground and upright calibration planes.
+         * @param ground_planes vector of ground planes.
+         * @param upright_planes vector of upright planes.
+         * @return the origin point.
+         */
+        equations::Point calculate_center_pt(std::vector<equations::Plane> ground_planes,
+                                             std::vector<equations::Plane> upright_planes);
 
 
         /**
