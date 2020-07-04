@@ -5,10 +5,12 @@
 #include "FileHandler.h"
 #include "Visualizer.h"
 
-/**
- * This controller handles data processing commands.
- */
+
 namespace controller {
+
+    /**
+     * This controller handles data processing commands.
+     */
     class ProcessingController {
     public:
         ProcessingController(std::shared_ptr<model::Model> model,
