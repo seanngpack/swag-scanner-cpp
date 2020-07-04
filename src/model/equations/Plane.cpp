@@ -1,5 +1,6 @@
 #include "Plane.h"
 
+equations::Plane::Plane() : A(0.0), B(0.0), C(0.0), D(0.0) {}
 
 equations::Plane::Plane(double A, double B, double C, double D) : A(A), B(B), C(C), D(D) {}
 

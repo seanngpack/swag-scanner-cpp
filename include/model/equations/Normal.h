@@ -15,6 +15,11 @@ namespace equations {
         double A, B, C;
 
         /**
+         * Default constructor. Don't forget to set values for A,B,C.
+         */
+        Normal();
+
+        /**
          * Create a normal object given the coefficients of a plane.
          * @param A Coefficient
          * @param B Coefficient

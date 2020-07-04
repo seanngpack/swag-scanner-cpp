@@ -1,5 +1,7 @@
 #include "Normal.h"
 
+equations::Normal::Normal() : A(0.0), B(0.0), C(0.0) {}
+
 equations::Normal::Normal(double A, double B, double C) : A(A), B(B), C(C) {}
 
 equations::Normal::Normal(std::vector<double> in) : A(in[0]), B(in[1]), C(in[2]) {

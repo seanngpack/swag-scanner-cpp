@@ -17,6 +17,11 @@ namespace equations {
         double A, B, C, D;
 
         /**
+         * Default constructor for plane. Don't forget to set A,B,C,D
+         */
+        Plane();
+
+        /**
          * Create a plane object given the coefficients of a plane.
          * @param A Coefficient
          * @param B Coefficient

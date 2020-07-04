@@ -37,17 +37,22 @@ protected:
     }
 };
 
+/**
+ * Make sure the center point calculation is good.
+ */
 TEST_F(CalibrationPhysicalFixture, calculate_center_pt) {
     Eigen::MatrixXd A = calibration::build_A_matrix(g_n, planes);
     Eigen::MatrixXd b = calibration::build_b_matrix(g_n, planes);
     equations::Point pt = calibration::calculate_center_pt(A, b);
-    std::cout << pt.x << std::endl;
-    std::cout << pt.y << std::endl;
-    std::cout << pt.z << std::endl;
-
+    ASSERT_NEAR(pt.x, -0.000213082, .001);
+    ASSERT_NEAR(pt.y, 0.0298714, .001);
+    ASSERT_NEAR(pt.z, 0.42673, .001);
 }
 
 
+/**
+ * Test building the A matrix
+ */
 TEST_F(CalibrationPhysicalFixture, TestBuildAMatrix) {
 
     Eigen::MatrixXd A = calibration::build_A_matrix(g_n, planes);
@@ -56,6 +61,9 @@ TEST_F(CalibrationPhysicalFixture, TestBuildAMatrix) {
     ASSERT_NEAR(A(8, 2), 0.0427, .001);
 }
 
+/**
+ * Test building the b matrix
+ */
 TEST_F(CalibrationPhysicalFixture, TestBuildbMatrix) {
 
     Eigen::MatrixXd b = calibration::build_b_matrix(g_n, planes);
@@ -64,7 +72,7 @@ TEST_F(CalibrationPhysicalFixture, TestBuildbMatrix) {
     ASSERT_NEAR(b(8, 0), 0.0153, .001);
 }
 
-TEST_F(CalibrationPhysicalFixture, TestPlaneCalibration) {
+TEST_F(CalibrationPhysicalFixture, VisualizePlaneCalibration) {
 
     std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/18";
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);

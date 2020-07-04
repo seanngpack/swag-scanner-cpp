@@ -92,6 +92,9 @@ namespace model {
 
         /**
          * Calculate the origin point of the turntable using clouds for the ground and upright calibration planes.
+         * Currently uses average of ground planes for axis of rotation direction.
+         * In the future may want to do further pre processing techniques and outlier rejection
+         * before grabbing plane equations.
          * @param ground_planes vector of ground planes.
          * @param upright_planes vector of upright planes.
          * @return the origin point.

@@ -2,6 +2,7 @@
 #include "Depth.h"
 #include "Filtering.h"
 #include "Segmentation.h"
+#include "Calibration.h"
 
 model::Model::Model() {}
 
@@ -16,8 +17,8 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud(const uint1
 pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
 
-    pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud <pcl::Normal>);
-    pcl::NormalEstimation <pcl::PointXYZ, pcl::Normal> ne;
+    pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
+    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
     pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
     ne.setSearchMethod(tree);
     ne.setRadiusSearch(0.03);
@@ -32,8 +33,8 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
 void model::Model::compute_local_features(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                           pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
                                           pcl::PointCloud<pcl::FPFHSignature33>::Ptr features) {
-    pcl::search::KdTree<pcl::PointXYZ>::Ptr searchMethod(new pcl::search::KdTree <pcl::PointXYZ>);
-    pcl::FPFHEstimation <pcl::PointXYZ, pcl::Normal, pcl::FPFHSignature33> fpfh_est;
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr searchMethod(new pcl::search::KdTree<pcl::PointXYZ>);
+    pcl::FPFHEstimation<pcl::PointXYZ, pcl::Normal, pcl::FPFHSignature33> fpfh_est;
     fpfh_est.setInputCloud(cloud);
     fpfh_est.setInputNormals(normalCloud);
     fpfh_est.setSearchMethod(searchMethod);
@@ -61,17 +62,31 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::remove_plane(pcl::PointCloud<p
     return segmentation::remove_plane(cloudIn);
 }
 
-equations::Point model::Model::calculate_center_pt(std::vector <equations::Plane> ground_planes,
-                                                   std::vector <equations::Plane> upright_planes) {
-    
-    return equations::Point(0, 0, 0);
+equations::Point model::Model::calculate_center_pt(std::vector<equations::Plane> ground_planes,
+                                                   std::vector<equations::Plane> upright_planes) {
+    equations::Normal g_n;
+    for (auto &g: ground_planes) {
+        g_n.A += g.A;
+        g_n.B += g.B;
+        g_n.C += g.C;
+    }
+    g_n.A /= ground_planes.size();
+    g_n.B /= ground_planes.size();
+    g_n.C /= ground_planes.size();
+
+    Eigen::MatrixXd A = calibration::build_A_matrix(g_n, upright_planes);
+    Eigen::MatrixXd b = calibration::build_b_matrix(g_n, upright_planes);
+
+    equations::Point center = calibration::calculate_center_pt(A, b);
+
+    return center;
 }
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::rotate_cloud_about_line(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                                                           std::vector<float> line_point,
                                                                           std::vector<float> line_direction,
                                                                           float theta) {
-    pcl::PointCloud<pcl::PointXYZ>::Ptr transformed(new pcl::PointCloud <pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr transformed(new pcl::PointCloud<pcl::PointXYZ>);
 
     transformed->resize(cloud->size());
 
@@ -99,8 +114,8 @@ void model::Model::sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr clo
 
     pcl::PointCloud<pcl::Normal>::Ptr cloudInNormal = estimate_normal_cloud(cloudIn);
     pcl::PointCloud<pcl::Normal>::Ptr cloudTargetNormal = estimate_normal_cloud(cloudTarget);
-    pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures(new pcl::PointCloud <pcl::FPFHSignature33>);
-    pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudTargetFeatures(new pcl::PointCloud <pcl::FPFHSignature33>);
+    pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures(new pcl::PointCloud<pcl::FPFHSignature33>);
+    pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudTargetFeatures(new pcl::PointCloud<pcl::FPFHSignature33>);
 
     registration::sac_align_pair_clouds(cloudIn, cloudTarget, cloudInFeatures, cloudTargetFeatures,
                                         cloudAligned, transformation);
