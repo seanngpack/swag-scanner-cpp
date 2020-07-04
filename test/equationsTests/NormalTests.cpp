@@ -13,7 +13,7 @@ TEST(NormalTests, TestConstructor1) {
 }
 
 TEST(NormalTests, TestConstructor2) {
-    std::vector<float> v{1.1, 1.3, -1.1};
+    std::vector<double> v{1.1, 1.3, -1.1};
     equations::Normal n(v);
     EXPECT_FLOAT_EQ(n.A, 1.1);
     EXPECT_FLOAT_EQ(n.B, 1.3);

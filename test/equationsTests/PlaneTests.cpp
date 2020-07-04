@@ -14,7 +14,7 @@ TEST(PlaneTests, TestConstructor1) {
 }
 
 TEST(PlaneTests, TestConstructor2) {
-    std::vector<float> v{1.1, 1.3, -1.1, 3.1};
+    std::vector<double> v{1.1, 1.3, -1.1, 3.1};
     equations::Plane p(v);
     EXPECT_FLOAT_EQ(p.A, 1.1);
     EXPECT_FLOAT_EQ(p.B, 1.3);
@@ -23,7 +23,7 @@ TEST(PlaneTests, TestConstructor2) {
 }
 
 TEST(PlaneTests, TestGetNormal) {
-    std::vector<float> v{1.1, 1.3, -1.1, 3.1};
+    std::vector<double> v{1.1, 1.3, -1.1, 3.1};
     equations::Plane p(v);
     equations::Normal n = p.get_normal();
     EXPECT_FLOAT_EQ(n.A, 1.1);

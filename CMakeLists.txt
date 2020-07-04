@@ -28,7 +28,7 @@ set(SOURCE_FILES
         include/model/equations/Normal.h src/model/equations/Normal.cpp
         include/model/equations/Equations.h
         include/model/calibration/Calibration.h
-        )
+        include/model/equations/Point.h src/model/equations/Point.cpp)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)

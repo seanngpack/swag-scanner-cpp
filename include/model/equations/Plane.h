@@ -14,7 +14,7 @@ namespace equations {
     class Plane {
     public:
 
-        float A, B, C, D;
+        double A, B, C, D;
 
         /**
          * Create a plane object given the coefficients of a plane.
@@ -23,14 +23,14 @@ namespace equations {
          * @param C Coefficient
          * @param D Coefficient
          */
-        Plane(float A, float B, float C, float D);
+        Plane(double A, double B, double C, double D);
 
         /**
          * Initialize a plane given a vector.
          * @param in vector of four coefficients (A,B,C,D)
          * @throws invalid_argument if the vector is missing a coefficient.
          */
-        Plane(std::vector<float> in);
+        Plane(std::vector<double> in);
 
         /**
          * Initialize a plane given PCL ModelCoefficients.

@@ -12,7 +12,7 @@ namespace equations {
      */
     class Normal {
     public:
-        float A, B, C;
+        double A, B, C;
 
         /**
          * Create a normal object given the coefficients of a plane.
@@ -20,14 +20,14 @@ namespace equations {
          * @param B Coefficient
          * @param C Coefficient
          */
-        Normal(float A, float B, float C);
+        Normal(double A, double B, double C);
 
         /**
          * Initialize a normal given a vector of three coefficients.
          * @param in vector of three floats.
          * @throws invalid_argument if the vector contains too few coefficients.
          */
-        Normal(std::vector<float> in);
+        Normal(std::vector<double> in);
 
 
         /**

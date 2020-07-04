@@ -1,8 +1,8 @@
-#include "../../../include/model/Equations/Normal.h"
+#include "Normal.h"
 
-equations::Normal::Normal(float A, float B, float C) : A(A), B(B), C(C) {}
+equations::Normal::Normal(double A, double B, double C) : A(A), B(B), C(C) {}
 
-equations::Normal::Normal(std::vector<float> in) : A(in[0]), B(in[1]), C(in[2]) {
+equations::Normal::Normal(std::vector<double> in) : A(in[0]), B(in[1]), C(in[2]) {
     if (in.size() < 3) {
         throw std::invalid_argument("cannot create normal, input vector size too small");
     }

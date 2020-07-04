@@ -20,7 +20,7 @@ namespace equations {
      * @param n the normal.
      * @return scalar result of norm.
      */
-    inline float norm(Normal n) {
+    inline double norm(Normal n) {
         return sqrt(pow(n.A, 2) + pow(n.B, 2) + pow(n.C, 2));
     }
 
@@ -30,7 +30,7 @@ namespace equations {
      * @param n2 normal.
      * @return norm(n1)/norm(cross(n1,n2)).
      */
-    inline float coeff(Normal n1, Normal n2) {
+    inline double coeff(Normal n1, Normal n2) {
         return norm(n1) / norm(cross(n1, n2));
     }
 }
