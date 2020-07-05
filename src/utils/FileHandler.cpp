@@ -134,19 +134,21 @@ void file::FileHandler::update_info_json(std::string date, int angle, std::strin
 
 std::string file::FileHandler::find_latest_calibration() {
     std::string someDir = swag_scanner_path + "/calibration";
-    typedef std::multimap<std::time_t, std::string> result_set_t;
+    typedef std::multimap <std::time_t, path> result_set_t;
     result_set_t result_set;
 
-    // store files in ascending order
+    // store folders in ascending order
     if (exists(someDir) && is_directory(someDir)) {
         for (auto &&x : directory_iterator(someDir)) {
-            if (is_regular_file(x.status()) && x.path().filename() != ".DS_Store") {
-                result_set.insert(result_set_t::value_type(last_write_time(x.path()), x.path().string()));
+            if (is_directory(x) && x.path().filename() != ".DS_Store") {
+                result_set.insert(result_set_t::value_type(last_write_time(x.path()), x.path()));
             }
         }
     }
     // get the last element which is the latest date
-    std::string path = result_set.rbegin()->second;
+    // gives the path to the .json file inside the folder so that's why it's dirty
+    std::string path = result_set.rbegin()->second.string() + "/" + result_set.rbegin()->second.filename().string()
+                       + ".json";
     return path;
 }
 
@@ -208,13 +210,15 @@ bool file::FileHandler::check_program_folder() {
         create_directory(swag_scanner_path + "/settings");
         create_directory(swag_scanner_path + "/scans");
         create_directory(swag_scanner_path + "/calibration");
+        create_directory(swag_scanner_path + "/calibration/default_calibration");
         std::ofstream settings(swag_scanner_path + "/settings/settings.json"); // create json file
         json settings_json = {
                 {"version",     .1},
                 {"latest_scan", "none"}
         };
         settings << std::setw(4) << settings_json << std::endl; // write to file
-        std::ofstream calibration(swag_scanner_path + "/calibration/default_calibration.json"); // create json file
+        std::ofstream calibration(
+                swag_scanner_path + "/calibration/default_calibration/default_calibration.json"); // create json file
         json calibration_json = {
                 {"origin point",   {-0.0002, 0.0344,  0.4294}},
                 {"axis direction", {-0.0158, -0.8661, -0.4996}}
@@ -228,7 +232,7 @@ bool file::FileHandler::check_program_folder() {
 void file::FileHandler::create_sub_folders() {
     for (const auto element : CloudType::All) {
         std::string p = scan_folder_path + "/" + CloudType::String(element);
-        if (!exists(p)) {
+        if (!exists(p) && element != CloudType::Type::CALIBRATION) {
             create_directory(p);
             std::cout << "Creating folder " + p << std::endl;
         }

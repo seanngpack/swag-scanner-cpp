@@ -21,7 +21,6 @@ void controller::ScanController::scan(int degs) {
 
     file_handler->update_info_json(str, degs, file_handler->find_latest_calibration());
 
-
     int num_rotations = 360 / degs;
 
     const camera::ss_intrinsics *intrin = camera->get_intrinsics();

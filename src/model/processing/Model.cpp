@@ -54,6 +54,10 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::voxel_grid_filter(pcl::PointCl
     return filtering::voxel_grid_filter(cloud, leafSize);
 }
 
+std::vector<equations::Plane> model::Model::get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+    return segmentation::get_calibration_planes_coefs(cloud);
+}
+
 std::vector<float> model::Model::get_plane_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
     return segmentation::get_plane_coefs(cloud);
 }

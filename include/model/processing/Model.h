@@ -76,6 +76,13 @@ namespace model {
                                                               float leafSize = .01);
 
         /**
+         * Get the upright and ground plane equations.
+         * @param cloud calibration cloud.
+         * @return vector of upright and ground plane equations.
+         */
+        inline std::vector<equations::Plane> get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+
+        /**
          * Get the coefficients of the base plane of the given cloud.
          * @param cloud input cloud.
          * @return vector of size 4 of the plane coefficients.
