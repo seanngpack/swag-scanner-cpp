@@ -6,6 +6,7 @@
 #include "SR305.h"
 #include "FileHandler.h"
 #include "Visualizer.h"
+#include "ScanController.h"
 
 namespace controller {
 
@@ -14,29 +15,25 @@ namespace controller {
      */
     class CalibrationController {
     public:
-        CalibrationController(camera::ICamera *camera,
-                              arduino::Arduino *arduino,
+        CalibrationController(std::unique_ptr<controller::ScanController> scan_controller,
                               std::shared_ptr<model::Model> model,
                               std::shared_ptr<file::FileHandler> file_handler,
-                              visual::Visualizer *viewer);
+                              visual::Visualizer *viewer,
+                              int deg,
+                              int num_rot);
 
         void run();
 
         ~CalibrationController();
 
     private:
-        camera::ICamera *camera;
-        arduino::Arduino *arduino;
+        std::unique_ptr<controller::ScanController> scan_controller;
         std::shared_ptr<model::Model> model;
         std::shared_ptr<file::FileHandler> file_handler;
         visual::Visualizer *viewer;
+        int deg;
+        int num_rot;
 
-        /**
-         * Scan and save calibration clouds.
-         * @param deg angle between scans.
-         * @param n number of scans.
-         */
-        void scan(int deg, int n);
     };
 }
 

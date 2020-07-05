@@ -6,7 +6,7 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "../types/CloudType.h"
+#include "CloudType.h"
 #include <string>
 #include <unordered_map>
 #include <CoreServices/CoreServices.h>
@@ -122,6 +122,9 @@ namespace file {
         /**
          * Loads all clouds in the current scan folder into a vector given the cloud type.
          * Only works with files that have numbers in the file name.
+         *
+         * @Edge case when passed CALIBRATION as the type, it will search through the
+         * /calibration folder in the root directory and load the latest calibration.
          * @param cloud_vector the vector you want to load the clouds into.
          * @param cloud_type determines which folder to search for.
          */
@@ -155,7 +158,7 @@ namespace file {
          * Go to the SwagScanner/calibration directory and find the latest calibration by date.
          * @return path to the latest calibration.
          */
-        std::string find_latest_calibration();
+        boost::filesystem::path find_latest_calibration();
 
     private:
         std::string swag_scanner_path = []() {
@@ -170,7 +173,6 @@ namespace file {
             return program_folder;
         }();
         std::string scan_folder_path;
-
 
 
         /**

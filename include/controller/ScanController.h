@@ -21,9 +21,12 @@ namespace controller {
 
         /**
          * Write folders, run the scan and collect data.
-         * @param degs number of degrees per rotation interval.
+         * @param degs number of degrees per rotation.
+         * @param num_rot number of rotations.
+         * @param type type of the cloud, tells the filehandler which subfolder to save
+         * the scan to (RAW, CALIBRATION, etc)
          */
-        void scan(int degs);
+        void scan(int degs, int num_rot, CloudType::Type type);
 
 
         ~ScanController();

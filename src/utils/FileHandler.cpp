@@ -79,8 +79,16 @@ void file::FileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
 void file::FileHandler::load_clouds(
         std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
         CloudType::Type cloud_type) {
-    std::string load_path = scan_folder_path + "/" + CloudType::String(cloud_type);
+    std::string load_path;
     std::vector<path> cloud_paths;
+
+    // if we are loading calibration then load the latest,
+    // otherwise find the clouds in current scan
+    if (cloud_type == CloudType::Type::CALIBRATION) {
+        load_path = find_latest_calibration().parent_path().string();
+    } else {
+        load_path = scan_folder_path + "/" + CloudType::String(cloud_type);
+    }
 
     // load paths into cloud_paths vector
     for (auto &p : boost::filesystem::directory_iterator(load_path)) {
@@ -94,7 +102,6 @@ void file::FileHandler::load_clouds(
     std::sort(cloud_paths.begin(), cloud_paths.end(), path_sort);
 
     // finally we load the clouds into the cloud_vector
-
     for (auto &p : cloud_paths) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
         if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {
@@ -132,9 +139,9 @@ void file::FileHandler::update_info_json(std::string date, int angle, std::strin
     updated_file << std::setw(4) << info_json << std::endl; // write to file
 }
 
-std::string file::FileHandler::find_latest_calibration() {
+path file::FileHandler::find_latest_calibration() {
     std::string someDir = swag_scanner_path + "/calibration";
-    typedef std::multimap <std::time_t, path> result_set_t;
+    typedef std::multimap<std::time_t, path> result_set_t;
     result_set_t result_set;
 
     // store folders in ascending order
@@ -147,8 +154,7 @@ std::string file::FileHandler::find_latest_calibration() {
     }
     // get the last element which is the latest date
     // gives the path to the .json file inside the folder so that's why it's dirty
-    std::string path = result_set.rbegin()->second.string() + "/" + result_set.rbegin()->second.filename().string()
-                       + ".json";
+    std::string path = result_set.rbegin()->second + "/" + result_set.rbegin()->second.filename() + ".json";
     return path;
 }
 
@@ -245,11 +251,10 @@ void file::FileHandler::create_sub_folders() {
         json info_json = {
                 {"date",        "null"},
                 {"angle",       0},
-                {"calibration", find_latest_calibration()}
+                {"calibration", find_latest_calibration().string()}
         };
         info << std::setw(4) << info_json << std::endl;
     }
-
 }
 
 void file::FileHandler::set_settings_latest_scan(std::string &folder_path) {
