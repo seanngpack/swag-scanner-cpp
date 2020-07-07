@@ -45,7 +45,7 @@ set(UTILS ./include/utils)
 set(CMAKE_EXE_LINKER_FLAGS "-framework CoreBluetooth")
 
 find_package(OpenCV REQUIRED)
-find_package(PCL 1.10 REQUIRED)
+find_package(PCL 1.11 REQUIRED)
 
 message(STATUS "OpenCV library status:")
 message(STATUS "    config: ${OpenCV_DIR}")

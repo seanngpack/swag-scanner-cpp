@@ -7,6 +7,7 @@
 #include "FileHandler.h"
 #include "Visualizer.h"
 #include "ScanController.h"
+#include "Point.h"
 
 namespace controller {
 
@@ -22,6 +23,11 @@ namespace controller {
                               int deg,
                               int num_rot);
 
+        /**
+         * Scan calibration fixture with member info for degs and # of rotations into a new
+         * calibration folder. Calculate configuration properties and save to that folder.
+         *
+         */
         void run();
 
         ~CalibrationController();

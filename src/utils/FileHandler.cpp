@@ -154,8 +154,8 @@ path file::FileHandler::find_latest_calibration() {
     }
     // get the last element which is the latest date
     // gives the path to the .json file inside the folder so that's why it's dirty
-    std::string path = result_set.rbegin()->second + "/" + result_set.rbegin()->second.filename() + ".json";
-    return path;
+    path p = result_set.rbegin()->second / "/" / result_set.rbegin()->second.filename() / ".json";
+    return p;
 }
 
 std::string file::FileHandler::find_latest_scan_folder() {
@@ -236,7 +236,7 @@ bool file::FileHandler::check_program_folder() {
 }
 
 void file::FileHandler::create_sub_folders() {
-    for (const auto element : CloudType::All) {
+    for (const auto &element : CloudType::All) {
         std::string p = scan_folder_path + "/" + CloudType::String(element);
         if (!exists(p) && element != CloudType::Type::CALIBRATION) {
             create_directory(p);

@@ -1,7 +1,7 @@
 project(tests)
 
 add_subdirectory(googletest-master)
-find_package(PCL 1.10 REQUIRED)
+find_package(PCL 1.11 REQUIRED)
 # include utils headers
 # have to redefine the includes because the tests are a separate project.
 include_directories(${swag_scanner_SOURCE_DIR}/include/utils
