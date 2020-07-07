@@ -7,7 +7,7 @@
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "CameraTypes.h"
+#include "../../types/CameraTypes.h"
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
 

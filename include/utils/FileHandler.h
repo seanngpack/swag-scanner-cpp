@@ -6,12 +6,13 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "CloudType.h"
+#include "../types/CloudType.h"
 #include <string>
 #include <unordered_map>
 #include <CoreServices/CoreServices.h>
+#include "json.hpp"
 
-
+using json = nlohmann::json;
 namespace file {
     /**
      * Contains functions to handle file saving and loading.
@@ -129,6 +130,33 @@ namespace file {
                         Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
                 CloudType::Type cloud_type);
 
+
+        /**
+         * Get the info.json file.
+         * @return json file.
+         */
+        json get_info_json();
+
+        /**
+         * Get the latest calibration json file. Finds the latest calibration file via info.json.
+         * @return the calibration json.
+         */
+        json get_calibration_json();
+
+        /**
+         * Update the json file in the latest scan with the given info.
+         * @param date current date and time.
+         * @param angle angle intervals of the scan.
+         * @param cal calibration path.
+         */
+        void update_info_json(std::string date, int angle, std::string cal);
+
+        /**
+         * Go to the SwagScanner/calibration directory and find the latest calibration by date.
+         * @return path to the latest calibration.
+         */
+        std::string find_latest_calibration();
+
     private:
         std::string swag_scanner_path = []() {
             FSRef ref;
@@ -144,11 +172,6 @@ namespace file {
         std::string scan_folder_path;
 
 
-        /**
-         * Go to the SwagScanner/calibration directory and find the latest calibration by date.
-         * @return path to the latest calibration.
-         */
-        std::string find_latest_calibration();
 
         /**
          * Finds the last scan folder using the settings.json file in the /settings directory.
@@ -168,7 +191,8 @@ namespace file {
 
         /**
          * Checks to see if a /SwagScanner folder exists in Library/Application Support.
-         * If the folder does not exist, then create one. Otherwise, continue.
+         * If the folder does not exist, then create one and load in default configuration.
+         * Otherwise, continue.
          * @returns true if the program folder is already there. False if it isn't.
          */
         bool check_program_folder();
@@ -185,13 +209,6 @@ namespace file {
          */
         void set_settings_latest_scan(std::string &folder_path);
 
-        /**
-         * Update the json file in the latest scan with the given info.
-         * @param date current date and time.
-         * @param angle angle intervals of the scan.
-         * @param cal calibration path.
-         */
-        void update_info_json(std::string date, std::string angle, std::string cal);
 
         /**
          * Check if the folder exists.

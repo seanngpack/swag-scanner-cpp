@@ -8,7 +8,10 @@
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+#include <pcl/ModelCoefficients.h>
 #include "CameraTypes.h"
+#include "Normal.h"
+#include "Plane.h"
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
 
@@ -40,6 +43,8 @@ namespace algos {
      * Given a copy of a point from the pointcloud, a point that a line passes through,
      * and a direction vector, rotate the pointcloud point about that line and return
      * a copy of the new point.
+     * Equation derived by Glenn Murray.
+     *
      * @param point the point you want to rotate.
      * @param line_point point on the line.
      * @param line_direction direction vector (normalized) of the axis.
@@ -70,6 +75,7 @@ namespace algos {
         return p;
 
     }
+
 }
 
 #endif //SWAG_SCANNER_ALGORITHMS_H

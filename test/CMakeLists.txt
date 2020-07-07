@@ -5,10 +5,13 @@ find_package(PCL 1.10 REQUIRED)
 # include utils headers
 # have to redefine the includes because the tests are a separate project.
 include_directories(${swag_scanner_SOURCE_DIR}/include/utils
-                    ${swag_scanner_SOURCE_DIR}/include/model/processing
-                    ${swag_scanner_SOURCE_DIR}/include/wrapper
-                    ${swag_scanner_SOURCE_DIR}/include/view
-                    ${swag_scanner_SOURCE_DIR}/include/model/arduino)
+        ${swag_scanner_SOURCE_DIR}/include/model/processing
+        ${swag_scanner_SOURCE_DIR}/include/wrapper
+        ${swag_scanner_SOURCE_DIR}/include/view
+        ${swag_scanner_SOURCE_DIR}/include/model/arduino
+        ${swag_scanner_SOURCE_DIR}/include/types
+        ${swag_scanner_SOURCE_DIR}/include/model/equations
+        ${swag_scanner_SOURCE_DIR}/include/model/calibration)
 
 include_directories("/opt/librealsense/include")
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
@@ -20,7 +23,6 @@ link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
 
-
 add_executable(tests_run
         ${swag_scanner_SOURCE_DIR}/src/view/Visualizer.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/processing/Model.cpp
@@ -28,16 +30,22 @@ add_executable(tests_run
         ${swag_scanner_SOURCE_DIR}/src/wrapper/CoreBluetoothObjC.mm
         ${swag_scanner_SOURCE_DIR}/src/model/arduino/Arduino.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/arduino/ArduinoEventHandler.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/equations/Normal.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/equations/Plane.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/equations/Point.cpp
         processingTests/ModelTests.cpp
         utilsTests/AlgosTests.cpp
-        typeTests/CameraTypesTests.cpp
+        typesTests/CameraTypesTests.cpp
         utilsTests/FileHandlerTests.cpp
-        typeTests/CloudTypeTests.cpp
+        typesTests/CloudTypeTests.cpp
         utilsTests/FileHandlerPhysicalTests.cpp
         WrapperTests.cpp processingTests/DepthTests.cpp
         processingTests/ModelPhysicalTests.cpp
         processingTests/SegmentationPhysicalTets.cpp
-        processingTests/CalibrationTests.cpp)
+        calibrationTests/CalibrationTests.cpp
+        equationsTests/NormalTests.cpp
+        equationsTests/PlaneTests.cpp
+        equationsTests/EquationsTests.cpp)
 target_link_libraries(tests_run
         gtest
         gtest_main

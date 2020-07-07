@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include <CloudType.h>
+#include "CloudType.h"
 
 
 TEST(CloudTypeTests, TestEnumMap) {

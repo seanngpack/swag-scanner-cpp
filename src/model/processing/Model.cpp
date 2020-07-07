@@ -2,6 +2,7 @@
 #include "Depth.h"
 #include "Filtering.h"
 #include "Segmentation.h"
+#include "Calibration.h"
 
 model::Model::Model() {}
 
@@ -53,12 +54,36 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::voxel_grid_filter(pcl::PointCl
     return filtering::voxel_grid_filter(cloud, leafSize);
 }
 
+std::vector<equations::Plane> model::Model::get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+    return segmentation::get_calibration_planes_coefs(cloud);
+}
+
 std::vector<float> model::Model::get_plane_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
     return segmentation::get_plane_coefs(cloud);
 }
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn) {
     return segmentation::remove_plane(cloudIn);
+}
+
+equations::Point model::Model::calculate_center_pt(std::vector<equations::Plane> ground_planes,
+                                                   std::vector<equations::Plane> upright_planes) {
+    equations::Normal g_n;
+    for (auto &g: ground_planes) {
+        g_n.A += g.A;
+        g_n.B += g.B;
+        g_n.C += g.C;
+    }
+    g_n.A /= ground_planes.size();
+    g_n.B /= ground_planes.size();
+    g_n.C /= ground_planes.size();
+
+    Eigen::MatrixXd A = calibration::build_A_matrix(g_n, upright_planes);
+    Eigen::MatrixXd b = calibration::build_b_matrix(g_n, upright_planes);
+
+    equations::Point center = calibration::calculate_center_pt(A, b);
+
+    return center;
 }
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::rotate_cloud_about_line(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
@@ -103,6 +128,7 @@ void model::Model::sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr clo
 model::Model::~Model() {
     std::cout << "calling model destructor \n";;
 }
+
 
 
 

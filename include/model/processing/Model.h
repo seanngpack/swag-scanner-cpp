@@ -11,8 +11,9 @@
 #include <pcl/features/integral_image_normal.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/fpfh.h>
-#include <CameraTypes.h>
-#include <CloudType.h>
+#include "CameraTypes.h"
+#include "CloudType.h"
+#include "Point.h"
 #include "Visualizer.h"
 #include "Algorithms.h"
 #include "Registration.h"
@@ -75,6 +76,13 @@ namespace model {
                                                               float leafSize = .01);
 
         /**
+         * Get the upright and ground plane equations.
+         * @param cloud calibration cloud.
+         * @return vector of upright and ground plane equations.
+         */
+        inline std::vector<equations::Plane> get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+
+        /**
          * Get the coefficients of the base plane of the given cloud.
          * @param cloud input cloud.
          * @return vector of size 4 of the plane coefficients.
@@ -87,6 +95,19 @@ namespace model {
          * @return cloud with the remove plane
          */
         pcl::PointCloud<pcl::PointXYZ>::Ptr remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn);
+
+
+        /**
+         * Calculate the origin point of the turntable using clouds for the ground and upright calibration planes.
+         * Currently uses average of ground planes for axis of rotation direction.
+         * In the future may want to do further pre processing techniques and outlier rejection
+         * before grabbing plane equations.
+         * @param ground_planes vector of ground planes.
+         * @param upright_planes vector of upright planes.
+         * @return the origin point.
+         */
+        equations::Point calculate_center_pt(std::vector<equations::Plane> ground_planes,
+                                             std::vector<equations::Plane> upright_planes);
 
 
         /**
