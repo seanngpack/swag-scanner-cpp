@@ -4,8 +4,8 @@
 #include "Model.h"
 #include "Arduino.h"
 #include "SR305.h"
-#include "FileHandler.h"
 #include "Visualizer.h"
+#include "CalibrationFileHandler.h"
 #include "ScanController.h"
 #include "Point.h"
 
@@ -18,7 +18,7 @@ namespace controller {
     public:
         CalibrationController(std::unique_ptr<controller::ScanController> scan_controller,
                               std::shared_ptr<model::Model> model,
-                              std::shared_ptr<file::FileHandler> file_handler,
+                              std::shared_ptr<file::CalibrationFileHandler> file_handler,
                               visual::Visualizer *viewer,
                               int deg,
                               int num_rot);
@@ -35,7 +35,7 @@ namespace controller {
     private:
         std::unique_ptr<controller::ScanController> scan_controller;
         std::shared_ptr<model::Model> model;
-        std::shared_ptr<file::FileHandler> file_handler;
+        std::shared_ptr<file::CalibrationFileHandler> file_handler;
         visual::Visualizer *viewer;
         int deg;
         int num_rot;

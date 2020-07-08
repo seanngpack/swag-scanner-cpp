@@ -11,7 +11,8 @@ include_directories(${swag_scanner_SOURCE_DIR}/include/utils
         ${swag_scanner_SOURCE_DIR}/include/model/arduino
         ${swag_scanner_SOURCE_DIR}/include/types
         ${swag_scanner_SOURCE_DIR}/include/model/equations
-        ${swag_scanner_SOURCE_DIR}/include/model/calibration)
+        ${swag_scanner_SOURCE_DIR}/include/model/calibration
+        ${swag_scanner_SOURCE_DIR}/include/file)
 
 include_directories("/opt/librealsense/include")
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
@@ -26,7 +27,8 @@ add_definitions(${PCL_DEFINITIONS})
 add_executable(tests_run
         ${swag_scanner_SOURCE_DIR}/src/view/Visualizer.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/processing/Model.cpp
-        ${swag_scanner_SOURCE_DIR}/src/utils/FileHandler.cpp
+        ${swag_scanner_SOURCE_DIR}/src/file/CalibrationFileHandler.cpp
+        ${swag_scanner_SOURCE_DIR}/src/file/ScanFileHandler.cpp
         ${swag_scanner_SOURCE_DIR}/src/wrapper/CoreBluetoothObjC.mm
         ${swag_scanner_SOURCE_DIR}/src/model/arduino/Arduino.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/arduino/ArduinoEventHandler.cpp
@@ -36,9 +38,9 @@ add_executable(tests_run
         processingTests/ModelTests.cpp
         utilsTests/AlgosTests.cpp
         typesTests/CameraTypesTests.cpp
-        utilsTests/FileHandlerTests.cpp
+        fileTests/ScanFileHandlerTests.cpp
         typesTests/CloudTypeTests.cpp
-        utilsTests/FileHandlerPhysicalTests.cpp
+        fileTests/ScanFileHandlerPhysicalTests.cpp
         WrapperTests.cpp processingTests/DepthTests.cpp
         processingTests/ModelPhysicalTests.cpp
         processingTests/SegmentationPhysicalTets.cpp

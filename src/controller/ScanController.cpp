@@ -3,7 +3,7 @@
 controller::ScanController::ScanController(camera::ICamera *camera,
                                            arduino::Arduino *arduino,
                                            std::shared_ptr<model::Model> model,
-                                           std::shared_ptr<file::FileHandler> file_handler) :
+                                           std::shared_ptr<file::ScanFileHandler> file_handler) :
         camera(camera), arduino(arduino), model(model), file_handler(file_handler) {}
 
 

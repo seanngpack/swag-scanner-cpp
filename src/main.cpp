@@ -5,7 +5,7 @@
 #include "ProcessingController.h"
 #include "Visualizer.h"
 #include "../include/types/CloudType.h"
-#include "FileHandler.h"
+#include "../include/file/FileHandler.h"
 
 
 int main() {

@@ -5,7 +5,7 @@
 #include "Arduino.h"
 #include "SR305.h"
 #include "Visualizer.h"
-#include "FileHandler.h"
+#include "ScanFileHandler.h"
 
 /**
  * This controller handles data acquisition.
@@ -16,7 +16,7 @@ namespace controller {
         ScanController(camera::ICamera *camera,
                        arduino::Arduino *arduino,
                        std::shared_ptr<model::Model> model,
-                       std::shared_ptr<file::FileHandler> file_handler);
+                       std::shared_ptr<file::ScanFileHandler> file_handler);
 
 
         /**
@@ -35,7 +35,7 @@ namespace controller {
         camera::ICamera *camera;
         arduino::Arduino *arduino;
         std::shared_ptr<model::Model> model;
-        std::shared_ptr<file::FileHandler> file_handler;
+        std::shared_ptr<file::ScanFileHandler> file_handler;
     };
 }
 

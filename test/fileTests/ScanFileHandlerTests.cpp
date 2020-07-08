@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "FileHandler.h"
+#include "ScanFileHandler.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -10,10 +10,10 @@ class FileHandlerFixture : public ::testing::Test {
 
 
 protected:
-    file::FileHandler *handler;
+    file::ScanFileHandler *handler;
 
     virtual void SetUp() {
-        handler = new file::FileHandler(true);
+        handler = new file::ScanFileHandler();
     }
 
     virtual void TearDown() {
@@ -64,10 +64,3 @@ TEST_F(FileHandlerFixture, TestSetFolderPath) {
 //              "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing");
 }
 
-/**
- * Test setting the current folder to something invalid.
- */
-TEST_F(FileHandlerFixture, TestSetFolderPathInvalid) {
-    EXPECT_THROW(handler->set_scan_folder_path("aboslute nononsense"),
-                 std::invalid_argument);
-}

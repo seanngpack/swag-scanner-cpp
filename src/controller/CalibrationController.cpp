@@ -2,7 +2,7 @@
 
 controller::CalibrationController::CalibrationController(std::unique_ptr<controller::ScanController> scan_controller,
                                                          std::shared_ptr<model::Model> model,
-                                                         std::shared_ptr<file::FileHandler> file_handler,
+                                                         std::shared_ptr<file::CalibrationFileHandler> file_handler,
                                                          visual::Visualizer *viewer,
                                                          int deg,
                                                          int num_rot) :
