@@ -5,15 +5,15 @@ using namespace boost::filesystem;
 void file::CalibrationFileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
                                          const std::string &cloud_name, CloudType::Type cloud_type) {
     std::cout << "saving file to ";
-    std::string out_path = scan_folder_path + "/" + cloud_name + ".pcd";
+    path out_path = scan_folder_path / "/" / cloud_name / ".pcd";
     std::cout << out_path << std::endl;
-    pcl::io::savePCDFileASCII(out_path, *cloud);
+    pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
 
 void file::CalibrationFileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                               const std::string &cloud_name, CloudType::Type cloud_type) {
-    std::string open_path = swag_scanner_path + "/calibration/" + scan_name + "/" + cloud_name;
-    if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path, *cloud) == -1) {
+    path open_path = swag_scanner_path / "/calibration/" / scan_name / "/" / cloud_name;
+    if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
 }
@@ -22,7 +22,7 @@ void file::CalibrationFileHandler::load_clouds(
         std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
         CloudType::Type cloud_type) {
     std::vector<path> cloud_paths;
-    std::string load_path = scan_folder_path + "/" + scan_name + ".json";
+    path load_path = scan_folder_path / "/" / scan_name / ".json";
 
     // load paths into cloud_paths vector
     for (auto &p : directory_iterator(load_path)) {

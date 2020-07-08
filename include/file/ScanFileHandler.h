@@ -97,7 +97,7 @@ namespace file {
          * Finds the last scan folder using the settings.json file in the /settings directory.
          * @return path to the latest scan.
          */
-        std::string find_latest_scan_folder();
+        boost::filesystem::path find_latest_scan_folder();
 
 
         /**
@@ -106,12 +106,12 @@ namespace file {
          * scan must be 11.
          *
          */
-        std::string find_latest_scan_folder_numeric();
+        boost::filesystem::path find_latest_scan_folder_numeric();
 
         /**
          * Update the settings.json file "latest_scan" field.
          */
-        void set_settings_latest_scan(std::string &folder_path);
+        void set_settings_latest_scan(boost::filesystem::path folder_path);
 
     };
 }

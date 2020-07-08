@@ -6,7 +6,7 @@ file::ScanFileHandler::ScanFileHandler() {
     bool exists = check_program_folder();
     if (!exists) {
         scan_folder_path = find_latest_scan_folder_numeric();
-        // TODO: Set scan name here
+        scan_name = scan_folder_path.stem().string();
         create_directory(scan_folder_path);
         create_sub_folders();
         set_settings_latest_scan(scan_folder_path);
@@ -17,7 +17,7 @@ file::ScanFileHandler::ScanFileHandler() {
 
 file::ScanFileHandler::ScanFileHandler(bool auto_create_flag) {
     scan_folder_path = find_latest_scan_folder_numeric();
-    // TODO: Set scan name here
+    scan_name = scan_folder_path.stem().string();
     std::cout << scan_folder_path << std::endl;
     if (auto_create_flag) {
         create_directory(scan_folder_path);
@@ -29,9 +29,9 @@ file::ScanFileHandler::ScanFileHandler(bool auto_create_flag) {
 
 file::ScanFileHandler::ScanFileHandler(const char *scan_name) {
     this->scan_name = scan_name;
-    scan_folder_path = swag_scanner_path + "/scans/" + scan_name;
+    scan_folder_path = swag_scanner_path / "/scans/" / scan_name;
     if (!is_directory(scan_folder_path)) {
-        scan_folder_path = swag_scanner_path + "/scans/" + scan_name;
+        scan_folder_path = swag_scanner_path / "/scans/" / scan_name;
         create_directory(scan_folder_path);
         create_sub_folders();
         set_settings_latest_scan(scan_folder_path);
@@ -43,22 +43,22 @@ void file::ScanFileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
                                        const std::string &cloud_name,
                                        CloudType::Type cloud_type) {
     std::cout << "saving file to ";
-    std::string out_path = scan_folder_path
-                           + "/"
-                           + CloudType::String(cloud_type)
-                           + "/" + cloud_name + ".pcd";
+    path out_path = scan_folder_path
+                           / "/"
+                           / CloudType::String(cloud_type)
+                           / "/" / cloud_name / ".pcd";
     std::cout << out_path << std::endl;
-    pcl::io::savePCDFileASCII(out_path, *cloud);
+    pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
 
 void file::ScanFileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                        const std::string &cloud_name,
                                        CloudType::Type cloud_type) {
-    std::string open_path = scan_folder_path
-                            + "/"
-                            + CloudType::String(cloud_type)
-                            + "/" + cloud_name;
-    if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path, *cloud) == -1) {
+    path open_path = scan_folder_path
+                            / "/"
+                            / CloudType::String(cloud_type)
+                            / "/" / cloud_name;
+    if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
 }
@@ -68,7 +68,7 @@ void file::ScanFileHandler::load_clouds(
         std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
         CloudType::Type cloud_type) {
     std::vector<path> cloud_paths;
-    std::string load_path = scan_folder_path + "/" + CloudType::String(cloud_type);
+    path load_path = scan_folder_path / "/" / CloudType::String(cloud_type);
 
     // load paths into cloud_paths vector
     for (auto &p : boost::filesystem::directory_iterator(load_path)) {
@@ -102,7 +102,7 @@ void file::ScanFileHandler::set_scan_name(const std::string &scan_name) {
 }
 
 json file::ScanFileHandler::get_info_json() {
-    std::ifstream info(scan_folder_path + "/info/info.json");
+    std::ifstream info(scan_folder_path.string() + "/info/info.json");
     json info_json;
     info >> info_json;
     return info_json;
@@ -114,7 +114,7 @@ void file::ScanFileHandler::update_info_json(std::string date, int angle, std::s
     info_json["angle"] = angle;
     info_json["calibration"] = cal;
 
-    std::ofstream updated_file(scan_folder_path + "/info/info.json");
+    std::ofstream updated_file(scan_folder_path.string() + "/info/info.json");
     updated_file << std::setw(4) << info_json << std::endl; // write to file
 }
 
@@ -127,8 +127,8 @@ json file::ScanFileHandler::get_calibration_json() {
     return calibration_json;
 }
 
-std::string file::ScanFileHandler::find_latest_scan_folder() {
-    std::ifstream settings(swag_scanner_path + "/settings/settings.json");
+path file::ScanFileHandler::find_latest_scan_folder() {
+    std::ifstream settings(swag_scanner_path.string() + "/settings/settings.json");
     json settings_json;
     settings >> settings_json;
     std::string latest = settings_json["latest_scan"];
@@ -137,15 +137,15 @@ std::string file::ScanFileHandler::find_latest_scan_folder() {
 }
 
 
-std::string file::ScanFileHandler::find_latest_scan_folder_numeric() {
-    std::string folder = swag_scanner_path + "/scans";
+path file::ScanFileHandler::find_latest_scan_folder_numeric() {
+    path folder = swag_scanner_path / "/scans";
     if (!is_directory(folder)) {
         throw std::invalid_argument("This shouldn't happen");
     }
 
     // if folder is empty let's start at 1.
     if (is_empty(folder)) {
-        std::string name = folder + "/1";
+        path name = folder / "/1";
         return name;
     }
 
@@ -161,7 +161,7 @@ std::string file::ScanFileHandler::find_latest_scan_folder_numeric() {
 
     // if the vector is 0 that means there are no folders with numeric names
     if (v.empty()) {
-        std::string name = folder + "/1";
+        path name = folder / "/1";
         return name;
     }
 
@@ -177,26 +177,27 @@ std::string file::ScanFileHandler::find_latest_scan_folder_numeric() {
     std::string name = last_path.replace(last_path.find(to_replace),
                                          sizeof(name_count_str) - 1,
                                          name_count_str);
-    return name;
+    return path(name);
 }
 
 
 bool file::ScanFileHandler::check_program_folder() {
     if (!exists(swag_scanner_path)) {
-        std::cout << "No SwagScanner application folder detected, creating one at: " + swag_scanner_path << std::endl;
+        std::cout << "No SwagScanner application folder detected, creating one at: " + swag_scanner_path.string()
+                  << std::endl;
         create_directory(swag_scanner_path);
-        create_directory(swag_scanner_path + "/settings");
-        create_directory(swag_scanner_path + "/scans");
-        create_directory(swag_scanner_path + "/calibration");
-        create_directory(swag_scanner_path + "/calibration/default_calibration");
-        std::ofstream settings(swag_scanner_path + "/settings/settings.json"); // create json file
+        create_directory(swag_scanner_path / "/settings");
+        create_directory(swag_scanner_path / "/scans");
+        create_directory(swag_scanner_path / "/calibration");
+        create_directory(swag_scanner_path / "/calibration/default_calibration");
+        std::ofstream settings(swag_scanner_path.string() + "/settings/settings.json"); // create json file
         json settings_json = {
                 {"version",     .1},
                 {"latest_scan", "none"}
         };
         settings << std::setw(4) << settings_json << std::endl; // write to file
         std::ofstream calibration(
-                swag_scanner_path + "/calibration/default_calibration/default_calibration.json"); // create json file
+                swag_scanner_path.string() + "/calibration/default_calibration/default_calibration.json"); // create json file
         json calibration_json = {
                 {"origin point",   {-0.0002, 0.0344,  0.4294}},
                 {"axis direction", {-0.0158, -0.8661, -0.4996}}
@@ -210,17 +211,17 @@ bool file::ScanFileHandler::check_program_folder() {
 
 void file::ScanFileHandler::create_sub_folders() {
     for (const auto &element : CloudType::All) {
-        std::string p = scan_folder_path + "/" + CloudType::String(element);
+        path p = scan_folder_path / "/" / CloudType::String(element);
         if (!exists(p) && element != CloudType::Type::CALIBRATION) {
             create_directory(p);
-            std::cout << "Creating folder " + p << std::endl;
+            std::cout << "Creating folder " + p.string() << std::endl;
         }
     }
-    std::string info_p = scan_folder_path + "/info";
+    path info_p = scan_folder_path / "/info";
     if (!exists(info_p)) {
         create_directory(info_p);
-        std::cout << "Creating folder " + info_p << std::endl;
-        std::ofstream info(scan_folder_path + "/info/info.json");
+        std::cout << "Creating folder " + info_p.string() << std::endl;
+        std::ofstream info(scan_folder_path.string() + "/info/info.json");
         json info_json = {
                 {"date",        "null"},
                 {"angle",       0},
@@ -231,12 +232,12 @@ void file::ScanFileHandler::create_sub_folders() {
 }
 
 
-void file::ScanFileHandler::set_settings_latest_scan(std::string &folder_path) {
-    std::ifstream settings(swag_scanner_path + "/settings/settings.json");
+void file::ScanFileHandler::set_settings_latest_scan(path folder_path) {
+    std::ifstream settings(swag_scanner_path.string() + "/settings/settings.json");
     json settings_json;
     settings >> settings_json;
-    settings_json["latest_scan"] = folder_path;
+    settings_json["latest_scan"] = folder_path.string();
 
-    std::ofstream updated_file(swag_scanner_path + "/settings/settings.json");
+    std::ofstream updated_file(swag_scanner_path.string() + "/settings/settings.json");
     updated_file << std::setw(4) << settings_json << std::endl; // write to file
 }

@@ -67,18 +67,19 @@ namespace file {
         }
 
     protected:
-        std::string swag_scanner_path = []() {
+        boost::filesystem::path swag_scanner_path = []() {
             FSRef ref;
             OSType folderType = kApplicationSupportFolderType;
             char path[PATH_MAX];
 
             FSFindFolder(kUserDomain, folderType, kCreateFolder, &ref);
             FSRefMakePath(&ref, (UInt8 *) &path, PATH_MAX);
-            std::string program_folder = "/SwagScanner";
-            program_folder = path + program_folder;
+            boost::filesystem::path program_folder = "/SwagScanner";
+            program_folder = path / program_folder;
             return program_folder;
         }();
-        std::string scan_folder_path;
+        //TODO: migrate to std::filesystem once changes are implementede
+        boost::filesystem::path scan_folder_path;
         std::string scan_name;
 
         /**
@@ -121,7 +122,7 @@ namespace file {
          * @return path to the latest calibration.
          */
         inline boost::filesystem::path find_latest_calibration() {
-            std::string someDir = swag_scanner_path + "/calibration";
+            std::string someDir = swag_scanner_path.string() + "/calibration";
             typedef std::multimap<std::time_t, boost::filesystem::path> result_set_t;
             result_set_t result_set;
 
