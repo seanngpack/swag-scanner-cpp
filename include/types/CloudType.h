@@ -10,6 +10,7 @@
  */
 namespace CloudType {
     enum class Type {
+        NONE,
         RAW,
         FILTERED,
         SEGMENTED,

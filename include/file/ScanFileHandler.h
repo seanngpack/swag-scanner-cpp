@@ -6,6 +6,7 @@
 #define SWAG_SCANNER_SCANFILEHANDLER_H
 
 #include "FileHandler.h"
+#include "json.hpp"
 
 namespace file {
     /**
@@ -61,13 +62,13 @@ namespace file {
          * Finds the latest calibration file via info.json.
          * @return the calibration json.
          */
-        json get_calibration_json();
+        nlohmann::json get_calibration_json();
 
         /**
          * Get the info.json file.
          * @return json file.
          */
-        json get_info_json();
+        nlohmann::json get_info_json();
 
         /**
          * Update the json file in the latest scan with the given info.
@@ -75,7 +76,7 @@ namespace file {
          * @param angle angle intervals of the scan.
          * @param cal calibration path.
          */
-        void update_info_json(std::string date, int angle, std::string cal);
+        void update_info_json(std::string date, int angle, std::string cal = "None");
 
     private:
         /**
@@ -99,14 +100,6 @@ namespace file {
          */
         boost::filesystem::path find_latest_scan_folder();
 
-
-        /**
-         * Find the current scan folder by sorting the existing scans numerically.
-         * E.g. if there are scans 1->10 in the all data folder, that means the current
-         * scan must be 11.
-         *
-         */
-        boost::filesystem::path find_latest_scan_folder_numeric();
 
         /**
          * Update the settings.json file "latest_scan" field.

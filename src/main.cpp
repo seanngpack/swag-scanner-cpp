@@ -4,8 +4,9 @@
 #include "ScanController.h"
 #include "ProcessingController.h"
 #include "Visualizer.h"
-#include "../include/types/CloudType.h"
-#include "../include/file/FileHandler.h"
+#include "CloudType.h"
+#include "ScanFileHandler.h"
+#include "CalibrationFileHandler.h"
 
 
 int main() {
@@ -13,7 +14,7 @@ int main() {
 //    auto *arduino = new arduino::Arduino();
     std::shared_ptr<model::Model> model = std::make_shared<model::Model>();
     auto *viewer = new visual::Visualizer();
-    std::shared_ptr<file::FileHandler> file_handler = std::make_shared<file::FileHandler>(true);
+    std::shared_ptr<file::ScanFileHandler> file_handler = std::make_shared<file::ScanFileHandler>(true);
 
 //    std::shared_ptr<file::FileHandler> file_handler = std::make_shared<file::FileHandler>(true);
 //    file_handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff/Projects/scanner_files/18");
@@ -37,5 +38,6 @@ int main() {
 
 //    delete scanController;
 //    delete processController;
+    delete viewer;
     return 0;
 }

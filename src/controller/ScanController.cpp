@@ -16,7 +16,7 @@ void controller::ScanController::scan(int degs, int num_rot, CloudType::Type typ
     oss << std::put_time(&tm, "%m-%d-%Y %H:%M:%S");
     auto str = oss.str();
 
-    file_handler->update_info_json(str, degs, file_handler->find_latest_calibration().string());
+    file_handler->update_info_json(str, degs);
 
 
     const camera::ss_intrinsics *intrin = camera->get_intrinsics();

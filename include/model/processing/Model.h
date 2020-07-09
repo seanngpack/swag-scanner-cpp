@@ -13,6 +13,7 @@
 #include <pcl/features/fpfh.h>
 #include "CameraTypes.h"
 #include "CloudType.h"
+#include "Normal.h"
 #include "Point.h"
 #include "Visualizer.h"
 #include "Algorithms.h"
@@ -80,7 +81,7 @@ namespace model {
          * @param cloud calibration cloud.
          * @return vector of upright and ground plane equations.
          */
-        inline std::vector<equations::Plane> get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+        std::vector<equations::Plane> get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 
         /**
          * Get the coefficients of the base plane of the given cloud.
@@ -96,17 +97,22 @@ namespace model {
          */
         pcl::PointCloud<pcl::PointXYZ>::Ptr remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn);
 
+        /**
+         * Given a vector of ground planes, calculate the axis direction by taking the
+         * average of the coefficients.
+         * @param ground_planes vector of ground plane equations.
+         * @return the axis direction.
+         */
+        equations::Normal calculate_axis_dir(std::vector<equations::Plane> ground_planes);
 
         /**
-         * Calculate the origin point of the turntable using clouds for the ground and upright calibration planes.
-         * Currently uses average of ground planes for axis of rotation direction.
-         * In the future may want to do further pre processing techniques and outlier rejection
-         * before grabbing plane equations.
-         * @param ground_planes vector of ground planes.
+         * Calculate the origin point of the turntable using equation of rotation axis and equations
+         * for the upright planes.
+         * @param axis_dir direction of rotation axis.
          * @param upright_planes vector of upright planes.
          * @return the origin point.
          */
-        equations::Point calculate_center_pt(std::vector<equations::Plane> ground_planes,
+        equations::Point calculate_center_pt(equations::Normal axis_dir,
                                              std::vector<equations::Plane> upright_planes);
 
 

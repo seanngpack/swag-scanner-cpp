@@ -72,8 +72,7 @@ protected:
 
 
 TEST_F(ModelPhysicalFixture, TestCalculateCenterPt) {
-    std::vector<equations::Plane> ground_planes = {
-            equations::Plane(-0.0158, -0.8661, -0.4996, 0)};
+    equations::Normal axis_dir = equations::Normal(-0.0158, -0.8661, -0.4996);
     std::vector<equations::Plane> upright_planes = {
             equations::Plane(0.8603, -0.2446, 0.4472, -.201376),
             equations::Plane(0.7779, -0.3059, 0.5489, -.242753),
@@ -87,7 +86,7 @@ TEST_F(ModelPhysicalFixture, TestCalculateCenterPt) {
             equations::Plane(-0.3655, -0.4537, 0.8128, -.359423)
     };
 
-    equations::Point p = mod->calculate_center_pt(ground_planes, upright_planes);
+    equations::Point p = mod->calculate_center_pt(axis_dir, upright_planes);
     ASSERT_NEAR(p.x, -0.000213082, .001);
     ASSERT_NEAR(p.y, 0.0298714, .001);
     ASSERT_NEAR(p.z, 0.42673, .001);

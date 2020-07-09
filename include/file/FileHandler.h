@@ -12,7 +12,6 @@
 #include <CoreServices/CoreServices.h>
 #include "json.hpp"
 
-using json = nlohmann::json;
 namespace file {
     /**
      * Abstract class for File Handling objects.
@@ -54,7 +53,7 @@ namespace file {
          */
         virtual void load_clouds(
                 std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
-                Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
+                        Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
                 CloudType::Type cloud_type) = 0;
 
 
@@ -78,7 +77,7 @@ namespace file {
             program_folder = path / program_folder;
             return program_folder;
         }();
-        //TODO: migrate to std::filesystem once changes are implementede
+        //TODO: migrate to std::filesystem once changes are implemented
         boost::filesystem::path scan_folder_path;
         std::string scan_name;
 
@@ -118,8 +117,65 @@ namespace file {
         }
 
         /**
+         * Find the next scan folder by sorting the existing scans numerically.
+         * E.g. if there are scans 1->10 in the all data folder, that means the next
+         * scan must be 11.
+         *
+         */
+        inline boost::filesystem::path
+        find_next_scan_folder_numeric(CloudType::Type const &type = CloudType::Type::NONE) {
+            boost::filesystem::path folder = swag_scanner_path / "/scans";
+            if (type == CloudType::Type::CALIBRATION) {
+                folder = swag_scanner_path / "calibration";
+            }
+
+            if (!is_directory(folder)) {
+                throw std::invalid_argument("This shouldn't happen");
+            }
+
+            // if folder is empty let's start at 1.
+            if (is_empty(folder)) {
+                boost::filesystem::path name = folder / "/1";
+                return name;
+            }
+
+            // make a vector to hold paths of all FOLDERS in the path
+            std::vector<boost::filesystem::path> v;
+            // don't include directories with '.' or without numbers in them.
+            for (auto &&x : boost::filesystem::directory_iterator(folder)) {
+                if (x.path().string().find('.') == std::string::npos &&
+                    x.path().string().find_first_of("0123456789") != std::string::npos) {
+                    v.push_back(x.path());
+                }
+            }
+
+            // if the vector is 0 that means there are no folders with numeric names
+            if (v.empty()) {
+                boost::filesystem::path name = folder / "/1";
+                return name;
+            }
+
+            // sort them using custom lambda function to order.
+            std::sort(v.begin(), v.end(), path_sort);
+
+            // get the last item in list, convert to string, convert to int, then add 1
+            int name_count = std::stoi(v.back().filename().string()) + 1;
+            std::string name_count_str = std::to_string(name_count);
+
+            std::string last_path = v.back().string();
+            std::string to_replace = v.back().filename().string();
+            std::string name = last_path.replace(last_path.find(to_replace),
+                                                 sizeof(name_count_str) - 1,
+                                                 name_count_str);
+            return boost::filesystem::path(name);
+        }
+
+
+        /**
          * Go to the SwagScanner/calibration directory and find the latest calibration by date.
          * @return path to the latest calibration.
+         *
+         * ex: find_latest_calibration() -> .../SwagScanner/calibration/testCal1/testCal1.json
          */
         inline boost::filesystem::path find_latest_calibration() {
             std::string someDir = swag_scanner_path.string() + "/calibration";

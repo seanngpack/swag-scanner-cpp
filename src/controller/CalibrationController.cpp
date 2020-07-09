@@ -21,9 +21,9 @@ void controller::CalibrationController::run() {
         upright_planes.push_back(coeffs[0]);
         ground_planes.push_back(coeffs[1]);
     }
-    equations::Point center = model->calculate_center_pt(ground_planes, upright_planes);
-    // update calibration.json inside the new calibration folder
-//    calibration::
+    equations::Normal axis_dir = model->calculate_axis_dir(ground_planes);
+    equations::Point center = model->calculate_center_pt(axis_dir, upright_planes);
+    file_handler->update_calibration_json(axis_dir, center);
 }
 
 
