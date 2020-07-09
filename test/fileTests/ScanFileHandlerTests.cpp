@@ -31,7 +31,7 @@ protected:
  */
 TEST_F(FileHandlerFixture, TestConstructor2) {
     GTEST_SKIP();
-    file::FileHandler *handler = new file::ScanFileHandler(true);
+    file::IFileHandler *handler = new file::ScanFileHandler(true);
 }
 
 /**
@@ -39,7 +39,7 @@ TEST_F(FileHandlerFixture, TestConstructor2) {
  */
 TEST_F(FileHandlerFixture, TestConstructor3) {
     GTEST_SKIP();
-    file::FileHandler *handler = new file::ScanFileHandler("swagg");
+    file::IFileHandler *handler = new file::ScanFileHandler("swagg");
 }
 
 /**

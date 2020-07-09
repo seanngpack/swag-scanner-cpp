@@ -21,9 +21,10 @@ file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {
 
 file::CalibrationFileHandler::CalibrationFileHandler(const char *scan_name) {
     this->scan_name = scan_name;
-    scan_folder_path = swag_scanner_path / "/scans/" / scan_name;
+    scan_folder_path = swag_scanner_path / "/calibration/" / scan_name;
     if (!is_directory(scan_folder_path)) {
         create_directory(scan_folder_path);
+        create_calibration_json();
     }
 }
 
@@ -90,6 +91,16 @@ void file::CalibrationFileHandler::update_calibration_json(equations::Normal dir
     std::string calibration_path = scan_folder_path.string() + "/" + scan_name + ".json";
     std::ofstream updated_file(calibration_path);
     updated_file << std::setw(4) << calibration_json << std::endl; // write to file
+}
+
+void file::CalibrationFileHandler::create_calibration_json() {
+    std::string calibration_path = scan_folder_path.string() + "/" + scan_name + ".json";
+    std::ofstream calibration(calibration_path); // create json file
+    json calibration_json = {
+            {"origin point",   {0.0, 0.0, 0.0}},
+            {"axis direction", {0.0, 0.0, 0.0}}
+    };
+    calibration << std::setw(4) << calibration_json << std::endl; // write to file
 }
 
 json file::CalibrationFileHandler::get_calibration_json() {

@@ -18,7 +18,7 @@ set(SOURCE_FILES
         include/utils/Algorithms.h
         src/model/processing/Model.cpp include/model/processing/Model.h
         include/view/Visualizer.h src/view/Visualizer.cpp
-        include/file/FileHandler.h
+        include/file/IFileHandler.h
 
         include/model/processing/Depth.h include/model/processing/Filtering.h
         src/controller/ScanController.cpp include/controller/ScanController.h

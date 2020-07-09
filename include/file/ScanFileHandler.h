@@ -5,18 +5,18 @@
 #ifndef SWAG_SCANNER_SCANFILEHANDLER_H
 #define SWAG_SCANNER_SCANFILEHANDLER_H
 
-#include "FileHandler.h"
+#include "IFileHandler.h"
 #include "json.hpp"
 
 namespace file {
     /**
      * Represents a file handler for scanning related processes.
      */
-    class ScanFileHandler : public FileHandler {
+    class ScanFileHandler : public IFileHandler {
     public:
 
         /**
-         * Default constructor makes a FileHandler. Searches for SwagScanner in the /applications path
+         * Default constructor makes a IFileHandler. Searches for SwagScanner in the /applications path
          * and creates a new SwagScanner directory if it doesn't exist. Will also create a folder "1" under
          * the /data directory and set it as the current scan folder. * Then it will update the settings.json on the
          * latest scan. If SwagScanner exists, then it will use the current scan folder according to the

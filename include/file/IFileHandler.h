@@ -1,5 +1,5 @@
-#ifndef SWAG_SCANNER_FILEHANDLER_H
-#define SWAG_SCANNER_FILEHANDLER_H
+#ifndef SWAG_SCANNER_IFILEHANDLER_H
+#define SWAG_SCANNER_IFILEHANDLER_H
 
 #include <boost/filesystem.hpp>
 #include <iostream>
@@ -16,7 +16,7 @@ namespace file {
     /**
      * Abstract class for File Handling objects.
      */
-    class FileHandler {
+    class IFileHandler {
     public:
 
         /**
@@ -61,8 +61,8 @@ namespace file {
 
         virtual void set_scan_name(const std::string &scan_name) = 0;
 
-        virtual ~FileHandler() {
-            std::cout << "calling FileHandler destructor \n";
+        virtual ~IFileHandler() {
+            std::cout << "calling IFileHandler destructor \n";
         }
 
     protected:
@@ -198,4 +198,4 @@ namespace file {
         }
     };
 }
-#endif //SWAG_SCANNER_FILEHANDLER_H
+#endif //SWAG_SCANNER_IFILEHANDLER_H

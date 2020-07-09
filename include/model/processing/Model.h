@@ -1,5 +1,5 @@
 /**
- * Model for processing point clouds. Holds a reference to the FileHandler for saving.
+ * Model for processing point clouds. Holds a reference to the IFileHandler for saving.
  */
 #ifndef SWAG_SCANNER_MODEL_H
 #define SWAG_SCANNER_MODEL_H

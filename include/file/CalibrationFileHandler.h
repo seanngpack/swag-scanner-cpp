@@ -1,14 +1,14 @@
 #ifndef SWAG_SCANNER_CALIBRATIONFILEHANDLER_H
 #define SWAG_SCANNER_CALIBRATIONFILEHANDLER_H
 
-#include "FileHandler.h"
+#include "IFileHandler.h"
 #include "Normal.h"
 #include "Point.h"
 #include "json.hpp"
 
 namespace file {
 
-    class CalibrationFileHandler : public FileHandler {
+    class CalibrationFileHandler : public IFileHandler {
     public:
 
         /**
@@ -56,6 +56,12 @@ namespace file {
         void update_calibration_json(equations::Normal dir, equations::Point pt);
 
     private:
+
+        /**
+         * Create a calibration .json file in the current calibration folder with 0 as default parameter.
+         */
+        void create_calibration_json();
+
         /**
          * Get the calibration file for the current calibration scan.
          * @return the calibration .json file.
