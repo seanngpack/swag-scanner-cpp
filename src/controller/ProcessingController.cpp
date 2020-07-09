@@ -1,5 +1,6 @@
 #include "ProcessingController.h"
 #include <cmath>
+#include <utility>
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -7,7 +8,7 @@ using json = nlohmann::json;
 controller::ProcessingController::ProcessingController(std::shared_ptr<model::Model> model,
                                                        visual::Visualizer *viewer,
                                                        std::shared_ptr<file::ScanFileHandler> file_handler) :
-        model(model), viewer(viewer), file_handler(file_handler) {}
+        model(std::move(model)), viewer(viewer), file_handler(std::move(file_handler)) {}
 
 
 void controller::ProcessingController::process_data() {

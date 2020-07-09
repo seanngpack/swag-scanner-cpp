@@ -1,10 +1,12 @@
 #include "ScanController.h"
 
+#include <utility>
+
 controller::ScanController::ScanController(camera::ICamera *camera,
                                            arduino::Arduino *arduino,
                                            std::shared_ptr<model::Model> model,
                                            std::shared_ptr<file::ScanFileHandler> file_handler) :
-        camera(camera), arduino(arduino), model(model), file_handler(file_handler) {}
+        camera(camera), arduino(arduino), model(std::move(model)), file_handler(std::move(file_handler)) {}
 
 
 void controller::ScanController::scan(int degs, int num_rot, CloudType::Type type) {
