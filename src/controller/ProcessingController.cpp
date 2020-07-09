@@ -1,21 +1,19 @@
 #include "ProcessingController.h"
 #include <cmath>
+#include <utility>
 #include "json.hpp"
 
 using json = nlohmann::json;
 
 controller::ProcessingController::ProcessingController(std::shared_ptr<model::Model> model,
                                                        visual::Visualizer *viewer,
-                                                       std::shared_ptr<file::FileHandler> file_handler) :
-        model(model), viewer(viewer), file_handler(file_handler) {}
+                                                       std::shared_ptr<file::ScanFileHandler> file_handler) :
+        model(std::move(model)), viewer(viewer), file_handler(std::move(file_handler)) {}
 
 
 void controller::ProcessingController::process_data() {
 }
 
-void controller::ProcessingController::set_scan_folder_path(std::string folder_path) {
-    file_handler->set_scan_folder_path(folder_path);
-}
 
 void controller::ProcessingController::filter_clouds(CloudType::Type cloud_type, float leaf_size) {
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;

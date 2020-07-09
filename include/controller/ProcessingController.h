@@ -2,7 +2,7 @@
 #define SWAG_SCANNER_PROCESSINGCONTROLLER_H
 
 #include "Model.h"
-#include "FileHandler.h"
+#include "ScanFileHandler.h"
 #include "Visualizer.h"
 
 
@@ -15,18 +15,13 @@ namespace controller {
     public:
         ProcessingController(std::shared_ptr<model::Model> model,
                              visual::Visualizer *viewer,
-                             std::shared_ptr<file::FileHandler> file_handler);
+                             std::shared_ptr<file::ScanFileHandler> file_handler);
 
         /**
         * Process the data. Currently will process the most recently scanned.
         */
         void process_data();
 
-        /**
-         * Set given scan folder path.
-         * @param folder_path path you want to set to.
-         */
-        void set_scan_folder_path(std::string folder_path);
 
         /**
          * Crop, downsample, and save the clouds to the /filtered folder
@@ -66,7 +61,7 @@ namespace controller {
     private:
         std::shared_ptr<model::Model> model;
         visual::Visualizer *viewer;
-        std::shared_ptr<file::FileHandler> file_handler;
+        std::shared_ptr<file::ScanFileHandler> file_handler;
     };
 
 

@@ -18,7 +18,7 @@ set(SOURCE_FILES
         include/utils/Algorithms.h
         src/model/processing/Model.cpp include/model/processing/Model.h
         include/view/Visualizer.h src/view/Visualizer.cpp
-        include/utils/FileHandler.h src/utils/FileHandler.cpp
+        include/file/IFileHandler.h
 
         include/model/processing/Depth.h include/model/processing/Filtering.h
         src/controller/ScanController.cpp include/controller/ScanController.h
@@ -28,7 +28,9 @@ set(SOURCE_FILES
         include/model/equations/Normal.h src/model/equations/Normal.cpp
         include/model/equations/Equations.h
         include/model/calibration/Calibration.h
-        include/model/equations/Point.h src/model/equations/Point.cpp include/controller/CalibrationController.h src/controller/CalibrationController.cpp)
+        include/model/equations/Point.h src/model/equations/Point.cpp
+        include/controller/CalibrationController.h src/controller/CalibrationController.cpp
+        include/file/CalibrationFileHandler.h include/file/ScanFileHandler.h src/file/ScanFileHandler.cpp src/file/CalibrationFileHandler.cpp)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)
@@ -39,13 +41,14 @@ set(CONTROLLER_HEADERS ./include/controller)
 set(TYPES_HEADERS ./include/types)
 set(EQUATIONS_HEADERS ./include/model/equations)
 set(CALIBRATION_HEADERS ./include/model/calibration)
+set(FILE_HEADERS ./include/file)
 set(UTILS ./include/utils)
 
 # double check why this fixes core bluetooth linkage issue
 set(CMAKE_EXE_LINKER_FLAGS "-framework CoreBluetooth")
 
 find_package(OpenCV REQUIRED)
-find_package(PCL 1.10 REQUIRED)
+find_package(PCL 1.11 REQUIRED)
 
 message(STATUS "OpenCV library status:")
 message(STATUS "    config: ${OpenCV_DIR}")
@@ -66,6 +69,7 @@ include_directories(${CONTROLLER_HEADERS})
 include_directories(${TYPES_HEADERS})
 include_directories(${EQUATIONS_HEADERS})
 include_directories(${CALIBRATION_HEADERS})
+include_directories(${FILE_HEADERS})
 include_directories(${UTILS})
 
 link_directories("/opt/librealsense/build/librealsense2.dylib")
