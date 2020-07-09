@@ -66,8 +66,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::remove_plane(pcl::PointCloud<p
     return segmentation::remove_plane(cloudIn);
 }
 
-equations::Point model::Model::calculate_center_pt(std::vector<equations::Plane> ground_planes,
-                                                   std::vector<equations::Plane> upright_planes) {
+equations::Normal model::Model::calculate_axis_dir(std::vector<equations::Plane> ground_planes) {
     equations::Normal g_n;
     for (auto &g: ground_planes) {
         g_n.A += g.A;
@@ -77,9 +76,14 @@ equations::Point model::Model::calculate_center_pt(std::vector<equations::Plane>
     g_n.A /= ground_planes.size();
     g_n.B /= ground_planes.size();
     g_n.C /= ground_planes.size();
+    return g_n;
+}
 
-    Eigen::MatrixXd A = calibration::build_A_matrix(g_n, upright_planes);
-    Eigen::MatrixXd b = calibration::build_b_matrix(g_n, upright_planes);
+equations::Point model::Model::calculate_center_pt(equations::Normal axis_dir,
+                                                   std::vector<equations::Plane> upright_planes) {
+
+    Eigen::MatrixXd A = calibration::build_A_matrix(axis_dir, upright_planes);
+    Eigen::MatrixXd b = calibration::build_b_matrix(axis_dir, upright_planes);
 
     equations::Point center = calibration::calculate_center_pt(A, b);
 

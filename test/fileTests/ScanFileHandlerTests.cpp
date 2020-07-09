@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "FileHandler.h"
+#include "ScanFileHandler.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -10,10 +10,10 @@ class FileHandlerFixture : public ::testing::Test {
 
 
 protected:
-    file::FileHandler *handler;
+    file::ScanFileHandler *handler;
 
     virtual void SetUp() {
-        handler = new file::FileHandler(true);
+        handler = new file::ScanFileHandler();
     }
 
     virtual void TearDown() {
@@ -24,17 +24,6 @@ protected:
 // remember to watch out for creating a brand new directory from scratch. See if
 // all folders are being created, files, etc.
 
-/**
- * Test to see if the method sets the correct current scan folder.
- * Again, if there are folders 1->10 in the valid directory, then the current
- * scan folder should be 11.
- * NOTE: This test is flawed because when I change the default folder this test
- * will break. Figure out a solution later to address this.
- */
-TEST_F(FileHandlerFixture, TestGetCurrentScanFolder) {
-    EXPECT_EQ(handler->get_scan_folder_path(),
-              "/Users/seanngpack/Library/Application Support/SwagScanner/scans/1");
-}
 
 /**
  * Test to see if passing "true" to the constructor will make a new folder
@@ -42,7 +31,7 @@ TEST_F(FileHandlerFixture, TestGetCurrentScanFolder) {
  */
 TEST_F(FileHandlerFixture, TestConstructor2) {
     GTEST_SKIP();
-    file::FileHandler *handler = new file::FileHandler(true);
+    file::IFileHandler *handler = new file::ScanFileHandler(true);
 }
 
 /**
@@ -50,7 +39,7 @@ TEST_F(FileHandlerFixture, TestConstructor2) {
  */
 TEST_F(FileHandlerFixture, TestConstructor3) {
     GTEST_SKIP();
-    file::FileHandler *handler = new file::FileHandler("swagg");
+    file::IFileHandler *handler = new file::ScanFileHandler("swagg");
 }
 
 /**
@@ -64,10 +53,3 @@ TEST_F(FileHandlerFixture, TestSetFolderPath) {
 //              "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing");
 }
 
-/**
- * Test setting the current folder to something invalid.
- */
-TEST_F(FileHandlerFixture, TestSetFolderPathInvalid) {
-    EXPECT_THROW(handler->set_scan_folder_path("aboslute nononsense"),
-                 std::invalid_argument);
-}
