@@ -30,7 +30,7 @@ file::ScanFileHandler::ScanFileHandler(bool auto_create_flag) {
 
 file::ScanFileHandler::ScanFileHandler(const char *scan_name) {
     this->scan_name = scan_name;
-    scan_folder_path = swag_scanner_path / "/scans/" / scan_name;
+    scan_folder_path = swag_scanner_path / "scans" / scan_name;
     if (!is_directory(scan_folder_path)) {
         create_directory(scan_folder_path);
         create_sub_folders();
@@ -43,10 +43,7 @@ void file::ScanFileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
                                        const std::string &cloud_name,
                                        CloudType::Type cloud_type) {
     std::cout << "saving file to ";
-    path out_path = scan_folder_path
-                    / "/"
-                    / CloudType::String(cloud_type)
-                    / "/" / cloud_name / ".pcd";
+    path out_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
     std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
@@ -54,10 +51,7 @@ void file::ScanFileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
 void file::ScanFileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                        const std::string &cloud_name,
                                        CloudType::Type cloud_type) {
-    path open_path = scan_folder_path
-                     / "/"
-                     / CloudType::String(cloud_type)
-                     / "/" / cloud_name;
+    path open_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
@@ -68,7 +62,7 @@ void file::ScanFileHandler::load_clouds(
         std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
         CloudType::Type cloud_type) {
     std::vector<path> cloud_paths;
-    path load_path = scan_folder_path / "/" / CloudType::String(cloud_type);
+    path load_path = scan_folder_path / CloudType::String(cloud_type);
 
     // load paths into cloud_paths vector
     for (auto &p : boost::filesystem::directory_iterator(load_path)) {
@@ -141,10 +135,10 @@ bool file::ScanFileHandler::check_program_folder() {
         std::cout << "No SwagScanner application folder detected, creating one at: " + swag_scanner_path.string()
                   << std::endl;
         create_directory(swag_scanner_path);
-        create_directory(swag_scanner_path / "/settings");
-        create_directory(swag_scanner_path / "/scans");
-        create_directory(swag_scanner_path / "/calibration");
-        create_directory(swag_scanner_path / "/calibration/default_calibration");
+        create_directory(swag_scanner_path / "settings");
+        create_directory(swag_scanner_path / "scans");
+        create_directory(swag_scanner_path / "calibration");
+        create_directory(swag_scanner_path / "calibration/default_calibration");
         std::ofstream settings(swag_scanner_path.string() + "/settings/settings.json"); // create json file
         json settings_json = {
                 {"version",     .1},
@@ -167,13 +161,13 @@ bool file::ScanFileHandler::check_program_folder() {
 
 void file::ScanFileHandler::create_sub_folders() {
     for (const auto &element : CloudType::All) {
-        path p = scan_folder_path / "/" / CloudType::String(element);
+        path p = scan_folder_path / CloudType::String(element);
         if (!exists(p) && element != CloudType::Type::CALIBRATION) {
             create_directory(p);
             std::cout << "Creating folder " + p.string() << std::endl;
         }
     }
-    path info_p = scan_folder_path / "/info";
+    path info_p = scan_folder_path / "info";
     if (!exists(info_p)) {
         create_directory(info_p);
         std::cout << "Creating folder " + info_p.string() << std::endl;

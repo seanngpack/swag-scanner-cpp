@@ -20,6 +20,33 @@ namespace file {
     public:
 
         /**
+         * Go to the SwagScanner/calibration directory and find the latest calibration by date.
+         * @return path to the latest calibration.
+         *
+         * ex: find_latest_calibration() -> .../SwagScanner/calibration/testCal1/testCal1.json
+         */
+        inline boost::filesystem::path find_latest_calibration() {
+            std::string someDir = swag_scanner_path.string() + "/calibration";
+            typedef std::multimap<std::time_t, boost::filesystem::path> result_set_t;
+            result_set_t result_set;
+
+            // store folders in ascending order
+            if (boost::filesystem::exists(someDir) && boost::filesystem::is_directory(someDir)) {
+                for (auto &&x : boost::filesystem::directory_iterator(someDir)) {
+                    if (is_directory(x) && x.path().filename() != ".DS_Store") {
+                        result_set.insert(result_set_t::value_type(last_write_time(x.path()), x.path()));
+                    }
+                }
+            }
+            // get the last element which is the latest date
+            // gives the path to the .json file inside the folder so that's why it's dirty
+            boost::filesystem::path p =
+                    boost::filesystem::path(result_set.rbegin()->second.string() + "/" +
+                                            result_set.rbegin()->second.filename().string() + ".json");
+            return p;
+        }
+
+        /**
          * Save the given cloud to the current output_path.
          * @param cloud the cloud you want to save.
          * @para cloud_type enum for the type of cloud you are saving. Affects the subfolder path.
@@ -168,33 +195,6 @@ namespace file {
                                                  sizeof(name_count_str) - 1,
                                                  name_count_str);
             return boost::filesystem::path(name);
-        }
-
-
-        /**
-         * Go to the SwagScanner/calibration directory and find the latest calibration by date.
-         * @return path to the latest calibration.
-         *
-         * ex: find_latest_calibration() -> .../SwagScanner/calibration/testCal1/testCal1.json
-         */
-        inline boost::filesystem::path find_latest_calibration() {
-            std::string someDir = swag_scanner_path.string() + "/calibration";
-            typedef std::multimap<std::time_t, boost::filesystem::path> result_set_t;
-            result_set_t result_set;
-
-            // store folders in ascending order
-            if (boost::filesystem::exists(someDir) && boost::filesystem::is_directory(someDir)) {
-                for (auto &&x : boost::filesystem::directory_iterator(someDir)) {
-                    if (is_directory(x) && x.path().filename() != ".DS_Store") {
-                        result_set.insert(result_set_t::value_type(last_write_time(x.path()), x.path()));
-                    }
-                }
-            }
-            // get the last element which is the latest date
-            // gives the path to the .json file inside the folder so that's why it's dirty
-            boost::filesystem::path p =
-                    result_set.rbegin()->second / "/" / result_set.rbegin()->second.filename() / ".json";
-            return p;
         }
     };
 }

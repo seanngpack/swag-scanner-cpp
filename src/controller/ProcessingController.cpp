@@ -25,7 +25,7 @@ void controller::ProcessingController::filter_clouds(CloudType::Type cloud_type,
                                                                              -100, .48);
         pcl::PointCloud<pcl::PointXYZ>::Ptr filteredCloud = model->voxel_grid_filter(croppedCloud, leaf_size);
         std::cout << "saving filtered cloud to" << std::endl;
-        file_handler->save_cloud(filteredCloud, std::to_string(i), CloudType::Type::FILTERED);
+        file_handler->save_cloud(filteredCloud, std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
     }
 }
 
@@ -35,7 +35,7 @@ void controller::ProcessingController::segment_clouds(CloudType::Type cloud_type
     for (int i = 0; i < cloud_vector.size(); i++) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr segmentedCloud = model->remove_plane(cloud_vector[i]);
         std::cout << "saving segmented cloud" << std::endl;
-        file_handler->save_cloud(segmentedCloud, std::to_string(i), CloudType::Type::SEGMENTED);
+        file_handler->save_cloud(segmentedCloud, std::to_string(i) + ".pcd", CloudType::Type::SEGMENTED);
     }
 }
 
@@ -81,10 +81,12 @@ void controller::ProcessingController::rotate_all_clouds(CloudType::Type cloud_t
     pcl::PointCloud<pcl::PointXYZ>::Ptr global_cloud(new pcl::PointCloud<pcl::PointXYZ>);
     *global_cloud = *cloud_vector[0];
     for (int i = 1; i < cloud_vector.size(); i++) {
+        std::cout << "made it here " << std::endl;
         pcl::PointCloud<pcl::PointXYZ>::Ptr rotated(new pcl::PointCloud<pcl::PointXYZ>);
         rotated = model->rotate_cloud_about_line(cloud_vector[i], origin, direction, theta * i);
         *global_cloud += *rotated;
     }
+
     viewer->simpleVis(global_cloud);
 }
 

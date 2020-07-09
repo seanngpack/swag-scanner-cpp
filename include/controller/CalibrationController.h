@@ -16,7 +16,8 @@ namespace controller {
      */
     class CalibrationController {
     public:
-        CalibrationController(std::unique_ptr<controller::ScanController> scan_controller,
+        CalibrationController(camera::ICamera *camera,
+                              arduino::Arduino *arduino,
                               std::shared_ptr<model::Model> model,
                               std::shared_ptr<file::CalibrationFileHandler> file_handler,
                               visual::Visualizer *viewer,
@@ -33,12 +34,18 @@ namespace controller {
         ~CalibrationController();
 
     private:
-        std::unique_ptr<controller::ScanController> scan_controller;
+        camera::ICamera *camera;
+        arduino::Arduino *arduino;
         std::shared_ptr<model::Model> model;
         std::shared_ptr<file::CalibrationFileHandler> file_handler;
         visual::Visualizer *viewer;
         int deg;
         int num_rot;
+
+        /**
+         * Scan the calibration clouds and save them into current folder.
+         */
+        void scan();
 
     };
 }

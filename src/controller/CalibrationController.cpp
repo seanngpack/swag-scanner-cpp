@@ -2,17 +2,18 @@
 
 #include <utility>
 
-controller::CalibrationController::CalibrationController(std::unique_ptr<controller::ScanController> scan_controller,
+controller::CalibrationController::CalibrationController(camera::ICamera *camera,
+                                                         arduino::Arduino *arduino,
                                                          std::shared_ptr<model::Model> model,
                                                          std::shared_ptr<file::CalibrationFileHandler> file_handler,
                                                          visual::Visualizer *viewer,
                                                          int deg,
                                                          int num_rot) :
-        scan_controller(std::move(scan_controller)), model(std::move(model)), file_handler(std::move(file_handler)),
+        camera(camera), arduino(arduino), model(std::move(model)), file_handler(std::move(file_handler)),
         viewer(viewer), deg(deg), num_rot(num_rot) {}
 
 void controller::CalibrationController::run() {
-    scan_controller->scan(deg, num_rot, CloudType::Type::CALIBRATION);
+    scan();
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, CloudType::Type::CALIBRATION);
 
@@ -28,8 +29,21 @@ void controller::CalibrationController::run() {
     file_handler->update_calibration_json(axis_dir, center);
 }
 
+void controller::CalibrationController::scan() {
+    const camera::ss_intrinsics *intrin = camera->get_intrinsics();
+    std::cout << "starting scanning..." << std::endl;
+    for (int i = 0; i < num_rot; i++) {
+        std::string name = std::to_string(i * deg) + ".pcd";
+        const uint16_t *depth_frame = camera->get_depth_frame();
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
+        file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);
+        arduino->rotate_table(deg);
+    }
+}
 
 controller::CalibrationController::~CalibrationController() {
     delete viewer;
+    delete camera;
+    delete arduino;
 }
 
