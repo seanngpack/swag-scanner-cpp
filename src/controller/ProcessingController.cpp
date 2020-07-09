@@ -1,6 +1,5 @@
 #include "ProcessingController.h"
 #include <cmath>
-#include <utility>
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -81,7 +80,6 @@ void controller::ProcessingController::rotate_all_clouds(CloudType::Type cloud_t
     pcl::PointCloud<pcl::PointXYZ>::Ptr global_cloud(new pcl::PointCloud<pcl::PointXYZ>);
     *global_cloud = *cloud_vector[0];
     for (int i = 1; i < cloud_vector.size(); i++) {
-        std::cout << "made it here " << std::endl;
         pcl::PointCloud<pcl::PointXYZ>::Ptr rotated(new pcl::PointCloud<pcl::PointXYZ>);
         rotated = model->rotate_cloud_about_line(cloud_vector[i], origin, direction, theta * i);
         *global_cloud += *rotated;
