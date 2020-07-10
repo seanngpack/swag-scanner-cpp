@@ -1,7 +1,5 @@
 #include "Normal.h"
 
-equations::Normal::Normal() : A(0.0), B(0.0), C(0.0) {}
-
 equations::Normal::Normal(double A, double B, double C) : A(A), B(B), C(C) {}
 
 equations::Normal::Normal(std::vector<double> in) : A(in[0]), B(in[1]), C(in[2]) {
@@ -15,3 +13,4 @@ equations::Normal::Normal(pcl::ModelCoefficients::Ptr in) : A(in->values[0]), B(
 equations::Normal equations::Normal::operator+(const equations::Normal &n2) const {
     return equations::Normal(A + n2.A, B + n2.B, C + n2.C);
 }
+

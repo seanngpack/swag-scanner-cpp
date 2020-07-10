@@ -13,8 +13,8 @@
 namespace controller {
     class ScanController {
     public:
-        ScanController(camera::ICamera *camera,
-                       arduino::Arduino *arduino,
+        ScanController(std::shared_ptr<camera::ICamera> camera,
+                       std::shared_ptr<arduino::Arduino> arduino,
                        std::shared_ptr<model::Model> model,
                        std::shared_ptr<file::ScanFileHandler> file_handler);
 
@@ -28,11 +28,9 @@ namespace controller {
         void scan(int degs, int num_rot);
 
 
-        ~ScanController();
-
     private:
-        camera::ICamera *camera;
-        arduino::Arduino *arduino;
+        std::shared_ptr<camera::ICamera> camera;
+        std::shared_ptr<arduino::Arduino> arduino;
         std::shared_ptr<model::Model> model;
         std::shared_ptr<file::ScanFileHandler> file_handler;
     };

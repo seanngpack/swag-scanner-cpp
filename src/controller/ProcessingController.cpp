@@ -6,9 +6,9 @@
 using json = nlohmann::json;
 
 controller::ProcessingController::ProcessingController(std::shared_ptr<model::Model> model,
-                                                       visual::Visualizer *viewer,
+                                                       std::shared_ptr<visual::Visualizer> viewer,
                                                        std::shared_ptr<file::ScanFileHandler> file_handler) :
-        model(std::move(model)), viewer(viewer), file_handler(std::move(file_handler)) {}
+        model(std::move(model)), viewer(std::move(viewer)), file_handler(std::move(file_handler)) {}
 
 
 void controller::ProcessingController::process_data() {
@@ -91,8 +91,4 @@ void controller::ProcessingController::rotate_all_clouds(CloudType::Type cloud_t
 
 void controller::ProcessingController::visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
     viewer->simpleVis(cloud);
-}
-
-controller::ProcessingController::~ProcessingController() {
-    delete viewer;
 }

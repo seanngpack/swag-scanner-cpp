@@ -2,11 +2,12 @@
 
 #include <utility>
 
-controller::ScanController::ScanController(camera::ICamera *camera,
-                                           arduino::Arduino *arduino,
+controller::ScanController::ScanController(std::shared_ptr<camera::ICamera> camera,
+                                           std::shared_ptr<arduino::Arduino> arduino,
                                            std::shared_ptr<model::Model> model,
                                            std::shared_ptr<file::ScanFileHandler> file_handler) :
-        camera(camera), arduino(arduino), model(std::move(model)), file_handler(std::move(file_handler)) {}
+        camera(std::move(camera)), arduino(std::move(arduino)), model(std::move(model)),
+        file_handler(std::move(file_handler)) {}
 
 
 void controller::ScanController::scan(int degs, int num_rot) {
@@ -30,12 +31,6 @@ void controller::ScanController::scan(int degs, int num_rot) {
         file_handler->save_cloud(cloud, name, CloudType::Type::RAW);
         arduino->rotate_table(degs);
     }
-}
-
-
-controller::ScanController::~ScanController() {
-    delete camera;
-    delete arduino;
 }
 
 

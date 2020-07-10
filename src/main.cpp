@@ -10,10 +10,10 @@
 
 
 int main() {
-    auto *camera = new camera::SR305();
-    auto *arduino = new arduino::Arduino();
+//    std::shared_ptr<camera::SR305> camera = std::make_shared<camera::SR305>();
+//    std::shared_ptr<arduino::Arduino> arduino = std::make_shared<arduino::Arduino>();
     std::shared_ptr<model::Model> model = std::make_shared<model::Model>();
-    auto *viewer = new visual::Visualizer();
+    std::shared_ptr<visual::Visualizer> viewer = std::make_shared<visual::Visualizer>();
     std::shared_ptr<file::ScanFileHandler> file_handler = std::make_shared<file::ScanFileHandler>("test again");
 //    std::shared_ptr<file::CalibrationFileHandler> file_handler = std::make_shared<file::CalibrationFileHandler>();
 
@@ -32,9 +32,5 @@ int main() {
     processController->rotate_all_clouds(CloudType::Type::FILTERED);
 
 
-
-//    delete scanController;
-//    delete processController;
-    delete viewer;
     return 0;
 }

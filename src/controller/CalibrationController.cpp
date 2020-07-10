@@ -1,16 +1,16 @@
 #include <CalibrationController.h>
-
 #include <utility>
 
-controller::CalibrationController::CalibrationController(camera::ICamera *camera,
-                                                         arduino::Arduino *arduino,
+controller::CalibrationController::CalibrationController(std::shared_ptr<camera::ICamera> camera,
+                                                         std::shared_ptr<arduino::Arduino> arduino,
                                                          std::shared_ptr<model::Model> model,
                                                          std::shared_ptr<file::CalibrationFileHandler> file_handler,
-                                                         visual::Visualizer *viewer,
+                                                         std::shared_ptr<visual::Visualizer> viewer,
                                                          int deg,
                                                          int num_rot) :
-        camera(camera), arduino(arduino), model(std::move(model)), file_handler(std::move(file_handler)),
-        viewer(viewer), deg(deg), num_rot(num_rot) {}
+        camera(std::move(camera)), arduino(std::move(arduino)), model(std::move(model)),
+        file_handler(std::move(file_handler)),
+        viewer(std::move(viewer)), deg(deg), num_rot(num_rot) {}
 
 void controller::CalibrationController::run() {
     scan();
@@ -41,9 +41,4 @@ void controller::CalibrationController::scan() {
     }
 }
 
-controller::CalibrationController::~CalibrationController() {
-    delete viewer;
-    delete camera;
-    delete arduino;
-}
 

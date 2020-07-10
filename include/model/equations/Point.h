@@ -8,14 +8,16 @@ namespace equations {
     /**
      * Simple object representing a point in 3d space.
      */
-    class Point {
+    typedef struct Point {
     public:
         double x,y,z;
 
         Point(double x, double y, double z);
 
         Point(std::vector<double> in);
-    };
+
+        ~Point() = default;
+    } Point;
 }
 
 #endif //SWAG_SCANNER_POINT_H
