@@ -1,5 +1,6 @@
 #include "ProcessingController.h"
 #include <cmath>
+#include <pcl-1.11/pcl/common/impl/transforms.hpp>
 #include "json.hpp"
 
 using json = nlohmann::json;

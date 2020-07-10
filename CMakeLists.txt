@@ -18,19 +18,26 @@ set(SOURCE_FILES
         include/utils/Algorithms.h
         src/model/processing/Model.cpp include/model/processing/Model.h
         include/view/Visualizer.h src/view/Visualizer.cpp
-        include/file/IFileHandler.h
+        include/file/IFileHandler.h src/file/IFileHandler.cpp
+        include/file/CalibrationFileHandler.h include/file/ScanFileHandler.h
+        src/file/ScanFileHandler.cpp src/file/CalibrationFileHandler.cpp
 
-        include/model/processing/Depth.h include/model/processing/Filtering.h
+        include/model/processing/Depth.h src/model/processing/Depth.cpp
+        include/model/processing/Registration.h src/model/processing/Registration.cpp
+        include/model/processing/Filtering.h src/model/processing/Filtering.cpp
+        include/model/processing/Segmentation.h src/model/processing/Segmentation.cpp
         src/controller/ScanController.cpp include/controller/ScanController.h
-        include/model/processing/Segmentation.h include/controller/ProcessingController.h
-        src/controller/ProcessingController.cpp include/model/processing/Registration.h
+        include/controller/ProcessingController.h
+        src/controller/ProcessingController.cpp
+
         include/model/equations/Plane.h src/model/equations/Plane.cpp
         include/model/equations/Normal.h src/model/equations/Normal.cpp
         include/model/equations/Equations.h
         include/model/calibration/Calibration.h
         include/model/equations/Point.h src/model/equations/Point.cpp
         include/controller/CalibrationController.h src/controller/CalibrationController.cpp
-        include/file/CalibrationFileHandler.h include/file/ScanFileHandler.h src/file/ScanFileHandler.cpp src/file/CalibrationFileHandler.cpp)
+
+        )
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)

@@ -26,7 +26,12 @@ add_definitions(${PCL_DEFINITIONS})
 
 add_executable(tests_run
         ${swag_scanner_SOURCE_DIR}/src/view/Visualizer.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/processing/Depth.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/processing/Filtering.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/processing/Registration.cpp
+        ${swag_scanner_SOURCE_DIR}/src/model/processing/Segmentation.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/processing/Model.cpp
+        ${swag_scanner_SOURCE_DIR}/src/file/IFileHandler.cpp
         ${swag_scanner_SOURCE_DIR}/src/file/CalibrationFileHandler.cpp
         ${swag_scanner_SOURCE_DIR}/src/file/ScanFileHandler.cpp
         ${swag_scanner_SOURCE_DIR}/src/wrapper/CoreBluetoothObjC.mm
