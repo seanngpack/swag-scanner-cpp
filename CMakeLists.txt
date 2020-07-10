@@ -36,8 +36,7 @@ set(SOURCE_FILES
         include/model/calibration/Calibration.h
         include/model/equations/Point.h src/model/equations/Point.cpp
         include/controller/CalibrationController.h src/controller/CalibrationController.cpp
-
-        )
+        src/types/CameraTypes.cpp)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)

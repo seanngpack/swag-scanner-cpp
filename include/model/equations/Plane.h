@@ -11,15 +11,18 @@ namespace equations {
      * Class represents the equation of a plane. Contains methods to convert vector or pcl::ModelCoefficients
      * to this object.
      */
-    class Plane {
+    typedef struct Plane {
     public:
 
-        double A, B, C, D;
+        double A = 0;
+        double B = 0;
+        double C = 0;
+        double D = 0;
 
         /**
          * Default constructor for plane. Don't forget to set A,B,C,D
          */
-        Plane();
+        Plane() = default;
 
         /**
          * Create a plane object given the coefficients of a plane.
@@ -56,9 +59,11 @@ namespace equations {
          */
         Plane operator+(const Plane &p2) const;
 
+        ~Plane() = default;
+
     private:
 
-    };
+    } Plane;
 }
 
 #endif //SWAG_SCANNER_PLANE_H

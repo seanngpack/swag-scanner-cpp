@@ -1,7 +1,5 @@
 #include "Plane.h"
 
-equations::Plane::Plane() : A(0.0), B(0.0), C(0.0), D(0.0) {}
-
 equations::Plane::Plane(double A, double B, double C, double D) : A(A), B(B), C(C), D(D) {}
 
 equations::Plane::Plane(std::vector<double> in) : A(in[0]), B(in[1]), C(in[2]), D(in[3]) {}

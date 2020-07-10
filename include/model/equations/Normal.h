@@ -6,18 +6,18 @@
 
 
 namespace equations {
-
     /**
      * Class represents the normal equation of a plane.
      */
-    class Normal {
-    public:
-        double A, B, C;
+    typedef struct Normal {
+        double A = 0.0;
+        double B = 0.0;
+        double C = 0.0;
 
         /**
          * Default constructor. Don't forget to set values for A,B,C.
          */
-        Normal();
+        Normal() = default;
 
         /**
          * Create a normal object given the coefficients of a plane.
@@ -48,7 +48,8 @@ namespace equations {
          */
         Normal operator+(const Normal &n2) const;
 
-    };
+        ~Normal() = default;
+    } Normal;
 }
 
 #endif //SWAG_SCANNER_NORMAL_H

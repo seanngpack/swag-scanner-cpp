@@ -14,7 +14,7 @@ namespace controller {
     class ProcessingController {
     public:
         ProcessingController(std::shared_ptr<model::Model> model,
-                             visual::Visualizer *viewer,
+                             std::shared_ptr<visual::Visualizer> viewer,
                              std::shared_ptr<file::ScanFileHandler> file_handler);
 
         /**
@@ -56,11 +56,9 @@ namespace controller {
 
         void visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 
-        ~ProcessingController();
-
     private:
         std::shared_ptr<model::Model> model;
-        visual::Visualizer *viewer;
+        std::shared_ptr<visual::Visualizer> viewer;
         std::shared_ptr<file::ScanFileHandler> file_handler;
     };
 

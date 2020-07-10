@@ -16,11 +16,11 @@ namespace controller {
      */
     class CalibrationController {
     public:
-        CalibrationController(camera::ICamera *camera,
-                              arduino::Arduino *arduino,
+        CalibrationController(std::shared_ptr<camera::ICamera> camera,
+                              std::shared_ptr<arduino::Arduino> arduino,
                               std::shared_ptr<model::Model> model,
                               std::shared_ptr<file::CalibrationFileHandler> file_handler,
-                              visual::Visualizer *viewer,
+                              std::shared_ptr<visual::Visualizer> viewer,
                               int deg,
                               int num_rot);
 
@@ -31,14 +31,13 @@ namespace controller {
          */
         void run();
 
-        ~CalibrationController();
 
     private:
-        camera::ICamera *camera;
-        arduino::Arduino *arduino;
+        std::shared_ptr<camera::ICamera> camera;
+        std::shared_ptr<arduino::Arduino> arduino;
         std::shared_ptr<model::Model> model;
         std::shared_ptr<file::CalibrationFileHandler> file_handler;
-        visual::Visualizer *viewer;
+        std::shared_ptr<visual::Visualizer> viewer;
         int deg;
         int num_rot;
 

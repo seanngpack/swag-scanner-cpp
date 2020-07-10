@@ -40,6 +40,7 @@ add_executable(tests_run
         ${swag_scanner_SOURCE_DIR}/src/model/equations/Normal.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/equations/Plane.cpp
         ${swag_scanner_SOURCE_DIR}/src/model/equations/Point.cpp
+        ${swag_scanner_SOURCE_DIR}/src/types/CameraTypes.cpp
         processingTests/ModelTests.cpp
         utilsTests/AlgosTests.cpp
         typesTests/CameraTypesTests.cpp
