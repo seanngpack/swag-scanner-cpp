@@ -18,7 +18,9 @@ set(SOURCE_FILES
         include/utils/Algorithms.h
         src/model/processing/Model.cpp include/model/processing/Model.h
         include/view/Visualizer.h src/view/Visualizer.cpp
-        include/file/IFileHandler.h
+        include/file/IFileHandler.h src/file/IFileHandler.cpp
+        include/file/CalibrationFileHandler.h include/file/ScanFileHandler.h
+        src/file/ScanFileHandler.cpp src/file/CalibrationFileHandler.cpp
 
         include/model/processing/Depth.h src/model/processing/Depth.cpp
         include/model/processing/Registration.h src/model/processing/Registration.cpp
@@ -34,8 +36,8 @@ set(SOURCE_FILES
         include/model/calibration/Calibration.h
         include/model/equations/Point.h src/model/equations/Point.cpp
         include/controller/CalibrationController.h src/controller/CalibrationController.cpp
-        include/file/CalibrationFileHandler.h include/file/ScanFileHandler.h src/file/ScanFileHandler.cpp src/file/CalibrationFileHandler.cpp
-        src/file/IFileHandler.cpp)
+
+        )
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)
