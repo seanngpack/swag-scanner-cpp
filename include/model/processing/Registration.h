@@ -26,7 +26,7 @@ namespace registration {
      * @param cloudAligned output cloud source -> target.
      * @param transformation output transformation.
      */
-    inline void sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+    void sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                       pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
                                       pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures,
                                       pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudOutFeatures,

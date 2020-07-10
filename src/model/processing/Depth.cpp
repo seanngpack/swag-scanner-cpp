@@ -1,8 +1,7 @@
 #include "Depth.h"
-#include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const uint16_t *depth_frame,
+pcl::PointCloud<pcl::PointXYZ>::Ptr depth::create_point_cloud(const uint16_t *depth_frame,
                                                        const camera::ss_intrinsics *intrinsics) {
     // cloud setup
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);

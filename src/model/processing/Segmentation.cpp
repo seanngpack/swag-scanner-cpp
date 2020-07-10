@@ -7,7 +7,7 @@
 #include <pcl/visualization/pcl_visualizer.h>
 
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn) {
+pcl::PointCloud<pcl::PointXYZ>::Ptr segmentation::remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn) {
     pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInliers(new pcl::PointCloud<pcl::PointXYZ>);
@@ -48,7 +48,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr remove_plane(pcl::PointCloud<pcl::PointXYZ>:
     return cloudOutliers;
 }
 
-std::vector<equations::Plane> get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+std::vector<equations::Plane> segmentation::get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
     std::vector<equations::Plane> planes;
     // Create the segmentation object for the planar model and set all the parameters
     pcl::SACSegmentation<pcl::PointXYZ> seg;
@@ -99,7 +99,7 @@ std::vector<equations::Plane> get_calibration_planes_coefs(pcl::PointCloud<pcl::
     return planes;
 }
 
-std::vector<float> get_plane_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+std::vector<float> segmentation::get_plane_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
     pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
     pcl::SACSegmentation<pcl::PointXYZ> seg;

@@ -2,7 +2,7 @@
 #include <pcl/registration/icp.h>
 #include <pcl/registration/ia_ransac.h>
 
-Eigen::Matrix4f icp_register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+Eigen::Matrix4f registration::icp_register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                                 pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut,
                                                 pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud) {
     pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
@@ -21,7 +21,7 @@ Eigen::Matrix4f icp_register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr clo
     return icp.getFinalTransformation();
 }
 
-void sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
+void registration::sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
                                   pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures,
                                   pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudOutFeatures,

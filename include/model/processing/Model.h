@@ -15,9 +15,8 @@
 #include "CloudType.h"
 #include "Normal.h"
 #include "Point.h"
-#include "Visualizer.h"
-#include "Algorithms.h"
-#include "Registration.h"
+#include "Plane.h"
+
 
 namespace model {
 

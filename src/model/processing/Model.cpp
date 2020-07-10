@@ -3,6 +3,9 @@
 #include "Filtering.h"
 #include "Segmentation.h"
 #include "Calibration.h"
+#include "Visualizer.h"
+#include "Algorithms.h"
+#include "Registration.h"
 
 model::Model::Model() {}
 
