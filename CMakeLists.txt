@@ -30,7 +30,7 @@ set(SOURCE_FILES
         include/model/calibration/Calibration.h
         include/model/equations/Point.h src/model/equations/Point.cpp
         include/controller/CalibrationController.h src/controller/CalibrationController.cpp
-        include/file/CalibrationFileHandler.h include/file/ScanFileHandler.h src/file/ScanFileHandler.cpp src/file/CalibrationFileHandler.cpp)
+        include/file/CalibrationFileHandler.h include/file/ScanFileHandler.h src/file/ScanFileHandler.cpp src/file/CalibrationFileHandler.cpp src/model/processing/Depth.cpp src/model/processing/Filtering.cpp src/model/processing/Registration.cpp src/model/processing/Segmentation.cpp)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)
