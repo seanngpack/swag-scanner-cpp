@@ -36,7 +36,7 @@ set(SOURCE_FILES
         include/model/calibration/Calibration.h
         include/model/equations/Point.h src/model/equations/Point.cpp
         include/controller/CalibrationController.h src/controller/CalibrationController.cpp
-        src/types/CameraTypes.cpp)
+        src/types/CameraTypes.cpp include/cli/ControllerFactory.h src/cli/ControllerFactory.cpp include/cli/CLIClient.h include/controller/IController.h)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)
@@ -49,6 +49,7 @@ set(EQUATIONS_HEADERS ./include/model/equations)
 set(CALIBRATION_HEADERS ./include/model/calibration)
 set(FILE_HEADERS ./include/file)
 set(UTILS ./include/utils)
+set(CLI_HEADERS ./include/cli)
 
 # double check why this fixes core bluetooth linkage issue
 set(CMAKE_EXE_LINKER_FLAGS "-framework CoreBluetooth")
@@ -77,6 +78,7 @@ include_directories(${EQUATIONS_HEADERS})
 include_directories(${CALIBRATION_HEADERS})
 include_directories(${FILE_HEADERS})
 include_directories(${UTILS})
+include_directories(${CLI_HEADERS})
 
 link_directories("/opt/librealsense/build/librealsense2.dylib")
 link_directories(${PCL_LIBRARY_DIRS})

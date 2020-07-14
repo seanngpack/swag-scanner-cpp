@@ -1,6 +1,7 @@
 #ifndef SWAG_SCANNER_CALIBRATIONCONTROLLER_H
 #define SWAG_SCANNER_CALIBRATIONCONTROLLER_H
 
+#include "IController.h"
 #include "Model.h"
 #include "Arduino.h"
 #include "SR305.h"
@@ -14,7 +15,7 @@ namespace controller {
     /**
      * This controller handles calibration.
      */
-    class CalibrationController {
+    class CalibrationController : public IController {
     public:
         CalibrationController(std::shared_ptr<camera::ICamera> camera,
                               std::shared_ptr<arduino::Arduino> arduino,
@@ -29,7 +30,7 @@ namespace controller {
          * calibration folder. Calculate configuration properties and save to that folder.
          *
          */
-        void run();
+        void run() override;
 
 
     private:

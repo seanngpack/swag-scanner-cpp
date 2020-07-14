@@ -1,23 +1,32 @@
 #ifndef SWAG_SCANNER_SCANCONTROLLER_H
 #define SWAG_SCANNER_SCANCONTROLLER_H
 
+#include "IController.h"
 #include "Model.h"
 #include "Arduino.h"
 #include "SR305.h"
 #include "Visualizer.h"
 #include "ScanFileHandler.h"
 
-/**
- * This controller handles data acquisition.
- */
+
 namespace controller {
-    class ScanController {
+    /**
+    * This controller handles data acquisition.
+    */
+    class ScanController : public IController {
     public:
         ScanController(std::shared_ptr<camera::ICamera> camera,
                        std::shared_ptr<arduino::Arduino> arduino,
                        std::shared_ptr<model::Model> model,
-                       std::shared_ptr<file::ScanFileHandler> file_handler);
+                       std::shared_ptr<file::ScanFileHandler> file_handler,
+                       int deg,
+                       int num_rot);
 
+        void run() override;
+
+        void set_deg(int deg);
+
+        void set_num_rot(int num_rot);
 
         /**
          * Write folders, run the scan and collect data.
@@ -25,7 +34,7 @@ namespace controller {
          * @param num_rot number of rotations.
          * the scan to (RAW, CALIBRATION, etc)
          */
-        void scan(int degs, int num_rot);
+        void scan();
 
 
     private:
@@ -33,6 +42,8 @@ namespace controller {
         std::shared_ptr<arduino::Arduino> arduino;
         std::shared_ptr<model::Model> model;
         std::shared_ptr<file::ScanFileHandler> file_handler;
+        int deg;
+        int num_rot;
     };
 }
 
