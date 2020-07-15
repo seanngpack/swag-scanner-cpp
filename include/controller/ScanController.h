@@ -19,8 +19,8 @@ namespace controller {
                        std::shared_ptr<arduino::Arduino> arduino,
                        std::shared_ptr<model::Model> model,
                        std::shared_ptr<file::ScanFileHandler> file_handler,
-                       int deg,
-                       int num_rot);
+                       int deg = 20,
+                       int num_rot = 18);
 
         void run() override;
 

@@ -22,8 +22,8 @@ namespace controller {
                               std::shared_ptr<model::Model> model,
                               std::shared_ptr<file::CalibrationFileHandler> file_handler,
                               std::shared_ptr<visual::Visualizer> viewer,
-                              int deg,
-                              int num_rot);
+                              int deg = 15,
+                              int num_rot = 7);
 
         /**
          * Scan calibration fixture with member info for degs and # of rotations into a new

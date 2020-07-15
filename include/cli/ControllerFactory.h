@@ -1,31 +1,43 @@
 #ifndef SWAG_SCANNER_CONTROLLERFACTORY_H
 #define SWAG_SCANNER_CONTROLLERFACTORY_H
 
-#include "CalibrationController.h"
-#include "ProcessingController.h"
-#include "ScanController.h"
+
+#include "IController.h"
+#include <boost/program_options.hpp>
 
 namespace cli {
     class ControllerFactory {
     public:
+        static std::unique_ptr<controller::IController> create(boost::program_options::variables_map vm);
 
-        std::unique_ptr<controller::CalibrationController> buildCalibrationController(std::shared_ptr<camera::ICamera> camera,
-                                                                     std::shared_ptr<arduino::Arduino> arduino,
-                                                                     std::shared_ptr<model::Model> model,
-                                                                     std::shared_ptr<file::CalibrationFileHandler> file_handler,
-                                                                     std::shared_ptr<visual::Visualizer> viewer,
-                                                                     int deg,
-                                                                     int num_rot);
 
-        std::unique_ptr<controller::ProcessingController> buildProcessingController(std::shared_ptr<model::Model> model,
-                                                                   std::shared_ptr<visual::Visualizer> viewer,
-                                                                   std::shared_ptr<file::ScanFileHandler> file_handler);
+    private:
+        /**
+         * Creates a new scanning controller. if -name is not passed, it will create
+         * a new folder.
+         * @param vm
+         * @return
+         */
+        static std::unique_ptr<controller::IController>
+        create_scan_controller(boost::program_options::variables_map vm);
 
-        std::unique_ptr<controller::ScanController> buildScanController(std::shared_ptr<camera::ICamera> camera,
-                                                       std::shared_ptr<arduino::Arduino> arduino,
-                                                       std::shared_ptr<model::Model> model,
-                                                       std::shared_ptr<file::ScanFileHandler> file_handler);
+        /**
+         * Creates a new calibration controller. If -name is not passed then it will
+         * use the latest calibration folder.
+         * @param vm
+         * @return
+         */
+        static std::unique_ptr<controller::IController>
+        create_calibrate_controller(boost::program_options::variables_map vm);
 
+        /**
+         * Create a processing controller. If -name is not passed then it will use the latest scan according
+         * to the info.json file.
+         * @param vm
+         * @return
+         */
+        static std::unique_ptr<controller::IController>
+        create_processing_controller(boost::program_options::variables_map vm);
     };
 }
 
