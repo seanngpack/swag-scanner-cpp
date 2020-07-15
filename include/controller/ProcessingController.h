@@ -1,6 +1,7 @@
 #ifndef SWAG_SCANNER_PROCESSINGCONTROLLER_H
 #define SWAG_SCANNER_PROCESSINGCONTROLLER_H
 
+#include "IController.h"
 #include "Model.h"
 #include "ScanFileHandler.h"
 #include "Visualizer.h"
@@ -11,16 +12,16 @@ namespace controller {
     /**
      * This controller handles data processing commands.
      */
-    class ProcessingController {
+    class ProcessingController : public IController {
     public:
         ProcessingController(std::shared_ptr<model::Model> model,
                              std::shared_ptr<visual::Visualizer> viewer,
                              std::shared_ptr<file::ScanFileHandler> file_handler);
 
         /**
-        * Process the data. Currently will process the most recently scanned.
+        * Process the data. Filters, segments, and rotates the clouds.
         */
-        void process_data();
+        void run() override;
 
 
         /**

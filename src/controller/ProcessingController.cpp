@@ -10,10 +10,11 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Mo
                                                        std::shared_ptr<file::ScanFileHandler> file_handler) :
         model(std::move(model)), viewer(std::move(viewer)), file_handler(std::move(file_handler)) {}
 
-
-void controller::ProcessingController::process_data() {
+void controller::ProcessingController::run() {
+    filter_clouds(CloudType::Type::RAW, .0003);
+    segment_clouds(CloudType::Type::FILTERED);
+    rotate_all_clouds(CloudType::Type::FILTERED);
 }
-
 
 void controller::ProcessingController::filter_clouds(CloudType::Type cloud_type, float leaf_size) {
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;

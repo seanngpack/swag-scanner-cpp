@@ -36,7 +36,7 @@ set(SOURCE_FILES
         include/model/calibration/Calibration.h
         include/model/equations/Point.h src/model/equations/Point.cpp
         include/controller/CalibrationController.h src/controller/CalibrationController.cpp
-        src/types/CameraTypes.cpp)
+        src/types/CameraTypes.cpp include/cli/ControllerFactory.h src/cli/ControllerFactory.cpp include/cli/CLIClient.h include/controller/IController.h src/cli/CLIClient.cpp)
 
 set(WRAPPERS ./include/wrapper)
 set(VIEW_HEADERS ./include/view)
@@ -49,12 +49,19 @@ set(EQUATIONS_HEADERS ./include/model/equations)
 set(CALIBRATION_HEADERS ./include/model/calibration)
 set(FILE_HEADERS ./include/file)
 set(UTILS ./include/utils)
+set(CLI_HEADERS ./include/cli)
 
 # double check why this fixes core bluetooth linkage issue
 set(CMAKE_EXE_LINKER_FLAGS "-framework CoreBluetooth")
 
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+
+find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(PCL 1.11 REQUIRED)
+
 
 message(STATUS "OpenCV library status:")
 message(STATUS "    config: ${OpenCV_DIR}")
@@ -77,6 +84,7 @@ include_directories(${EQUATIONS_HEADERS})
 include_directories(${CALIBRATION_HEADERS})
 include_directories(${FILE_HEADERS})
 include_directories(${UTILS})
+include_directories(${CLI_HEADERS})
 
 link_directories("/opt/librealsense/build/librealsense2.dylib")
 link_directories(${PCL_LIBRARY_DIRS})
@@ -85,8 +93,10 @@ add_definitions(${PCL_DEFINITIONS})
 
 add_executable(swag_scanner ${SOURCE_FILES})
 
-target_link_libraries(swag_scanner PUBLIC "-framework CoreFoundation"
+target_link_libraries(swag_scanner PUBLIC
+        "-framework CoreFoundation"
         "-framework CoreBluetooth")
 set_target_properties(swag_scanner PROPERTIES LINK_FLAGS "-Wl,-F/Library/Frameworks")
 target_link_libraries(swag_scanner PUBLIC /opt/librealsense/build/librealsense2.dylib PRIVATE ${OpenCV_LIBS})
 target_link_libraries(swag_scanner PUBLIC ${PCL_LIBRARIES})
+target_link_libraries(swag_scanner PUBLIC ${Boost_PROGRAM_OPTIONS_LIBRARY})
