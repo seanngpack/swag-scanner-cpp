@@ -1,4 +1,3 @@
-
 #include <FilterTestingController.h>
 
 controller::FilterTestingController::FilterTestingController(std::shared_ptr <camera::ICamera> camera,

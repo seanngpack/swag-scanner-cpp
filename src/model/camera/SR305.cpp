@@ -8,9 +8,14 @@ camera::ss_intrinsics *camera::SR305::get_intrinsics() {
     return &intrinsics;
 }
 
-std::vector<uint16_t> camera::SR305::get_depth_frame() {
+void camera::SR305::scan() {
     rs2::frameset frames = pipe.wait_for_frames();
-    rs2::frame frame = frames.first(RS2_STREAM_DEPTH);
+    current_frame = frames.first(RS2_STREAM_DEPTH);
+}
+
+
+std::vector<uint16_t> camera::SR305::get_depth_frame() {
+    rs2::frame frame = get_rs2_frame();
     const uint16_t *depth_frame_arr;
     if (frame) {
         const auto *arr = static_cast<const uint16_t *>(frame.get_data());
@@ -20,6 +25,16 @@ std::vector<uint16_t> camera::SR305::get_depth_frame() {
 
     throw std::runtime_error("Cannot grab depth frame from video stream, something"
                              "is horribly wrong.");
+}
+
+std::vector<uint16_t> camera::SR305::get_depth_frame_processed() {
+    rs2::frame filtered_frame = current_frame; // does not make a copy, only sets a reference
+    filtered_frame = dec_filter.process(filtered_frame);
+    filtered_frame = spat_filter.process(filtered_frame);
+    filtered_frame = temp_filter.process(filtered_frame);
+    const auto *arr = static_cast<const uint16_t *>(filtered_frame.get_data());
+    std::vector<uint16_t> filtered_frame_vector(arr, arr + (width * height));
+    return filtered_frame_vector;
 }
 
 
@@ -61,7 +76,41 @@ void camera::SR305::initialize_camera() {
 }
 
 
+rs2::frame camera::SR305::get_rs2_frame() {
+    if (current_frame.get_data() == nullptr) {
+        throw std::runtime_error("can't get depth frame, scan() has not been called yet");
+    }
+    return current_frame;
+}
+
+void camera::SR305::set_decimation_magnitude(int mag) {
+    dec_filter.set_option(RS2_OPTION_FILTER_MAGNITUDE, mag);
+}
+
+void camera::SR305::set_spatial_filter_magnitude(int mag) {
+    spat_filter.set_option(RS2_OPTION_FILTER_MAGNITUDE, mag);
+}
+
+void camera::SR305::set_spatial_smooth_alpha(float a) {
+    spat_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, a);
+}
+
+void camera::SR305::set_spatial_smooth_delta(int d) {
+    spat_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, d);
+}
+
+void camera::SR305::set_temporal_smooth_alpha(float a) {
+    temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, a);
+}
+
+void camera::SR305::set_temporal_smooth_delta(float d) {
+    temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, d);
+}
+
+void camera::SR305::set_temporal_persistency_idx(float i) {
+    temp_filter.set_option(RS2_OPTION_HOLES_FILL, i);
+}
+
 camera::SR305::~SR305() {
     std::cout << "calling SR305 destructor \n";;
 }
-

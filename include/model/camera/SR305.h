@@ -15,7 +15,29 @@ namespace camera {
 
         camera::ss_intrinsics *get_intrinsics() override;
 
+        void scan() override;
+
         std::vector<uint16_t> get_depth_frame() override;
+
+        /**
+         * Get the processed depth frame. Subsampling, spatial filtering, temporal filtering applied.
+         * @return processed depth frame.
+         */
+        virtual std::vector<uint16_t> get_depth_frame_processed();
+
+        virtual void set_decimation_magnitude(int mag);
+
+        virtual void set_spatial_filter_magnitude(int mag);
+
+        virtual void set_spatial_smooth_alpha(float a);
+
+        virtual void set_spatial_smooth_delta(int d);
+
+        virtual void set_temporal_smooth_alpha(float a);
+
+        virtual void set_temporal_smooth_delta(float d);
+
+        virtual void set_temporal_persistency_idx(float i);
 
         ~SR305();
 
@@ -24,6 +46,24 @@ namespace camera {
         rs2::device dev;
         rs2::pipeline pipe;
         rs2::pipeline_profile pipe_profile;
+        rs2::decimation_filter dec_filter;
+        rs2::spatial_filter spat_filter;
+        rs2::temporal_filter temp_filter;
+        rs2::frame current_frame;
+
+        // decimation filter parameters
+        int decimation_magnitude = 2;
+
+        // spatial edge-preservation filter parameters
+        int spatial_filter_magnitude = 2;
+        float spatial_smooth_alpha = 0.5;
+        int spatial_smooth_delta = 20;
+
+        // temporal filter parameters
+        float temporal_smooth_alpha = .4;
+        int temporal_smooth_delta = 20;
+        float temporal_persistency_idx = 0.0;
+
 
         int width = 640;
         int height = 480;
@@ -33,7 +73,11 @@ namespace camera {
          */
         void initialize_camera();
 
-
+        /**
+         * Get depth frame.
+         * @return rs2 frame.
+         */
+        rs2::frame get_rs2_frame();
 
     };
 

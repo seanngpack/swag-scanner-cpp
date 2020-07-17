@@ -21,7 +21,12 @@ namespace camera {
         virtual camera::ss_intrinsics *get_intrinsics() = 0;
 
         /**
-         * Get depth frame which is a pointer to array of uint16_t.
+         * Get depth image and set to class variable.
+         */
+        virtual void scan() = 0;
+
+        /**
+         * Get depth frame vector.
          * @return the depth map.
          */
         virtual std::vector<uint16_t> get_depth_frame() = 0;
