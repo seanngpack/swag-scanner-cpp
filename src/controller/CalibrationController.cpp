@@ -34,7 +34,7 @@ void controller::CalibrationController::scan() {
     std::cout << "starting scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";
-        const uint16_t *depth_frame = camera->get_depth_frame();
+        std::vector<uint16_t> depth_frame = camera->get_depth_frame();
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
         file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);
         arduino->rotate_table(deg);

@@ -15,7 +15,7 @@ namespace camera {
 
         camera::ss_intrinsics *get_intrinsics() override;
 
-        const uint16_t *get_depth_frame() override;
+        std::vector<uint16_t> get_depth_frame() override;
 
         ~SR305();
 
@@ -25,10 +25,15 @@ namespace camera {
         rs2::pipeline pipe;
         rs2::pipeline_profile pipe_profile;
 
+        int width = 640;
+        int height = 480;
+
         /**
          * Initialize the pipeline and grab camera parameters for class fields.
          */
         void initialize_camera();
+
+
 
     };
 

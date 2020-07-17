@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <librealsense2/rs.hpp>
-#include "../../types/CameraTypes.h"
+#include "CameraTypes.h"
 
 
 namespace camera {
@@ -24,7 +24,7 @@ namespace camera {
          * Get depth frame which is a pointer to array of uint16_t.
          * @return the depth map.
          */
-        virtual const uint16_t *get_depth_frame() = 0;
+        virtual std::vector<uint16_t> get_depth_frame() = 0;
 
         /**
          * Virtual destructor, must be defined or else it will never call the base class's destructor.

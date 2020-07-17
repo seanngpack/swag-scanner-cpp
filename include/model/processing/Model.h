@@ -35,7 +35,7 @@ namespace model {
         * Create a new PointCloudXYZ using the instance variable depth_frame.
         * @return a boost pointer to the new pointcloud.
         */
-        pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const uint16_t *depth_frame,
+        pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const std::vector<uint16_t> &depth_frame,
                                                                const camera::ss_intrinsics *intrinsics);
 
         /**

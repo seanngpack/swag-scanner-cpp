@@ -8,12 +8,13 @@ camera::ss_intrinsics *camera::SR305::get_intrinsics() {
     return &intrinsics;
 }
 
-const uint16_t *camera::SR305::get_depth_frame() {
+std::vector<uint16_t> camera::SR305::get_depth_frame() {
     rs2::frameset frames = pipe.wait_for_frames();
     rs2::frame frame = frames.first(RS2_STREAM_DEPTH);
-    const uint16_t *depth_frame;
+    const uint16_t *depth_frame_arr;
     if (frame) {
-        depth_frame = (const uint16_t *) frame.get_data();
+        const auto *arr = static_cast<const uint16_t *>(frame.get_data());
+        std::vector<uint16_t> depth_frame(arr, arr + (width * height));
         return depth_frame;
     }
 
