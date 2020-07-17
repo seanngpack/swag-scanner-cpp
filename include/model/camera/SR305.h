@@ -37,7 +37,7 @@ namespace camera {
 
         virtual void set_temporal_smooth_delta(float d);
 
-        virtual void set_temporal_persistency_idx(float i);
+        virtual void set_temporal_persistency_idx(int i);
 
         ~SR305();
 

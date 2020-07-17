@@ -107,7 +107,7 @@ void camera::SR305::set_temporal_smooth_delta(float d) {
     temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, d);
 }
 
-void camera::SR305::set_temporal_persistency_idx(float i) {
+void camera::SR305::set_temporal_persistency_idx(int i) {
     temp_filter.set_option(RS2_OPTION_HOLES_FILL, i);
 }
 
