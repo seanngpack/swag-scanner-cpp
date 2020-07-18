@@ -13,14 +13,21 @@ std::unique_ptr<controller::IController> cli::CLIClient::get_controller(int argc
             ("scan", "scan object")
             ("calibrate", "calibrate scanner")
             ("process", "process scanned data")
+            ("filter_test", "test filtering")
             ("name", po::value<std::string>(), "set name of scan")
             ("deg", po::value<int>(), "degrees")
-            ("rot", po::value<int>(), "number of rotations");
+            ("rot", po::value<int>(), "number of rotations")
+            ("s_alpha", po::value<float>(), "smooth alpha")
+            ("s_delta", po::value<int>(), "smooth delta")
+            ("t_alpha", po::value<float>(), "smooth alpha")
+            ("t_delta", po::value<int>(), "smooth delta")
+            ("d_mag", po::value<int>(), "decimation filter magnitude")
+            ("s_mag", po::value<int>(), "spatial filter magnitude")
+            ("t_persis", po::value<int>(), "persistency index");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
     return cli::ControllerFactory::create(vm);
-
 }
 

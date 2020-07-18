@@ -32,6 +32,12 @@ namespace camera {
         virtual std::vector<uint16_t> get_depth_frame() = 0;
 
         /**
+         * Get the depth frame vector after filtering.
+         * @return filtered depth frame vector.
+         */
+        virtual std::vector<uint16_t> get_depth_frame_processed() = 0;
+
+        /**
          * Virtual destructor, must be defined or else it will never call the base class's destructor.
          */
         virtual ~ICamera() {

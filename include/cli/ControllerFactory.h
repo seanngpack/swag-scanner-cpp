@@ -38,6 +38,14 @@ namespace cli {
          */
         static std::unique_ptr<controller::IController>
         create_processing_controller(boost::program_options::variables_map vm);
+
+        /**
+         * Create a filter testing controller.
+         * @param vm
+         * @return
+         */
+        static std::unique_ptr<controller::IController>
+        create_filter_testing_controller(boost::program_options::variables_map vm);
     };
 }
 

@@ -23,7 +23,7 @@ namespace camera {
          * Get the processed depth frame. Subsampling, spatial filtering, temporal filtering applied.
          * @return processed depth frame.
          */
-        virtual std::vector<uint16_t> get_depth_frame_processed();
+        std::vector<uint16_t> get_depth_frame_processed() override;
 
         virtual void set_decimation_magnitude(int mag);
 
