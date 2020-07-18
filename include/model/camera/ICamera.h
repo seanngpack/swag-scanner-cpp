@@ -15,10 +15,10 @@ namespace camera {
     public:
 
         /**
-         * Get pointer to the camera intrinsics and store them to class fields.
+         * Get copy of camera intrinsics.
          * @return a pointer to ss_camera struct of the camera intrinsics.
          */
-        virtual camera::ss_intrinsics *get_intrinsics() = 0;
+        virtual camera::ss_intrinsics get_intrinsics() = 0;
 
         /**
          * Get depth image and set to class variable.

@@ -13,7 +13,9 @@ namespace camera {
     public:
         SR305();
 
-        camera::ss_intrinsics *get_intrinsics() override;
+        camera::ss_intrinsics get_intrinsics() override;
+
+        camera::ss_intrinsics get_intrinsics_processed();
 
         void scan() override;
 
@@ -50,6 +52,7 @@ namespace camera {
         rs2::spatial_filter spat_filter;
         rs2::temporal_filter temp_filter;
         rs2::frame current_frame;
+        float depth_scale;
 
         // decimation filter parameters
         int decimation_magnitude = 2;
@@ -62,7 +65,7 @@ namespace camera {
         // temporal filter parameters
         float temporal_smooth_alpha = .4;
         int temporal_smooth_delta = 20;
-        float temporal_persistency_idx = 0.0;
+        float temporal_persistency_idx = 3.0;
 
 
         int width = 640;
@@ -78,6 +81,7 @@ namespace camera {
          * @return rs2 frame.
          */
         rs2::frame get_rs2_frame();
+
 
     };
 

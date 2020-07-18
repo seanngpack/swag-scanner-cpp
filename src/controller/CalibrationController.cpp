@@ -5,12 +5,10 @@ controller::CalibrationController::CalibrationController(std::shared_ptr<camera:
                                                          std::shared_ptr<arduino::Arduino> arduino,
                                                          std::shared_ptr<model::Model> model,
                                                          std::shared_ptr<file::CalibrationFileHandler> file_handler,
-                                                         std::shared_ptr<visual::Visualizer> viewer,
-                                                         int deg,
-                                                         int num_rot) :
+                                                         std::shared_ptr<visual::Visualizer> viewer) :
         camera(std::move(camera)), arduino(std::move(arduino)), model(std::move(model)),
         file_handler(std::move(file_handler)),
-        viewer(std::move(viewer)), deg(deg), num_rot(num_rot) {}
+        viewer(std::move(viewer)) {}
 
 void controller::CalibrationController::run() {
     scan();
@@ -29,8 +27,16 @@ void controller::CalibrationController::run() {
     file_handler->update_calibration_json(axis_dir, center);
 }
 
+void controller::CalibrationController::set_deg(int deg) {
+    deg = deg;
+}
+
+void controller::CalibrationController::set_num_rot(int num_rot) {
+    num_rot = num_rot;
+}
+
 void controller::CalibrationController::scan() {
-    const camera::ss_intrinsics *intrin = camera->get_intrinsics();
+    const camera::ss_intrinsics intrin = camera->get_intrinsics();
     std::cout << "starting scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";

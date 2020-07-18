@@ -21,6 +21,8 @@ namespace camera {
 
         ss_intrinsics() = default;
 
+        ss_intrinsics(rs2_intrinsics intrin, float depth_scale);
+
         ss_intrinsics(int width,
                       int height,
                       float fx,
@@ -31,9 +33,11 @@ namespace camera {
                       float coeffs[5],
                       float depth_scale);
 
+        std::string to_string();
+
         ~ss_intrinsics();
 
-        std::string toString();
+
     } ss_intrinsics;
 }
 

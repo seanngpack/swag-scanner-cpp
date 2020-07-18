@@ -21,9 +21,7 @@ namespace controller {
                               std::shared_ptr<arduino::Arduino> arduino,
                               std::shared_ptr<model::Model> model,
                               std::shared_ptr<file::CalibrationFileHandler> file_handler,
-                              std::shared_ptr<visual::Visualizer> viewer,
-                              int deg = 15,
-                              int num_rot = 7);
+                              std::shared_ptr<visual::Visualizer> viewer);
 
         /**
          * Scan calibration fixture with member info for degs and # of rotations into a new
@@ -32,6 +30,10 @@ namespace controller {
          */
         void run() override;
 
+        void set_deg(int deg);
+
+        void set_num_rot(int num_rot);
+
 
     private:
         std::shared_ptr<camera::ICamera> camera;
@@ -39,8 +41,8 @@ namespace controller {
         std::shared_ptr<model::Model> model;
         std::shared_ptr<file::CalibrationFileHandler> file_handler;
         std::shared_ptr<visual::Visualizer> viewer;
-        int deg;
-        int num_rot;
+        int deg = 15;
+        int num_rot = 7;
 
         /**
          * Scan the calibration clouds and save them into current folder.

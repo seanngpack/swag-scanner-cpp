@@ -18,9 +18,7 @@ namespace controller {
         ScanController(std::shared_ptr<camera::ICamera> camera,
                        std::shared_ptr<arduino::Arduino> arduino,
                        std::shared_ptr<model::Model> model,
-                       std::shared_ptr<file::ScanFileHandler> file_handler,
-                       int deg = 20,
-                       int num_rot = 18);
+                       std::shared_ptr<file::ScanFileHandler> file_handler);
 
         void run() override;
 
@@ -42,8 +40,8 @@ namespace controller {
         std::shared_ptr<arduino::Arduino> arduino;
         std::shared_ptr<model::Model> model;
         std::shared_ptr<file::ScanFileHandler> file_handler;
-        int deg;
-        int num_rot;
+        int deg = 20;
+        int num_rot = 18;
     };
 }
 

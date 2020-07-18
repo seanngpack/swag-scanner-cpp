@@ -23,52 +23,52 @@ std::unique_ptr<controller::IController> cli::ControllerFactory::create(po::vari
 std::unique_ptr<controller::IController>
 cli::ControllerFactory::create_scan_controller(boost::program_options::variables_map vm) {
     std::shared_ptr<file::ScanFileHandler> file_handler;
-    int deg = 20;
-    int num_rot = 18;
     if (vm.count("name")) {
         const char *c = vm["name"].as<std::string>().c_str();
         file_handler = std::make_shared<file::ScanFileHandler>(c);
     } else {
         file_handler = std::make_shared<file::ScanFileHandler>(true);
     }
+
+    std::unique_ptr<controller::ScanController> controller = std::make_unique<controller::ScanController>(
+            std::make_shared<camera::SR305>(),
+            std::make_shared<arduino::Arduino>(),
+            std::make_shared<model::Model>(),
+            file_handler);
+
     if (vm.count("deg")) {
-        deg = vm["deg"].as<int>();
+        controller->set_deg(vm["deg"].as<int>());
     }
     if (vm.count("rot")) {
-        num_rot = vm["rot"].as<int>();
+        controller->set_num_rot(vm["rot"].as<int>());
     }
-    return std::make_unique<controller::ScanController>(std::make_shared<camera::SR305>(),
-                                                        std::make_shared<arduino::Arduino>(),
-                                                        std::make_shared<model::Model>(),
-                                                        file_handler,
-                                                        deg,
-                                                        num_rot);
+    return controller;
 }
 
 std::unique_ptr<controller::IController>
 cli::ControllerFactory::create_calibrate_controller(boost::program_options::variables_map vm) {
     std::shared_ptr<file::CalibrationFileHandler> file_handler;
-    int deg = 15;
-    int num_rot = 7;
     if (vm.count("name")) {
         const char *c = vm["name"].as<std::string>().c_str();
         file_handler = std::make_shared<file::CalibrationFileHandler>(c);
     } else {
         file_handler = std::make_shared<file::CalibrationFileHandler>();
     }
+
+    std::unique_ptr<controller::CalibrationController> controller = std::make_unique<controller::CalibrationController>(
+            std::make_shared<camera::SR305>(),
+            std::make_shared<arduino::Arduino>(),
+            std::make_shared<model::Model>(),
+            file_handler,
+            std::make_shared<visual::Visualizer>());
+
     if (vm.count("deg")) {
-        deg = vm["deg"].as<int>();
+        controller->set_deg(vm["deg"].as<int>());
     }
     if (vm.count("rot")) {
-        num_rot = vm["rot"].as<int>();
+        controller->set_num_rot(vm["rot"].as<int>());
     }
-    return std::make_unique<controller::CalibrationController>(std::make_shared<camera::SR305>(),
-                                                               std::make_shared<arduino::Arduino>(),
-                                                               std::make_shared<model::Model>(),
-                                                               file_handler,
-                                                               std::make_shared<visual::Visualizer>(),
-                                                               deg,
-                                                               num_rot);
+    return controller;
 }
 
 std::unique_ptr<controller::IController>
@@ -110,10 +110,9 @@ cli::ControllerFactory::create_filter_testing_controller(boost::program_options:
         camera->set_decimation_magnitude(vm["t_persis"].as<int>());
     }
     return std::make_unique<controller::FilterTestingController>(camera,
-                                                    std::make_shared<arduino::Arduino>(),
-                                                    std::make_shared<model::Model>(),
-                                                    std::make_shared<file::ScanFileHandler>(),
-                                                    std::make_shared<visual::Visualizer>());
+                                                                 std::make_shared<model::Model>(),
+                                                                 std::make_shared<file::ScanFileHandler>(),
+                                                                 std::make_shared<visual::Visualizer>());
 }
 
 

@@ -5,11 +5,9 @@
 controller::ScanController::ScanController(std::shared_ptr<camera::ICamera> camera,
                                            std::shared_ptr<arduino::Arduino> arduino,
                                            std::shared_ptr<model::Model> model,
-                                           std::shared_ptr<file::ScanFileHandler> file_handler,
-                                           int deg,
-                                           int num_rot) :
+                                           std::shared_ptr<file::ScanFileHandler> file_handler) :
         camera(std::move(camera)), arduino(std::move(arduino)), model(std::move(model)),
-        file_handler(std::move(file_handler)), deg(deg), num_rot(num_rot) {}
+        file_handler(std::move(file_handler)) {}
 
 void controller::ScanController::run() {
     scan();
@@ -36,7 +34,7 @@ void controller::ScanController::scan() {
     file_handler->update_info_json(str, deg, file_handler->find_latest_calibration().string());
 
 
-    const camera::ss_intrinsics *intrin = camera->get_intrinsics();
+    const camera::ss_intrinsics intrin = camera->get_intrinsics();
     std::cout << "starting scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";

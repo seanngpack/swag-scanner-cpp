@@ -15,8 +15,7 @@ namespace controller {
      */
     class FilterTestingController : public IController {
     public:
-        FilterTestingController(std::shared_ptr<camera::ICamera> camera,
-                                std::shared_ptr<arduino::Arduino> arduino,
+        FilterTestingController(std::shared_ptr<camera::SR305> camera,
                                 std::shared_ptr<model::Model> model,
                                 std::shared_ptr<file::ScanFileHandler> file_handler,
                                 std::shared_ptr<visual::Visualizer> viewer);
@@ -24,8 +23,7 @@ namespace controller {
         void run() override;
 
     private:
-        std::shared_ptr<camera::ICamera> camera;
-        std::shared_ptr<arduino::Arduino> arduino;
+        std::shared_ptr<camera::SR305> camera;
         std::shared_ptr<model::Model> model;
         std::shared_ptr<file::ScanFileHandler> file_handler;
         std::shared_ptr<visual::Visualizer> viewer;
