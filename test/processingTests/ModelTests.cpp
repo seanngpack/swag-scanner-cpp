@@ -54,7 +54,7 @@ TEST_F(ModelFixture, TestCreatePointCloud) {
                                                                              distortion,
                                                                              0.0001);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr test = mod->create_point_cloud(depth_frame, intrinsics_distortion);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr test = mod->create_point_cloud(depth_frame, *intrinsics_distortion);
     EXPECT_EQ(test->width, 10);
     EXPECT_EQ(test->height, 10);
 }

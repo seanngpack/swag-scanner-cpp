@@ -36,7 +36,6 @@ std::vector<uint16_t> camera::SR305::get_depth_frame_processed() {
     rs2::frame filtered_frame = get_rs2_frame(); // does not make a copy, only sets a reference
     filtered_frame = dec_filter.process(filtered_frame);
     filtered_frame = spat_filter.process(filtered_frame);
-    filtered_frame = temp_filter.process(filtered_frame);
     const auto *arr = static_cast<const uint16_t *>(filtered_frame.get_data());
 
     std::vector<uint16_t> filtered_frame_vector(arr, arr + filtered_frame.get_data_size());
@@ -64,6 +63,8 @@ void camera::SR305::initialize_camera() {
 
     // grab the depth scale
     auto sensor = pipe_profile.get_device().first<rs2::depth_sensor>();
+    sensor.set_option(rs2_option::RS2_OPTION_VISUAL_PRESET,
+                      rs2_sr300_visual_preset::RS2_SR300_VISUAL_PRESET_OBJECT_SCANNING);
 
 
     // grab the intrinsics
@@ -95,18 +96,6 @@ void camera::SR305::set_spatial_smooth_alpha(float a) {
 
 void camera::SR305::set_spatial_smooth_delta(int d) {
     spat_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, d);
-}
-
-void camera::SR305::set_temporal_smooth_alpha(float a) {
-    temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_ALPHA, a);
-}
-
-void camera::SR305::set_temporal_smooth_delta(float d) {
-    temp_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, d);
-}
-
-void camera::SR305::set_temporal_persistency_idx(int i) {
-    temp_filter.set_option(RS2_OPTION_HOLES_FILL, i);
 }
 
 

@@ -19,11 +19,8 @@ std::unique_ptr<controller::IController> cli::CLIClient::get_controller(int argc
             ("rot", po::value<int>(), "number of rotations")
             ("s_alpha", po::value<float>(), "smooth alpha")
             ("s_delta", po::value<int>(), "smooth delta")
-            ("t_alpha", po::value<float>(), "smooth alpha")
-            ("t_delta", po::value<int>(), "smooth delta")
             ("d_mag", po::value<int>(), "decimation filter magnitude")
-            ("s_mag", po::value<int>(), "spatial filter magnitude")
-            ("t_persis", po::value<int>(), "persistency index");
+            ("s_mag", po::value<int>(), "spatial filter magnitude");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);

@@ -22,24 +22,40 @@ namespace camera {
         std::vector<uint16_t> get_depth_frame() override;
 
         /**
-         * Get the processed depth frame. Subsampling, spatial filtering, temporal filtering applied.
+         * Get the processed depth frame. Subsampling and spatial filtering applied.
          * @return processed depth frame.
          */
         std::vector<uint16_t> get_depth_frame_processed() override;
 
+        /**
+         * Divide resolution by magnitude.
+         * @param mag [2 - 8] default = 2
+         */
         virtual void set_decimation_magnitude(int mag);
 
+        /**
+         * # of filter iterations;
+         * @param mag [1 - 5] default = 2;
+         */
         virtual void set_spatial_filter_magnitude(int mag);
 
+        /**
+         * Alpha factor in exponential moving average.
+         * alpha = 1, no filter
+         * alpha = 0, infinite filter
+         * lower = more aggressive smoothing, edges become more rounded.
+         * @param a [.25 - 1], default = .5
+         */
         virtual void set_spatial_smooth_alpha(float a);
 
+        /**
+         * Step size boundary, establishes threshold used to preserve "edges".
+         *  If the depth value between neighboring pixels exceed the depth threshold set by this delta parameter,
+         *  then alpha will be temporarily reset to 1 (no filtering). This basically means that if an edge is observed,
+         *  then the smoothing is temporarily turned off.
+         * @param d [1 - 50], default = 20
+         */
         virtual void set_spatial_smooth_delta(int d);
-
-        virtual void set_temporal_smooth_alpha(float a);
-
-        virtual void set_temporal_smooth_delta(float d);
-
-        virtual void set_temporal_persistency_idx(int i);
 
         ~SR305();
 
@@ -50,7 +66,6 @@ namespace camera {
         rs2::pipeline_profile pipe_profile;
         rs2::decimation_filter dec_filter;
         rs2::spatial_filter spat_filter;
-        rs2::temporal_filter temp_filter;
         rs2::frame current_frame;
         float depth_scale;
 
@@ -61,11 +76,6 @@ namespace camera {
         int spatial_filter_magnitude = 2;
         float spatial_smooth_alpha = 0.5;
         int spatial_smooth_delta = 20;
-
-        // temporal filter parameters
-        float temporal_smooth_alpha = .4;
-        int temporal_smooth_delta = 20;
-        float temporal_persistency_idx = 3.0;
 
 
         int width = 640;

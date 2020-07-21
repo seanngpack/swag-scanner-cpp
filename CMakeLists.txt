@@ -6,10 +6,10 @@ set(SOURCE_FILES
         include/utils/json.hpp
         include/model/arduino/Arduino.h src/model/arduino/Arduino.cpp
         include/model/arduino/ArduinoEventHandler.h src/model/arduino/ArduinoEventHandler.cpp
-        include/wrapper/SERVICES.h
-        include/wrapper/CoreBluetoothWrapper.h
-        include/wrapper/CoreBluetoothObjC.h
-        src/wrapper/CoreBluetoothObjC.mm
+        include/bluetooth/SERVICES.h
+        include/bluetooth/CoreBluetoothWrapper.h
+        include/bluetooth/CoreBluetoothObjC.h
+        src/bluetooth/CoreBluetoothObjC.mm
         src/main.cpp
         include/model/camera/ICamera.h
         include/model/camera/SR305.h src/model/camera/SR305.cpp
@@ -40,7 +40,7 @@ set(SOURCE_FILES
         include/cli/CLIClient.h include/controller/IController.h
         src/cli/CLIClient.cpp include/controller/FilterTestingController.h src/controller/FilterTestingController.cpp)
 
-set(WRAPPERS ./include/wrapper)
+set(WRAPPERS include/bluetooth)
 set(VIEW_HEADERS ./include/view)
 set(CAMERA_HEADERS ./include/model/camera)
 set(ARDUINO_HEADERS ./include/model/arduino)

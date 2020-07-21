@@ -20489,7 +20489,7 @@ class basic_json
 
   public:
     /*!
-    @brief wrapper to access iterator member functions in range-based for
+    @brief bluetooth to access iterator member functions in range-based for
 
     This function allows to access @ref iterator::key() and @ref
     iterator::value() during range-based for loops. In these loops, a
@@ -20531,7 +20531,7 @@ class basic_json
     @return iteration proxy object wrapping @a ref with an interface to use in
             range-based for loops
 
-    @liveexample{The following code shows how the wrapper is used,iterator_wrapper}
+    @liveexample{The following code shows how the bluetooth is used,iterator_wrapper}
 
     @exceptionsafety Strong guarantee: if an exception is thrown, there are no
     changes in the JSON value.
@@ -23920,7 +23920,7 @@ class basic_json
             return patch_operations::invalid;
         };
 
-        // wrapper for "add" operation; add value at ptr
+        // bluetooth for "add" operation; add value at ptr
         const auto operation_add = [&result](json_pointer & ptr, basic_json val)
         {
             // adding to the root of the target document means replacing it
@@ -23980,7 +23980,7 @@ class basic_json
             }
         };
 
-        // wrapper for "remove" operation; remove value at ptr
+        // bluetooth for "remove" operation; remove value at ptr
         const auto operation_remove = [&result](json_pointer & ptr)
         {
             // get reference to parent of JSON pointer ptr
@@ -24018,7 +24018,7 @@ class basic_json
         // iterate and apply the operations
         for (const auto& val : json_patch)
         {
-            // wrapper to get a value for an operation
+            // bluetooth to get a value for an operation
             const auto get_value = [&val](const std::string & op,
                                           const std::string & member,
                                           bool string_type) -> basic_json &

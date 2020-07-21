@@ -11,8 +11,7 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Mo
         model(std::move(model)), viewer(std::move(viewer)), file_handler(std::move(file_handler)) {}
 
 void controller::ProcessingController::run() {
-    filter_clouds(CloudType::Type::RAW, .0003);
-    segment_clouds(CloudType::Type::FILTERED);
+//    filter_clouds(CloudType::Type::RAW, .0003);
     rotate_all_clouds(CloudType::Type::FILTERED);
 }
 
@@ -30,13 +29,13 @@ void controller::ProcessingController::filter_clouds(CloudType::Type cloud_type,
     }
 }
 
-void controller::ProcessingController::segment_clouds(CloudType::Type cloud_type) {
+void controller::ProcessingController::remove_planes(CloudType::Type cloud_type) {
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, cloud_type);
     for (int i = 0; i < cloud_vector.size(); i++) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr segmentedCloud = model->remove_plane(cloud_vector[i]);
         std::cout << "saving segmented cloud" << std::endl;
-        file_handler->save_cloud(segmentedCloud, std::to_string(i) + ".pcd", CloudType::Type::SEGMENTED);
+        file_handler->save_cloud(segmentedCloud, std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
     }
 }
 

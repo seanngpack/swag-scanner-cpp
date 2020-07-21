@@ -39,9 +39,8 @@ namespace controller {
          * @param cloud_type type of cloud you want to filter. You should probably do the
          * /filtered folder.
          *
-         * TODO: Rename to remove_planes
          */
-        void segment_clouds(CloudType::Type cloud_type);
+        void remove_planes(CloudType::Type cloud_type);
 
         /**
          * Register all point clouds in given folder location.

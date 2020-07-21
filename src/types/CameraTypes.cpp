@@ -17,7 +17,7 @@ camera::ss_intrinsics::ss_intrinsics(int width,
                                                           fy(fy), ppx(ppx), ppy(ppy), model(model),
                                                           coeffs(coeffs), depth_scale(depth_scale) {}
 
-std::string camera::ss_intrinsics::to_string() {
+std::string camera::ss_intrinsics::to_string() const {
     return "width: " + std::to_string(width) + "\n" +
            "height: " + std::to_string(height) + "\n" +
            "fx: " + std::to_string(fx) + "\n" +

@@ -92,22 +92,13 @@ cli::ControllerFactory::create_filter_testing_controller(boost::program_options:
         camera->set_decimation_magnitude(vm["d_mag"].as<int>());
     }
     if (vm.count("s_mag")) {
-        camera->set_decimation_magnitude(vm["s_mag"].as<int>());
+        camera->set_spatial_filter_magnitude(vm["s_mag"].as<int>());
     }
     if (vm.count("s_alpha")) {
-        camera->set_decimation_magnitude(vm["s_alpha"].as<float>());
+        camera->set_spatial_smooth_alpha(vm["s_alpha"].as<float>());
     }
     if (vm.count("s_delta")) {
-        camera->set_decimation_magnitude(vm["s_delta"].as<int>());
-    }
-    if (vm.count("t_alpha")) {
-        camera->set_decimation_magnitude(vm["t_alpha"].as<float>());
-    }
-    if (vm.count("t_delta")) {
-        camera->set_decimation_magnitude(vm["t_delta"].as<int>());
-    }
-    if (vm.count("t_persis")) {
-        camera->set_decimation_magnitude(vm["t_persis"].as<int>());
+        camera->set_spatial_smooth_delta(vm["s_delta"].as<int>());
     }
     return std::make_unique<controller::FilterTestingController>(camera,
                                                                  std::make_shared<model::Model>(),

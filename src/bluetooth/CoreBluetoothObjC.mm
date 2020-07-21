@@ -1,4 +1,4 @@
-#import "../../include/wrapper/CoreBluetoothObjC.h"
+#import "CoreBluetoothObjC.h"
 
 #include <iostream>
 #include <thread>
