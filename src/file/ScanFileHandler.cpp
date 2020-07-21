@@ -142,7 +142,8 @@ bool file::ScanFileHandler::check_program_folder() {
         std::ofstream settings(swag_scanner_path.string() + "/settings/settings.json"); // create json file
         json settings_json = {
                 {"version",     .1},
-                {"latest_scan", "none"}
+                {"latest_scan", "none"},
+                {"current_position", 0}
         };
         settings << std::setw(4) << settings_json << std::endl; // write to file
         std::ofstream calibration(

@@ -1,6 +1,33 @@
 #include "IFileHandler.h"
 
 using namespace boost::filesystem;
+using json = nlohmann::json;
+
+path file::IFileHandler::swag_scanner_path = []() {
+    FSRef ref;
+    OSType folderType = kApplicationSupportFolderType;
+    char path[PATH_MAX];
+
+    FSFindFolder(kUserDomain, folderType, kCreateFolder, &ref);
+    FSRefMakePath(&ref, (UInt8 *) &path, PATH_MAX);
+    boost::filesystem::path program_folder = "/SwagScanner";
+    program_folder = path / program_folder;
+    return program_folder;
+}();
+
+json file::IFileHandler::load_settings_json() {
+    std::string settings_path = swag_scanner_path.string() + "/settings/settings.json";
+    std::ifstream settings(settings_path);
+    json settings_json;
+    settings >> settings_json;
+    return settings_json;
+}
+
+void file::IFileHandler::write_settings_json(json j) {
+    std::string settings_path = swag_scanner_path.string() + "/settings/settings.json";
+    std::ofstream updated_file(settings_path);
+    updated_file << std::setw(4) << j << std::endl; // write to file
+}
 
 path file::IFileHandler::find_latest_calibration() {
     std::string someDir = swag_scanner_path.string() + "/calibration";

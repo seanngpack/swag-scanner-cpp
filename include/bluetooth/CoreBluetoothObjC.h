@@ -17,6 +17,7 @@
 @property(strong, nonatomic) CBCentralManager *centralManager;
 @property(strong, nonatomic) CBPeripheral *swagScanner;
 @property(strong, nonatomic) CBCharacteristic *rotateTableChar;
+@property(strong, nonatomic) CBCharacteristic *tablePosChar;
 @property(strong, nonatomic) NSMutableData *data;
 @property(nonatomic, strong) dispatch_queue_t centralQueue;
 
@@ -42,11 +43,13 @@
  */
 - (void)rotate_table:(int)degrees;
 
+
 /**
  * Helper method to call setIsRotating on the Arduino.
  * @param dataBytes the bytes received from isRotating characteristic.
  */
 - (void)set_is_rotating:(NSData *)dataBytes;
+
 
 /**
  * Display whether the table is rotating or not.
@@ -59,5 +62,12 @@
  * @param dataBytes bytes from notification.
  */
 - (void)displayTablePosInfo:(NSData *)dataBytes;
+
+/**
+ * Convert bytes to int.
+ * @param dataBytes data from characteristic in bytes.
+ * @return int.
+ */
+- (int)bytesToInt:(NSData *)dataBytes;
 
 @end

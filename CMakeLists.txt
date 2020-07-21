@@ -37,8 +37,10 @@ set(SOURCE_FILES
         include/model/equations/Point.h src/model/equations/Point.cpp
         include/controller/CalibrationController.h src/controller/CalibrationController.cpp
         src/types/CameraTypes.cpp include/cli/ControllerFactory.h src/cli/ControllerFactory.cpp
-        include/cli/CLIClient.h include/controller/IController.h
-        src/cli/CLIClient.cpp include/controller/FilterTestingController.h src/controller/FilterTestingController.cpp include/controller/MoveController.h src/controller/MoveController.cpp)
+        include/cli/CLIParser.h include/controller/IController.h
+        src/cli/CLIParser.cpp include/controller/FilterTestingController.h src/controller/FilterTestingController.cpp
+        include/controller/MoveController.h src/controller/MoveController.cpp
+        )
 
 set(WRAPPERS include/bluetooth)
 set(VIEW_HEADERS ./include/view)

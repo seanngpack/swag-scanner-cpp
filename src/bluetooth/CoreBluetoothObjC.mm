@@ -22,6 +22,7 @@ void rotate(void *obj, int deg) {
     [(id) obj rotate_table:deg];
 }
 
+
 void set_handler(void *arduino_event_handler, void *obj) {
     auto *a = static_cast<handler::ArduinoEventHandler *>(arduino_event_handler);
     [(id) obj set_handler:a];
@@ -173,6 +174,7 @@ void set_handler(void *arduino_event_handler, void *obj) {
         // table position
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:TABLE_POSITION_CHAR_UUID]]) {
             NSLog(@"Enabled table position characteristic with notifications: %@", characteristic);
+            _tablePosChar = characteristic;
             [self.swagScanner setNotifyValue:YES forCharacteristic:characteristic];
         }
 
@@ -217,6 +219,7 @@ void set_handler(void *arduino_event_handler, void *obj) {
     ul.lock();
 }
 
+
 - (void)displayRotInfo:(NSData *)dataBytes {
     int theInteger;
     [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
@@ -231,7 +234,14 @@ void set_handler(void *arduino_event_handler, void *obj) {
 - (void)displayTablePosInfo:(NSData *)dataBytes {
     int theInteger;
     [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
-    std::cout << "Table is at position: " + std::to_string(theInteger) << std::endl;
+//    std::cout << "Table is at position: " + std::to_string(theInteger) << std::endl;
 }
+
+- (int)bytesToInt:(NSData *)dataBytes {
+    int theInteger;
+    [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
+    return theInteger;
+}
+
 
 @end

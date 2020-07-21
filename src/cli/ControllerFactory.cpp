@@ -3,6 +3,7 @@
 #include "ProcessingController.h"
 #include "ScanController.h"
 #include "FilterTestingController.h"
+#include "MoveController.h"
 
 namespace po = boost::program_options;
 
@@ -15,6 +16,8 @@ std::unique_ptr<controller::IController> cli::ControllerFactory::create(po::vari
         return create_processing_controller(vm);
     } else if (vm.count("filter_test")) {
         return create_filter_testing_controller(vm);
+    } else if (vm.count("move")) {
+        return create_move_controller(vm);
     } else {
         throw std::invalid_argument("Error, must enter a valid base command.");
     }
@@ -104,6 +107,21 @@ cli::ControllerFactory::create_filter_testing_controller(boost::program_options:
                                                                  std::make_shared<model::Model>(),
                                                                  std::make_shared<file::ScanFileHandler>(),
                                                                  std::make_shared<visual::Visualizer>());
+}
+
+std::unique_ptr<controller::IController>
+cli::ControllerFactory::create_move_controller(boost::program_options::variables_map vm) {
+    auto arduino = std::make_shared<arduino::Arduino>();
+    std::unique_ptr<controller::MoveController> move_controller = std::make_unique<controller::MoveController>(arduino);
+    if (vm.count("to")) {
+        move_controller->set_deg(vm["to"].as<int>());
+        move_controller->set_move_method("to");
+    }
+    else if (vm.count("by")) {
+        move_controller->set_deg(vm["by"].as<int>());
+        move_controller->set_move_method("by");
+    }
+    return move_controller;
 }
 
 

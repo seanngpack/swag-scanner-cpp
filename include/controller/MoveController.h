@@ -8,7 +8,7 @@ namespace controller {
     /**
      * This controller takes commands from c
      */
-    class MoveController : IController {
+    class MoveController : public IController {
     public:
 
         MoveController(std::shared_ptr<arduino::Arduino> arduino);
@@ -17,9 +17,15 @@ namespace controller {
 
         void set_deg(int deg);
 
+        void set_move_method(const std::string &input);
+
+        std::string move_method;
+
     private:
         std::shared_ptr<arduino::Arduino> arduino;
         int deg = 0;
+
+
 
     };
 }

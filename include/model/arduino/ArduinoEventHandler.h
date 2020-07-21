@@ -1,7 +1,7 @@
 #ifndef SWAG_SCANNER_ARDUINOEVENTHANDLER_H
 #define SWAG_SCANNER_ARDUINOEVENTHANDLER_H
 
-#include "CoreBluetoothWrapper.h"
+#include "CoreBluetoothWrapper.h" // TODO: see if I can move this to source file
 #include <condition_variable>
 #include <future>
 #include <iostream>
@@ -14,15 +14,29 @@ namespace handler {
     class ArduinoEventHandler {
     public:
 
+        /**
+         * On initialization, will search for settings.json and set the current position
+         * from that file.
+         * Might be bad design because arduino is kinda taking responsibility from the
+         * filehandler class.
+         */
         ArduinoEventHandler();
 
         void rotate_table(int degs);
+
+        void rotate_to(int pos);
 
         void connect_bluetooth();
 
         void set_is_bt_connected(bool is_connected);
 
         void set_is_table_rotating(bool is_rotating);
+
+        /**
+         * Updates the current position in the settings.json file.
+         * TODO: this is very slow because I'm reading the file, then writing to it.
+         */
+        void update_current_pos();
 
         ~ArduinoEventHandler();
 
@@ -32,6 +46,7 @@ namespace handler {
         std::condition_variable table_cv;
 
     private:
+        int current_pos;
         void *bluetooth_object;
         bool is_bt_connected;
         bool is_table_rotating;
