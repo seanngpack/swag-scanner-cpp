@@ -1,4 +1,4 @@
-#include <CameraTypes.h>
+#include "CameraTypes.h"
 #include "gtest/gtest.h"
 
 
@@ -23,7 +23,7 @@ protected:
 
 
 TEST_F(CameraTypesFixture, TestToString) {
-    ASSERT_EQ(intrinsics->toString(), "width: 100\n"
+    ASSERT_EQ(intrinsics->to_string(), "width: 100\n"
                                       "height: 100\n"
                                       "fx: 10.000000\n"
                                       "fy: 10.000000\n"

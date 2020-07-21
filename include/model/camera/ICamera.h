@@ -15,16 +15,27 @@ namespace camera {
     public:
 
         /**
-         * Get pointer to the camera intrinsics and store them to class fields.
+         * Get copy of camera intrinsics.
          * @return a pointer to ss_camera struct of the camera intrinsics.
          */
-        virtual camera::ss_intrinsics *get_intrinsics() = 0;
+        virtual camera::ss_intrinsics get_intrinsics() = 0;
 
         /**
-         * Get depth frame which is a pointer to array of uint16_t.
+         * Get depth image and set to class variable.
+         */
+        virtual void scan() = 0;
+
+        /**
+         * Get depth frame vector.
          * @return the depth map.
          */
-        virtual const uint16_t *get_depth_frame() = 0;
+        virtual std::vector<uint16_t> get_depth_frame() = 0;
+
+        /**
+         * Get the depth frame vector after filtering.
+         * @return filtered depth frame vector.
+         */
+        virtual std::vector<uint16_t> get_depth_frame_processed() = 0;
 
         /**
          * Virtual destructor, must be defined or else it will never call the base class's destructor.

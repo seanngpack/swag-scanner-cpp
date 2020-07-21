@@ -2,22 +2,20 @@
 // handling capabilities
 
 #include <gtest/gtest.h>
-#include "FileHandler.h"
+#include "ScanFileHandler.h"
 
 using namespace testing;
 
 
-class FileHandlerPhysicalFixture : public ::testing::Test {
+class ScanFileHandlerPhysicalFixture : public ::testing::Test {
 
 
 protected:
-    file::FileHandler *handler;
-    std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/FileHandlerPhysicalTests";
-
+    file::ScanFileHandler *handler;
+    std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/scans/scan_handler_test/raw";
     virtual void SetUp() {
-        handler = new file::FileHandler(false);
+        handler = new file::ScanFileHandler("scan_handler_test");
         set_up_test_files();
-        handler->set_scan_folder_path(folder_path);
     }
 
     virtual void TearDown() {
@@ -29,8 +27,7 @@ protected:
     * @param folder_path path to the testing folder setup.
     */
     void set_up_test_files() {
-        if (!boost::filesystem::is_directory(folder_path)) {
-            boost::filesystem::create_directory(folder_path);
+        if (boost::filesystem::is_empty(folder_path)) {
             pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = set_up_point_cloud();
             pcl::io::savePCDFileASCII(folder_path + "/" + "test_cloud.pcd", *cloud);
         }
@@ -54,7 +51,7 @@ protected:
 };
 
 
-TEST_F(FileHandlerPhysicalFixture, TestLoadCloud) {
+TEST_F(ScanFileHandlerPhysicalFixture, TestLoadCloud) {
     // make an empty cloud to cloud the file into.
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     // load the file
@@ -67,11 +64,11 @@ TEST_F(FileHandlerPhysicalFixture, TestLoadCloud) {
 /**
  * Load clouds from a folder
  */
-TEST_F(FileHandlerPhysicalFixture, TestLoadClouds) {
+TEST_F(ScanFileHandlerPhysicalFixture, TestLoadClouds) {
     // make an empty cloud to cloud the file into.
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
             Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > data;
-    handler->load_clouds(data, CloudType::Type::RAW, folder_path);
+    handler->load_clouds(data, CloudType::Type::RAW);
     ASSERT_EQ(data.size(), 4);
 
 

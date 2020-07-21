@@ -8,12 +8,10 @@
 void *get_bluetooth_obj();
 
 /**
- * Calls on objective c function to set the callback to the arduino object.
- * @param arduino the arduino object.
+ * Calls on objective c function to set the callback to the arduino handler object.
+ * @param arduino the arduino handler object.
  * @param obj the wrapped object.
  */
-void set_rotation_state_callback(void *arduino, void *obj);
-
 void set_handler(void *arduino_event_handler, void *obj);
 
 /**

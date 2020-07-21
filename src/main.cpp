@@ -1,38 +1,11 @@
 #include <iostream>
-#include <Model.h>
-#include <SR305.h>
-#include "ScanController.h"
-#include "ProcessingController.h"
-#include "Visualizer.h"
-#include "CloudType.h"
-#include "FileHandler.h"
+#include "CLIClient.h"
+#include "IController.h"
 
 
-int main() {
-//    auto *camera = new camera::SR305();
-//    auto *arduino = new arduino::Arduino();
-    std::shared_ptr<model::Model> model = std::make_shared<model::Model>();
-    auto *viewer = new visual::Visualizer();
-    std::shared_ptr<file::FileHandler> file_handler = std::make_shared<file::FileHandler>(false);
-    file_handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff/Projects/scanner_files/18");
-//    std::shared_ptr<file::FileHandler> file_handler = std::make_shared<file::FileHandler>(true);
-//    file_handler->set_scan_folder_path("/Users/seanngpack/Programming Stuff/Projects/scanner_files/18");
-
-
-//    auto *scanController = new controller::ScanController(camera,
-//                                                          arduino,
-//                                                          model,
-//                                                          file_handler);
-    auto *processController = new controller::ProcessingController(model,
-                                                                   viewer,
-                                                                   file_handler);
-//    scanController->scan(3);
-//    processController->filter_clouds(file_handler->get_scan_folder_path(), CloudType::Type::RAW, .0003);
-//    processController->segment_clouds(file_handler->get_scan_folder_path(), CloudType::Type::FILTERED);
-    processController->register_all_clouds("/Users/seanngpack/Programming Stuff/Projects/scanner_files/18",
-                                           CloudType::Type::SEGMENTED);
-
-//    delete scanController;
-    delete processController;
+int main(int argc, char* argv[]) {
+    std::unique_ptr<cli::CLIClient> cli_client = std::make_unique<cli::CLIClient>();
+    std::unique_ptr<controller::IController> controller = cli_client->get_controller(argc, argv);
+    controller->run();
     return 0;
 }

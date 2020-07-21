@@ -1,5 +1,5 @@
 ///**
-// * Test the wrapper on a main method to test async actions. Can't really unit test
+// * Test the bluetooth on a main method to test async actions. Can't really unit test
 // * this bad boy.
 // */
 //#include <iostream>

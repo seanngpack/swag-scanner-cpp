@@ -1,7 +1,3 @@
-/**
- * Structs for the camera.z
- */
-
 #include <iostream>
 #include <librealsense2/h/rs_types.h>
 
@@ -20,10 +16,12 @@ namespace camera {
         float ppx;              /** pixel coordinates of the principal point (center of projection)  */
         float ppy;              /** pixel coordinates of the principal point (center of projection)  */
         rs2_distortion model;            /** model used to calibrate the image */
-        float *coeffs;            /** coefficients describing the distortion model */
+        float *coeffs;            /** coefficients describing the distortion model */ //TODO: change to vector type
         float depth_scale;      /** multiply by camera value to get depth in meters */
 
         ss_intrinsics() = default;
+
+        ss_intrinsics(rs2_intrinsics intrin, float depth_scale);
 
         ss_intrinsics(int width,
                       int height,
@@ -33,25 +31,13 @@ namespace camera {
                       float ppy,
                       rs2_distortion model,
                       float coeffs[5],
-                      float depth_scale) : width(width), height(height), fx(fx),
-                                           fy(fy), ppx(ppx), ppy(ppy), model(model),
-                                           coeffs(coeffs), depth_scale(depth_scale) {
+                      float depth_scale);
 
-        };
+        std::string to_string() const;
 
-        ~ss_intrinsics() {
-            std::cout << "destroying camera intrinsics...\n";
-        }
+        ~ss_intrinsics();
 
-        std::string toString() {
-            return "width: " + std::to_string(width) + "\n" +
-                   "height: " + std::to_string(height) + "\n" +
-                   "fx: " + std::to_string(fx) + "\n" +
-                   "fy: " + std::to_string(fy) + "\n" +
-                   "ppx: " + std::to_string(ppx) + "\n" +
-                   "ppy: " + std::to_string(ppy) + "\n" +
-                    "depth scale: " + std::to_string(depth_scale);
-        }
+
     } ss_intrinsics;
 }
 

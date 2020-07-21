@@ -8,6 +8,8 @@
 #include "Model.h"
 #include "Visualizer.h"
 #include "Segmentation.h"
+#include "Normal.h"
+#include "Point.h"
 
 
 class ModelPhysicalFixture : public ::testing::Test {
@@ -59,7 +61,7 @@ protected:
 //    pcl::io::savePCDFileASCII(test_folder_path + "/raw/outSeg.pcd", *cloudOutSegmented);
 //
 //
-//    Eigen::Matrix4f transform = mod->register_pair_clouds(cloudInSegmented, cloudOutSegmented, finalCloud);
+//    Eigen::Matrix4f transform = mod->icp_register_pair_clouds(cloudInSegmented, cloudOutSegmented, finalCloud);
 //    std::cout << transform << std::endl;
 //    pcl::transformPointCloud(*cloudInSegmented, *transformedCloud, transform);
 //    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudOutSegmented, finalCloud};
@@ -68,57 +70,24 @@ protected:
 ////    visualizer.simpleVis(clouds);
 //}
 
-//TEST_F(ModelPhysicalFixture, TestAlignment) {
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInCropped(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutCropped(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInFiltered(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutFiltered(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInSegmented(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutSegmented(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloud(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloudICP(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "0.pcd", *cloudIn);
-//    pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "3.pcd", *cloudOut);
-//    cloudInCropped = mod->crop_cloud(cloudIn, -.15, .15,
-//                    -100, .08,
-//                    -100, .48);
-//    std::cout << cloudIn->isOrganized() << std::endl;
-//    cloudOutCropped = mod->crop_cloud(cloudOut,-.15, .15,
-//                    -100, .08,
-//                    -100, .48);
-//    std::vector<int> indices;
-//    pcl::removeNaNFromPointCloud(*cloudInCropped, *cloudInCropped, indices);
-//    pcl::removeNaNFromPointCloud(*cloudOutCropped, *cloudOutCropped, indices);
-//
-//    cloudInFiltered = mod->voxel_grid_filter(cloudInCropped, .0003);
-//    cloudOutFiltered = mod->voxel_grid_filter(cloudOutCropped, .0003);
-//    cloudInSegmented = mod->remove_plane(cloudInFiltered);
-//    cloudOutSegmented = mod->remove_plane(cloudOutFiltered);
-//
-////    mod->align_clouds(cloudInSegmented, cloudOutSegmented, finalCloud);
-//
-//    Eigen::Matrix4f transform = mod->register_pair_clouds(cloudInSegmented, cloudOutSegmented, finalCloudICP);
-//
-//    Eigen::Matrix4f targetToSource = transform.inverse();
-//    pcl::transformPointCloud(*finalCloudICP, *transformedCloud, targetToSource);
-//
-//
-//    visual::Visualizer visualizer;
-//    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudInFiltered, transformedCloud};
-//    visualizer.simpleVis(clouds);
-////
-//}
 
-TEST_F(ModelPhysicalFixture, VisualizeAlignment) {
-    std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/18";
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/normal/" + "1.pcd", *cloudIn);
-    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/normal/" + "2.pcd", *cloudOut);
-    visual::Visualizer visualizer;
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudIn, cloudOut};
-    visualizer.simpleVis(clouds);
+TEST_F(ModelPhysicalFixture, TestCalculateCenterPt) {
+    equations::Normal axis_dir = equations::Normal(-0.0158, -0.8661, -0.4996);
+    std::vector<equations::Plane> upright_planes = {
+            equations::Plane(0.8603, -0.2446, 0.4472, -.201376),
+            equations::Plane(0.7779, -0.3059, 0.5489, -.242753),
+            equations::Plane(0.6714, -0.3638, 0.6457, -.28239),
+            equations::Plane(-0.5484, -0.4098, 0.7289, -.316794),
+            equations::Plane(-0.4123, -0.4443, 0.7954, -.344772),
+            equations::Plane(-0.2635, -0.4709, 0.8419, -.364747),
+            equations::Plane(-0.1081, -0.4863, 0.8670, -.376452),
+            equations::Plane(-0.0492, -0.4900, 0.8703, -.379304),
+            equations::Plane(-0.2061, -0.4751, 0.8555, -.374743),
+            equations::Plane(-0.3655, -0.4537, 0.8128, -.359423)
+    };
+
+    equations::Point p = mod->calculate_center_pt(axis_dir, upright_planes);
+    ASSERT_NEAR(p.x, -0.000213082, .001);
+    ASSERT_NEAR(p.y, 0.0298714, .001);
+    ASSERT_NEAR(p.z, 0.42673, .001);
 }

@@ -46,8 +46,9 @@ protected:
  * Test creating a pointcloud and see if its size, height, and width are good.
  */
 TEST_F(DepthFixture, TestCreatePC) {
-    uint16_t *swag = frame.data();
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = depth::create_point_cloud(swag, intrinsics_no_distoration);
+    const uint16_t *swag = frame.data();
+    std::vector<uint16_t> depth_frame(swag, swag + sizeof swag / sizeof swag[0]);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = depth::create_point_cloud(depth_frame, *intrinsics_no_distoration);
 
     ASSERT_EQ(cloud->width, 640);
     ASSERT_EQ(cloud->height, 480);
