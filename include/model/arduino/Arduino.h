@@ -11,13 +11,17 @@ namespace arduino {
         Arduino();
 
         /**
-         * Rotate the scanner table CCW.
+         * Rotate the scanner table by input.
+         * + num for CCW
+         * - num for CW
          * @param deg number of degrees to rotate.
-         * TODO: rename to rotate_by
          */
-        void rotate_table(int deg);
+        void rotate_by(int deg);
 
-
+        /**
+         * Rotate to given target.
+         * @param pos target.
+         */
         void rotate_to(int pos);
 
 

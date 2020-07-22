@@ -1,3 +1,4 @@
+#include "CoreBluetoothWrapper.h"
 #include "ArduinoEventHandler.h"
 #include "IFileHandler.h"
 #include "json.hpp"
@@ -10,7 +11,6 @@ handler::ArduinoEventHandler::ArduinoEventHandler() :
         is_table_rotating(false),
         current_pos(file::IFileHandler::load_settings_json()["current_position"]) {
     set_handler(this, bluetooth_object);
-    std::cout << "intialized current position is: " << current_pos <<std::endl;
 }
 
 void handler::ArduinoEventHandler::connect_bluetooth() {
@@ -22,11 +22,13 @@ void handler::ArduinoEventHandler::connect_bluetooth() {
     std::cout << "Finally connected to bluetooth, unblocking thread" << std::endl;
 }
 
-void handler::ArduinoEventHandler::rotate_table(int degs) {
+void handler::ArduinoEventHandler::rotate_by(int degs) {
     using namespace std::literals::chrono_literals;
     std::unique_lock<std::mutex> ul(table_mutex);
-    std::cout << "rotating..." << degs << std::endl;
     rotate(bluetooth_object, degs);
+    if (degs < 0) {
+        degs += 360;
+    }
     current_pos += degs;
     current_pos %= 360;
     update_current_pos();
@@ -34,19 +36,15 @@ void handler::ArduinoEventHandler::rotate_table(int degs) {
 
 }
 
-void handler::ArduinoEventHandler::rotate_to(int pos) {
-    int deg;
-    if (pos < current_pos) {
-        deg = 360 - abs(current_pos - pos);
-        std::cout << "ned to rotate:" << deg << std::endl;
-        rotate_table(deg);
-    } else if (pos > current_pos) {
-        deg = abs(current_pos - pos);
-        std::cout << "ned to rotate:" << deg << std::endl;
-        rotate_table(deg);
-    }
-    else {
-        std::cout << "no need to rotate, already at set position" << std::endl;
+void handler::ArduinoEventHandler::rotate_to(int target) {
+    if (current_pos < target) {
+        int forward = target - current_pos;
+        int back = 360 + current_pos - target;
+        rotate_by(get_least(forward, back));
+    } else if (current_pos > target) {
+        int forward = 360 + target - current_pos;
+        int back = current_pos - target;
+        rotate_by(get_least(forward, back));
     }
 }
 
@@ -69,6 +67,14 @@ void handler::ArduinoEventHandler::update_current_pos() {
     file::IFileHandler::write_settings_json(settings_json);
 }
 
+int handler::ArduinoEventHandler::get_least(int x, int y) {
+    if (x <= y) {
+        return x;
+    }
+    else {
+        return -y;
+    }
+}
 
 
 

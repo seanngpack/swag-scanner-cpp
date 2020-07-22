@@ -42,7 +42,7 @@ void controller::ScanController::scan() {
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
         //TODO: save filtered pointcloud as well. save to /filtered I guess
         file_handler->save_cloud(cloud, name, CloudType::Type::RAW);
-        arduino->rotate_table(deg);
+        arduino->rotate_by(deg);
     }
 }
 

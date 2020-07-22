@@ -8,7 +8,7 @@ void controller::MoveController::run() {
         arduino->rotate_to(deg);
     }
     else if (move_method == "by") {
-        arduino->rotate_table(deg);
+        arduino->rotate_by(deg);
     }
 }
 

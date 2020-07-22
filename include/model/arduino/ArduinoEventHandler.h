@@ -1,7 +1,6 @@
 #ifndef SWAG_SCANNER_ARDUINOEVENTHANDLER_H
 #define SWAG_SCANNER_ARDUINOEVENTHANDLER_H
 
-#include "CoreBluetoothWrapper.h" // TODO: see if I can move this to source file
 #include <condition_variable>
 #include <future>
 #include <iostream>
@@ -22,9 +21,9 @@ namespace handler {
          */
         ArduinoEventHandler();
 
-        void rotate_table(int degs);
+        void rotate_by(int degs);
 
-        void rotate_to(int pos);
+        void rotate_to(int target);
 
         void connect_bluetooth();
 
@@ -50,6 +49,15 @@ namespace handler {
         void *bluetooth_object;
         bool is_bt_connected;
         bool is_table_rotating;
+
+        /**
+         * If x is less than y, return x.
+         * If x is greater than y, return -y.
+         * @param x
+         * @param y
+         * @return
+         */
+        int get_least(int x, int y);
 
     };
 }

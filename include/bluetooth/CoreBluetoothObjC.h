@@ -29,26 +29,26 @@
 - (void)dealloc;
 
 
-- (void)set_handler:(handler::ArduinoEventHandler *)arduinoEventHandler;
+- (void)setHandler:(handler::ArduinoEventHandler *)arduinoEventHandler;
 
 /**
  * Start the bluetooth discovery and initialization process. Will create a CBCentralManager and
  * actively scan for Swag Scanner's bluetooth service. Then it will subscribe to notifications.
  */
-- (void)start_bluetooth;
+- (void)startBluetooth;
 
 /**
  * Rotate the table with the given angle in degrees.
  * @param deg the angle you want to rotate the table in degrees.
  */
-- (void)rotate_table:(int)degrees;
+- (void)rotateTable:(int)degrees;
 
 
 /**
  * Helper method to call setIsRotating on the Arduino.
  * @param dataBytes the bytes received from isRotating characteristic.
  */
-- (void)set_is_rotating:(NSData *)dataBytes;
+- (void)setIsRotating:(NSData *)dataBytes;
 
 
 /**

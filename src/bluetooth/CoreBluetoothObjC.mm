@@ -14,18 +14,18 @@ void *get_bluetooth_obj() {
 
 void start_bluetooth(void *obj) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    [(id) obj performSelectorInBackground:@selector(start_bluetooth) withObject:nil];
+    [(id) obj performSelectorInBackground:@selector(startBluetooth) withObject:nil];
     [pool release];
 }
 
 void rotate(void *obj, int deg) {
-    [(id) obj rotate_table:deg];
+    [(id) obj rotateTable:deg];
 }
 
 
 void set_handler(void *arduino_event_handler, void *obj) {
     auto *a = static_cast<handler::ArduinoEventHandler *>(arduino_event_handler);
-    [(id) obj set_handler:a];
+    [(id) obj setHandler:a];
 }
 
 
@@ -36,7 +36,7 @@ void set_handler(void *arduino_event_handler, void *obj) {
 
 @implementation CoreBluetoothWrapped
 
-- (void)rotate_table:(int)degrees {
+- (void)rotateTable:(int)degrees {
     _arduinoEventHandler->set_is_table_rotating(true);
     NSData *bytes = [NSData dataWithBytes:&degrees length:sizeof(degrees)];
     [_swagScanner
@@ -46,7 +46,7 @@ void set_handler(void *arduino_event_handler, void *obj) {
 }
 
 
-- (void)set_handler:(handler::ArduinoEventHandler *)arduinoEventHandler {
+- (void)setHandler:(handler::ArduinoEventHandler *)arduinoEventHandler {
     _arduinoEventHandler = arduinoEventHandler;
 }
 
@@ -59,7 +59,7 @@ void set_handler(void *arduino_event_handler, void *obj) {
     return self;
 }
 
-- (void)start_bluetooth {
+- (void)startBluetooth {
     _centralQueue = dispatch_queue_create("centralManagerQueue", DISPATCH_QUEUE_SERIAL);
 
     @autoreleasepool {
@@ -204,12 +204,12 @@ void set_handler(void *arduino_event_handler, void *obj) {
             [self displayTablePosInfo:dataBytes];
         } else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:IS_TABLE_ROTATING_CHAR_UUID]]) {
             [self displayRotInfo:dataBytes];
-            [self set_is_rotating:dataBytes];
+            [self setIsRotating:dataBytes];
         }
     }
 }
 
-- (void)set_is_rotating:(NSData *)dataBytes {
+- (void)setIsRotating:(NSData *)dataBytes {
     int theInteger;
     [dataBytes getBytes:&theInteger length:sizeof(theInteger)];
     std::unique_lock<std::mutex> ul(_arduinoEventHandler->table_mutex);
