@@ -37,8 +37,7 @@ std::vector<uint16_t> camera::SR305::get_depth_frame_processed() {
     filtered_frame = dec_filter.process(filtered_frame);
     filtered_frame = spat_filter.process(filtered_frame);
     const auto *arr = static_cast<const uint16_t *>(filtered_frame.get_data());
-
-    std::vector<uint16_t> filtered_frame_vector(arr, arr + filtered_frame.get_data_size());
+    std::vector<uint16_t> filtered_frame_vector(arr, arr + (filtered_frame.get_data_size() / sizeof(arr[0])));
     return filtered_frame_vector;
 }
 
