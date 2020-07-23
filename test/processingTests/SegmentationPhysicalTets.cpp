@@ -40,11 +40,12 @@ TEST(SegmentationPhysicalTests, TestGetPlanes) {
 }
 
 // view rotation axis on the visualizer
+// WARNING: This test is outdated!! Update with latest scan info
 TEST(SegmentationPhysicalTests, ViewAxis) {
     using namespace std::chrono_literals;
-    std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/calibration2";
+    std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration";
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/filtered/" + "8.pcd", *cloudIn);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/processed_1/1.pcd", *cloudIn);
 
     pcl::PointXYZ p1;
     p1.x = -0.0002;

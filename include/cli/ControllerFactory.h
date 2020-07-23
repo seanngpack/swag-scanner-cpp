@@ -58,6 +58,14 @@ namespace cli {
          */
         std::unique_ptr<controller::IController>
         create_move_controller(boost::program_options::variables_map vm);
+
+        /**
+         * Create a home controller to set home position.
+         * @param vm
+         * @return
+         */
+        std::unique_ptr<controller::IController>
+        create_home_controller(boost::program_options::variables_map vm);
     };
 }
 

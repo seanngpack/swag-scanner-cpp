@@ -42,7 +42,7 @@ namespace controller {
         std::shared_ptr<file::CalibrationFileHandler> file_handler;
         std::shared_ptr<visual::Visualizer> viewer;
         int deg = 15;
-        int num_rot = 7;
+        int num_rot = 8;
 
         /**
          * Scan the calibration clouds and save them into current folder.

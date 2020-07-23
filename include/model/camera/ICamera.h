@@ -21,6 +21,13 @@ namespace camera {
         virtual camera::ss_intrinsics get_intrinsics() = 0;
 
         /**
+         * Get copy of intrinsics after processing is applied. Only applies to realsense
+         * sensors.
+         * @return intrinsics after decimation changes the resolution of image.
+         */
+        virtual camera::ss_intrinsics get_intrinsics_processed() = 0;
+
+        /**
          * Get depth image and set to class variable.
          */
         virtual void scan() = 0;

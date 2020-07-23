@@ -14,6 +14,7 @@ cli::CLIParser::CLIParser() {
             ("process", "process scanned data")
             ("filter_test", "test filtering")
             ("move", "move calibration bed")
+            ("set_home", "move calibration bed")
 
             // arguments for main commands
             ("name", po::value<std::string>(), "set name of scan")

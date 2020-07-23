@@ -15,7 +15,7 @@ namespace camera {
 
         camera::ss_intrinsics get_intrinsics() override;
 
-        camera::ss_intrinsics get_intrinsics_processed();
+        camera::ss_intrinsics get_intrinsics_processed() override;
 
         void scan() override;
 
@@ -70,12 +70,12 @@ namespace camera {
         float depth_scale;
 
         // decimation filter parameters
-        int decimation_magnitude = 2;
+        int decimation_magnitude = 1;
 
         // spatial edge-preservation filter parameters
         int spatial_filter_magnitude = 2;
-        float spatial_smooth_alpha = 0.5;
-        int spatial_smooth_delta = 20;
+        float spatial_smooth_alpha = 0.6;
+        int spatial_smooth_delta = 10;
 
 
         int width = 640;

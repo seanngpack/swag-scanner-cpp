@@ -51,7 +51,6 @@ void camera::SR305::initialize_camera() {
         throw std::runtime_error("No device detected. Make sure your camera is plugged in");
     }
     dev = device_list.front();
-
     // configure the pipeline
     rs2::config cfg;
     cfg.enable_stream(RS2_STREAM_DEPTH);
@@ -72,6 +71,12 @@ void camera::SR305::initialize_camera() {
             .as<rs2::video_stream_profile>().get_intrinsics();
     depth_scale = sensor.get_depth_scale();
     intrinsics = camera::ss_intrinsics(intrin, depth_scale);
+
+    // set filter parameters
+    set_decimation_magnitude(decimation_magnitude);
+    set_spatial_smooth_alpha(spatial_smooth_alpha);
+    set_spatial_smooth_delta(spatial_smooth_delta);
+
 }
 
 

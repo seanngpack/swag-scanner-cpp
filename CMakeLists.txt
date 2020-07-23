@@ -40,7 +40,7 @@ set(SOURCE_FILES
         include/cli/CLIParser.h include/controller/IController.h
         src/cli/CLIParser.cpp include/controller/FilterTestingController.h src/controller/FilterTestingController.cpp
         include/controller/MoveController.h src/controller/MoveController.cpp
-        )
+        include/controller/HomeController.h src/controller/HomeController.cpp)
 
 set(WRAPPERS include/bluetooth)
 set(VIEW_HEADERS ./include/view)

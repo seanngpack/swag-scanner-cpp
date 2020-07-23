@@ -4,6 +4,7 @@
 #include "ScanController.h"
 #include "FilterTestingController.h"
 #include "MoveController.h"
+#include "HomeController.h"
 
 namespace po = boost::program_options;
 
@@ -18,6 +19,8 @@ std::unique_ptr<controller::IController> cli::ControllerFactory::create(po::vari
         return create_filter_testing_controller(vm);
     } else if (vm.count("move")) {
         return create_move_controller(vm);
+    } else if (vm.count("set_home")) {
+        return create_home_controller(vm);
     } else {
         throw std::invalid_argument("Error, must enter a valid base command.");
     }
@@ -116,12 +119,20 @@ cli::ControllerFactory::create_move_controller(boost::program_options::variables
     if (vm.count("to")) {
         move_controller->set_deg(vm["to"].as<int>());
         move_controller->set_move_method("to");
-    }
-    else if (vm.count("by")) {
+    } else if (vm.count("by")) {
         move_controller->set_deg(vm["by"].as<int>());
         move_controller->set_move_method("by");
     }
+    else if (vm.count("home")) {
+        move_controller->set_deg(0);
+        move_controller->set_move_method("to");
+    }
     return move_controller;
+}
+
+std::unique_ptr<controller::IController>
+cli::ControllerFactory::create_home_controller(boost::program_options::variables_map vm) {
+    return std::make_unique<controller::HomeController>();
 }
 
 
