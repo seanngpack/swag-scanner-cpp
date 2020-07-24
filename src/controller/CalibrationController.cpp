@@ -47,16 +47,14 @@ void controller::CalibrationController::scan() {
         std::string name = std::to_string(i * deg) + ".pcd";
         camera->scan();
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
-        std::cout << intrin.height << std::endl;
-        std::cout << intrin.width << std::endl;
-        std::cout << depth_frame.size() << std::endl;
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
         // TODO: when i have automatic cropping get rid of this.
         cloud = model->crop_cloud(cloud,
                                   -.15, .15,
                                   -100, .08,
                                   -100, .48);
-        viewer->simpleVis(cloud);
+        cloud = model->voxel_grid_filter(cloud, .003);
+//        viewer->simpleVis(cloud);
         file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);
         arduino->rotate_by(deg);
     }

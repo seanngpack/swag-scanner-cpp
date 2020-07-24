@@ -12,7 +12,7 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Mo
 
 void controller::ProcessingController::run() {
 //    filter_clouds(CloudType::Type::RAW, .0003);
-    rotate_all_clouds(CloudType::Type::FILTERED);
+    rotate_all_clouds(CloudType::Type::RAW);
 }
 
 void controller::ProcessingController::filter_clouds(CloudType::Type cloud_type, float leaf_size) {

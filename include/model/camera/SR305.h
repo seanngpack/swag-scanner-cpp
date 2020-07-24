@@ -66,16 +66,17 @@ namespace camera {
         rs2::pipeline_profile pipe_profile;
         rs2::decimation_filter dec_filter;
         rs2::spatial_filter spat_filter;
+        rs2::hole_filling_filter hole_filter;
         rs2::frame current_frame;
         float depth_scale;
 
         // decimation filter parameters
-        int decimation_magnitude = 1;
+        int decimation_magnitude = 2;
 
         // spatial edge-preservation filter parameters
-        int spatial_filter_magnitude = 2;
-        float spatial_smooth_alpha = 0.6;
-        int spatial_smooth_delta = 10;
+        int spatial_filter_magnitude = 1;
+        float spatial_smooth_alpha = 0.45;
+        int spatial_smooth_delta = 5;
 
 
         int width = 640;

@@ -36,6 +36,7 @@ std::vector<uint16_t> camera::SR305::get_depth_frame_processed() {
     rs2::frame filtered_frame = get_rs2_frame(); // does not make a copy, only sets a reference
     filtered_frame = dec_filter.process(filtered_frame);
     filtered_frame = spat_filter.process(filtered_frame);
+//    filtered_frame = hole_filter.process(filtered_frame);
     const auto *arr = static_cast<const uint16_t *>(filtered_frame.get_data());
     std::vector<uint16_t> filtered_frame_vector(arr, arr + (filtered_frame.get_data_size() / sizeof(arr[0])));
     return filtered_frame_vector;
@@ -61,8 +62,8 @@ void camera::SR305::initialize_camera() {
 
     // grab the depth scale
     auto sensor = pipe_profile.get_device().first<rs2::depth_sensor>();
-    sensor.set_option(rs2_option::RS2_OPTION_VISUAL_PRESET,
-                      rs2_sr300_visual_preset::RS2_SR300_VISUAL_PRESET_OBJECT_SCANNING);
+//    sensor.set_option(rs2_option::RS2_OPTION_VISUAL_PRESET,
+//                      rs2_sr300_visual_preset::RS2_SR300_VISUAL_PRESET_OBJECT_SCANNING);
 
 
     // grab the intrinsics

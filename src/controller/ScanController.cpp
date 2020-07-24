@@ -33,12 +33,13 @@ void controller::ScanController::scan() {
 
     file_handler->update_info_json(str, deg, file_handler->find_latest_calibration().string());
 
-
-    const camera::ss_intrinsics intrin = camera->get_intrinsics();
+    camera->scan();
+    const camera::ss_intrinsics intrin = camera->get_intrinsics_processed();
     std::cout << "starting scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";
-        std::vector<uint16_t> depth_frame = camera->get_depth_frame();
+        camera->scan();
+        std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
         //TODO: save filtered pointcloud as well. save to /filtered I guess
         file_handler->save_cloud(cloud, name, CloudType::Type::RAW);

@@ -14,4 +14,7 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-//--filter_test --d_mag 1 --s_mag 5 --s_delta 40 --s_alpha .5
+
+//--filter_test --d_mag 2 --s_mag 2 --s_alpha .5 --s_delta 10
+//--filter_test --d_mag 1 --s_mag 2 --s_alpha .5 --s_delta 20
+//--filter_test --d_mag 1 --s_mag 5 --s_alpha .45 --s_delta 5
