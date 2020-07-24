@@ -49,10 +49,7 @@ void controller::CalibrationController::scan() {
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
         // TODO: when i have automatic cropping get rid of this.
-        cloud = model->crop_cloud(cloud,
-                                  -.15, .15,
-                                  -100, .08,
-                                  -100, .48);
+        cloud = model->crop_cloud(cloud);
         cloud = model->voxel_grid_filter(cloud, .003);
 //        viewer->simpleVis(cloud);
         file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);

@@ -33,7 +33,7 @@ void handler::ArduinoEventHandler::rotate_by(int degs) {
     current_pos %= 360;
     update_current_pos();
     table_cv.wait(ul, [this]() { return !is_table_rotating; });
-
+    std::this_thread::sleep_for(.5s);
 }
 
 void handler::ArduinoEventHandler::rotate_to(int target) {
