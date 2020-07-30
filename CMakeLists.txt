@@ -16,6 +16,7 @@ set(SOURCE_FILES
         include/types/CameraTypes.h
         include/types/CloudType.h
         include/utils/Algorithms.h
+        src/utils/Algorithms.cpp
         src/model/processing/Model.cpp include/model/processing/Model.h
         include/view/Visualizer.h src/view/Visualizer.cpp
         include/file/IFileHandler.h src/file/IFileHandler.cpp
