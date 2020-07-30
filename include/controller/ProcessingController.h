@@ -25,13 +25,11 @@ namespace controller {
 
 
         /**
-         * Crop, downsample, and save the clouds to the /filtered folder
-         * @param folder_path path to the scan folder.
-         * @param which cloud types do you want to crop & filter. You should probably do
-         * the /raw folder.
+         * Crop clouds based on calibration. Then save to /processed folder
+         * @param cloud_type which cloud types do you want to crop.
          * @param leaf size.
          */
-        void filter_clouds(CloudType::Type cloud_type, float leaf_size);
+        void crop_clouds(CloudType::Type cloud_type);
 
         /**
          * Segment and save the clouds in the given folder path to the /segmented folder.

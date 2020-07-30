@@ -73,7 +73,6 @@ namespace algos {
               (-b * u + a * v - v * x + u * y) * sin(theta);
 
         return p;
-
     }
 
 }

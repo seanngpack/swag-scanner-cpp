@@ -32,7 +32,14 @@ namespace visual {
         void simpleVis(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds);
 
         /**
-         *
+         * Visualize a cloud and a point.
+         * @param cloud the cloud.
+         * @param pt the point.
+         */
+        void ptVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, pcl::PointXYZ pt);
+
+        /**
+         * Visualize two point clouds side by side.
          * @param cloud1
          * @param cloud2
          */

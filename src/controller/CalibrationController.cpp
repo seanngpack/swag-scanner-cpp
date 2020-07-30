@@ -13,7 +13,7 @@ controller::CalibrationController::CalibrationController(std::shared_ptr<camera:
 // TODO: implement filtering for scans, also get plane coefficients before saving the clouds
 void controller::CalibrationController::run() {
     scan();
-    std::cout << "finished scanning  " << std::endl;
+    std::cout << "finisChed scanning  " << std::endl;
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, CloudType::Type::CALIBRATION);
 
@@ -31,11 +31,11 @@ void controller::CalibrationController::run() {
 }
 
 void controller::CalibrationController::set_deg(int deg) {
-    deg = deg;
+    this->deg = deg;
 }
 
 void controller::CalibrationController::set_num_rot(int num_rot) {
-    num_rot = num_rot;
+    this->num_rot = num_rot;
 }
 
 void controller::CalibrationController::scan() {

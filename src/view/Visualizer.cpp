@@ -41,6 +41,27 @@ void visual::Visualizer::simpleVis(std::vector<pcl::PointCloud<pcl::PointXYZ>::C
     }
 }
 
+void visual::Visualizer::ptVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, pcl::PointXYZ pt) {
+    pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
+    pcl::PointCloud<pcl::PointXYZ>::Ptr point(new pcl::PointCloud<pcl::PointXYZ>);
+    point->push_back(pt);
+
+    viewer->setBackgroundColor(0, 0, 0);
+    viewer->addCoordinateSystem(1.0);
+    viewer->initCameraParameters();
+
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> color_handler(point, 255, 0, 0);
+
+    viewer->addPointCloud<pcl::PointXYZ>(cloud, "cloud");
+    viewer->addPointCloud<pcl::PointXYZ>(point, color_handler, "point");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
+    while (!viewer->wasStopped()) {
+        viewer->spinOnce(100);
+        std::this_thread::sleep_for(100ms);
+    }
+}
+
+
 void visual::Visualizer::normalsVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud,
                                     pcl::PointCloud<pcl::Normal>::ConstPtr normals) {
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));

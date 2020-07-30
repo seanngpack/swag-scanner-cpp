@@ -12,20 +12,19 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Mo
 
 void controller::ProcessingController::run() {
 //    filter_clouds(CloudType::Type::RAW, .0003);
-    rotate_all_clouds(CloudType::Type::RAW);
+    rotate_all_clouds(CloudType::Type::FILTERED);
 }
 
-void controller::ProcessingController::filter_clouds(CloudType::Type cloud_type, float leaf_size) {
+void controller::ProcessingController::crop_clouds(CloudType::Type cloud_type) {
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, cloud_type);
     for (int i = 0; i < cloud_vector.size(); i++) {
-        pcl::PointCloud<pcl::PointXYZ>::Ptr croppedCloud = model->crop_cloud(cloud_vector[i],
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cropped_cloud = model->crop_cloud(cloud_vector[i],
                                                                              -.15, .15,
                                                                              -100, .08,
                                                                              -100, .48);
-        pcl::PointCloud<pcl::PointXYZ>::Ptr filteredCloud = model->voxel_grid_filter(croppedCloud, leaf_size);
-        std::cout << "saving filtered cloud to" << std::endl;
-        file_handler->save_cloud(filteredCloud, std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
+        std::cout << "saving cropped cloud to" << std::endl;
+        file_handler->save_cloud(cropped_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
     }
 }
 
@@ -33,9 +32,9 @@ void controller::ProcessingController::remove_planes(CloudType::Type cloud_type)
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, cloud_type);
     for (int i = 0; i < cloud_vector.size(); i++) {
-        pcl::PointCloud<pcl::PointXYZ>::Ptr segmentedCloud = model->remove_plane(cloud_vector[i]);
+        pcl::PointCloud<pcl::PointXYZ>::Ptr segmented_cloud = model->remove_plane(cloud_vector[i]);
         std::cout << "saving segmented cloud" << std::endl;
-        file_handler->save_cloud(segmentedCloud, std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
+        file_handler->save_cloud(segmented_cloud, std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
     }
 }
 
