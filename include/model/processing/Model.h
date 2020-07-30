@@ -129,6 +129,19 @@ namespace model {
                                                                     float theta);
 
         /**
+         * Transform (translate and rotate) given cloud to center it at world origin coordinate (0,0,0)
+         * Z axis pointer up.
+         *
+         * @param cloud cloud to transform.
+         * @param center the center coordinate of turntable.
+         * @param ground_normal direction vector of ground.
+         * @return
+         */
+        pcl::PointCloud<pcl::PointXYZ>::Ptr transform_cloud_to_world(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                                                     pcl::PointXYZ center,
+                                                                     equations::Normal ground_normal);
+
+        /**
          * Use ICP to register an input and target cloud.
          * @param cloudIn input cloud.
          * @param cloudOut target cloud.

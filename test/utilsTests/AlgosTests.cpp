@@ -5,6 +5,7 @@
 #include <pcl-1.11/pcl/common/impl/transforms.hpp>
 #include <pcl-1.11/pcl/io/pcd_io.h>
 #include "Visualizer.h"
+#include "Model.h"
 
 
 class AlgosFixture : public ::testing::Test {
@@ -82,20 +83,22 @@ TEST_F(AlgosFixture, TestDeprojectDistortion) {
  * Then visualize it.
  */
 TEST_F(AlgosFixture, TestTransformCoordinate) {
+    GTEST_SKIP();
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration/test5/12.pcd";
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PointCloud<pcl::PointXYZ>::Ptr result(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointXYZ pt(-0.015388264007703868,
-                     0.04814684552305279,
-                     0.4890317565826675);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr result_cropped(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointXYZ pt(-0.006283042311759926,
+                     0.014217784268003741,
+                     0.4304016110847342);
 
     pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path, *cloudIn);
 
     //point -> origin so I flipped the signs
     // NOTE I FLIPPED THE SIGNS OF ORIGINAL
-    Eigen::Vector3f trans_vec(0.012402857005959627,
-                              0.07587949175872866,
-                              -0.40203895313292193);
+    Eigen::Vector3f trans_vec(0.006283042311759926,
+                              -0.014217784268003741,
+                              -0.4304016110847342);
     Eigen::Translation<float, 3> translation(trans_vec);
 
     float a_dot_b = Eigen::Vector3f(-0.0020733693898364438,
@@ -115,10 +118,16 @@ TEST_F(AlgosFixture, TestTransformCoordinate) {
     std::cout << combined.matrix() << std::endl;
     pcl::transformPointCloud(*cloudIn, *result, combined.matrix());
 
+    model::Model model;
+    result_cropped = model.crop_cloud(result, -.089, .089,
+                                      -.089, .089,
+                                      -.03, .05);
+
     visual::Visualizer visualizer;
     std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudIn, result};
-//    visualizer.simpleVis(clouds);
-    visualizer.ptVis(cloudIn, pt);
+//    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{result, result_cropped};
+    visualizer.simpleVis(clouds);
+//    visualizer.ptVis(cloudIn, pt);
 }
 
 

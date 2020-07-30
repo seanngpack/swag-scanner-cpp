@@ -75,6 +75,21 @@ namespace algos {
         return p;
     }
 
+    inline Eigen::Matrix4f calc_transform_to_world_matrix(pcl::PointXYZ center,
+                                                       equations::Normal ground_normal) {
+        Eigen::Vector3f translation_vect(center.getVector3fMap());
+        translation_vect = -translation_vect;
+        Eigen::Translation<float, 3> translation(translation_vect);
+
+        float a_dot_b = Eigen::Vector3f(ground_normal.A,
+                                        ground_normal.B,
+                                        ground_normal.C).dot(
+                Eigen::Vector3f(0, 0, 1));
+        float angle = -acos(a_dot_b);
+        Eigen::AngleAxis<float> rotation(angle, Eigen::Vector3f(1, 0, 0));
+        Eigen::Transform<float, 3, Eigen::Affine> transform = rotation * translation;
+        return transform.matrix();
+    }
 }
 
 #endif //SWAG_SCANNER_ALGORITHMS_H

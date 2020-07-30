@@ -6,6 +6,7 @@
 #include "Visualizer.h"
 #include "Algorithms.h"
 #include "Registration.h"
+#include <pcl/common/transforms.h>
 
 model::Model::Model() {}
 
@@ -110,6 +111,15 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::rotate_cloud_about_line(pcl::P
     return transformed;
 }
 
+pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::transform_cloud_to_world(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                                                           pcl::PointXYZ center,
+                                                                           equations::Normal ground_normal) {
+    pcl::PointCloud<pcl::PointXYZ>::Ptr result(new pcl::PointCloud<pcl::PointXYZ>);
+    Eigen::Matrix4f transform = algos::calc_transform_to_world_matrix(center, ground_normal);
+    pcl::transformPointCloud(*cloud, *result, transform);
+    return result;
+}
+
 Eigen::Matrix4f model::Model::icp_register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
                                                        pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut,
                                                        pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud) {
@@ -135,12 +145,4 @@ void model::Model::sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr clo
 model::Model::~Model() {
     std::cout << "calling model destructor \n";;
 }
-
-
-
-
-
-
-
-
 
