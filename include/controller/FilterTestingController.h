@@ -20,6 +20,9 @@ namespace controller {
                                 std::shared_ptr<file::ScanFileHandler> file_handler,
                                 std::shared_ptr<visual::Visualizer> viewer);
 
+        /**
+         * Compare raw depth data to filtered depth data in a side by side visualization.
+         */
         void run() override;
 
     private:

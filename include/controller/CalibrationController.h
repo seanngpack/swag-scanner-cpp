@@ -11,7 +11,6 @@
 #include "Point.h"
 
 namespace controller {
-
     /**
      * This controller handles calibration.
      */

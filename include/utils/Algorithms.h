@@ -1,8 +1,3 @@
-/**
- * Assortment of hand-made algos for drop&play.
- * List may not be big because I may implement them directly by the
- * function definitions.
- */
 #ifndef SWAG_SCANNER_ALGORITHMS_H
 #define SWAG_SCANNER_ALGORITHMS_H
 
@@ -15,6 +10,11 @@
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
 
+/**
+ * Assortment of hand-made algos for drop&play.
+ * List may not be big because I may implement them directly by the
+ * function definitions.
+ */
 namespace algos {
 
     /**
