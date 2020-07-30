@@ -83,6 +83,9 @@ namespace file {
          * Checks to see if a /SwagScanner folder exists in Library/Application Support.
          * If the folder does not exist, then create one and load in default configuration.
          * Otherwise, continue.
+         *
+         * TODO: I should probably move this out of this derived class. Might want to make it
+         * higher level, or apply to all file handlers.
          * @returns true if the program folder is already there. False if it isn't.
          */
         bool check_program_folder();

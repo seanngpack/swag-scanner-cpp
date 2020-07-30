@@ -1,5 +1,5 @@
 ///**
-// * Test the wrapper on a main method to test async actions. Can't really unit test
+// * Test the bluetooth on a main method to test async actions. Can't really unit test
 // * this bad boy.
 // */
 //#include <iostream>
@@ -12,9 +12,9 @@
 //int main() {
 //    auto *a = new arduino::Arduino;
 //    std::cout << "main thread: " << std::this_thread::get_id() << std::endl;
-//    a->rotate_table(10);
-//    a->rotate_table(10);
-//    a->rotate_table(10);
+//    a->rotate_by(10);
+//    a->rotate_by(10);
+//    a->rotate_by(10);
 //
 //    delete a;
 //

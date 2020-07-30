@@ -2,6 +2,10 @@
 #include <pcl/point_types.h>
 #include "Algorithms.h"
 #include <librealsense2/h/rs_types.h>
+#include <pcl-1.11/pcl/common/impl/transforms.hpp>
+#include <pcl-1.11/pcl/io/pcd_io.h>
+#include "Visualizer.h"
+#include "Model.h"
 
 
 class AlgosFixture : public ::testing::Test {
@@ -71,6 +75,59 @@ TEST_F(AlgosFixture, TestDeprojectDistortion) {
     ASSERT_FLOAT_EQ(expected.x, actual.x);
     ASSERT_FLOAT_EQ(expected.y, actual.y);
     ASSERT_FLOAT_EQ(expected.z, actual.z);
+}
+
+/**
+ * Given center of bed point, axis of rotation, transform the cloud into the world
+ * coordinate frame!!!
+ * Then visualize it.
+ */
+TEST_F(AlgosFixture, TestTransformCoordinate) {
+    GTEST_SKIP();
+    std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration/test5/12.pcd";
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr result(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr result_cropped(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointXYZ pt(-0.006283042311759926,
+                     0.014217784268003741,
+                     0.4304016110847342);
+
+    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path, *cloudIn);
+
+    //point -> origin so I flipped the signs
+    // NOTE I FLIPPED THE SIGNS OF ORIGINAL
+    Eigen::Vector3f trans_vec(0.006283042311759926,
+                              -0.014217784268003741,
+                              -0.4304016110847342);
+    Eigen::Translation<float, 3> translation(trans_vec);
+
+    float a_dot_b = Eigen::Vector3f(-0.0020733693898364438,
+                                    -0.8143288642168045,
+                                    -0.5803786158561707).dot(
+            Eigen::Vector3f(0, 0, 1));
+    float angle = acos(a_dot_b);
+    std::cout << (180 / 3.1415) * angle << std::endl;
+    // rotate about the x axis to align the z axis together
+    Eigen::AngleAxis<float> rot(-angle, Eigen::Vector3f(1,
+                                                        0,
+                                                        0));
+
+    // apply A onto B
+    Eigen::Transform<float, 3, Eigen::Affine> combined =
+            rot * translation;
+    std::cout << combined.matrix() << std::endl;
+    pcl::transformPointCloud(*cloudIn, *result, combined.matrix());
+
+    model::Model model;
+    result_cropped = model.crop_cloud(result, -.089, .089,
+                                      -.089, .089,
+                                      -.03, .05);
+
+    visual::Visualizer visualizer;
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudIn, result};
+//    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{result, result_cropped};
+    visualizer.simpleVis(clouds);
+//    visualizer.ptVis(cloudIn, pt);
 }
 
 

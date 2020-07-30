@@ -32,7 +32,7 @@ void file::CalibrationFileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Pt
                                               const std::string &cloud_name,
                                               CloudType::Type cloud_type) {
     std::cout << "saving file to ";
-    path out_path = scan_folder_path / "/" / scan_name / "/" / cloud_name / ".pcd";
+    path out_path = scan_folder_path / cloud_name;
     std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
@@ -40,7 +40,7 @@ void file::CalibrationFileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Pt
 void file::CalibrationFileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                                               const std::string &cloud_name,
                                               CloudType::Type cloud_type) {
-    path open_path = scan_folder_path / "/" / scan_name / "/" / cloud_name;
+    path open_path = scan_folder_path / cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
@@ -50,7 +50,7 @@ void file::CalibrationFileHandler::load_clouds(
         std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
         CloudType::Type cloud_type) {
     std::vector<path> cloud_paths;
-    path load_path = scan_folder_path / "/" / scan_name / scan_name / ".json";
+    path load_path = scan_folder_path;
 
     // load paths into cloud_paths vector
     for (auto &p : directory_iterator(load_path)) {

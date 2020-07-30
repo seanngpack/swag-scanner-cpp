@@ -8,7 +8,6 @@ class ModelFixture : public ::testing::Test {
 
 protected:
     std::vector<uint16_t> depth_frame;
-    const uint16_t *depth_frame_ptr;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_ptr;
     model::Model *mod;
 
@@ -21,7 +20,6 @@ protected:
         for (uint16_t i = 0; i < 100; i++) {
             depth_frame.push_back(i);
         }
-        depth_frame_ptr = depth_frame.data();
 
         // set up point cloud
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
@@ -50,13 +48,13 @@ protected:
 TEST_F(ModelFixture, TestCreatePointCloud) {
     float distortion[5] = {.139, .124, .0043, .00067, -.034};
     camera::ss_intrinsics *intrinsics_distortion = new camera::ss_intrinsics(10, 10,
-                                                                              475.07, 475.07,
-                                                                              309.931, 245.011,
-                                                                              RS2_DISTORTION_INVERSE_BROWN_CONRADY,
-                                                                              distortion,
-                                                                              0.0001);
+                                                                             475.07, 475.07,
+                                                                             309.931, 245.011,
+                                                                             RS2_DISTORTION_INVERSE_BROWN_CONRADY,
+                                                                             distortion,
+                                                                             0.0001);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr test = mod->create_point_cloud(depth_frame_ptr, intrinsics_distortion);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr test = mod->create_point_cloud(depth_frame, *intrinsics_distortion);
     EXPECT_EQ(test->width, 10);
     EXPECT_EQ(test->height, 10);
 }

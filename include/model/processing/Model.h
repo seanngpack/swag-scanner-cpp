@@ -35,8 +35,8 @@ namespace model {
         * Create a new PointCloudXYZ using the instance variable depth_frame.
         * @return a boost pointer to the new pointcloud.
         */
-        pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const uint16_t *depth_frame,
-                                                               const camera::ss_intrinsics *intrinsics);
+        pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const std::vector<uint16_t> &depth_frame,
+                                                               const camera::ss_intrinsics intrinsics);
 
         /**
          * Take in a pointcloud, calculate the normals, and return a normal cloud.
@@ -62,9 +62,9 @@ namespace model {
          * @return the cropped cloud.
          */
         pcl::PointCloud<pcl::PointXYZ>::Ptr crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                                                       float minX, float maxX,
-                                                       float minY, float maxY,
-                                                       float minZ, float maxZ);
+                                                       float minX = -.15, float maxX = .15,
+                                                       float minY = -100, float maxY = .12,
+                                                       float minZ = -100, float maxZ = .48);
 
         /**
          * Downsample the given cloud using voxel grid.
@@ -127,6 +127,19 @@ namespace model {
                                                                     std::vector<float> line_point,
                                                                     std::vector<float> line_direction,
                                                                     float theta);
+
+        /**
+         * Transform (translate and rotate) given cloud to center it at world origin coordinate (0,0,0)
+         * Z axis pointer up.
+         *
+         * @param cloud cloud to transform.
+         * @param center the center coordinate of turntable.
+         * @param ground_normal direction vector of ground.
+         * @return
+         */
+        pcl::PointCloud<pcl::PointXYZ>::Ptr transform_cloud_to_world(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+                                                                     pcl::PointXYZ center,
+                                                                     equations::Normal ground_normal);
 
         /**
          * Use ICP to register an input and target cloud.

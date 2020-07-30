@@ -5,11 +5,9 @@
 controller::ScanController::ScanController(std::shared_ptr<camera::ICamera> camera,
                                            std::shared_ptr<arduino::Arduino> arduino,
                                            std::shared_ptr<model::Model> model,
-                                           std::shared_ptr<file::ScanFileHandler> file_handler,
-                                           int deg,
-                                           int num_rot) :
+                                           std::shared_ptr<file::ScanFileHandler> file_handler) :
         camera(std::move(camera)), arduino(std::move(arduino)), model(std::move(model)),
-        file_handler(std::move(file_handler)), deg(deg), num_rot(num_rot) {}
+        file_handler(std::move(file_handler)) {}
 
 void controller::ScanController::run() {
     scan();
@@ -35,15 +33,21 @@ void controller::ScanController::scan() {
 
     file_handler->update_info_json(str, deg, file_handler->find_latest_calibration().string());
 
-
-    const camera::ss_intrinsics *intrin = camera->get_intrinsics();
+    camera->scan();
+    const camera::ss_intrinsics intrin = camera->get_intrinsics();
+    const camera::ss_intrinsics intrin_filt = camera->get_intrinsics_processed();
     std::cout << "starting scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";
-        const uint16_t *depth_frame = camera->get_depth_frame();
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
-        file_handler->save_cloud(cloud, name, CloudType::Type::RAW);
-        arduino->rotate_table(deg);
+        camera->scan();
+        std::vector<uint16_t> depth_frame_raw = camera->get_depth_frame();
+        std::vector<uint16_t> depth_frame_filt = camera->get_depth_frame_processed();
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_raw = model->create_point_cloud(depth_frame_raw, intrin);
+        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filt = model->create_point_cloud(depth_frame_filt, intrin);
+
+        file_handler->save_cloud(cloud_raw, name, CloudType::Type::RAW);
+        file_handler->save_cloud(cloud_filt, name, CloudType::Type::FILTERED);
+        arduino->rotate_by(deg);
     }
 }
 

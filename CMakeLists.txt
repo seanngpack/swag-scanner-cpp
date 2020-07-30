@@ -6,16 +6,17 @@ set(SOURCE_FILES
         include/utils/json.hpp
         include/model/arduino/Arduino.h src/model/arduino/Arduino.cpp
         include/model/arduino/ArduinoEventHandler.h src/model/arduino/ArduinoEventHandler.cpp
-        include/wrapper/SERVICES.h
-        include/wrapper/CoreBluetoothWrapper.h
-        include/wrapper/CoreBluetoothObjC.h
-        src/wrapper/CoreBluetoothObjC.mm
+        include/bluetooth/SERVICES.h
+        include/bluetooth/CoreBluetoothWrapper.h
+        include/bluetooth/CoreBluetoothObjC.h
+        src/bluetooth/CoreBluetoothObjC.mm
         src/main.cpp
         include/model/camera/ICamera.h
         include/model/camera/SR305.h src/model/camera/SR305.cpp
         include/types/CameraTypes.h
         include/types/CloudType.h
         include/utils/Algorithms.h
+        src/utils/Algorithms.cpp
         src/model/processing/Model.cpp include/model/processing/Model.h
         include/view/Visualizer.h src/view/Visualizer.cpp
         include/file/IFileHandler.h src/file/IFileHandler.cpp
@@ -36,9 +37,13 @@ set(SOURCE_FILES
         include/model/calibration/Calibration.h
         include/model/equations/Point.h src/model/equations/Point.cpp
         include/controller/CalibrationController.h src/controller/CalibrationController.cpp
-        src/types/CameraTypes.cpp include/cli/ControllerFactory.h src/cli/ControllerFactory.cpp include/cli/CLIClient.h include/controller/IController.h src/cli/CLIClient.cpp)
+        src/types/CameraTypes.cpp include/cli/ControllerFactory.h src/cli/ControllerFactory.cpp
+        include/cli/CLIParser.h include/controller/IController.h
+        src/cli/CLIParser.cpp include/controller/FilterTestingController.h src/controller/FilterTestingController.cpp
+        include/controller/MoveController.h src/controller/MoveController.cpp
+        include/controller/HomeController.h src/controller/HomeController.cpp)
 
-set(WRAPPERS ./include/wrapper)
+set(WRAPPERS include/bluetooth)
 set(VIEW_HEADERS ./include/view)
 set(CAMERA_HEADERS ./include/model/camera)
 set(ARDUINO_HEADERS ./include/model/arduino)

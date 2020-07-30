@@ -20,6 +20,18 @@ namespace file {
     public:
 
         /**
+         * Static method get the settings.json file from root of project.
+         * @return json file.
+         */
+        static nlohmann::json load_settings_json();
+
+        /**
+         * Static method write to settings.json.
+         * @param j json file that follows format of settings.json
+         */
+        static void write_settings_json(nlohmann::json j);
+
+        /**
          * Go to the SwagScanner/calibration directory and find the latest calibration by date.
          * @return path to the latest calibration.
          *
@@ -73,18 +85,7 @@ namespace file {
         }
 
     protected:
-        boost::filesystem::path swag_scanner_path = []() {
-            FSRef ref;
-            OSType folderType = kApplicationSupportFolderType;
-            char path[PATH_MAX];
-
-            FSFindFolder(kUserDomain, folderType, kCreateFolder, &ref);
-            FSRefMakePath(&ref, (UInt8 *) &path, PATH_MAX);
-            boost::filesystem::path program_folder = "/SwagScanner";
-            program_folder = path / program_folder;
-            return program_folder;
-        }();
-
+        static boost::filesystem::path swag_scanner_path;
         boost::filesystem::path scan_folder_path;
         std::string scan_name;
 
@@ -102,7 +103,8 @@ namespace file {
          * scan must be 11.
          *
          */
-        virtual boost::filesystem::path find_next_scan_folder_numeric(CloudType::Type const &type = CloudType::Type::NONE);
+        virtual boost::filesystem::path
+        find_next_scan_folder_numeric(CloudType::Type const &type = CloudType::Type::NONE);
     };
 }
 #endif //SWAG_SCANNER_IFILEHANDLER_H

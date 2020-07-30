@@ -13,14 +13,14 @@ namespace CloudType {
         NONE,
         RAW,
         FILTERED,
-        SEGMENTED,
+        PROCESSED,
         NORMAL,
         CALIBRATION
     };
 
     static const Type All[] = {CloudType::Type::RAW,
                                CloudType::Type::FILTERED,
-                               CloudType::Type::SEGMENTED,
+                               CloudType::Type::PROCESSED,
                                CloudType::Type::NORMAL,
                                CloudType::Type::CALIBRATION};
 
@@ -30,8 +30,8 @@ namespace CloudType {
                 return "raw";
             case CloudType::Type::FILTERED:
                 return "filtered";
-            case CloudType::Type::SEGMENTED:
-                return "segmented";
+            case CloudType::Type::PROCESSED:
+                return "processed";
             case CloudType::Type::NORMAL:
                 return "normal";
             case CloudType::Type::CALIBRATION:

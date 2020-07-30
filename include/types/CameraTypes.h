@@ -16,10 +16,12 @@ namespace camera {
         float ppx;              /** pixel coordinates of the principal point (center of projection)  */
         float ppy;              /** pixel coordinates of the principal point (center of projection)  */
         rs2_distortion model;            /** model used to calibrate the image */
-        float *coeffs;            /** coefficients describing the distortion model */
+        float *coeffs;            /** coefficients describing the distortion model */ //TODO: change to vector type
         float depth_scale;      /** multiply by camera value to get depth in meters */
 
         ss_intrinsics() = default;
+
+        ss_intrinsics(rs2_intrinsics intrin, float depth_scale);
 
         ss_intrinsics(int width,
                       int height,
@@ -31,9 +33,11 @@ namespace camera {
                       float coeffs[5],
                       float depth_scale);
 
+        std::string to_string() const;
+
         ~ss_intrinsics();
 
-        std::string toString();
+
     } ss_intrinsics;
 }
 

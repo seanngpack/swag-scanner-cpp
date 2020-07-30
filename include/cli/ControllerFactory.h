@@ -8,17 +8,21 @@
 namespace cli {
     class ControllerFactory {
     public:
-        static std::unique_ptr<controller::IController> create(boost::program_options::variables_map vm);
+
+        ControllerFactory() = default;
+
+        std::unique_ptr<controller::IController> create(boost::program_options::variables_map vm);
 
 
     private:
+
         /**
          * Creates a new scanning controller. if -name is not passed, it will create
          * a new folder.
          * @param vm
          * @return
          */
-        static std::unique_ptr<controller::IController>
+        std::unique_ptr<controller::IController>
         create_scan_controller(boost::program_options::variables_map vm);
 
         /**
@@ -27,7 +31,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        static std::unique_ptr<controller::IController>
+        std::unique_ptr<controller::IController>
         create_calibrate_controller(boost::program_options::variables_map vm);
 
         /**
@@ -36,8 +40,32 @@ namespace cli {
          * @param vm
          * @return
          */
-        static std::unique_ptr<controller::IController>
+        std::unique_ptr<controller::IController>
         create_processing_controller(boost::program_options::variables_map vm);
+
+        /**
+         * Create a filter testing controller.
+         * @param vm
+         * @return
+         */
+        std::unique_ptr<controller::IController>
+        create_filter_testing_controller(boost::program_options::variables_map vm);
+
+        /**
+         * Create a move controller.
+         * @param vm
+         * @return
+         */
+        std::unique_ptr<controller::IController>
+        create_move_controller(boost::program_options::variables_map vm);
+
+        /**
+         * Create a home controller to set home position.
+         * @param vm
+         * @return
+         */
+        std::unique_ptr<controller::IController>
+        create_home_controller(boost::program_options::variables_map vm);
     };
 }
 
