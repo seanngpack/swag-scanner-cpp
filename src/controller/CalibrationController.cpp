@@ -1,5 +1,6 @@
 #include <CalibrationController.h>
 #include <utility>
+#include "Constants.h"
 
 controller::CalibrationController::CalibrationController(std::shared_ptr<camera::ICamera> camera,
                                                          std::shared_ptr<arduino::Arduino> arduino,
@@ -13,7 +14,6 @@ controller::CalibrationController::CalibrationController(std::shared_ptr<camera:
 // TODO: implement filtering for scans, also get plane coefficients before saving the clouds
 void controller::CalibrationController::run() {
     scan();
-    std::cout << "finisChed scanning  " << std::endl;
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, CloudType::Type::CALIBRATION);
 
@@ -39,7 +39,8 @@ void controller::CalibrationController::set_num_rot(int num_rot) {
 }
 
 void controller::CalibrationController::scan() {
-//    const camera::ss_intrinsics intrin = camera->get_intrinsics();
+    using namespace constants;
+
     camera->scan();
     const camera::ss_intrinsics intrin = camera->get_intrinsics_processed();
     std::cout << "starting scanning..." << std::endl;
@@ -48,10 +49,8 @@ void controller::CalibrationController::scan() {
         camera->scan();
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
-        // TODO: when i have automatic cropping get rid of this.
-        cloud = model->crop_cloud(cloud);
+        cloud = model->crop_cloud(cloud, min_x, max_x, min_y, max_y, min_z, max_z);
         cloud = model->voxel_grid_filter(cloud, .003);
-//        viewer->simpleVis(cloud);
         file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);
         arduino->rotate_by(deg);
     }

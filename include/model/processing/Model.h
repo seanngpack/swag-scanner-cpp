@@ -62,9 +62,9 @@ namespace model {
          * @return the cropped cloud.
          */
         pcl::PointCloud<pcl::PointXYZ>::Ptr crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
-                                                       float minX = -.15, float maxX = .15,
-                                                       float minY = -100, float maxY = .12,
-                                                       float minZ = -100, float maxZ = .48);
+                                                       float minX, float maxX,
+                                                       float minY, float maxY,
+                                                       float minZ, float maxZ);
 
         /**
          * Downsample the given cloud using voxel grid.

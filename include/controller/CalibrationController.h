@@ -42,6 +42,9 @@ namespace controller {
         std::shared_ptr<visual::Visualizer> viewer;
         int deg = 15;
         int num_rot = 8;
+        std::vector<equations::Normal> axes;
+        std::vector<equations::Point> points;
+
 
         /**
          * Scan the calibration clouds and save them into current folder.
