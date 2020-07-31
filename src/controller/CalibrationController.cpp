@@ -11,31 +11,14 @@ controller::CalibrationController::CalibrationController(std::shared_ptr<camera:
         file_handler(std::move(file_handler)),
         viewer(std::move(viewer)) {}
 
-// TODO: implement filtering for scans, also get plane coefficients before saving the clouds
 void controller::CalibrationController::run() {
     scan();
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, CloudType::Type::CALIBRATION);
-
-    std::vector<equations::Plane> ground_planes;
-    std::vector<equations::Plane> upright_planes;
-    for (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud : cloud_vector) {
-        std::vector<equations::Plane> coeffs = model->get_calibration_planes_coefs(cloud);
-        upright_planes.push_back(coeffs[0]);
-        ground_planes.push_back(coeffs[1]);
-    }
     equations::Normal axis_dir = model->calculate_axis_dir(ground_planes);
     equations::Point center = model->calculate_center_pt(axis_dir, upright_planes);
     file_handler->update_calibration_json(axis_dir, center);
     arduino->rotate_to(0);
-}
-
-void controller::CalibrationController::set_deg(int deg) {
-    this->deg = deg;
-}
-
-void controller::CalibrationController::set_num_rot(int num_rot) {
-    this->num_rot = num_rot;
 }
 
 void controller::CalibrationController::scan() {
@@ -51,9 +34,22 @@ void controller::CalibrationController::scan() {
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
         cloud = model->crop_cloud(cloud, min_x, max_x, min_y, max_y, min_z, max_z);
         cloud = model->voxel_grid_filter(cloud, .003);
+
+        std::vector<equations::Plane> coeffs = model->get_calibration_planes_coefs(cloud);
+        upright_planes.emplace_back(coeffs[0]);
+        ground_planes.emplace_back(coeffs[1]);
+
         file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);
         arduino->rotate_by(deg);
     }
+}
+
+void controller::CalibrationController::set_deg(int deg) {
+    this->deg = deg;
+}
+
+void controller::CalibrationController::set_num_rot(int num_rot) {
+    this->num_rot = num_rot;
 }
 
 
