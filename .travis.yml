@@ -1,0 +1,41 @@
+language: cpp
+
+branches:
+  only:
+    - master
+    - model
+    - the-great-refactor
+
+matrix:
+  include:
+    - os: osx
+      python: 3.7
+      osx_image: xcode11.6
+      addons:
+        homebrew:
+          packages:
+            - librealsense
+            - pcl
+
+dist: trusty
+
+#before_install:
+
+install:
+  - git clone https://github.com/seanngpack/feeling-blue-cpp
+  - cd feeling-blue-cpp
+  - mkdir build
+  - cd build
+  - cmake ..
+  - sudo make install
+
+
+before_script:
+  - cd ${TRAVIS_BUILD_DIR}
+  - mkdir build
+
+script:
+  - cd build
+  - cmake -DBUILD_TESTS=ON ..
+  - make
+  - ctest
