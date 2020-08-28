@@ -2,23 +2,18 @@ cmake_minimum_required(VERSION 3.15)
 project(swag_scanner)
 
 set(CMAKE_CXX_STANDARD 17)
-
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-
-# --------------------------------------------------------------------------------
-#                          Add executable
-# --------------------------------------------------------------------------------
-add_executable(swag_scanner "")
+option(BUILD_TESTS "Build the tests" OFF)
 
 # --------------------------------------------------------------------------------
 #                          Find libraries
 # --------------------------------------------------------------------------------
+find_package(PCL 1.11 REQUIRED)
 find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(PCL 1.11 REQUIRED)
 find_package(feeling-blue REQUIRED)
 find_package(realsense2 REQUIRED)
 
@@ -28,19 +23,17 @@ include_directories(
         ${PCL_INCLUDE_DIRS}
         ${realsense_INCLUDE_DIR})
 
-# --------------------------------------------------------------------------------
-#                          Link libraries
-# --------------------------------------------------------------------------------
-target_link_libraries(swag_scanner PRIVATE
-        feeling-blue
-        ${PCL_LIBRARIES}
-        ${Boost_PROGRAM_OPTIONS_LIBRARY}
-        ${realsense2_LIBRARY}
-        )
 
 # --------------------------------------------------------------------------------
 #                          Subdirectories
 # --------------------------------------------------------------------------------
 
-#add_subdirectory(test)
 add_subdirectory(src)
+
+if (BUILD_TESTS)
+    include(CTest)
+    enable_testing()
+    message("enabled building tests")
+    add_subdirectory(${PROJECT_SOURCE_DIR}/extern/googletest)
+    add_subdirectory(test)
+endif()

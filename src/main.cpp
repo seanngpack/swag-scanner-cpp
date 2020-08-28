@@ -1,7 +1,7 @@
 #include <iostream>
-#include "cli/CLIParser.h"
-#include "controller/IController.h"
-#include "cli/ControllerFactory.h"
+#include "CLIParser.h"
+#include "IController.h"
+#include "ControllerFactory.h"
 #include <boost/program_options.hpp>
 
 
