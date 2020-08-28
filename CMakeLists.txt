@@ -13,7 +13,6 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 # --------------------------------------------------------------------------------
 add_executable(swag_scanner "")
 
-
 # --------------------------------------------------------------------------------
 #                          Find libraries
 # --------------------------------------------------------------------------------
@@ -28,8 +27,6 @@ add_definitions(${PCL_DEFINITIONS})
 include_directories(
         ${PCL_INCLUDE_DIRS}
         ${realsense_INCLUDE_DIR})
-
-#move all this external stuff in source file i think
 
 # --------------------------------------------------------------------------------
 #                          Link libraries
@@ -47,8 +44,3 @@ target_link_libraries(swag_scanner PRIVATE
 
 #add_subdirectory(test)
 add_subdirectory(src)
-
-# --------------------------------------------------------------------------------
-#                          Include directories
-# --------------------------------------------------------------------------------
-#target_include_directories(swag_scanner PRIVATE ${realsense_INCLUDE_DIR})
