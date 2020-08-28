@@ -1,5 +1,7 @@
 #include "ControllerFactory.h"
+#include "IController.h"
 #include "CalibrationController.h"
+#include "CalibrationFileHandler.h"
 #include "ProcessingController.h"
 #include "ScanController.h"
 #include "FilterTestingController.h"
@@ -123,8 +125,7 @@ cli::ControllerFactory::create_move_controller(boost::program_options::variables
     } else if (vm.count("by")) {
         move_controller->set_deg(vm["by"].as<int>());
         move_controller->set_move_method("by");
-    }
-    else if (vm.count("home")) {
+    } else if (vm.count("home")) {
         move_controller->set_deg(0);
         move_controller->set_move_method("to");
     }

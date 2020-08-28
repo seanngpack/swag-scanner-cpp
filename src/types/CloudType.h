@@ -1,6 +1,8 @@
 #ifndef SWAG_SCANNER_CLOUDTYPE_H
 #define SWAG_SCANNER_CLOUDTYPE_H
 
+#include <string>
+
 /**
  * Enumeration for point cloud states.
  * RAW = cloud that has had no processing done to it yet.

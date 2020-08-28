@@ -1,4 +1,5 @@
 #include "MoveController.h"
+#include "Arduino.h"
 
 controller::MoveController::MoveController(std::shared_ptr<arduino::Arduino> arduino) :
         arduino(std::move(arduino)) {}

@@ -11,7 +11,7 @@ option(BUILD_TESTS "Build the tests" OFF)
 # --------------------------------------------------------------------------------
 #                          Find libraries
 # --------------------------------------------------------------------------------
-find_package(PCL 1.11 REQUIRED)
+find_package(PCL REQUIRED)
 find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(feeling-blue REQUIRED)
@@ -28,6 +28,7 @@ include_directories(
 #                          Subdirectories
 # --------------------------------------------------------------------------------
 
+add_subdirectory(extern/json)
 add_subdirectory(src)
 
 if (BUILD_TESTS)
