@@ -4,7 +4,7 @@
 #include "IFileHandler.h"
 #include "../model/equations/Normal.h"
 #include "../model/equations/Point.h"
-#include "../utils/json.hpp"
+#include "../../extern/json.hpp"
 
 namespace file {
 

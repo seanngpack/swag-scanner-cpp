@@ -2,7 +2,7 @@
 #include "Constants.h"
 #include <cmath>
 #include <pcl/common/transforms.h>
-#include "json.hpp"
+#include "../../extern/json.hpp"
 
 using json = nlohmann::json;
 
