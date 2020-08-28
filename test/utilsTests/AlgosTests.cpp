@@ -83,7 +83,7 @@ TEST_F(AlgosFixture, TestDeprojectDistortion) {
  * Then visualize it.
  */
 TEST_F(AlgosFixture, TestTransformCoordinate) {
-    GTEST_SKIP();
+
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration/test5/12.pcd";
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PointCloud<pcl::PointXYZ>::Ptr result(new pcl::PointCloud<pcl::PointXYZ>);
@@ -126,7 +126,7 @@ TEST_F(AlgosFixture, TestTransformCoordinate) {
     visual::Visualizer visualizer;
     std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudIn, result};
 //    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{result, result_cropped};
-    visualizer.simpleVis(clouds);
+    visualizer.simpleVisColor(clouds);
 //    visualizer.ptVis(cloudIn, pt);
 }
 

@@ -31,6 +31,8 @@ namespace visual {
          */
         void simpleVis(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds);
 
+        void simpleVisColor(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds);
+
         /**
          * Visualize a cloud and a point.
          * @param cloud the cloud.

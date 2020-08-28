@@ -11,9 +11,9 @@ namespace constants {
     inline constexpr float min_x = -.15;
     inline constexpr float max_x = .15;
     inline constexpr float min_y = - 100;
-    inline constexpr float max_y = .12;
+    inline constexpr float max_y = .08;
     inline constexpr float min_z = -100;
-    inline constexpr float max_z = .48;
+    inline constexpr float max_z = .49;
 }
 
 #endif //SWAG_SCANNER_CONSTANTS_H

@@ -1,6 +1,7 @@
 #include "ProcessingController.h"
+#include "Constants.h"
 #include <cmath>
-#include <pcl-1.11/pcl/common/impl/transforms.hpp>
+#include <pcl/common/transforms.h>
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -11,18 +12,19 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Mo
         model(std::move(model)), viewer(std::move(viewer)), file_handler(std::move(file_handler)) {}
 
 void controller::ProcessingController::run() {
-//    filter_clouds(CloudType::Type::RAW, .0003);
     rotate_all_clouds(CloudType::Type::FILTERED);
 }
 
 void controller::ProcessingController::crop_clouds(CloudType::Type cloud_type) {
+    using namespace constants;
+
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
     file_handler->load_clouds(cloud_vector, cloud_type);
     for (int i = 0; i < cloud_vector.size(); i++) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr cropped_cloud = model->crop_cloud(cloud_vector[i],
-                                                                             -.15, .15,
-                                                                             -100, .08,
-                                                                             -100, .48);
+                                                                              min_x, max_x,
+                                                                              min_y, max_y,
+                                                                              min_z, max_z);
         std::cout << "saving cropped cloud to" << std::endl;
         file_handler->save_cloud(cropped_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
     }
@@ -34,7 +36,7 @@ void controller::ProcessingController::remove_planes(CloudType::Type cloud_type)
     for (int i = 0; i < cloud_vector.size(); i++) {
         pcl::PointCloud<pcl::PointXYZ>::Ptr segmented_cloud = model->remove_plane(cloud_vector[i]);
         std::cout << "saving segmented cloud" << std::endl;
-        file_handler->save_cloud(segmented_cloud, std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
+        file_handler->save_cloud(segmented_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
     }
 }
 

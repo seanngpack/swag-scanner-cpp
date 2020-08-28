@@ -16,7 +16,7 @@ namespace camera {
         float ppx;              /** pixel coordinates of the principal point (center of projection)  */
         float ppy;              /** pixel coordinates of the principal point (center of projection)  */
         rs2_distortion model;            /** model used to calibrate the image */
-        float *coeffs;            /** coefficients describing the distortion model */ //TODO: change to vector type
+        float coeffs[5];            /** coefficients describing the distortion model */
         float depth_scale;      /** multiply by camera value to get depth in meters */
 
         ss_intrinsics() = default;

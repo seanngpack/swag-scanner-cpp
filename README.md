@@ -19,6 +19,11 @@ SwagScanner is a device that can scan your small/medium-sized objects into the v
 This is the C++ codebase of Swag Scanner. Currently in development. Expect massive improvements in
 codebase design, performance gains, and results.
 
+### Dependencies
+* pcl
+* librealsense
+* feeling-blue-cpp
+
 ## Authors
 
 * **Sean Ng Pack** - [seanngpack.com](https://www.seanngpack.com)

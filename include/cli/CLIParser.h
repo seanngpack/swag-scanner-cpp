@@ -1,13 +1,13 @@
 #ifndef SWAG_SCANNER_CLIPARSER_H
 #define SWAG_SCANNER_CLIPARSER_H
 
-#include "Model.h"
-#include "Visualizer.h"
-#include "SR305.h"
-#include "Arduino.h"
-#include "ScanFileHandler.h"
-#include "CalibrationFileHandler.h"
-#include "IController.h"
+//#include "Model.h"
+//#include "Visualizer.h"
+//#include "SR305.h"
+//#include "Arduino.h"
+//#include "ScanFileHandler.h"
+//#include "CalibrationFileHandler.h"
+//#include "IController.h"
 #include <boost/program_options.hpp>
 
 namespace cli {
@@ -22,19 +22,11 @@ namespace cli {
 
         boost::program_options::variables_map get_variables_map(int argc, char *argv[]);
 
-        boost::program_options::variables_map get_variables_map(const std::string &input);
-
 
     private:
         boost::program_options::options_description desc;
 
-        std::vector<std::string> tokenize(const std::string &input);
 
-        template<typename InputIterator, typename OutputIterator, typename Predicate>
-        OutputIterator copy_if(InputIterator first,
-                               InputIterator last,
-                               OutputIterator result,
-                               Predicate pred);
 
 
 //        std::shared_ptr<camera::SR305> camera;

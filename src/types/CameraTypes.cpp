@@ -2,8 +2,12 @@
 
 camera::ss_intrinsics::ss_intrinsics(rs2_intrinsics intrin, float depth_scale) :
         width(intrin.width), height(intrin.height), fx(intrin.fx), fy(intrin.fy),
-        ppx(intrin.ppx), ppy(intrin.ppy), model(intrin.model), coeffs(intrin.coeffs),
-        depth_scale(depth_scale) {}
+        ppx(intrin.ppx), ppy(intrin.ppy), model(intrin.model),
+        depth_scale(depth_scale) {
+    for (int i = 0; i < 5; i++) {
+        coeffs[i] = intrin.coeffs[i];
+    }
+}
 
 camera::ss_intrinsics::ss_intrinsics(int width,
                                      int height,
@@ -12,10 +16,14 @@ camera::ss_intrinsics::ss_intrinsics(int width,
                                      float ppx,
                                      float ppy,
                                      rs2_distortion model,
-                                     float *coeffs,
+                                     float coeffs[5],
                                      float depth_scale) : width(width), height(height), fx(fx),
                                                           fy(fy), ppx(ppx), ppy(ppy), model(model),
-                                                          coeffs(coeffs), depth_scale(depth_scale) {}
+                                                          depth_scale(depth_scale) {
+    for (int i = 0; i < 5; i++) {
+        this->coeffs[i] = coeffs[i];
+    }
+}
 
 std::string camera::ss_intrinsics::to_string() const {
     return "width: " + std::to_string(width) + "\n" +
