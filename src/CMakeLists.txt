@@ -1,12 +1,12 @@
 # --------------------------------------------------------------------------------
 #                          Add executable
 # --------------------------------------------------------------------------------
-add_executable(swag_scanner "")
+add_library(swag_scanner_lib "")
 
 # --------------------------------------------------------------------------------
 #                          Link libraries
 # --------------------------------------------------------------------------------
-target_link_libraries(swag_scanner PRIVATE
+target_link_libraries(swag_scanner_lib PRIVATE
         feeling-blue
         ${PCL_LIBRARIES}
         ${Boost_PROGRAM_OPTIONS_LIBRARY}
@@ -22,8 +22,5 @@ add_subdirectory(utils)
 add_subdirectory(view)
 
 
-
-target_sources(swag_scanner PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
-
-target_include_directories(swag_scanner PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(swag_scanner main.cpp)
+target_link_libraries(swag_scanner PRIVATE swag_scanner_lib)
