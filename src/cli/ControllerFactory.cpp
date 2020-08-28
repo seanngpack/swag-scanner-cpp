@@ -5,6 +5,7 @@
 #include "FilterTestingController.h"
 #include "MoveController.h"
 #include "HomeController.h"
+#include "Arduino.h"
 
 namespace po = boost::program_options;
 

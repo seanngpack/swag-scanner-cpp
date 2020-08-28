@@ -5,11 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES
         include/utils/json.hpp
         include/model/arduino/Arduino.h src/model/arduino/Arduino.cpp
-        include/model/arduino/ArduinoEventHandler.h src/model/arduino/ArduinoEventHandler.cpp
-        include/bluetooth/SERVICES.h
-        include/bluetooth/CoreBluetoothWrapper.h
-        include/bluetooth/CoreBluetoothObjC.h
-        src/bluetooth/CoreBluetoothObjC.mm
         src/main.cpp
         include/model/camera/ICamera.h
         include/model/camera/SR305.h src/model/camera/SR305.cpp
@@ -43,7 +38,6 @@ set(SOURCE_FILES
         include/controller/MoveController.h src/controller/MoveController.cpp
         include/controller/HomeController.h src/controller/HomeController.cpp include/utils/Constants.h)
 
-set(WRAPPERS include/bluetooth)
 set(VIEW_HEADERS ./include/view)
 set(CAMERA_HEADERS ./include/model/camera)
 set(ARDUINO_HEADERS ./include/model/arduino)
@@ -55,9 +49,6 @@ set(CALIBRATION_HEADERS ./include/model/calibration)
 set(FILE_HEADERS ./include/file)
 set(UTILS ./include/utils)
 set(CLI_HEADERS ./include/cli)
-
-# double check why this fixes core bluetooth linkage issue
-set(CMAKE_EXE_LINKER_FLAGS "-framework CoreBluetooth")
 
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
@@ -99,11 +90,9 @@ add_definitions(${PCL_DEFINITIONS})
 
 add_executable(swag_scanner ${SOURCE_FILES})
 
-set_target_properties(swag_scanner PROPERTIES LINK_FLAGS "-Wl,-F/Library/Frameworks")
 target_link_libraries(swag_scanner PRIVATE
+        feeling-blue
         /opt/librealsense/build/librealsense2.dylib
         ${PCL_LIBRARIES}
         ${Boost_PROGRAM_OPTIONS_LIBRARY}
-        feeling-blue
-        "-framework CoreFoundation"
-        "-framework CoreBluetooth")
+        )
