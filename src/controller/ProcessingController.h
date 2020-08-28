@@ -2,9 +2,9 @@
 #define SWAG_SCANNER_PROCESSINGCONTROLLER_H
 
 #include "IController.h"
-#include "Model.h"
-#include "ScanFileHandler.h"
-#include "Visualizer.h"
+#include "../model/processing/Model.h"
+#include "../file/ScanFileHandler.h"
+#include "../view/Visualizer.h"
 
 
 namespace controller {

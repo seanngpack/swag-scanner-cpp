@@ -2,7 +2,7 @@
 // handling capabilities
 
 #include <gtest/gtest.h>
-#include "ScanFileHandler.h"
+#include "../../src/file/ScanFileHandler.h"
 
 using namespace testing;
 

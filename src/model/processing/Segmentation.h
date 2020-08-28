@@ -1,7 +1,7 @@
 #ifndef SWAG_SCANNER_SEGMENTATION_H
 #define SWAG_SCANNER_SEGMENTATION_H
 
-#include "Plane.h"
+#include "../equations/Plane.h"
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 

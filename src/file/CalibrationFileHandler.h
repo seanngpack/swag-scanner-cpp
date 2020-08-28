@@ -2,9 +2,9 @@
 #define SWAG_SCANNER_CALIBRATIONFILEHANDLER_H
 
 #include "IFileHandler.h"
-#include "Normal.h"
-#include "Point.h"
-#include "json.hpp"
+#include "../model/equations/Normal.h"
+#include "../model/equations/Point.h"
+#include "../utils/json.hpp"
 
 namespace file {
 

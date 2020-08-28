@@ -1,11 +1,11 @@
 #include "gtest/gtest.h"
 #include <pcl/point_types.h>
-#include "Algorithms.h"
+#include "../../src/utils/Algorithms.h"
 #include <librealsense2/h/rs_types.h>
 #include <pcl-1.11/pcl/common/impl/transforms.hpp>
 #include <pcl-1.11/pcl/io/pcd_io.h>
-#include "Visualizer.h"
-#include "Model.h"
+#include "../../src/view/Visualizer.h"
+#include "../../src/model/processing/Model.h"
 
 
 class AlgosFixture : public ::testing::Test {

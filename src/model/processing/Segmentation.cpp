@@ -4,7 +4,7 @@
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/extract_indices.h>
-#include "Visualizer.h"
+#include "../../view/Visualizer.h"
 
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr segmentation::remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn) {

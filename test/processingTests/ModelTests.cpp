@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "Model.h"
+#include "../../src/model/processing/Model.h"
 
 
 class ModelFixture : public ::testing::Test {

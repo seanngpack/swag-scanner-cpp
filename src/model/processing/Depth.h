@@ -3,7 +3,7 @@
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "CameraTypes.h"
+#include "../../types/CameraTypes.h"
 
 /**
  * Contains implementation for converting depth frames to point clouds.

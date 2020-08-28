@@ -6,11 +6,11 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "CloudType.h"
+#include "../types/CloudType.h"
 #include <string>
 #include <unordered_map>
 #include <CoreServices/CoreServices.h>
-#include "json.hpp"
+#include "../utils/json.hpp"
 
 namespace file {
     /**

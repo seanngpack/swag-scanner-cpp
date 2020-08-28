@@ -5,11 +5,11 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/filters/voxel_grid.h>
-#include "Model.h"
-#include "Visualizer.h"
-#include "Segmentation.h"
-#include "Normal.h"
-#include "Point.h"
+#include "../../src/model/processing/Model.h"
+#include "../../src/view/Visualizer.h"
+#include "../../src/model/processing/Segmentation.h"
+#include "../../src/model/equations/Normal.h"
+#include "../../src/model/equations/Point.h"
 
 
 class ModelPhysicalFixture : public ::testing::Test {

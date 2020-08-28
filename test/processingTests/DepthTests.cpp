@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include <pcl/point_types.h>
-#include <Depth.h>
+#include "../../src/model/processing/Depth.h"
 #include <librealsense2/h/rs_types.h>
 
 

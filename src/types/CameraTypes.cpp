@@ -1,4 +1,4 @@
-#include <CameraTypes.h>
+#include "CameraTypes.h"
 
 camera::ss_intrinsics::ss_intrinsics(rs2_intrinsics intrin, float depth_scale) :
         width(intrin.width), height(intrin.height), fx(intrin.fx), fy(intrin.fy),

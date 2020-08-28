@@ -1,10 +1,10 @@
 #ifndef SWAG_SCANNER_CALIBRATION_H
 #define SWAG_SCANNER_CALIBRATION_H
 
-#include "Normal.h"
-#include "Plane.h"
-#include "Equations.h"
-#include "Point.h"
+#include "../equations/Normal.h"
+#include "../equations/Plane.h"
+#include "../equations/Equations.h"
+#include "../equations/Point.h"
 
 namespace calibration {
 

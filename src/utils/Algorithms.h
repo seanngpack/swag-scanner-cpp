@@ -4,9 +4,9 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
-#include "CameraTypes.h"
-#include "Normal.h"
-#include "Plane.h"
+#include "../types/CameraTypes.h"
+#include "../model/equations/Normal.h"
+#include "../model/equations/Plane.h"
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
 

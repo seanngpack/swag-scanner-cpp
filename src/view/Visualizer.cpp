@@ -1,5 +1,10 @@
 #include "Visualizer.h"
 
+#include <algorithm>
+#include <pcl/features/normal_3d.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/visualization/pcl_visualizer.h>
+
 using namespace std::chrono_literals;
 
 visual::Visualizer::Visualizer() {}

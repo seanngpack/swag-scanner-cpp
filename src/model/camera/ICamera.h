@@ -4,7 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <librealsense2/rs.hpp>
-#include "CameraTypes.h"
+#include "../../types/CameraTypes.h"
 
 
 namespace camera {

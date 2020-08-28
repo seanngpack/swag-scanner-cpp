@@ -11,11 +11,11 @@
 #include <pcl/features/integral_image_normal.h>
 #include <pcl/features/normal_3d.h>
 #include <pcl/features/fpfh.h>
-#include "CameraTypes.h"
-#include "CloudType.h"
-#include "Normal.h"
-#include "Point.h"
-#include "Plane.h"
+#include "../../types/CameraTypes.h"
+#include "../../types/CloudType.h"
+#include "../equations/Normal.h"
+#include "../equations/Point.h"
+#include "../equations/Plane.h"
 
 
 namespace model {

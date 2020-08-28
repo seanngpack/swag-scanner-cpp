@@ -2,7 +2,7 @@
 #define SWAG_SCANNER_MOVECONTROLLER_H
 
 #include "IController.h"
-#include "Arduino.h"
+#include "../model/arduino/Arduino.h"
 
 namespace controller {
     /**
