@@ -33,7 +33,8 @@ install:
 
 
 before_script:
-  - brew install --HEAD vtk
+  - DCMAKE_OSX_SYSROOT="/Library/Developer/CommandLineTools/SDKs/MacOSX$(OSX_VERSION).sdk"
+  - brew install vtk
   - brew install librealsense
   - brew install --HEAD pcl
   - brew install opencv
