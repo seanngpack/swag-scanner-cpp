@@ -10,7 +10,7 @@
 #include <string>
 #include <unordered_map>
 #include <CoreServices/CoreServices.h>
-#include "../../extern/json.hpp"
+#include <nlohmann/json.hpp>
 
 namespace file {
     /**

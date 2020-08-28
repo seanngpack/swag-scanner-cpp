@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
+set(JSON_BuildTests OFF CACHE INTERNAL "")
 
 option(BUILD_TESTS "Build the tests" OFF)
 
@@ -23,13 +24,18 @@ include_directories(
         ${PCL_INCLUDE_DIRS}
         ${realsense_INCLUDE_DIR})
 
+add_subdirectory(extern/json)
+
 
 # --------------------------------------------------------------------------------
 #                          Subdirectories
 # --------------------------------------------------------------------------------
 
-add_subdirectory(extern/json)
 add_subdirectory(src)
+
+# --------------------------------------------------------------------------------
+#                          Build tests
+# --------------------------------------------------------------------------------
 
 if (BUILD_TESTS)
     include(CTest)
@@ -37,4 +43,4 @@ if (BUILD_TESTS)
     message("enabled building tests")
     add_subdirectory(${PROJECT_SOURCE_DIR}/extern/googletest)
     add_subdirectory(test)
-endif()
+endif ()

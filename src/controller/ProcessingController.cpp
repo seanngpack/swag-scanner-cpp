@@ -6,7 +6,7 @@
 #include <cmath>
 
 #include <pcl/common/transforms.h>
-#include <nlohmann>
+#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
