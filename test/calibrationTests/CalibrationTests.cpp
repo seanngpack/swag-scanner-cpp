@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "Model.h"
-#include "Visualizer.h"
-#include "Segmentation.h"
-#include "Algorithms.h"
-#include "Calibration.h"
-#include "Point.h"
+#include "../../src/model/processing/Model.h"
+#include "../../src/view/Visualizer.h"
+#include "../../src/model/processing/Segmentation.h"
+#include "../../src/utils/Algorithms.h"
+#include "../../src/model/calibration/Calibration.h"
+#include "../../src/model/equations/Point.h"
 
 
 class CalibrationPhysicalFixture : public ::testing::Test {

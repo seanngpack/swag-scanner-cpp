@@ -1,5 +1,10 @@
 #include "Visualizer.h"
 
+#include <algorithm>
+#include <pcl/features/normal_3d.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/visualization/pcl_visualizer.h>
+
 using namespace std::chrono_literals;
 
 visual::Visualizer::Visualizer() {}
@@ -33,6 +38,32 @@ void visual::Visualizer::simpleVis(std::vector<pcl::PointCloud<pcl::PointXYZ>::C
 
 //    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
     viewer->setBackgroundColor(0, 0, 0);
+    viewer->addCoordinateSystem(1.0);
+    viewer->initCameraParameters();
+    while (!viewer->wasStopped()) {
+        viewer->spinOnce(100);
+        std::this_thread::sleep_for(100ms);
+    }
+}
+
+void visual::Visualizer::simpleVisColor(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds) {
+    pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
+
+    int b = 255;
+    int delta = clouds.size() / 10;
+
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> handler(clouds[0], 0, 255, 0);
+    viewer->addPointCloud<pcl::PointXYZ>(clouds[0], handler, std::to_string(0));
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 9, "0");
+    for (int i = 1; i < clouds.size(); i++) {
+        pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> color_handler(clouds[i], 0, 0, b);
+        viewer->addPointCloud<pcl::PointXYZ>(clouds[i], color_handler, std::to_string(i));
+        viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 9, std::to_string(i));
+        b -= delta; // doesn't scale nicely but that's okay for now'
+    }
+
+//    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
+    viewer->setBackgroundColor(255, 255, 255);
     viewer->addCoordinateSystem(1.0);
     viewer->initCameraParameters();
     while (!viewer->wasStopped()) {

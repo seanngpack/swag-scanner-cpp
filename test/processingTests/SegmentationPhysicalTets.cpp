@@ -4,6 +4,8 @@
 #include <gtest/gtest.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/visualization/pcl_visualizer.h>
 #include "Visualizer.h"
 #include "Segmentation.h"
 
@@ -42,6 +44,7 @@ TEST(SegmentationPhysicalTests, TestGetPlanes) {
 // view rotation axis on the visualizer
 // WARNING: This test is outdated!! Update with latest scan info
 TEST(SegmentationPhysicalTests, ViewAxis) {
+    GTEST_SKIP()
     using namespace std::chrono_literals;
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration";
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);

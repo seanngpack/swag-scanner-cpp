@@ -4,7 +4,7 @@
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
 #include <pcl/filters/extract_indices.h>
-#include "Visualizer.h"
+#include "../../view/Visualizer.h"
 
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr segmentation::remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn) {
@@ -54,18 +54,21 @@ std::vector<equations::Plane> segmentation::get_calibration_planes_coefs(pcl::Po
     pcl::SACSegmentation<pcl::PointXYZ> seg;
     pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
     pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr temp_cloud(new pcl::PointCloud<pcl::PointXYZ>());
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_plane(new pcl::PointCloud<pcl::PointXYZ>());
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_f(new pcl::PointCloud<pcl::PointXYZ>());
+    *temp_cloud = *cloud;
+
     seg.setOptimizeCoefficients(true);
     seg.setModelType(pcl::SACMODEL_PLANE);
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setMaxIterations(100);
     seg.setDistanceThreshold(0.002);
 
-    int i = 0, nr_points = (int) cloud->points.size();
-    while (cloud->points.size() > 0.3 * nr_points) {
+    int i = 0, nr_points = (int) temp_cloud->points.size();
+    while (temp_cloud->points.size() > 0.3 * nr_points) {
         // Segment the largest planar component from the remaining cloud
-        seg.setInputCloud(cloud);
+        seg.setInputCloud(temp_cloud);
         seg.segment(*inliers, *coefficients);
         if (inliers->indices.size() == 0) {
             std::cout << "Could not estimate a planar model for the given dataset." << std::endl;
@@ -74,7 +77,7 @@ std::vector<equations::Plane> segmentation::get_calibration_planes_coefs(pcl::Po
 
         // Extract the planar inliers from the input cloud
         pcl::ExtractIndices<pcl::PointXYZ> extract;
-        extract.setInputCloud(cloud);
+        extract.setInputCloud(temp_cloud);
         extract.setIndices(inliers);
         extract.setNegative(false);
 
@@ -82,19 +85,18 @@ std::vector<equations::Plane> segmentation::get_calibration_planes_coefs(pcl::Po
         extract.filter(*cloud_plane);
         planes.emplace_back(coefficients);
 
-
-//            std::cout << "Model coefficients: " << coefficients->values[0] << " "
-//                      << coefficients->values[1] << " "
-//                      << coefficients->values[2] << " "
-//                      << coefficients->values[3] << std::endl;
-//            visual::Visualizer visualizer;
-//            std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloud, cloud_plane};
-//            visualizer.simpleVis(clouds);
+        std::cout << "Model coefficients: " << coefficients->values[0] << " "
+                  << coefficients->values[1] << " "
+                  << coefficients->values[2] << " "
+                  << coefficients->values[3] << std::endl;
+        visual::Visualizer visualizer;
+        std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{temp_cloud, cloud_plane};
+        visualizer.simpleVis(clouds);
 
         // Remove the planar inliers, extract the rest
         extract.setNegative(true);
         extract.filter(*cloud_f);
-        *cloud = *cloud_f;
+        *temp_cloud = *cloud_f;
     }
     return planes;
 }

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "ScanFileHandler.h"
-#include "json.hpp"
+#include "../../src/file/ScanFileHandler.h"
+#include "../../extern/json.hpp"
 
 using json = nlohmann::json;
 using namespace testing;
