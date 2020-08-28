@@ -127,3 +127,7 @@ path file::IFileHandler::find_next_scan_folder_numeric(CloudType::Type const &ty
                                          name_count_str);
     return boost::filesystem::path(name);
 }
+
+path file::IFileHandler::find_next_scan_folder_numeric() {
+    find_next_scan_folder_numeric(CloudType::Type::NONE);
+}
