@@ -2,14 +2,11 @@
 #define SWAG_SCANNER_IFILEHANDLER_H
 
 #include <boost/filesystem.hpp>
-#include <iostream>
-#include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "../types/CloudType.h"
+#include "CloudType.h"
 #include <string>
 #include <unordered_map>
-#include <CoreServices/CoreServices.h>
 #include <nlohmann/json.hpp>
 
 namespace file {

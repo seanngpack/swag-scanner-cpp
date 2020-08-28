@@ -2,9 +2,12 @@
 #define SWAG_SCANNER_CALIBRATIONFILEHANDLER_H
 
 #include "IFileHandler.h"
-#include "../model/equations/Normal.h"
-#include "../model/equations/Point.h"
 #include <nlohmann/json.hpp>
+
+namespace equations{
+    class Normal;
+    class Point;
+}
 
 namespace file {
 

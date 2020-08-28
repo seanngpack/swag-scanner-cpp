@@ -3,7 +3,6 @@
 #include "ScanFileHandler.h"
 #include "Model.h"
 #include "Constants.h"
-#include <cmath>
 
 #include <pcl/common/transforms.h>
 #include <nlohmann/json.hpp>

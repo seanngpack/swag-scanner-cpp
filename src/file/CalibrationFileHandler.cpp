@@ -1,4 +1,7 @@
 #include "CalibrationFileHandler.h"
+#include "Normal.h"
+#include "Point.h"
+#include <pcl/io/pcd_io.h>
 
 using namespace boost::filesystem;
 using json = nlohmann::json;
