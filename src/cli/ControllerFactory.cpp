@@ -1,13 +1,19 @@
 #include "ControllerFactory.h"
 #include "IController.h"
 #include "CalibrationController.h"
-#include "CalibrationFileHandler.h"
 #include "ProcessingController.h"
 #include "ScanController.h"
 #include "FilterTestingController.h"
 #include "MoveController.h"
 #include "HomeController.h"
+
+#include "CalibrationFileHandler.h"
+#include "ScanFileHandler.h"
+
+#include "SR305.h"
 #include "Arduino.h"
+#include "Model.h"
+#include "Visualizer.h"
 
 namespace po = boost::program_options;
 
