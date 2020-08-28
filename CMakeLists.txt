@@ -66,6 +66,7 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(PCL 1.11 REQUIRED)
+find_package(feeling-blue REQUIRED)
 
 
 message(STATUS "OpenCV library status:")
@@ -77,19 +78,19 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 add_subdirectory(test)
 
 include_directories("/opt/librealsense/include" ${OpenCV_INCLUDE_DIRS})
-include_directories(${PCL_INCLUDE_DIRS})
-include_directories(${WRAPPERS})
-include_directories(${VIEW_HEADERS})
-include_directories(${CAMERA_HEADERS})
-include_directories(${ARDUINO_HEADERS})
-include_directories(${PROCESSING_HEADERS})
-include_directories(${CONTROLLER_HEADERS})
-include_directories(${TYPES_HEADERS})
-include_directories(${EQUATIONS_HEADERS})
-include_directories(${CALIBRATION_HEADERS})
-include_directories(${FILE_HEADERS})
-include_directories(${UTILS})
-include_directories(${CLI_HEADERS})
+include_directories(${PCL_INCLUDE_DIRS}
+        ${WRAPPERS}
+        ${VIEW_HEADERS}
+        ${CAMERA_HEADERS}
+        ${ARDUINO_HEADERS}
+        ${PROCESSING_HEADERS}
+        ${CONTROLLER_HEADERS}
+        ${TYPES_HEADERS}
+        ${EQUATIONS_HEADERS}
+        ${CALIBRATION_HEADERS}
+        ${FILE_HEADERS}
+        ${UTILS}
+        ${CLI_HEADERS})
 
 link_directories("/opt/librealsense/build/librealsense2.dylib")
 link_directories(${PCL_LIBRARY_DIRS})
@@ -98,10 +99,11 @@ add_definitions(${PCL_DEFINITIONS})
 
 add_executable(swag_scanner ${SOURCE_FILES})
 
-target_link_libraries(swag_scanner PUBLIC
+set_target_properties(swag_scanner PROPERTIES LINK_FLAGS "-Wl,-F/Library/Frameworks")
+target_link_libraries(swag_scanner PRIVATE
+        /opt/librealsense/build/librealsense2.dylib
+        ${PCL_LIBRARIES}
+        ${Boost_PROGRAM_OPTIONS_LIBRARY}
+        feeling-blue
         "-framework CoreFoundation"
         "-framework CoreBluetooth")
-set_target_properties(swag_scanner PROPERTIES LINK_FLAGS "-Wl,-F/Library/Frameworks")
-target_link_libraries(swag_scanner PUBLIC /opt/librealsense/build/librealsense2.dylib PRIVATE ${OpenCV_LIBS})
-target_link_libraries(swag_scanner PUBLIC ${PCL_LIBRARIES})
-target_link_libraries(swag_scanner PUBLIC ${Boost_PROGRAM_OPTIONS_LIBRARY})
