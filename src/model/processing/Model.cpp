@@ -1,4 +1,7 @@
 #include "Model.h"
+#include "Point.h"
+#include "Normal.h"
+#include "Plane.h"
 #include "Depth.h"
 #include "Filtering.h"
 #include "Segmentation.h"
@@ -6,7 +9,11 @@
 #include "Visualizer.h"
 #include "Algorithms.h"
 #include "Registration.h"
+#include "CameraTypes.h"
 #include <pcl/common/transforms.h>
+#include <pcl/features/integral_image_normal.h>
+#include <pcl/features/normal_3d.h>
+#include <pcl/features/fpfh.h>
 
 model::Model::Model() {}
 

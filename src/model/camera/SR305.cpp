@@ -1,4 +1,5 @@
 #include "SR305.h"
+#include "CameraTypes.h"
 
 camera::SR305::SR305() {
     initialize_camera();

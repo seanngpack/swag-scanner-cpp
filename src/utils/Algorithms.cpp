@@ -1,4 +1,7 @@
 #include "Algorithms.h"
+#include "Normal.h"
+#include "Plane.h"
+#include "CameraTypes.h"
 
 pcl::PointXYZ algos::deproject_pixel_to_point(float x_pixel,
                                                           float y_pixel,

@@ -1,7 +1,6 @@
 #ifndef SWAG_SCANNER_NORMAL_H
 #define SWAG_SCANNER_NORMAL_H
 
-#include <iostream>
 #include <pcl/ModelCoefficients.h>
 
 

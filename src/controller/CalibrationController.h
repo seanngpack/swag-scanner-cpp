@@ -2,6 +2,7 @@
 #define SWAG_SCANNER_CALIBRATIONCONTROLLER_H
 
 #include "IController.h"
+#include "Plane.h"
 #include <vector>
 
 namespace controller {
@@ -28,9 +29,6 @@ namespace camera {
     class ICamera;
 }
 
-namespace equations {
-    class Plane;
-}
 
 namespace controller {
     /**

@@ -1,13 +1,14 @@
 #ifndef SWAG_SCANNER_CPP_ICAMERA_H
 #define SWAG_SCANNER_CPP_ICAMERA_H
 
+#include "CameraTypes.h"
 #include <vector>
-#include <iostream>
+#include <memory>
 #include <librealsense2/rs.hpp>
-#include "../../types/CameraTypes.h"
 
 
 namespace camera {
+
     /**
      * Interface for a camera. Contains methods to get depth maps and return them as 1d vectors.
      */
@@ -47,13 +48,11 @@ namespace camera {
         /**
          * Virtual destructor, must be defined or else it will never call the base class's destructor.
          */
-        virtual ~ICamera() {
-            std::cout << "calling ICamera destructor \n";
-        }
+        virtual ~ICamera() {}
 
 
     protected:
-        camera::ss_intrinsics intrinsics;
+        ss_intrinsics intrinsics;
     };
 
 }
