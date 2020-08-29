@@ -17,11 +17,11 @@ controller::FilterTestingController::FilterTestingController(std::shared_ptr<cam
 
 
 void controller::FilterTestingController::run() {
-    const camera::ss_intrinsics intrin = camera->get_intrinsics();
+    const camera::intrinsics intrin = camera->get_intrinsics();
     camera->scan();
     std::vector<uint16_t> depth_frame = camera->get_depth_frame();
     std::vector<uint16_t> depth_frame_processed = camera->get_depth_frame_processed();
-    const camera::ss_intrinsics intrin2 = camera->get_intrinsics_processed();
+    const camera::intrinsics intrin2 = camera->get_intrinsics_processed();
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud1 = model->create_point_cloud(depth_frame, intrin);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud2 = model->create_point_cloud(depth_frame_processed, intrin2);
     viewer->compareVis(cloud1, cloud2);

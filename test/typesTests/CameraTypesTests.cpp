@@ -6,14 +6,14 @@ class CameraTypesFixture : public ::testing::Test {
 
 
 protected:
-    camera::ss_intrinsics *intrinsics;
+    camera::intrinsics *intrinsics;
 
     virtual void SetUp() {
         float distortion[5] = {.139, .124, .0043, .00067, -.034};
-        intrinsics = new camera::ss_intrinsics(100, 100,
-                                               10.0, 10.0, 100.0, 100.0,
-                                               RS2_DISTORTION_INVERSE_BROWN_CONRADY,
-                                               distortion, .001);
+        intrinsics = new camera::intrinsics(100, 100,
+                                            10.0, 10.0, 100.0, 100.0,
+                                            RS2_DISTORTION_INVERSE_BROWN_CONRADY,
+                                            distortion, .001);
     }
 
     virtual void TearDown() {

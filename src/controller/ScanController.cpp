@@ -39,8 +39,8 @@ void controller::ScanController::scan() {
     file_handler->update_info_json(str, deg, file_handler->find_latest_calibration().string());
 
     camera->scan();
-    const camera::ss_intrinsics intrin = camera->get_intrinsics();
-    const camera::ss_intrinsics intrin_filt = camera->get_intrinsics_processed();
+    const camera::intrinsics intrin = camera->get_intrinsics();
+    const camera::intrinsics intrin_filt = camera->get_intrinsics_processed();
     std::cout << "starting scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";

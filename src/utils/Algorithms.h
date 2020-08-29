@@ -8,7 +8,7 @@
 #include <librealsense2/rsutil.h>
 
 namespace camera {
-    class ss_intrinsics;
+    class intrinsics;
 }
 
 namespace equations {
@@ -35,7 +35,7 @@ namespace algos {
     pcl::PointXYZ deproject_pixel_to_point(float x_pixel,
                                            float y_pixel,
                                            float z,
-                                           const camera::ss_intrinsics *intrinsics);
+                                           const camera::intrinsics *intrinsics);
 
     /**
      * Given a copy of a point from the pointcloud, a point that a line passes through,

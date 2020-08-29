@@ -37,7 +37,7 @@ void controller::CalibrationController::scan() {
     using namespace constants;
 
     camera->scan();
-    const camera::ss_intrinsics intrin = camera->get_intrinsics_processed();
+    const camera::intrinsics intrin = camera->get_intrinsics_processed();
     std::cout << "starting scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";

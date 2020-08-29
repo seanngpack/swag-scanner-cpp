@@ -11,7 +11,7 @@
 #include "CloudType.h"
 
 namespace camera {
-    class ss_intrinsics;
+    class intrinsics;
 }
 
 namespace equations {
@@ -38,7 +38,7 @@ namespace model {
         * @return a boost pointer to the new pointcloud.
         */
         pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const std::vector<uint16_t> &depth_frame,
-                                                               const camera::ss_intrinsics intrinsics);
+                                                               const camera::intrinsics intrinsics);
 
         /**
          * Take in a pointcloud, calculate the normals, and return a normal cloud.

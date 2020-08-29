@@ -36,7 +36,7 @@ namespace arduino {
         std::shared_ptr<bluetooth::Characteristic> rotate_char;
         std::shared_ptr<bluetooth::Characteristic> table_pos_char;
         std::shared_ptr<bluetooth::Characteristic> is_table_rot_char;
-        std::string DEVICE_NAME;
+        std::string DEVICE_NAME = "SwagScanner";
         std::string UART_SERVICE_UUID = "5ffba521-2363-41da-92f5-46adc56b2d37";
         std::string ROTATE_TABLE_CHAR_UUID = "5ffba522-2363-41da-92f5-46adc56b2d37";
         std::string TABLE_POSITION_CHAR_UUID = "5ffba523-2363-41da-92f5-46adc56b2d37";

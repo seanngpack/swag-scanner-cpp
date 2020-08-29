@@ -13,9 +13,9 @@ namespace camera {
     public:
         SR305();
 
-        ss_intrinsics get_intrinsics() override;
+        intrinsics get_intrinsics() override;
 
-        ss_intrinsics get_intrinsics_processed() override;
+        intrinsics get_intrinsics_processed() override;
 
         void scan() override;
 
