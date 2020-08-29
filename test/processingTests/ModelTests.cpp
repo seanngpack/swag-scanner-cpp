@@ -48,12 +48,12 @@ protected:
  */
 TEST_F(ModelFixture, TestCreatePointCloud) {
     float distortion[5] = {.139, .124, .0043, .00067, -.034};
-    camera::ss_intrinsics *intrinsics_distortion = new camera::ss_intrinsics(10, 10,
-                                                                             475.07, 475.07,
-                                                                             309.931, 245.011,
-                                                                             RS2_DISTORTION_INVERSE_BROWN_CONRADY,
-                                                                             distortion,
-                                                                             0.0001);
+    camera::intrinsics *intrinsics_distortion = new camera::intrinsics(10, 10,
+                                                                       475.07, 475.07,
+                                                                       309.931, 245.011,
+                                                                       RS2_DISTORTION_INVERSE_BROWN_CONRADY,
+                                                                       distortion,
+                                                                       0.0001);
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr test = mod->create_point_cloud(depth_frame, *intrinsics_distortion);
     EXPECT_EQ(test->width, 10);

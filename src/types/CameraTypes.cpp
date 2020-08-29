@@ -1,6 +1,6 @@
 #include "CameraTypes.h"
 
-camera::ss_intrinsics::ss_intrinsics(rs2_intrinsics intrin, float depth_scale) :
+camera::intrinsics::intrinsics(rs2_intrinsics intrin, float depth_scale) :
         width(intrin.width), height(intrin.height), fx(intrin.fx), fy(intrin.fy),
         ppx(intrin.ppx), ppy(intrin.ppy), model(intrin.model),
         depth_scale(depth_scale) {
@@ -9,15 +9,15 @@ camera::ss_intrinsics::ss_intrinsics(rs2_intrinsics intrin, float depth_scale) :
     }
 }
 
-camera::ss_intrinsics::ss_intrinsics(int width,
-                                     int height,
-                                     float fx,
-                                     float fy,
-                                     float ppx,
-                                     float ppy,
-                                     rs2_distortion model,
-                                     float coeffs[5],
-                                     float depth_scale) : width(width), height(height), fx(fx),
+camera::intrinsics::intrinsics(int width,
+                               int height,
+                               float fx,
+                               float fy,
+                               float ppx,
+                               float ppy,
+                               rs2_distortion model,
+                               float coeffs[5],
+                               float depth_scale) : width(width), height(height), fx(fx),
                                                           fy(fy), ppx(ppx), ppy(ppy), model(model),
                                                           depth_scale(depth_scale) {
     for (int i = 0; i < 5; i++) {
@@ -25,7 +25,7 @@ camera::ss_intrinsics::ss_intrinsics(int width,
     }
 }
 
-std::string camera::ss_intrinsics::to_string() const {
+std::string camera::intrinsics::to_string() const {
     return "width: " + std::to_string(width) + "\n" +
            "height: " + std::to_string(height) + "\n" +
            "fx: " + std::to_string(fx) + "\n" +
@@ -35,7 +35,7 @@ std::string camera::ss_intrinsics::to_string() const {
            "depth scale: " + std::to_string(depth_scale);
 }
 
-camera::ss_intrinsics::~ss_intrinsics() {}
+camera::intrinsics::~intrinsics() {}
 
 
 

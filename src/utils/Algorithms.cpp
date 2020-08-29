@@ -6,7 +6,7 @@
 pcl::PointXYZ algos::deproject_pixel_to_point(float x_pixel,
                                                           float y_pixel,
                                                           float z,
-                                                          const camera::ss_intrinsics *intrinsics) {
+                                                          const camera::intrinsics *intrinsics) {
     float depth = z * intrinsics->depth_scale;
     float x = (x_pixel - intrinsics->ppx) / intrinsics->fx;
     float y = (y_pixel - intrinsics->ppy) / intrinsics->fy;

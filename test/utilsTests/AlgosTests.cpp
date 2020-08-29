@@ -13,24 +13,24 @@
 class AlgosFixture : public ::testing::Test {
 
 protected:
-    camera::ss_intrinsics *intrinsics_no_distoration;
-    camera::ss_intrinsics *intrinsics_distoration;
+    camera::intrinsics *intrinsics_no_distoration;
+    camera::intrinsics *intrinsics_distoration;
     std::vector<uint16_t> frame;
 
     virtual void SetUp() {
         float no_distortion[5] = {0, 0, 0, 0, 0};
         float distortion[5] = {.139, .124, .0043, .00067, -.034};
-        intrinsics_no_distoration = new camera::ss_intrinsics(640, 480,
-                                                              475.07, 475.07,
-                                                              309.931, 245.011,
-                                                              RS2_DISTORTION_INVERSE_BROWN_CONRADY,
-                                                              no_distortion,
-                                                              0.0001);
-        intrinsics_distoration = new camera::ss_intrinsics(640, 480,
+        intrinsics_no_distoration = new camera::intrinsics(640, 480,
                                                            475.07, 475.07,
                                                            309.931, 245.011,
-                                                           RS2_DISTORTION_INVERSE_BROWN_CONRADY, distortion,
+                                                           RS2_DISTORTION_INVERSE_BROWN_CONRADY,
+                                                           no_distortion,
                                                            0.0001);
+        intrinsics_distoration = new camera::intrinsics(640, 480,
+                                                        475.07, 475.07,
+                                                        309.931, 245.011,
+                                                        RS2_DISTORTION_INVERSE_BROWN_CONRADY, distortion,
+                                                        0.0001);
 
 
         for (float i = 0; i < intrinsics_no_distoration->width * intrinsics_no_distoration->height; i++) {

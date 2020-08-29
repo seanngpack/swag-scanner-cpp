@@ -16,17 +16,17 @@ namespace camera {
     public:
 
         /**
-         * Get copy of camera intrinsics.
-         * @return a pointer to ss_camera struct of the camera intrinsics.
+         * Get copy of camera intrin.
+         * @return a pointer to ss_camera struct of the camera intrin.
          */
-        virtual camera::ss_intrinsics get_intrinsics() = 0;
+        virtual camera::intrinsics get_intrinsics() = 0;
 
         /**
-         * Get copy of intrinsics after processing is applied. Only applies to realsense
+         * Get copy of intrin after processing is applied. Only applies to realsense
          * sensors.
-         * @return intrinsics after decimation changes the resolution of image.
+         * @return intrin after decimation changes the resolution of image.
          */
-        virtual camera::ss_intrinsics get_intrinsics_processed() = 0;
+        virtual camera::intrinsics get_intrinsics_processed() = 0;
 
         /**
          * Get depth image and set to class variable.
@@ -52,7 +52,7 @@ namespace camera {
 
 
     protected:
-        ss_intrinsics intrinsics;
+        intrinsics intrin;
     };
 
 }

@@ -19,7 +19,7 @@ model::Model::Model() {}
 
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr model::Model::create_point_cloud(const std::vector<uint16_t> &depth_frame,
-                                                                     const camera::ss_intrinsics intrinsics) {
+                                                                     const camera::intrinsics intrinsics) {
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud = depth::create_point_cloud(depth_frame, intrinsics);
     return point_cloud;
