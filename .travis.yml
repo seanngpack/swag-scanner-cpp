@@ -14,9 +14,9 @@ matrix:
       addons:
         homebrew:
           packages:
-#            - vtk
+            - vtk
             - librealsense
-#            - pcl
+            - pcl
             - opencv
 
 dist: trusty
@@ -24,7 +24,6 @@ dist: trusty
 #before_install:
 
 install:
-  - git clone https://github.com/seanngpack/feeling-blue-cpp
   - cd feeling-blue-cpp
   - mkdir build
   - cd build
