@@ -4,10 +4,7 @@
 
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/seanngpack/swag-scanner/master/LICENSE)  
 
-<p align="center">
-    <img src="https://raw.githubusercontent.com/seanngpack/swag-scanner/master/logo/swag-scanner-logo.png"
-        height="250">
-</p>
+![Test Image 1](doc/img/swaggg.png)
 
 SwagScanner is a device that can scan your small/medium-sized objects into the virtual world. The system is designed
  and built from the ground up. I designed the software pipeline to be extensible, robust, and fast. SwagScanner is 
