@@ -2,9 +2,22 @@
 #define SWAG_SCANNER_PROCESSINGCONTROLLER_H
 
 #include "IController.h"
-#include "../model/processing/Model.h"
-#include "../file/ScanFileHandler.h"
-#include "../view/Visualizer.h"
+#include "CloudType.h"
+#include <memory>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+
+namespace visual {
+    class Visualizer;
+}
+
+namespace model {
+    class Model;
+}
+
+namespace file {
+    class ScanFileHandler;
+}
 
 
 namespace controller {

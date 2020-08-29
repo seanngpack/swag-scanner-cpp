@@ -1,10 +1,8 @@
 #ifndef SWAG_SCANNER_ARDUINO_H
 #define SWAG_SCANNER_ARDUINO_H
 
-#include <iostream>
 #include <memory>
 #include "feeling-blue/feeling-blue.h"
-
 
 namespace arduino {
     class Arduino {

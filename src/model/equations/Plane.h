@@ -1,11 +1,11 @@
 #ifndef SWAG_SCANNER_PLANE_H
 #define SWAG_SCANNER_PLANE_H
 
-#include <iostream>
 #include <pcl/ModelCoefficients.h>
-#include "Normal.h"
 
 namespace equations {
+
+    class Normal;
 
     /**
      * Class represents the equation of a plane. Contains methods to convert vector or pcl::ModelCoefficients

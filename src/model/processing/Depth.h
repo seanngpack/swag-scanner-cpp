@@ -3,7 +3,10 @@
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "../../types/CameraTypes.h"
+
+namespace camera {
+    class ss_intrinsics;
+}
 
 /**
  * Contains implementation for converting depth frames to point clouds.

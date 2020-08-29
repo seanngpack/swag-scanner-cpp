@@ -1,4 +1,12 @@
 #include "FilterTestingController.h"
+#include "Arduino.h"
+#include "Model.h"
+#include "ScanFileHandler.h"
+#include "Visualizer.h"
+#include "SR305.h"
+
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 
 controller::FilterTestingController::FilterTestingController(std::shared_ptr<camera::SR305> camera,
                                                              std::shared_ptr<model::Model> model,

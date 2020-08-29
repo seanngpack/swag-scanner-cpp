@@ -4,11 +4,18 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
-#include "../types/CameraTypes.h"
-#include "../model/equations/Normal.h"
-#include "../model/equations/Plane.h"
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
+
+namespace camera {
+    class ss_intrinsics;
+}
+
+namespace equations {
+    class Normal;
+    class Plane;
+    class Point;
+}
 
 /**
  * Assortment of hand-made algos for drop&play.

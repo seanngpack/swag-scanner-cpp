@@ -1,4 +1,5 @@
 #include "ScanFileHandler.h"
+#include <pcl/io/pcd_io.h>
 
 using namespace boost::filesystem;
 using json = nlohmann::json;

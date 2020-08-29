@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "../../src/model/processing/Model.h"
+#include "Model.h"
+#include "CameraTypes.h"
 
 
 class ModelFixture : public ::testing::Test {

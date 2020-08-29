@@ -2,15 +2,12 @@
 #define SWAG_SCANNER_IFILEHANDLER_H
 
 #include <boost/filesystem.hpp>
-#include <iostream>
-#include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "../types/CloudType.h"
+#include "CloudType.h"
 #include <string>
 #include <unordered_map>
-#include <CoreServices/CoreServices.h>
-#include "../../extern/json.hpp"
+#include <nlohmann/json.hpp>
 
 namespace file {
     /**
@@ -104,7 +101,9 @@ namespace file {
          *
          */
         virtual boost::filesystem::path
-        find_next_scan_folder_numeric(CloudType::Type const &type = CloudType::Type::NONE);
+        find_next_scan_folder_numeric(CloudType::Type const &type);
+
+        boost::filesystem::path find_next_scan_folder_numeric();
     };
 }
 #endif //SWAG_SCANNER_IFILEHANDLER_H

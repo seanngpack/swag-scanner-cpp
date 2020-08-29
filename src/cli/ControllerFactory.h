@@ -1,9 +1,11 @@
 #ifndef SWAG_SCANNER_CONTROLLERFACTORY_H
 #define SWAG_SCANNER_CONTROLLERFACTORY_H
 
-
-#include "IController.h"
 #include <boost/program_options.hpp>
+
+namespace controller {
+    class IController;
+}
 
 namespace cli {
     class ControllerFactory {

@@ -1,13 +1,7 @@
 #ifndef SWAG_SCANNER_CLIPARSER_H
 #define SWAG_SCANNER_CLIPARSER_H
 
-//#include "Model.h"
-//#include "Visualizer.h"
-//#include "SR305.h"
-//#include "Arduino.h"
-//#include "ScanFileHandler.h"
-//#include "CalibrationFileHandler.h"
-//#include "IController.h"
+
 #include <boost/program_options.hpp>
 
 namespace cli {

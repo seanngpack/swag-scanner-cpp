@@ -5,13 +5,14 @@ set(CMAKE_CXX_STANDARD 17)
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
+set(JSON_BuildTests OFF CACHE INTERNAL "")
 
 option(BUILD_TESTS "Build the tests" OFF)
 
 # --------------------------------------------------------------------------------
 #                          Find libraries
 # --------------------------------------------------------------------------------
-find_package(PCL 1.11 REQUIRED)
+find_package(PCL REQUIRED)
 find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(feeling-blue REQUIRED)
@@ -23,6 +24,8 @@ include_directories(
         ${PCL_INCLUDE_DIRS}
         ${realsense_INCLUDE_DIR})
 
+add_subdirectory(extern/json)
+
 
 # --------------------------------------------------------------------------------
 #                          Subdirectories
@@ -30,10 +33,14 @@ include_directories(
 
 add_subdirectory(src)
 
+# --------------------------------------------------------------------------------
+#                          Build tests
+# --------------------------------------------------------------------------------
+
 if (BUILD_TESTS)
     include(CTest)
     enable_testing()
     message("enabled building tests")
     add_subdirectory(${PROJECT_SOURCE_DIR}/extern/googletest)
     add_subdirectory(test)
-endif()
+endif ()

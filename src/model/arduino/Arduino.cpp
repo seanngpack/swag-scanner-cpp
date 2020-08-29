@@ -1,7 +1,7 @@
 #include "Arduino.h"
 
 #include "IFileHandler.h"
-#include "../../../extern/json.hpp"
+#include <nlohmann/json.hpp>
 #include <thread>
 
 using json = nlohmann::json;

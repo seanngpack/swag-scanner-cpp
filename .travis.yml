@@ -14,8 +14,10 @@ matrix:
       addons:
         homebrew:
           packages:
+            - vtk
             - librealsense
             - pcl
+            - opencv
 
 dist: trusty
 
@@ -31,6 +33,10 @@ install:
 
 
 before_script:
+#  - brew install vtk
+#  - brew install librealsense
+#  - brew install --HEAD pcl
+#  - brew install opencv
   - cd ${TRAVIS_BUILD_DIR}
   - mkdir build
 

@@ -2,11 +2,27 @@
 #define SWAG_SCANNER_FILTERTESTINGCONTROLLER_H
 
 #include "IController.h"
-#include "Model.h"
-#include "Arduino.h"
-#include "SR305.h"
-#include "Visualizer.h"
-#include "ScanFileHandler.h"
+#include <memory>
+
+namespace model {
+    class Model;
+}
+
+namespace arduino {
+    class Arduino;
+}
+
+namespace file {
+    class ScanFileHandler;
+}
+
+namespace visual {
+    class Visualizer;
+}
+
+namespace camera {
+    class SR305;
+}
 
 namespace controller {
     /**

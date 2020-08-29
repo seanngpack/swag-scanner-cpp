@@ -8,15 +8,17 @@
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include <pcl/features/integral_image_normal.h>
-#include <pcl/features/normal_3d.h>
-#include <pcl/features/fpfh.h>
-#include "../../types/CameraTypes.h"
-#include "../../types/CloudType.h"
-#include "../equations/Normal.h"
-#include "../equations/Point.h"
-#include "../equations/Plane.h"
+#include "CloudType.h"
 
+namespace camera {
+    class ss_intrinsics;
+}
+
+namespace equations {
+    class Normal;
+    class Point;
+    class Plane;
+}
 
 namespace model {
 

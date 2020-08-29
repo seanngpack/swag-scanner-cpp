@@ -1,4 +1,6 @@
 #include "IFileHandler.h"
+#include <pcl/io/pcd_io.h>
+#include <CoreServices/CoreServices.h>
 
 using namespace boost::filesystem;
 using json = nlohmann::json;
@@ -124,4 +126,8 @@ path file::IFileHandler::find_next_scan_folder_numeric(CloudType::Type const &ty
                                          sizeof(name_count_str) - 1,
                                          name_count_str);
     return boost::filesystem::path(name);
+}
+
+path file::IFileHandler::find_next_scan_folder_numeric() {
+    find_next_scan_folder_numeric(CloudType::Type::NONE);
 }

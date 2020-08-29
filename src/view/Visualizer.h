@@ -1,8 +1,5 @@
-#include <iostream>
 #include <thread>
-
 #include <pcl/common/common_headers.h>
-#include <pcl/console/parse.h>
 
 #ifndef SWAG_SCANNER_VISUALIZER_H
 #define SWAG_SCANNER_VISUALIZER_H

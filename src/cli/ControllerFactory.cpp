@@ -1,11 +1,19 @@
 #include "ControllerFactory.h"
+#include "IController.h"
 #include "CalibrationController.h"
 #include "ProcessingController.h"
 #include "ScanController.h"
 #include "FilterTestingController.h"
 #include "MoveController.h"
 #include "HomeController.h"
+
+#include "CalibrationFileHandler.h"
+#include "ScanFileHandler.h"
+
+#include "SR305.h"
 #include "Arduino.h"
+#include "Model.h"
+#include "Visualizer.h"
 
 namespace po = boost::program_options;
 
@@ -123,8 +131,7 @@ cli::ControllerFactory::create_move_controller(boost::program_options::variables
     } else if (vm.count("by")) {
         move_controller->set_deg(vm["by"].as<int>());
         move_controller->set_move_method("by");
-    }
-    else if (vm.count("home")) {
+    } else if (vm.count("home")) {
         move_controller->set_deg(0);
         move_controller->set_move_method("to");
     }

@@ -1,4 +1,9 @@
 #include "ScanController.h"
+#include "Model.h"
+#include "Arduino.h"
+#include "SR305.h"
+#include "Visualizer.h"
+#include "ScanFileHandler.h"
 
 #include <utility>
 

@@ -6,7 +6,7 @@
 #define SWAG_SCANNER_SCANFILEHANDLER_H
 
 #include "IFileHandler.h"
-#include "../../extern/json.hpp"
+#include <nlohmann/json.hpp>
 
 namespace file {
     /**

@@ -1,4 +1,5 @@
 #include "Depth.h"
+#include "CameraTypes.h"
 #include <librealsense2/rsutil.h>
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr depth::create_point_cloud(const std::vector<uint16_t> &depth_frame,

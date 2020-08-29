@@ -2,13 +2,33 @@
 #define SWAG_SCANNER_CALIBRATIONCONTROLLER_H
 
 #include "IController.h"
-#include "Model.h"
-#include "Arduino.h"
-#include "SR305.h"
-#include "Visualizer.h"
-#include "CalibrationFileHandler.h"
-#include "ScanController.h"
-#include "Point.h"
+#include "Plane.h"
+#include <vector>
+
+namespace controller {
+    class ScanController;
+}
+
+namespace file {
+    class CalibrationFileHandler;
+}
+
+namespace arduino {
+    class Arduino;
+}
+
+namespace model {
+    class Model;
+}
+
+namespace visual {
+    class Visualizer;
+}
+
+namespace camera {
+    class ICamera;
+}
+
 
 namespace controller {
     /**

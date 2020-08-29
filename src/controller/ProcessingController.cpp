@@ -1,8 +1,11 @@
 #include "ProcessingController.h"
+#include "Visualizer.h"
+#include "ScanFileHandler.h"
+#include "Model.h"
 #include "Constants.h"
-#include <cmath>
+
 #include <pcl/common/transforms.h>
-#include "../../extern/json.hpp"
+#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 

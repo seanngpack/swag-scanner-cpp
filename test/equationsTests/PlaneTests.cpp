@@ -3,7 +3,8 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
-#include "../../src/model/equations/Plane.h"
+#include "Normal.h"
+#include "Plane.h"
 
 TEST(PlaneTests, TestConstructor1) {
     equations::Plane p(1.1, 1.3, -1.1, 3.1);
