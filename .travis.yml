@@ -33,7 +33,6 @@ install:
 
 
 before_script:
-  - DCMAKE_OSX_SYSROOT="/Library/Developer/CommandLineTools/SDKs/MacOSX$(OSX_VERSION).sdk"
   - brew install vtk
   - brew install librealsense
   - brew install --HEAD pcl
