@@ -52,8 +52,7 @@ $ cmake ..
 $ sudo make install
 ```
 
-### 
-Commands
+### Commands
 
 | --scan          | --calibrate     | --process       | --move       |
 |-----------------|-----------------|-----------------|--------------|
