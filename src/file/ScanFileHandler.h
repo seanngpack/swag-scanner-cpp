@@ -40,16 +40,16 @@ namespace file {
          */
         ScanFileHandler(const char *scan_name);
 
-        void save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
+        void save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                         const std::string &cloud_name,
                         CloudType::Type cloud_type) override;
 
-        void load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+        void load_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                         const std::string &cloud_name,
                         CloudType::Type cloud_type) override;
 
         void load_clouds(
-                std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
+                std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>, Eigen::aligned_allocator<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> > &cloud_vector,
                 CloudType::Type cloud_type) override;
 
         std::string get_scan_name() override;

@@ -2,11 +2,11 @@
 #include <pcl/filters/crop_box.h>
 #include <pcl/filters/voxel_grid.h>
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr filtering::crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtering::crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                           float minX, float maxX,
                                                           float minY, float maxY,
                                                           float minZ, float maxZ) {
-    pcl::PointCloud<pcl::PointXYZ>::Ptr croppedCloud(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> croppedCloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::CropBox<pcl::PointXYZ> boxFilter;
     boxFilter.setKeepOrganized(1);
     boxFilter.setMin(Eigen::Vector4f(minX, minY, minZ, 1.0));
@@ -16,9 +16,9 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr filtering::crop_cloud(pcl::PointCloud<pcl::P
     return croppedCloud;
 }
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr filtering::voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtering::voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                                  float leafSize) {
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filtered(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::VoxelGrid<pcl::PointXYZ> grid;
     std::cout << "PointCloud before filtering: " << cloud->width * cloud->height
               << " data points (" << pcl::getFieldsList(*cloud) << ")." << std::endl;

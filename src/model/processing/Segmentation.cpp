@@ -7,11 +7,11 @@
 #include <pcl/filters/extract_indices.h>
 
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr segmentation::remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn) {
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> segmentation::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn) {
     pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInliers(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutliers(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudInliers(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOutliers(new pcl::PointCloud<pcl::PointXYZ>);
     // Create the segmentation object
     pcl::SACSegmentation<pcl::PointXYZ> seg;
     coefficients->values.resize(4);
@@ -48,15 +48,15 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr segmentation::remove_plane(pcl::PointCloud<p
     return cloudOutliers;
 }
 
-std::vector<equations::Plane> segmentation::get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+std::vector<equations::Plane> segmentation::get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
     std::vector<equations::Plane> planes;
     // Create the segmentation object for the planar model and set all the parameters
     pcl::SACSegmentation<pcl::PointXYZ> seg;
     pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
     pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr temp_cloud(new pcl::PointCloud<pcl::PointXYZ>());
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_plane(new pcl::PointCloud<pcl::PointXYZ>());
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_f(new pcl::PointCloud<pcl::PointXYZ>());
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> temp_cloud(new pcl::PointCloud<pcl::PointXYZ>());
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_plane(new pcl::PointCloud<pcl::PointXYZ>());
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_f(new pcl::PointCloud<pcl::PointXYZ>());
     *temp_cloud = *cloud;
 
     seg.setOptimizeCoefficients(true);
@@ -101,7 +101,7 @@ std::vector<equations::Plane> segmentation::get_calibration_planes_coefs(pcl::Po
     return planes;
 }
 
-std::vector<float> segmentation::get_plane_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+std::vector<float> segmentation::get_plane_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
     pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
     pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
     pcl::SACSegmentation<pcl::PointXYZ> seg;

@@ -2,10 +2,10 @@
 #include "CameraTypes.h"
 #include <librealsense2/rsutil.h>
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr depth::create_point_cloud(const std::vector<uint16_t> &depth_frame,
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> depth::create_point_cloud(const std::vector<uint16_t> &depth_frame,
                                                        const camera::intrinsics intrinsics) {
     // cloud setup
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud(new pcl::PointCloud<pcl::PointXYZ>);
     cloud->height = intrinsics.height;
     cloud->width = intrinsics.width;
     cloud->is_dense = true;

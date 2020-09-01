@@ -49,7 +49,7 @@ protected:
 TEST_F(DepthFixture, TestCreatePC) {
     const uint16_t *swag = frame.data();
     std::vector<uint16_t> depth_frame(swag, swag + sizeof swag / sizeof swag[0]);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = depth::create_point_cloud(depth_frame, *intrinsics_no_distoration);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = depth::create_point_cloud(depth_frame, *intrinsics_no_distoration);
 
     ASSERT_EQ(cloud->width, 640);
     ASSERT_EQ(cloud->height, 480);

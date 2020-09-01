@@ -47,8 +47,8 @@ void controller::ScanController::scan() {
         camera->scan();
         std::vector<uint16_t> depth_frame_raw = camera->get_depth_frame();
         std::vector<uint16_t> depth_frame_filt = camera->get_depth_frame_processed();
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_raw = model->create_point_cloud(depth_frame_raw, intrin);
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filt = model->create_point_cloud(depth_frame_filt, intrin);
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_raw = model->create_point_cloud(depth_frame_raw, intrin);
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filt = model->create_point_cloud(depth_frame_filt, intrin);
 
         file_handler->save_cloud(cloud_raw, name, CloudType::Type::RAW);
         file_handler->save_cloud(cloud_filt, name, CloudType::Type::FILTERED);

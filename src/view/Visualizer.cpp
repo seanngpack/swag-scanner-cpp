@@ -74,7 +74,7 @@ void visual::Visualizer::simpleVisColor(std::vector<pcl::PointCloud<pcl::PointXY
 
 void visual::Visualizer::ptVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, pcl::PointXYZ pt) {
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
-    pcl::PointCloud<pcl::PointXYZ>::Ptr point(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> point(new pcl::PointCloud<pcl::PointXYZ>);
     point->push_back(pt);
 
     viewer->setBackgroundColor(0, 0, 0);

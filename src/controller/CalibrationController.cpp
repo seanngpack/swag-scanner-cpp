@@ -10,6 +10,7 @@
 #include "Visualizer.h"
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
+#include <memory>
 
 
 controller::CalibrationController::CalibrationController(std::shared_ptr<camera::ICamera> camera,
@@ -23,7 +24,7 @@ controller::CalibrationController::CalibrationController(std::shared_ptr<camera:
 
 void controller::CalibrationController::run() {
     scan();
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> cloud_vector;
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector;
     file_handler->load_clouds(cloud_vector, CloudType::Type::CALIBRATION);
     equations::Normal axis_dir = model->calculate_axis_dir(ground_planes);
     equations::Point center = model->calculate_center_pt(axis_dir, upright_planes);
@@ -43,7 +44,7 @@ void controller::CalibrationController::scan() {
         std::string name = std::to_string(i * deg) + ".pcd";
         camera->scan();
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = model->create_point_cloud(depth_frame, intrin);
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = model->create_point_cloud(depth_frame, intrin);
         cloud = model->crop_cloud(cloud, min_x, max_x, min_y, max_y, min_z, max_z);
         cloud = model->voxel_grid_filter(cloud, .003);
 

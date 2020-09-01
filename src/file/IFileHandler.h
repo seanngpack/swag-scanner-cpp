@@ -41,7 +41,7 @@ namespace file {
          * @param cloud the cloud you want to save.
          * @para cloud_type enum for the type of cloud you are saving. Affects the subfolder path.
          */
-        virtual void save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
+        virtual void save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                 const std::string &cloud_name,
                                 CloudType::Type cloud_type) = 0;
 
@@ -53,7 +53,7 @@ namespace file {
          *
          * Example: load_cloud(cloud, "testScan", "12.pcd", CloudType::RAW)
          */
-        virtual void load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+        virtual void load_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                 const std::string &cloud_name,
                                 CloudType::Type cloud_type) = 0;
 
@@ -68,8 +68,8 @@ namespace file {
          * @param cloud_type determines which folder to search for.
          *
          */
-        virtual void load_clouds(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
-                Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > &cloud_vector,
+        virtual void load_clouds(std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>,
+                Eigen::aligned_allocator<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> > &cloud_vector,
                                  CloudType::Type cloud_type) = 0;
 
 

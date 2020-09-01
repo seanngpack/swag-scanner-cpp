@@ -13,10 +13,10 @@
 TEST(SegmentationPhysicalTests, TestRemovePlane) {
     GTEST_SKIP();
     std::string test_folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/FileHandlerPhysicalTests";
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInSegmented(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutSegmented(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudInSegmented(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOutSegmented(new pcl::PointCloud<pcl::PointXYZ>);
 
     pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "1.pcd", *cloudIn);
     pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "2.pcd", *cloudOut);
@@ -33,7 +33,7 @@ TEST(SegmentationPhysicalTests, TestRemovePlane) {
 
 TEST(SegmentationPhysicalTests, TestGetPlanes) {
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration/fish_cup";
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/10.pcd", *cloudIn);
     segmentation::get_calibration_planes_coefs(cloudIn);
 
@@ -47,7 +47,7 @@ TEST(SegmentationPhysicalTests, ViewAxis) {
     GTEST_SKIP();
     using namespace std::chrono_literals;
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration";
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/processed_1/15.pcd", *cloudIn);
 
     pcl::PointXYZ p1;

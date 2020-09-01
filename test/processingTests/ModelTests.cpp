@@ -9,7 +9,7 @@ class ModelFixture : public ::testing::Test {
 
 protected:
     std::vector<uint16_t> depth_frame;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_ptr;
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_ptr;
     model::Model *mod;
 
 
@@ -23,7 +23,7 @@ protected:
         }
 
         // set up point cloud
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud(new pcl::PointCloud<pcl::PointXYZ>);
         cloud->height = 10;
         cloud->width = 10;
         cloud->is_dense = true;
@@ -55,7 +55,7 @@ TEST_F(ModelFixture, TestCreatePointCloud) {
                                                                        distortion,
                                                                        0.0001);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr test = mod->create_point_cloud(depth_frame, *intrinsics_distortion);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> test = mod->create_point_cloud(depth_frame, *intrinsics_distortion);
     EXPECT_EQ(test->width, 10);
     EXPECT_EQ(test->height, 10);
 }
@@ -64,7 +64,7 @@ TEST_F(ModelFixture, TestCreatePointCloud) {
  * Test creating the normals cloud.
  */
 TEST_F(ModelFixture, TestEstimateNormals) {
-    pcl::PointCloud<pcl::PointXYZ>::Ptr test(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> test(new pcl::PointCloud<pcl::PointXYZ>);
     mod->estimate_normal_cloud(test);
 
     ASSERT_EQ(test->width, 10);

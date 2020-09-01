@@ -75,9 +75,9 @@ TEST_F(CalibrationPhysicalFixture, TestBuildbMatrix) {
 TEST_F(CalibrationPhysicalFixture, VisualizePlaneCalibration) {
 
     std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/18";
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr transformed(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> transformed(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/filtered/" + "1.pcd", *cloudIn);
     pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/filtered/" + "4.pcd", *cloudOut);
 //    std::vector<float> coefs = mod->get_plane_coefs(cloudIn);

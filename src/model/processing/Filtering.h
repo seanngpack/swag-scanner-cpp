@@ -15,7 +15,7 @@ namespace filtering {
      * @param cloud cloud you want to crop.
      * @return the cropped cloud.
      */
-    pcl::PointCloud<pcl::PointXYZ>::Ptr crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                    float minX, float maxX,
                                                    float minY, float maxY,
                                                    float minZ, float maxZ);
@@ -26,7 +26,7 @@ namespace filtering {
      * @param leafSize size of leaf.
      * @return the filtered cloud.
      */
-    pcl::PointCloud<pcl::PointXYZ>::Ptr voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                           float leafSize);
 }
 

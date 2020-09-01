@@ -31,7 +31,7 @@ file::CalibrationFileHandler::CalibrationFileHandler(const char *scan_name) {
     }
 }
 
-void file::CalibrationFileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
+void file::CalibrationFileHandler::save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                               const std::string &cloud_name,
                                               CloudType::Type cloud_type) {
     std::cout << "saving file to ";
@@ -40,7 +40,7 @@ void file::CalibrationFileHandler::save_cloud(pcl::PointCloud<pcl::PointXYZ>::Pt
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
 
-void file::CalibrationFileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+void file::CalibrationFileHandler::load_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                               const std::string &cloud_name,
                                               CloudType::Type cloud_type) {
     path open_path = scan_folder_path / cloud_name;
@@ -50,7 +50,7 @@ void file::CalibrationFileHandler::load_cloud(pcl::PointCloud<pcl::PointXYZ>::Pt
 }
 
 void file::CalibrationFileHandler::load_clouds(
-        std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr>> &cloud_vector,
+        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>, Eigen::aligned_allocator<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>> &cloud_vector,
         CloudType::Type cloud_type) {
     std::vector<path> cloud_paths;
     path load_path = scan_folder_path;
@@ -68,7 +68,7 @@ void file::CalibrationFileHandler::load_clouds(
 
     // finally we load the clouds into the cloud_vector
     for (auto &p : cloud_paths) {
-        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
         if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {
             PCL_ERROR ("Couldn't read file \n");
         }
