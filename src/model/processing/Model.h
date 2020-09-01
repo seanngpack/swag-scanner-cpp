@@ -125,7 +125,7 @@ namespace model {
          * @param theta angle in radians you want to rotate.
          * @return the rotated cloud.
          */
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> rotate_cloud_about_line(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+        pcl::PointCloud<pcl::PointXYZ> rotate_cloud_about_line(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                                     std::vector<float> line_point,
                                                                     std::vector<float> line_direction,
                                                                     float theta);

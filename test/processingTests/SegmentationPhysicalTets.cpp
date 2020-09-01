@@ -13,10 +13,10 @@
 TEST(SegmentationPhysicalTests, TestRemovePlane) {
     GTEST_SKIP();
     std::string test_folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/testing/FileHandlerPhysicalTests";
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudInSegmented(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOutSegmented(new pcl::PointCloud<pcl::PointXYZ>);
+    auto cloudIn = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto cloudOut = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto cloudInSegmented = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto cloudOutSegmented = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
 
     pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "1.pcd", *cloudIn);
     pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "2.pcd", *cloudOut);
@@ -33,9 +33,9 @@ TEST(SegmentationPhysicalTests, TestRemovePlane) {
 
 TEST(SegmentationPhysicalTests, TestGetPlanes) {
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration/fish_cup";
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/10.pcd", *cloudIn);
-    segmentation::get_calibration_planes_coefs(cloudIn);
+    auto cloud_in = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/10.pcd", *cloud_in);
+    segmentation::get_calibration_planes_coefs(cloud_in);
 
 //    visual::Visualizer *viewer;
 //    viewer->simpleVis(cloudIn);
@@ -60,7 +60,6 @@ TEST(SegmentationPhysicalTests, ViewAxis) {
     p2.x = -0.2867;
     p2.y = -14.6891;
     p2.z = -8.0644;
-
 
 
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));

@@ -28,7 +28,7 @@ std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::Model::create_point_cloud
 pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
 
-    pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
+    auto normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
     pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
     pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
     ne.setSearchMethod(tree);
@@ -101,16 +101,16 @@ equations::Point model::Model::calculate_center_pt(equations::Normal axis_dir,
     return center;
 }
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::Model::rotate_cloud_about_line(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+pcl::PointCloud<pcl::PointXYZ> model::Model::rotate_cloud_about_line(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                                           std::vector<float> line_point,
                                                                           std::vector<float> line_direction,
                                                                           float theta) {
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> transformed(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ> transformed;
 
-    transformed->resize(cloud->size());
+    transformed.resize(cloud->size());
 
     for (int i = 0; i < cloud->size(); i++) {
-        transformed->points[i] = algos::rotate_point_about_line(cloud->points[i],
+        transformed.points[i] = algos::rotate_point_about_line(cloud->points[i],
                                                                 line_point,
                                                                 line_direction,
                                                                 theta);

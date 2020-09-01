@@ -59,7 +59,7 @@ void controller::ProcessingController::register_all_clouds(CloudType::Type cloud
 
         source = cloud_vector[i - 1];
         target = cloud_vector[i];
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> temp_registered(new pcl::PointCloud<pcl::PointXYZ>);
+        auto temp_registered = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
 
         Eigen::Matrix4f transform = model->icp_register_pair_clouds(source, target, temp_registered);
         Eigen::Matrix4f targetToSource = transform.inverse();
@@ -85,14 +85,12 @@ void controller::ProcessingController::rotate_all_clouds(CloudType::Type cloud_t
     std::vector<float> direction = calibration_json["axis direction"];
     float theta = -(float) info_json["angle"] * (M_PI / 180.0);
 
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-            global_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    auto global_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     *global_cloud = *cloud_vector[0];
     for (int i = 1; i < cloud_vector.size(); i++) {
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-                rotated(new pcl::PointCloud<pcl::PointXYZ>);
+        pcl::PointCloud<pcl::PointXYZ> rotated;
         rotated = model->rotate_cloud_about_line(cloud_vector[i], origin, direction, theta * i);
-        *global_cloud += *rotated;
+        *global_cloud += rotated;
     }
 
     viewer->simpleVis(global_cloud);

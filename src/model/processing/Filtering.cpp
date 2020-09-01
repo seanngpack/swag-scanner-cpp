@@ -6,14 +6,14 @@ std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtering::crop_cloud(std::share
                                                           float minX, float maxX,
                                                           float minY, float maxY,
                                                           float minZ, float maxZ) {
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> croppedCloud(new pcl::PointCloud<pcl::PointXYZ>);
+    auto cropped_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::CropBox<pcl::PointXYZ> boxFilter;
     boxFilter.setKeepOrganized(1);
     boxFilter.setMin(Eigen::Vector4f(minX, minY, minZ, 1.0));
     boxFilter.setMax(Eigen::Vector4f(maxX, maxY, maxZ, 1.0));
     boxFilter.setInputCloud(cloud);
-    boxFilter.filter(*croppedCloud);
-    return croppedCloud;
+    boxFilter.filter(*cropped_cloud);
+    return cropped_cloud;
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtering::voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,

@@ -23,7 +23,7 @@ protected:
         }
 
         // set up point cloud
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
         cloud->height = 10;
         cloud->width = 10;
         cloud->is_dense = true;

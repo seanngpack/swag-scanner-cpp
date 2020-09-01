@@ -5,7 +5,7 @@
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> depth::create_point_cloud(const std::vector<uint16_t> &depth_frame,
                                                        const camera::intrinsics intrinsics) {
     // cloud setup
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     cloud->height = intrinsics.height;
     cloud->width = intrinsics.width;
     cloud->is_dense = true;
