@@ -42,8 +42,7 @@ namespace file {
                         CloudType::Type cloud_type) override;
 
         void load_clouds(
-                std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>,
-                        Eigen::aligned_allocator<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> > &cloud_vector,
+                std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
                 CloudType::Type cloud_type) override;
 
         std::string get_scan_name() override;

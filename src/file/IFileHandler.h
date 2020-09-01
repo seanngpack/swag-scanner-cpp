@@ -68,8 +68,7 @@ namespace file {
          * @param cloud_type determines which folder to search for.
          *
          */
-        virtual void load_clouds(std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>,
-                Eigen::aligned_allocator<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> > &cloud_vector,
+        virtual void load_clouds(std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
                                  CloudType::Type cloud_type) = 0;
 
 

@@ -1,12 +1,13 @@
 #include <gtest/gtest.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "../../src/model/processing/Model.h"
-#include "../../src/view/Visualizer.h"
-#include "../../src/model/processing/Segmentation.h"
-#include "../../src/utils/Algorithms.h"
-#include "../../src/model/calibration/Calibration.h"
-#include "../../src/model/equations/Point.h"
+#include <memory>
+#include "Model.h"
+#include "Visualizer.h"
+#include "Segmentation.h"
+#include "Algorithms.h"
+#include "Calibration.h"
+#include "Point.h"
 
 
 class CalibrationPhysicalFixture : public ::testing::Test {
@@ -75,9 +76,9 @@ TEST_F(CalibrationPhysicalFixture, TestBuildbMatrix) {
 TEST_F(CalibrationPhysicalFixture, VisualizePlaneCalibration) {
 
     std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/18";
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> transformed(new pcl::PointCloud<pcl::PointXYZ>);
+    auto cloudIn = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto cloudOut = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto transformed = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/filtered/" + "1.pcd", *cloudIn);
     pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/filtered/" + "4.pcd", *cloudOut);
 //    std::vector<float> coefs = mod->get_plane_coefs(cloudIn);

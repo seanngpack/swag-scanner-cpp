@@ -60,7 +60,7 @@ void file::ScanFileHandler::load_cloud(std::shared_ptr<pcl::PointCloud<pcl::Poin
 
 
 void file::ScanFileHandler::load_clouds(
-        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>, Eigen::aligned_allocator<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>> &cloud_vector,
+        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
         CloudType::Type cloud_type) {
     std::vector<path> cloud_paths;
     path load_path = scan_folder_path / CloudType::String(cloud_type);
