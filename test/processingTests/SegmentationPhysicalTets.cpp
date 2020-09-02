@@ -47,7 +47,7 @@ TEST(SegmentationPhysicalTests, ViewAxis) {
     GTEST_SKIP();
     using namespace std::chrono_literals;
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration";
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+    auto cloudIn = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/processed_1/15.pcd", *cloudIn);
 
     pcl::PointXYZ p1;

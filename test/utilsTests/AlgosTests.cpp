@@ -87,14 +87,14 @@ TEST_F(AlgosFixture, TestDeprojectDistortion) {
 TEST_F(AlgosFixture, TestTransformCoordinate) {
 
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration/test5/12.pcd";
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> result(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> result_cropped(new pcl::PointCloud<pcl::PointXYZ>);
+    auto cloud_in = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto result = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto result_cropped = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::PointXYZ pt(-0.006283042311759926,
                      0.014217784268003741,
                      0.4304016110847342);
 
-    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path, *cloudIn);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path, *cloud_in);
 
     //point -> origin so I flipped the signs
     // NOTE I FLIPPED THE SIGNS OF ORIGINAL

@@ -78,7 +78,7 @@ void file::ScanFileHandler::load_clouds(
 
     // finally we load the clouds into the cloud_vector
     for (auto &p : cloud_paths) {
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
         if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {
             PCL_ERROR ("Couldn't read file \n");
         }
@@ -142,8 +142,8 @@ bool file::ScanFileHandler::check_program_folder() {
         create_directory(swag_scanner_path / "calibration/default_calibration");
         std::ofstream settings(swag_scanner_path.string() + "/settings/settings.json"); // create json file
         json settings_json = {
-                {"version",     .1},
-                {"latest_scan", "none"},
+                {"version",          .1},
+                {"latest_scan",      "none"},
                 {"current_position", 0}
         };
         settings << std::setw(4) << settings_json << std::endl; // write to file

@@ -18,8 +18,9 @@
 model::Model::Model() {}
 
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::Model::create_point_cloud(const std::vector<uint16_t> &depth_frame,
-                                                                     const camera::intrinsics intrinsics) {
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+model::Model::create_point_cloud(const std::vector<uint16_t> &depth_frame,
+                                 const camera::intrinsics intrinsics) {
 
     std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> point_cloud = depth::create_point_cloud(depth_frame, intrinsics);
     return point_cloud;
@@ -53,19 +54,22 @@ void model::Model::compute_local_features(std::shared_ptr<pcl::PointCloud<pcl::P
     fpfh_est.compute(*features);
 }
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::Model::crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                                             float minX, float maxX,
-                                                             float minY, float maxY,
-                                                             float minZ, float maxZ) {
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+model::Model::crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+                         float minX, float maxX,
+                         float minY, float maxY,
+                         float minZ, float maxZ) {
     return filtering::crop_cloud(cloud, minX, maxX, minY, maxY, minZ, maxZ);
 }
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::Model::voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                                                    float leafSize) {
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+model::Model::voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+                                float leafSize) {
     return filtering::voxel_grid_filter(cloud, leafSize);
 }
 
-std::vector<equations::Plane> model::Model::get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
+std::vector<equations::Plane>
+model::Model::get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
     return segmentation::get_calibration_planes_coefs(cloud);
 }
 
@@ -73,7 +77,8 @@ std::vector<float> model::Model::get_plane_coefs(std::shared_ptr<pcl::PointCloud
     return segmentation::get_plane_coefs(cloud);
 }
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::Model::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn) {
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+model::Model::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn) {
     return segmentation::remove_plane(cloudIn);
 }
 
@@ -101,27 +106,29 @@ equations::Point model::Model::calculate_center_pt(equations::Normal axis_dir,
     return center;
 }
 
-pcl::PointCloud<pcl::PointXYZ> model::Model::rotate_cloud_about_line(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                                                          std::vector<float> line_point,
-                                                                          std::vector<float> line_direction,
-                                                                          float theta) {
+pcl::PointCloud<pcl::PointXYZ>
+model::Model::rotate_cloud_about_line(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+                                      std::vector<float> line_point,
+                                      std::vector<float> line_direction,
+                                      float theta) {
     pcl::PointCloud<pcl::PointXYZ> transformed;
 
     transformed.resize(cloud->size());
 
     for (int i = 0; i < cloud->size(); i++) {
         transformed.points[i] = algos::rotate_point_about_line(cloud->points[i],
-                                                                line_point,
-                                                                line_direction,
-                                                                theta);
+                                                               line_point,
+                                                               line_direction,
+                                                               theta);
     }
     return transformed;
 }
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::Model::transform_cloud_to_world(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                                                           pcl::PointXYZ center,
-                                                                           equations::Normal ground_normal) {
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> result(new pcl::PointCloud<pcl::PointXYZ>);
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+model::Model::transform_cloud_to_world(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+                                       pcl::PointXYZ center,
+                                       equations::Normal ground_normal) {
+    auto result = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     Eigen::Matrix4f transform = algos::calc_transform_to_world_matrix(center, ground_normal);
     pcl::transformPointCloud(*cloud, *result, transform);
     return result;
@@ -142,9 +149,8 @@ void model::Model::sac_align_pair_clouds(std::shared_ptr<pcl::PointCloud<pcl::Po
 
     pcl::PointCloud<pcl::Normal>::Ptr cloudInNormal = estimate_normal_cloud(cloudIn);
     pcl::PointCloud<pcl::Normal>::Ptr cloudTargetNormal = estimate_normal_cloud(cloudTarget);
-    pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures(new pcl::PointCloud<pcl::FPFHSignature33>);
-    pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudTargetFeatures(new pcl::PointCloud<pcl::FPFHSignature33>);
-
+    auto cloudInFeatures = std::make_shared<pcl::PointCloud<pcl::FPFHSignature33>>();
+    auto cloudTargetFeatures = std::make_shared<pcl::PointCloud<pcl::FPFHSignature33>>();
     registration::sac_align_pair_clouds(cloudIn, cloudTarget, cloudInFeatures, cloudTargetFeatures,
                                         cloudAligned, transformation);
 }

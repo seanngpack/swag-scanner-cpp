@@ -3,6 +3,7 @@
 #include <pcl/point_types.h>
 #include "Model.h"
 #include "CameraTypes.h"
+#include <memory>
 
 
 class ModelFixture : public ::testing::Test {
@@ -64,7 +65,7 @@ TEST_F(ModelFixture, TestCreatePointCloud) {
  * Test creating the normals cloud.
  */
 TEST_F(ModelFixture, TestEstimateNormals) {
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> test(new pcl::PointCloud<pcl::PointXYZ>);
+    auto test = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     mod->estimate_normal_cloud(test);
 
     ASSERT_EQ(test->width, 10);
