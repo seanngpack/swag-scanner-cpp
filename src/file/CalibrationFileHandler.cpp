@@ -31,27 +31,27 @@ file::CalibrationFileHandler::CalibrationFileHandler(const char *scan_name) {
     }
 }
 
-void file::CalibrationFileHandler::save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+void file::CalibrationFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                               const std::string &cloud_name,
-                                              CloudType::Type cloud_type) {
+                                              const CloudType::Type &cloud_type) {
     std::cout << "saving file to ";
     path out_path = scan_folder_path / cloud_name;
     std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
 
-void file::CalibrationFileHandler::load_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+void file::CalibrationFileHandler::load_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                               const std::string &cloud_name,
-                                              CloudType::Type cloud_type) {
+                                              const CloudType::Type &cloud_type) {
     path open_path = scan_folder_path / cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
 }
 
-void file::CalibrationFileHandler::load_clouds(
-        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
-        CloudType::Type cloud_type) {
+std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> file::CalibrationFileHandler::load_clouds(
+        const CloudType::Type &cloud_type) {
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector;
     std::vector<path> cloud_paths;
     path load_path = scan_folder_path;
 
@@ -76,6 +76,7 @@ void file::CalibrationFileHandler::load_clouds(
         cloud_vector.push_back(cloud);
     }
     std::cout << "finished loading clouds" << std::endl;
+    return cloud_vector;
 }
 
 std::string file::CalibrationFileHandler::get_scan_name() {
@@ -86,7 +87,7 @@ void file::CalibrationFileHandler::set_scan_name(const std::string &scan_name) {
     this->scan_name = scan_name;
 }
 
-void file::CalibrationFileHandler::update_calibration_json(equations::Normal dir, equations::Point pt) {
+void file::CalibrationFileHandler::update_calibration_json(const equations::Normal &dir, const equations::Point &pt) {
     json calibration_json = get_calibration_json();
     calibration_json["axis direction"] = {dir.A, dir.B, dir.C};
     calibration_json["origin point"] = {pt.x, pt.y, pt.z};
