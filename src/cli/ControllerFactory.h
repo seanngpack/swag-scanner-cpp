@@ -13,7 +13,7 @@ namespace cli {
 
         ControllerFactory() = default;
 
-        std::unique_ptr<controller::IController> create(boost::program_options::variables_map vm);
+        std::unique_ptr<controller::IController> create(const boost::program_options::variables_map &vm);
 
 
     private:
@@ -25,7 +25,7 @@ namespace cli {
          * @return
          */
         std::unique_ptr<controller::IController>
-        create_scan_controller(boost::program_options::variables_map vm);
+        create_scan_controller(const boost::program_options::variables_map &vm);
 
         /**
          * Creates a new calibration controller. If -name is not passed then it will
@@ -34,7 +34,7 @@ namespace cli {
          * @return
          */
         std::unique_ptr<controller::IController>
-        create_calibrate_controller(boost::program_options::variables_map vm);
+        create_calibrate_controller(const boost::program_options::variables_map &vm);
 
         /**
          * Create a processing controller. If -name is not passed then it will use the latest scan according
@@ -43,7 +43,7 @@ namespace cli {
          * @return
          */
         std::unique_ptr<controller::IController>
-        create_processing_controller(boost::program_options::variables_map vm);
+        create_processing_controller(const boost::program_options::variables_map &vm);
 
         /**
          * Create a filter testing controller.
@@ -51,7 +51,7 @@ namespace cli {
          * @return
          */
         std::unique_ptr<controller::IController>
-        create_filter_testing_controller(boost::program_options::variables_map vm);
+        create_filter_testing_controller(const boost::program_options::variables_map &vm);
 
         /**
          * Create a move controller.
@@ -59,7 +59,7 @@ namespace cli {
          * @return
          */
         std::unique_ptr<controller::IController>
-        create_move_controller(boost::program_options::variables_map vm);
+        create_move_controller(const boost::program_options::variables_map &vm);
 
         /**
          * Create a home controller to set home position.
@@ -67,7 +67,7 @@ namespace cli {
          * @return
          */
         std::unique_ptr<controller::IController>
-        create_home_controller(boost::program_options::variables_map vm);
+        create_home_controller(const boost::program_options::variables_map &vm);
     };
 }
 
