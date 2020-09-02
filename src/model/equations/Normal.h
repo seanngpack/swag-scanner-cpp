@@ -31,14 +31,14 @@ namespace equations {
          * @param in vector of three floats.
          * @throws invalid_argument if the vector contains too few coefficients.
          */
-        Normal(std::vector<double> in);
+        Normal(const std::vector<double> &in);
 
 
         /**
          * Initialize a normal given PCL ModelCoefficients.
          * @param in PCL coefficients of four coefficients (A,B,C,D) but will only use A,B,C
          */
-        Normal(pcl::ModelCoefficients::Ptr in);
+        Normal(const pcl::ModelCoefficients &in);
 
         /**
          * Overloaded addition + operator.

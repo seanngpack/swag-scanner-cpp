@@ -2,6 +2,7 @@
 #define SWAG_SCANNER_PLANE_H
 
 #include <pcl/ModelCoefficients.h>
+#include <memory>
 
 namespace equations {
 
@@ -35,16 +36,23 @@ namespace equations {
 
         /**
          * Initialize a plane given a vector.
+         * Note: I can use reference because primitive will get copied anyway.
          * @param in vector of four coefficients (A,B,C,D)
          * @throws invalid_argument if the vector is missing a coefficient.
          */
-        Plane(std::vector<double> in);
+        Plane(const std::vector<double> &in);
 
         /**
          * Initialize a plane given PCL ModelCoefficients.
          * @param in PCL coefficients of four coefficients (A,B,C,D)
          */
-        Plane(pcl::ModelCoefficients::Ptr in);
+        Plane(const std::shared_ptr<pcl::ModelCoefficients> &in);
+
+        /**
+         * Initialize a plane given PCL ModelCoefficients.
+         * @param in PCL coefficients of four coefficients (A,B,C,D)
+         */
+        Plane(const pcl::ModelCoefficients &in);
 
         /**
          * Generate normal from this plane.
