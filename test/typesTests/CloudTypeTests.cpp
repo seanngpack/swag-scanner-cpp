@@ -13,7 +13,8 @@ TEST(CloudTypeTests, TestEnumForLoop) {
 
     ASSERT_EQ(v[0], "raw");
     ASSERT_EQ(v[1], "filtered");
-    ASSERT_EQ(v[2], "segmented");
+    ASSERT_EQ(v[2], "processed");
     ASSERT_EQ(v[3], "normal");
+    ASSERT_EQ(v[4], "calibration");
 
 }

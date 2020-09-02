@@ -118,7 +118,7 @@ TEST_F(AlgosFixture, TestTransformCoordinate) {
     Eigen::Transform<float, 3, Eigen::Affine> combined =
             rot * translation;
     std::cout << combined.matrix() << std::endl;
-    pcl::transformPointCloud(*cloudIn, *result, combined.matrix());
+    pcl::transformPointCloud(*cloud_in, *result, combined.matrix());
 
     model::Model model;
     result_cropped = model.crop_cloud(result, -.089, .089,
@@ -126,7 +126,7 @@ TEST_F(AlgosFixture, TestTransformCoordinate) {
                                       -.03, .05);
 
     visual::Visualizer visualizer;
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudIn, result};
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloud_in, result};
 //    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{result, result_cropped};
     visualizer.simpleVisColor(clouds);
 //    visualizer.ptVis(cloudIn, pt);

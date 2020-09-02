@@ -24,7 +24,7 @@ protected:
         }
 
         // set up point cloud
-        cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+        auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
         cloud->height = 10;
         cloud->width = 10;
         cloud->is_dense = true;
@@ -38,6 +38,14 @@ protected:
         cloud_ptr = cloud;
     }
 
+    float distortion[5] = {.139, .124, .0043, .00067, -.034};
+    camera::intrinsics *intrinsics_distortion = new camera::intrinsics(10, 10,
+                                                                       475.07, 475.07,
+                                                                       309.931, 245.011,
+                                                                       RS2_DISTORTION_INVERSE_BROWN_CONRADY,
+                                                                       distortion,
+                                                                       0.0001);
+
     virtual void TearDown() {
         delete mod;
     }
@@ -48,13 +56,7 @@ protected:
  * Test creating a point cloud.
  */
 TEST_F(ModelFixture, TestCreatePointCloud) {
-    float distortion[5] = {.139, .124, .0043, .00067, -.034};
-    camera::intrinsics *intrinsics_distortion = new camera::intrinsics(10, 10,
-                                                                       475.07, 475.07,
-                                                                       309.931, 245.011,
-                                                                       RS2_DISTORTION_INVERSE_BROWN_CONRADY,
-                                                                       distortion,
-                                                                       0.0001);
+
 
     std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> test = mod->create_point_cloud(depth_frame, *intrinsics_distortion);
     EXPECT_EQ(test->width, 10);
@@ -65,7 +67,7 @@ TEST_F(ModelFixture, TestCreatePointCloud) {
  * Test creating the normals cloud.
  */
 TEST_F(ModelFixture, TestEstimateNormals) {
-    auto test = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto test = mod->create_point_cloud(depth_frame, *intrinsics_distortion);
     mod->estimate_normal_cloud(test);
 
     ASSERT_EQ(test->width, 10);
