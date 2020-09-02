@@ -13,9 +13,9 @@ namespace registration {
      * @param transformedCloud empty cloud used as output.
      * @return transformation matrix source -> target.
      */
-    Eigen::Matrix4f icp_register_pair_clouds(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn,
-                                             std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOut,
-                                             std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> transformedCloud);
+    Eigen::Matrix4f icp_register_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn,
+                                             const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudOut,
+                                             const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &transformedCloud);
 
     /**
      * Use SAC model to align cloud to target.
@@ -26,12 +26,12 @@ namespace registration {
      * @param cloudAligned output cloud source -> target.
      * @param transformation output transformation.
      */
-    void sac_align_pair_clouds(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn,
-                                      std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudTarget,
-                                      pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudInFeatures,
-                                      pcl::PointCloud<pcl::FPFHSignature33>::Ptr cloudOutFeatures,
-                                      std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudAligned,
-                                      Eigen::Matrix4f &transformation);
+    void sac_align_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn,
+                               const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudTarget,
+                               const std::shared_ptr<pcl::PointCloud<pcl::FPFHSignature33>> &cloudInFeatures,
+                               const std::shared_ptr<pcl::PointCloud<pcl::FPFHSignature33>> &cloudOutFeatures,
+                               const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudAligned,
+                               Eigen::Matrix4f &transformation);
 }
 
 #endif
