@@ -87,14 +87,14 @@ TEST_F(AlgosFixture, TestDeprojectDistortion) {
 TEST_F(AlgosFixture, TestTransformCoordinate) {
 
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration/test5/12.pcd";
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr result(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr result_cropped(new pcl::PointCloud<pcl::PointXYZ>);
+    auto cloud_in = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto result = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto result_cropped = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::PointXYZ pt(-0.006283042311759926,
                      0.014217784268003741,
                      0.4304016110847342);
 
-    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path, *cloudIn);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path, *cloud_in);
 
     //point -> origin so I flipped the signs
     // NOTE I FLIPPED THE SIGNS OF ORIGINAL
@@ -118,7 +118,7 @@ TEST_F(AlgosFixture, TestTransformCoordinate) {
     Eigen::Transform<float, 3, Eigen::Affine> combined =
             rot * translation;
     std::cout << combined.matrix() << std::endl;
-    pcl::transformPointCloud(*cloudIn, *result, combined.matrix());
+    pcl::transformPointCloud(*cloud_in, *result, combined.matrix());
 
     model::Model model;
     result_cropped = model.crop_cloud(result, -.089, .089,
@@ -126,7 +126,7 @@ TEST_F(AlgosFixture, TestTransformCoordinate) {
                                       -.03, .05);
 
     visual::Visualizer visualizer;
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudIn, result};
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloud_in, result};
 //    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{result, result_cropped};
     visualizer.simpleVisColor(clouds);
 //    visualizer.ptVis(cloudIn, pt);

@@ -28,14 +28,14 @@
 //    */
 //    void set_up_test_files() {
 //        if (boost::filesystem::is_empty(folder_path)) {
-//            pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = set_up_point_cloud();
+//            std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = set_up_point_cloud();
 //            pcl::io::savePCDFileASCII(folder_path + "/" + "test_cloud.pcd", *cloud);
 //        }
 //    }
 //
-//    static pcl::PointCloud<pcl::PointXYZ>::Ptr set_up_point_cloud() {
+//    static std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> set_up_point_cloud() {
 //        // set up point cloud
-//        pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+//        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud(new pcl::PointCloud<pcl::PointXYZ>);
 //        cloud->height = 10;
 //        cloud->width = 10;
 //        cloud->is_dense = true;
@@ -53,7 +53,7 @@
 //
 //TEST_F(ScanFileHandlerPhysicalFixture, TestLoadCloud) {
 //    // make an empty cloud to cloud the file into.
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud(new pcl::PointCloud<pcl::PointXYZ>);
 //    // load the file
 //    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/" + "test_cloud.pcd", *cloud);
 //    ASSERT_EQ(cloud->height, 10);
@@ -66,8 +66,8 @@
 // */
 //TEST_F(ScanFileHandlerPhysicalFixture, TestLoadClouds) {
 //    // make an empty cloud to cloud the file into.
-//    std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr,
-//            Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ>::Ptr> > data;
+//    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>,
+//            Eigen::aligned_allocator<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> > data;
 //    handler->load_clouds(data, CloudType::Type::RAW);
 //    ASSERT_EQ(data.size(), 4);
 //

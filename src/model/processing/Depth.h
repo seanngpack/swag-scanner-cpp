@@ -17,7 +17,7 @@ namespace depth {
      * @param depth_frame vector of uint16_t depth values. Not converted to meters yet.
      * @return a pointcloud.
      */
-    pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const std::vector<uint16_t> &depth_frame,
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> create_point_cloud(const std::vector<uint16_t> &depth_frame,
                                                            const camera::intrinsics intrinsics);
 }
 

@@ -30,14 +30,14 @@ protected:
 
 //TEST_F(ModelPhysicalFixture, TestICP) {
 //    GTEST_SKIP();
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInFiltered(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutFiltered(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudInSegmented(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOutSegmented(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr finalCloud(new pcl::PointCloud<pcl::PointXYZ>);
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn(new pcl::PointCloud<pcl::PointXYZ>);
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOut(new pcl::PointCloud<pcl::PointXYZ>);
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudInFiltered(new pcl::PointCloud<pcl::PointXYZ>);
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOutFiltered(new pcl::PointCloud<pcl::PointXYZ>);
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudInSegmented(new pcl::PointCloud<pcl::PointXYZ>);
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOutSegmented(new pcl::PointCloud<pcl::PointXYZ>);
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> finalCloud(new pcl::PointCloud<pcl::PointXYZ>);
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> transformedCloud(new pcl::PointCloud<pcl::PointXYZ>);
 //    pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "1.pcd", *cloudIn);
 //    pcl::io::loadPCDFile<pcl::PointXYZ>(test_folder_path + "/raw/" + "2.pcd", *cloudOut);
 //    std::cout << cloudIn->isOrganized() << std::endl;

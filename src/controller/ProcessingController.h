@@ -67,7 +67,7 @@ namespace controller {
         void rotate_all_clouds(CloudType::Type cloud_type);
 
 
-        void visualize_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+        void visualize_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud);
 
     private:
         std::shared_ptr<model::Model> model;

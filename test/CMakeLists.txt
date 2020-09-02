@@ -9,7 +9,7 @@ include_directories(
         ${gmock_SOURCE_DIR}/include ${gmock_SOURCE_DIR}
 )
 file(GLOB TEST_SRC_FILES
-        ${swag_scanner_SOURCE_DIR}}/test/*.cpp
+        ${swag_scanner_SOURCE_DIR}/test/*.cpp
         ${swag_scanner_SOURCE_DIR}/test/calibrationTests/*.cpp
         ${swag_scanner_SOURCE_DIR}/test/equationsTests/*.cpp
         ${swag_scanner_SOURCE_DIR}/test/fileTests/*.cpp

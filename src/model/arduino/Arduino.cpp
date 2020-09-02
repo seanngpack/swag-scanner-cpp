@@ -3,6 +3,7 @@
 #include "IFileHandler.h"
 #include <nlohmann/json.hpp>
 #include <thread>
+#include <iostream>
 
 using json = nlohmann::json;
 using namespace std::literals::chrono_literals;
@@ -21,7 +22,7 @@ arduino::Arduino::Arduino() {
 
 
 void arduino::Arduino::rotate_by(int deg) {
-    rotate_char->write_with_response<int>(deg);
+    rotate_char->write_with_response<short>((short)deg);
 
     if (deg < 0) {
         deg += 360;

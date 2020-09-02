@@ -37,7 +37,7 @@ namespace model {
         * Create a new PointCloudXYZ using the instance variable depth_frame.
         * @return a boost pointer to the new pointcloud.
         */
-        pcl::PointCloud<pcl::PointXYZ>::Ptr create_point_cloud(const std::vector<uint16_t> &depth_frame,
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> create_point_cloud(const std::vector<uint16_t> &depth_frame,
                                                                const camera::intrinsics intrinsics);
 
         /**
@@ -45,7 +45,7 @@ namespace model {
          * @return a normal cloud.
          */
         pcl::PointCloud<pcl::Normal>::Ptr estimate_normal_cloud(
-                pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud);
+                std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> point_cloud);
 
         /**
          * Given a cloud and its normal, calculate the features.
@@ -53,7 +53,7 @@ namespace model {
          * @param normalCloud normlas of cloud.
          * @param features features.
          */
-        void compute_local_features(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+        void compute_local_features(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                     pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
                                     pcl::PointCloud<pcl::FPFHSignature33>::Ptr features);
 
@@ -63,7 +63,7 @@ namespace model {
          * @param croppedCloud the cropped cloud.
          * @return the cropped cloud.
          */
-        pcl::PointCloud<pcl::PointXYZ>::Ptr crop_cloud(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                        float minX, float maxX,
                                                        float minY, float maxY,
                                                        float minZ, float maxZ);
@@ -74,7 +74,7 @@ namespace model {
          * @param leafSize size of leaf.
          * @return the downsampled cloud.
          */
-        pcl::PointCloud<pcl::PointXYZ>::Ptr voxel_grid_filter(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                               float leafSize = .01);
 
         /**
@@ -82,21 +82,21 @@ namespace model {
          * @param cloud calibration cloud.
          * @return vector of upright and ground plane equations.
          */
-        std::vector<equations::Plane> get_calibration_planes_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+        std::vector<equations::Plane> get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud);
 
         /**
          * Get the coefficients of the base plane of the given cloud.
          * @param cloud input cloud.
          * @return vector of size 4 of the plane coefficients.
          */
-        std::vector<float> get_plane_coefs(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+        std::vector<float> get_plane_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud);
 
         /**
          * Remove scanning bed plane from the cloud.
          * @param cloudIn cloud you want to remove the plane from.
          * @return cloud with the remove plane
          */
-        pcl::PointCloud<pcl::PointXYZ>::Ptr remove_plane(pcl::PointCloud<pcl::PointXYZ>::Ptr &cloudIn);
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn);
 
         /**
          * Given a vector of ground planes, calculate the axis direction by taking the
@@ -125,7 +125,7 @@ namespace model {
          * @param theta angle in radians you want to rotate.
          * @return the rotated cloud.
          */
-        pcl::PointCloud<pcl::PointXYZ>::Ptr rotate_cloud_about_line(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+        pcl::PointCloud<pcl::PointXYZ> rotate_cloud_about_line(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                                     std::vector<float> line_point,
                                                                     std::vector<float> line_direction,
                                                                     float theta);
@@ -139,7 +139,7 @@ namespace model {
          * @param ground_normal direction vector of ground.
          * @return
          */
-        pcl::PointCloud<pcl::PointXYZ>::Ptr transform_cloud_to_world(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> transform_cloud_to_world(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                                                      pcl::PointXYZ center,
                                                                      equations::Normal ground_normal);
 
@@ -150,9 +150,9 @@ namespace model {
          * @param transformedCloud the final transformed cloud.
          * @returns a transformation matrix from the source to target cloud.
          */
-        Eigen::Matrix4f icp_register_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
-                                                 pcl::PointCloud<pcl::PointXYZ>::Ptr cloudOut,
-                                                 pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud);
+        Eigen::Matrix4f icp_register_pair_clouds(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn,
+                                                 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOut,
+                                                 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> transformedCloud);
 
 
         /**
@@ -161,9 +161,9 @@ namespace model {
          * @param cloudTarget target cloud.
          * @param cloudAligned the aligned cloud.
          */
-        void sac_align_pair_clouds(pcl::PointCloud<pcl::PointXYZ>::Ptr cloudIn,
-                                   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudTarget,
-                                   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudAligned,
+        void sac_align_pair_clouds(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn,
+                                   std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudTarget,
+                                   std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudAligned,
                                    Eigen::Matrix4f &transformation);
 
 
