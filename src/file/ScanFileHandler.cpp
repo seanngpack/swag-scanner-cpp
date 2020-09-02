@@ -49,13 +49,14 @@ void file::ScanFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
 
-void file::ScanFileHandler::load_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                       const std::string &cloud_name,
-                                       const CloudType::Type &cloud_type) {
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::ScanFileHandler::load_cloud(const std::string &cloud_name,
+                                                                                  const CloudType::Type &cloud_type) {
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud;
     path open_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
+    return cloud;
 }
 
 

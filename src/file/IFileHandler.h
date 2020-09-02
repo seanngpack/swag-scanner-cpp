@@ -47,15 +47,15 @@ namespace file {
 
         /*
          * Load a pointcloud from the scan folder given the name and type.
-         * @param cloud the cloud you want to load the cloud into
+         *
          * @param cloud_name name of the cloud.
          * @param cloud_type type of the cloud.
+         * @return cloud.
          *
-         * Example: load_cloud(cloud, "testScan", "12.pcd", CloudType::RAW)
+         * Example: load_cloud("12", CloudType::RAW)
          */
-        virtual void load_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                const std::string &cloud_name,
-                                const CloudType::Type &cloud_type) = 0;
+        virtual std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> load_cloud(const std::string &cloud_name,
+                                                                   const CloudType::Type &cloud_type) = 0;
 
 
         /**
@@ -69,7 +69,8 @@ namespace file {
          * @return vector of loaded cloud pointers.
          *
          */
-        virtual std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> load_clouds(const CloudType::Type &cloud_type) = 0;
+        virtual std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>
+        load_clouds(const CloudType::Type &cloud_type) = 0;
 
         virtual std::string get_scan_name() = 0;
 

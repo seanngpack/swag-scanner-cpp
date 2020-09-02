@@ -40,13 +40,14 @@ void file::CalibrationFileHandler::save_cloud(const std::shared_ptr<pcl::PointCl
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
 
-void file::CalibrationFileHandler::load_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                              const std::string &cloud_name,
-                                              const CloudType::Type &cloud_type) {
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::CalibrationFileHandler::load_cloud(const std::string &cloud_name,
+                                                                                         const CloudType::Type &cloud_type) {
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud;
     path open_path = scan_folder_path / cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
+    return cloud;
 }
 
 std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> file::CalibrationFileHandler::load_clouds(

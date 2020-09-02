@@ -44,9 +44,8 @@ namespace file {
                         const std::string &cloud_name,
                         const CloudType::Type &cloud_type) override;
 
-        void load_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                        const std::string &cloud_name,
-                        const CloudType::Type &cloud_type) override;
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> load_cloud(const std::string &cloud_name,
+                                                                   const CloudType::Type &cloud_type) override;
 
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> load_clouds(
                 const CloudType::Type &cloud_type) override;
