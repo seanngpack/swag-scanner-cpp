@@ -18,7 +18,7 @@ namespace depth {
      * @return a pointcloud.
      */
     std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> create_point_cloud(const std::vector<uint16_t> &depth_frame,
-                                                           const camera::intrinsics intrinsics);
+                                                                       const camera::intrinsics &intrinsics);
 }
 
 #endif //SWAG_SCANNER_DEPTH_H

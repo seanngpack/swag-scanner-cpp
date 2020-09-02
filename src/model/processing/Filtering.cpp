@@ -3,7 +3,7 @@
 #include <pcl/filters/voxel_grid.h>
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-filtering::crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+filtering::crop_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                       float minX, float maxX,
                       float minY, float maxY,
                       float minZ, float maxZ) {
@@ -18,7 +18,7 @@ filtering::crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-filtering::voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+filtering::voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                              float leafSize) {
     auto cloud_filtered = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::VoxelGrid<pcl::PointXYZ> grid;

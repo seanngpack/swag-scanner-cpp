@@ -4,8 +4,9 @@
 #include "IFileHandler.h"
 #include <nlohmann/json.hpp>
 
-namespace equations{
+namespace equations {
     class Normal;
+
     class Point;
 }
 
@@ -33,17 +34,15 @@ namespace file {
          */
         CalibrationFileHandler(const char *scan_name);
 
-        void save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+        void save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                         const std::string &cloud_name,
-                        CloudType::Type cloud_type) override;
+                        const CloudType::Type &cloud_type) override;
 
-        void load_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                        const std::string &cloud_name,
-                        CloudType::Type cloud_type) override;
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> load_cloud(const std::string &cloud_name,
+                                                                   const CloudType::Type &cloud_type) override;
 
-        void load_clouds(
-                std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
-                CloudType::Type cloud_type) override;
+        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> load_clouds(
+                const CloudType::Type &cloud_type) override;
 
         std::string get_scan_name() override;
 
@@ -55,7 +54,7 @@ namespace file {
          * @param dir axis direction.
          * @param pt center point.
          */
-        void update_calibration_json(equations::Normal dir, equations::Point pt);
+        void update_calibration_json(const equations::Normal &dir, const equations::Point &pt);
 
     private:
 
