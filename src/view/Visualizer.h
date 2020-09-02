@@ -47,8 +47,8 @@ namespace visual {
          * @param cloud base cloud.
          * @param normal normal cloud for base cloud.
          */
-        void normalsVis(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                        std::shared_ptr<pcl::PointCloud<pcl::Normal>> &normal);
+        void normalsVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                        const std::shared_ptr<pcl::PointCloud<pcl::Normal>> &normal);
 
 
     private:

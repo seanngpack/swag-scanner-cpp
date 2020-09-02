@@ -121,8 +121,8 @@ void visual::Visualizer::compareVis(const std::shared_ptr<pcl::PointCloud<pcl::P
     }
 }
 
-void visual::Visualizer::normalsVis(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                    std::shared_ptr<pcl::PointCloud<pcl::Normal>> &normal) {
+void visual::Visualizer::normalsVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                    const std::shared_ptr<pcl::PointCloud<pcl::Normal>> &normal) {
     pcl::visualization::PCLVisualizer viewer("3D viewer");
     viewer.setBackgroundColor(0, 0, 0);
     pcl::visualization::PointCloudGeometryHandlerXYZ<pcl::PointXYZ> rgb(cloud);
