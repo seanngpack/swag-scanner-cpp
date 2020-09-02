@@ -42,7 +42,7 @@ namespace controller {
          * @param cloud_type which cloud types do you want to crop.
          * @param leaf size.
          */
-        void crop_clouds(CloudType::Type cloud_type);
+        void crop_clouds(const CloudType::Type &cloud_type);
 
         /**
          * Segment and save the clouds in the given folder path to the /segmented folder.
@@ -51,23 +51,23 @@ namespace controller {
          * /filtered folder.
          *
          */
-        void remove_planes(CloudType::Type cloud_type);
+        void remove_planes(const CloudType::Type &cloud_type);
 
         /**
          * Register all point clouds in given folder location.
          * @param folder_path the path to the scan folder.
          * @param cloud_type the type of the cloud, tells which folder to look into for clouds.
          */
-        void register_all_clouds(CloudType::Type cloud_type);
+        void register_all_clouds(const CloudType::Type &cloud_type);
 
         /**
          * Use rotation axis to align all clouds to initial.
          * @param cloud_type type determines which folder you want to select clouds from.
          */
-        void rotate_all_clouds(CloudType::Type cloud_type);
+        void rotate_all_clouds(const CloudType::Type &cloud_type);
 
 
-        void visualize_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud);
+        void visualize_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
     private:
         std::shared_ptr<model::Model> model;

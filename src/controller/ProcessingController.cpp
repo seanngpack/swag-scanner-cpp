@@ -18,7 +18,7 @@ void controller::ProcessingController::run() {
     rotate_all_clouds(CloudType::Type::FILTERED);
 }
 
-void controller::ProcessingController::crop_clouds(CloudType::Type cloud_type) {
+void controller::ProcessingController::crop_clouds(const CloudType::Type &cloud_type) {
     using namespace constants;
 
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(cloud_type);
@@ -33,7 +33,7 @@ void controller::ProcessingController::crop_clouds(CloudType::Type cloud_type) {
     }
 }
 
-void controller::ProcessingController::remove_planes(CloudType::Type cloud_type) {
+void controller::ProcessingController::remove_planes(const CloudType::Type &cloud_type) {
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(cloud_type);
     for (int i = 0; i < cloud_vector.size(); i++) {
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
@@ -44,7 +44,7 @@ void controller::ProcessingController::remove_planes(CloudType::Type cloud_type)
 }
 
 
-void controller::ProcessingController::register_all_clouds(CloudType::Type cloud_type) {
+void controller::ProcessingController::register_all_clouds(const CloudType::Type &cloud_type) {
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(cloud_type);
     Eigen::Matrix4f global_transform = Eigen::Matrix4f::Identity();
     auto source = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
@@ -72,7 +72,7 @@ void controller::ProcessingController::register_all_clouds(CloudType::Type cloud
     visualize_cloud(global_cloud);
 }
 
-void controller::ProcessingController::rotate_all_clouds(CloudType::Type cloud_type) {
+void controller::ProcessingController::rotate_all_clouds(const CloudType::Type &cloud_type) {
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(cloud_type);
     json info_json = file_handler->get_info_json();
     json calibration_json = file_handler->get_calibration_json();
@@ -92,6 +92,6 @@ void controller::ProcessingController::rotate_all_clouds(CloudType::Type cloud_t
     viewer->simpleVis(global_cloud);
 }
 
-void controller::ProcessingController::visualize_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
+void controller::ProcessingController::visualize_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
     viewer->simpleVis(cloud);
 }
