@@ -9,7 +9,7 @@ using namespace std::chrono_literals;
 
 visual::Visualizer::Visualizer() {}
 
-void visual::Visualizer::simpleVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud) {
+void visual::Visualizer::simpleVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
 
     pcl::visualization::PCLVisualizer viewer("3D viewer");
     viewer.setBackgroundColor(0, 0, 0);
@@ -23,7 +23,7 @@ void visual::Visualizer::simpleVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clou
     }
 }
 
-void visual::Visualizer::simpleVis(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds) {
+void visual::Visualizer::simpleVis(const std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &clouds) {
     pcl::visualization::PCLVisualizer viewer("3D viewer");
 
     int r = 255;
@@ -46,7 +46,7 @@ void visual::Visualizer::simpleVis(std::vector<pcl::PointCloud<pcl::PointXYZ>::C
     }
 }
 
-void visual::Visualizer::simpleVisColor(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds) {
+void visual::Visualizer::simpleVisColor(const std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &clouds) {
     pcl::visualization::PCLVisualizer viewer("3D viewer");
 
     int b = 255;
@@ -72,7 +72,7 @@ void visual::Visualizer::simpleVisColor(std::vector<pcl::PointCloud<pcl::PointXY
     }
 }
 
-void visual::Visualizer::ptVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, pcl::PointXYZ pt) {
+void visual::Visualizer::ptVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud, const pcl::PointXYZ &pt) {
     pcl::visualization::PCLVisualizer viewer("3D viewer");
     auto point = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     point->push_back(pt);
@@ -92,25 +92,8 @@ void visual::Visualizer::ptVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, p
     }
 }
 
-
-void visual::Visualizer::normalsVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud,
-                                    pcl::PointCloud<pcl::Normal>::ConstPtr normals) {
-    pcl::visualization::PCLVisualizer viewer("3D viewer");
-    viewer.setBackgroundColor(0, 0, 0);
-    pcl::visualization::PointCloudGeometryHandlerXYZ<pcl::PointXYZ> rgb(cloud);
-    viewer.addPointCloud<pcl::PointXYZ>(cloud, rgb, "sample cloud");
-    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "sample cloud");
-    viewer.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(cloud, normals, 10, 0.05, "normals");
-    viewer.addCoordinateSystem(1.0);
-    viewer.initCameraParameters();
-    while (!viewer.wasStopped()) {
-        viewer.spinOnce(100);
-        std::this_thread::sleep_for(100ms);
-    }
-}
-
-void visual::Visualizer::compareVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1,
-                                    pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud2) {
+void visual::Visualizer::compareVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud1,
+                                    const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud2) {
     pcl::visualization::PCLVisualizer viewer("3D viewer");
     viewer.initCameraParameters();
 
@@ -136,7 +119,22 @@ void visual::Visualizer::compareVis(pcl::PointCloud<pcl::PointXYZ>::ConstPtr clo
         viewer.spinOnce(100);
         std::this_thread::sleep_for(100ms);
     }
+}
 
+void visual::Visualizer::normalsVis(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                    std::shared_ptr<pcl::PointCloud<pcl::Normal>> &normal) {
+    pcl::visualization::PCLVisualizer viewer("3D viewer");
+    viewer.setBackgroundColor(0, 0, 0);
+    pcl::visualization::PointCloudGeometryHandlerXYZ<pcl::PointXYZ> rgb(cloud);
+    viewer.addPointCloud<pcl::PointXYZ>(cloud, rgb, "sample cloud");
+    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "sample cloud");
+    viewer.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(cloud, normal, 10, 0.05, "normals");
+    viewer.addCoordinateSystem(1.0);
+    viewer.initCameraParameters();
+    while (!viewer.wasStopped()) {
+        viewer.spinOnce(100);
+        std::this_thread::sleep_for(100ms);
+    }
 }
 
 

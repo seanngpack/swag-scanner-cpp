@@ -9,7 +9,6 @@
 #include <pcl/io/pcd_io.h>
 
 
-
 class AlgosFixture : public ::testing::Test {
 
 protected:
@@ -51,7 +50,7 @@ protected:
  * is good.
  */
 TEST_F(AlgosFixture, TestDeprojectNoDistortion) {
-    pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, intrinsics_no_distoration);
+    pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, *intrinsics_no_distoration);
 
     pcl::PointXYZ expected;
     expected.x = -.0063134059;
@@ -67,7 +66,7 @@ TEST_F(AlgosFixture, TestDeprojectNoDistortion) {
  * Tests deprojection method with distortion coefficients.
  */
 TEST_F(AlgosFixture, TestDeprojectDistortion) {
-    pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, intrinsics_distoration);
+    pcl::PointXYZ actual = algos::deproject_pixel_to_point(10, 10, 100, *intrinsics_distoration);
 
     pcl::PointXYZ expected;
     expected.x = -.0063134059;
@@ -126,7 +125,7 @@ TEST_F(AlgosFixture, TestTransformCoordinate) {
                                       -.03, .05);
 
     visual::Visualizer visualizer;
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloud_in, result};
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{cloud_in, result};
 //    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{result, result_cropped};
     visualizer.simpleVisColor(clouds);
 //    visualizer.ptVis(cloudIn, pt);
