@@ -157,7 +157,4 @@ void model::Model::sac_align_pair_clouds(const std::shared_ptr<pcl::PointCloud<p
                                         cloudAligned, transformation);
 }
 
-model::Model::~Model() {
-    std::cout << "calling model destructor \n";;
-}
 

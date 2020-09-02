@@ -11,7 +11,7 @@ equations::Plane::Plane(const std::shared_ptr<pcl::ModelCoefficients> &in) : A(i
 equations::Plane::Plane(const pcl::ModelCoefficients &in) : A(in.values[0]), B(in.values[1]),
                                                                              C(in.values[2]), D(in.values[3]) {}
 
-equations::Normal equations::Plane::get_normal() {
+equations::Normal equations::Plane::get_normal() const {
     return equations::Normal(this->A, this->B, this->C);
 }
 

@@ -176,7 +176,7 @@ namespace model {
                                    Eigen::Matrix4f &transformation);
 
 
-        ~Model();
+        ~Model() = default;
 
     private:
 

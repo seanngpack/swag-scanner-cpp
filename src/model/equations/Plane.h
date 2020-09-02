@@ -58,7 +58,7 @@ namespace equations {
          * Generate normal from this plane.
          * @return the normal.
          */
-        Normal get_normal();
+        Normal get_normal() const;
 
         /**
          * Overloaded addition + operator.

@@ -14,7 +14,7 @@ namespace calibration {
      * @param b rhs matrix.
      * @return origin point of the turntable in m.
      */
-    inline equations::Point calculate_center_pt(Eigen::MatrixXd A, Eigen::MatrixXd b) {
+    inline equations::Point calculate_center_pt(const Eigen::MatrixXd &A, const Eigen::MatrixXd &b) {
         Eigen::MatrixXd sol_mat = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
         std::vector<double> sol_vec(sol_mat.data(), sol_mat.data() + sol_mat.rows() * sol_mat.cols());
         return equations::Point(sol_vec);
@@ -26,8 +26,8 @@ namespace calibration {
       * @param upright_planes vector of plane equations for the upright planes.
       * @return the A matrix (N-1, 3)
       */
-    inline Eigen::MatrixXd build_A_matrix(equations::Normal g_n,
-                                          std::vector<equations::Plane> upright_planes) {
+    inline Eigen::MatrixXd build_A_matrix(const equations::Normal &g_n,
+                                          const std::vector<equations::Plane> &upright_planes) {
         int rows = upright_planes.size() - 1;
         Eigen::MatrixXd A(rows, 3);
         for (int i = 0; i < rows; i++) {
@@ -48,8 +48,8 @@ namespace calibration {
       * @param upright_planes vector of plane equations for the upright planes.
       * @return the b matrix (1, N-1)
       */
-    inline Eigen::MatrixXd build_b_matrix(equations::Normal g_n,
-                                          std::vector<equations::Plane> upright_planes) {
+    inline Eigen::MatrixXd build_b_matrix(const equations::Normal &g_n,
+                                          const std::vector<equations::Plane> &upright_planes) {
         int rows = upright_planes.size() - 1;
         Eigen::MatrixXd b(rows, 1);
         for (int i = 0; i < rows; i++) {
