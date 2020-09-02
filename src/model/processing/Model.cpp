@@ -31,7 +31,7 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
 
     auto normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
     pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
-    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
+    auto tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
     ne.setSearchMethod(tree);
     ne.setRadiusSearch(0.03);
 
@@ -45,11 +45,11 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
 void model::Model::compute_local_features(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                           pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
                                           pcl::PointCloud<pcl::FPFHSignature33>::Ptr features) {
-    pcl::search::KdTree<pcl::PointXYZ>::Ptr searchMethod(new pcl::search::KdTree<pcl::PointXYZ>);
+    auto tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
     pcl::FPFHEstimation<pcl::PointXYZ, pcl::Normal, pcl::FPFHSignature33> fpfh_est;
     fpfh_est.setInputCloud(cloud);
     fpfh_est.setInputNormals(normalCloud);
-    fpfh_est.setSearchMethod(searchMethod);
+    fpfh_est.setSearchMethod(tree);
     fpfh_est.setRadiusSearch(.05);
     fpfh_est.compute(*features);
 }

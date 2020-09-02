@@ -62,15 +62,15 @@ TEST(SegmentationPhysicalTests, ViewAxis) {
     p2.z = -8.0644;
 
 
-    pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
-    viewer->setBackgroundColor(0, 0, 0);
-    viewer->addPointCloud<pcl::PointXYZ>(cloudIn, "sample cloud");
-    viewer->addLine(p1, p2, std::string("line"), 0);
-    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
-    viewer->addCoordinateSystem(1.0);
-    viewer->initCameraParameters();
-    while (!viewer->wasStopped()) {
-        viewer->spinOnce(100);
+    pcl::visualization::PCLVisualizer viewer("3D Viewer");
+    viewer.setBackgroundColor(0, 0, 0);
+    viewer.addPointCloud<pcl::PointXYZ>(cloudIn, "sample cloud");
+    viewer.addLine(p1, p2, std::string("line"), 0);
+    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
+    viewer.addCoordinateSystem(1.0);
+    viewer.initCameraParameters();
+    while (!viewer.wasStopped()) {
+        viewer.spinOnce(100);
         std::this_thread::sleep_for(100ms);
     }
 }

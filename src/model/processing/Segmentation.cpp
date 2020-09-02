@@ -9,13 +9,13 @@
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 segmentation::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn) {
-    pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
-    pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
+    pcl::ModelCoefficients coefficients;
+    auto inliers = std::make_shared<pcl::PointIndices>();
     auto cloud_inliers = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto cloud_outliers = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     // Create the segmentation object
     pcl::SACSegmentation<pcl::PointXYZ> seg;
-    coefficients->values.resize(4);
+    coefficients.values.resize(4);
     // Optional
     seg.setOptimizeCoefficients(true);
     // Mandatory
@@ -24,16 +24,16 @@ segmentation::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &clou
     seg.setDistanceThreshold(0.005);
 
     seg.setInputCloud(cloudIn);
-    seg.segment(*inliers, *coefficients);
+    seg.segment(*inliers, coefficients);
 
     if (inliers->indices.empty()) {
         PCL_ERROR ("Could not estimate a planar model for the given dataset.");
     }
 
-    std::cerr << "Model coefficients: " << coefficients->values[0] << " "
-              << coefficients->values[1] << " "
-              << coefficients->values[2] << " "
-              << coefficients->values[3] << std::endl;
+    std::cerr << "Model coefficients: " << coefficients.values[0] << " "
+              << coefficients.values[1] << " "
+              << coefficients.values[2] << " "
+              << coefficients.values[3] << std::endl;
 
 
     // Extract inliers
@@ -54,8 +54,8 @@ segmentation::get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::
     std::vector<equations::Plane> planes;
     // Create the segmentation object for the planar model and set all the parameters
     pcl::SACSegmentation<pcl::PointXYZ> seg;
-    pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
-    pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
+    auto inliers = std::make_shared<pcl::PointIndices>();
+    auto coefficients = std::make_shared<pcl::ModelCoefficients>();
     auto temp_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto cloud_plane = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto cloud_f = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
@@ -104,21 +104,22 @@ segmentation::get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::
 }
 
 std::vector<float> segmentation::get_plane_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
-    pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
-    pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
+    pcl::PointIndices inliers;
+    pcl::ModelCoefficients coefficients;
+
     pcl::SACSegmentation<pcl::PointXYZ> seg;
-    coefficients->values.resize(4);
+    coefficients.values.resize(4);
     seg.setOptimizeCoefficients(true);
     seg.setModelType(pcl::SACMODEL_PLANE);
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setDistanceThreshold(0.005);
     seg.setInputCloud(cloud);
-    seg.segment(*inliers, *coefficients);
+    seg.segment(inliers, coefficients);
 
-    std::cout << "Model coefficients: " << coefficients->values[0] << " "
-              << coefficients->values[1] << " "
-              << coefficients->values[2] << " "
-              << coefficients->values[3] << std::endl;
+    std::cout << "Model coefficients: " << coefficients.values[0] << " "
+              << coefficients.values[1] << " "
+              << coefficients.values[2] << " "
+              << coefficients.values[3] << std::endl;
 
-    return coefficients->values;
+    return coefficients.values;
 }
