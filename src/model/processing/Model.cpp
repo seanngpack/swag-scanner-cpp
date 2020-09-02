@@ -20,14 +20,14 @@ model::Model::Model() {}
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 model::Model::create_point_cloud(const std::vector<uint16_t> &depth_frame,
-                                 const camera::intrinsics intrinsics) {
+                                 const camera::intrinsics &intrinsics) {
 
     std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> point_cloud = depth::create_point_cloud(depth_frame, intrinsics);
     return point_cloud;
 }
 
-pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
+std::shared_ptr<pcl::PointCloud<pcl::Normal>> model::Model::estimate_normal_cloud(
+        const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
 
     auto normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
     pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
@@ -42,20 +42,22 @@ pcl::PointCloud<pcl::Normal>::Ptr model::Model::estimate_normal_cloud(
     return normals;
 }
 
-void model::Model::compute_local_features(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                          pcl::PointCloud<pcl::Normal>::Ptr normalCloud,
-                                          pcl::PointCloud<pcl::FPFHSignature33>::Ptr features) {
+pcl::PointCloud<pcl::FPFHSignature33>::Ptr model::Model::compute_local_features(
+        const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+        const std::shared_ptr<pcl::PointCloud<pcl::Normal>> &normal_cloud) {
+    auto features = std::make_shared<pcl::PointCloud<pcl::FPFHSignature33>>();
     auto tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
     pcl::FPFHEstimation<pcl::PointXYZ, pcl::Normal, pcl::FPFHSignature33> fpfh_est;
     fpfh_est.setInputCloud(cloud);
-    fpfh_est.setInputNormals(normalCloud);
+    fpfh_est.setInputNormals(normal_cloud);
     fpfh_est.setSearchMethod(tree);
     fpfh_est.setRadiusSearch(.05);
     fpfh_est.compute(*features);
+    return features;
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+model::Model::crop_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                          float minX, float maxX,
                          float minY, float maxY,
                          float minZ, float maxZ) {
@@ -63,26 +65,26 @@ model::Model::crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+model::Model::voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                 float leafSize) {
     return filtering::voxel_grid_filter(cloud, leafSize);
 }
 
 std::vector<equations::Plane>
-model::Model::get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
+model::Model::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
     return segmentation::get_calibration_planes_coefs(cloud);
 }
 
-std::vector<float> model::Model::get_plane_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
+std::vector<float> model::Model::get_plane_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
     return segmentation::get_plane_coefs(cloud);
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn) {
+model::Model::remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn) {
     return segmentation::remove_plane(cloudIn);
 }
 
-equations::Normal model::Model::calculate_axis_dir(std::vector<equations::Plane> ground_planes) {
+equations::Normal model::Model::calculate_axis_dir(const std::vector<equations::Plane> &ground_planes) {
     equations::Normal g_n;
     for (auto &g: ground_planes) {
         g_n.A += g.A;
@@ -95,8 +97,8 @@ equations::Normal model::Model::calculate_axis_dir(std::vector<equations::Plane>
     return g_n;
 }
 
-equations::Point model::Model::calculate_center_pt(equations::Normal axis_dir,
-                                                   std::vector<equations::Plane> upright_planes) {
+equations::Point model::Model::calculate_center_pt(const equations::Normal &axis_dir,
+                                                   const std::vector<equations::Plane> &upright_planes) {
 
     Eigen::MatrixXd A = calibration::build_A_matrix(axis_dir, upright_planes);
     Eigen::MatrixXd b = calibration::build_b_matrix(axis_dir, upright_planes);
@@ -107,9 +109,9 @@ equations::Point model::Model::calculate_center_pt(equations::Normal axis_dir,
 }
 
 pcl::PointCloud<pcl::PointXYZ>
-model::Model::rotate_cloud_about_line(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                      std::vector<float> line_point,
-                                      std::vector<float> line_direction,
+model::Model::rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                      const std::vector<float> &line_point,
+                                      const std::vector<float> &line_direction,
                                       float theta) {
     pcl::PointCloud<pcl::PointXYZ> transformed;
 
@@ -125,26 +127,26 @@ model::Model::rotate_cloud_about_line(std::shared_ptr<pcl::PointCloud<pcl::Point
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::transform_cloud_to_world(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                       pcl::PointXYZ center,
-                                       equations::Normal ground_normal) {
+model::Model::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                       const pcl::PointXYZ &center,
+                                       const equations::Normal &ground_normal) {
     auto result = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     Eigen::Matrix4f transform = algos::calc_transform_to_world_matrix(center, ground_normal);
     pcl::transformPointCloud(*cloud, *result, transform);
     return result;
 }
 
-Eigen::Matrix4f model::Model::icp_register_pair_clouds(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn,
-                                                       std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudOut,
-                                                       std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> transformedCloud) {
-    return registration::icp_register_pair_clouds(cloudIn, cloudOut, transformedCloud);
+Eigen::Matrix4f model::Model::icp_register_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_in,
+                                                       const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_out,
+                                                       std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &transformed_cloud) {
+    return registration::icp_register_pair_clouds(cloud_in, cloud_out, transformed_cloud);
 
 }
 
 
-void model::Model::sac_align_pair_clouds(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudIn,
-                                         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudTarget,
-                                         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloudAligned,
+void model::Model::sac_align_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn,
+                                         const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudTarget,
+                                         const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudAligned,
                                          Eigen::Matrix4f &transformation) {
 
     pcl::PointCloud<pcl::Normal>::Ptr cloudInNormal = estimate_normal_cloud(cloudIn);

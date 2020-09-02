@@ -8,7 +8,7 @@
 
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-segmentation::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn) {
+segmentation::remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
     pcl::ModelCoefficients coefficients;
     auto inliers = std::make_shared<pcl::PointIndices>();
     auto cloud_inliers = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
@@ -23,7 +23,7 @@ segmentation::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &clou
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setDistanceThreshold(0.005);
 
-    seg.setInputCloud(cloudIn);
+    seg.setInputCloud(cloud);
     seg.segment(*inliers, coefficients);
 
     if (inliers->indices.empty()) {
@@ -38,7 +38,7 @@ segmentation::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &clou
 
     // Extract inliers
     pcl::ExtractIndices<pcl::PointXYZ> extract;
-    extract.setInputCloud(cloudIn);
+    extract.setInputCloud(cloud);
     extract.setIndices(inliers);
     extract.setNegative(false);            // Extract the inliers
     extract.filter(*cloud_inliers);        // cloud_inliers contains the plane
@@ -50,7 +50,7 @@ segmentation::remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &clou
 }
 
 std::vector<equations::Plane>
-segmentation::get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
+segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
     std::vector<equations::Plane> planes;
     // Create the segmentation object for the planar model and set all the parameters
     pcl::SACSegmentation<pcl::PointXYZ> seg;
@@ -72,7 +72,7 @@ segmentation::get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::
         // Segment the largest planar component from the remaining cloud
         seg.setInputCloud(temp_cloud);
         seg.segment(*inliers, *coefficients);
-        if (inliers->indices.size() == 0) {
+        if (inliers->indices.empty()) {
             std::cout << "Could not estimate a planar model for the given dataset." << std::endl;
             break;
         }
@@ -103,7 +103,7 @@ segmentation::get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::
     return planes;
 }
 
-std::vector<float> segmentation::get_plane_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud) {
+std::vector<float> segmentation::get_plane_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
     pcl::PointIndices inliers;
     pcl::ModelCoefficients coefficients;
 
