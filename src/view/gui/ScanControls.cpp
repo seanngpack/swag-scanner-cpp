@@ -1,8 +1,8 @@
 #include "ScanControls.h"
+#include "FormsPayload.h"
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QPushButton>
-#include <iostream>
 
 ScanControls::ScanControls(QWidget *parent)
         : QWidget(parent) {
@@ -33,10 +33,8 @@ std::string ScanControls::get_name() {
 }
 
 void ScanControls::send_scan_button_pressed() {
-    emit scan_button_pressed(std::vector<std::string>{
-        name_edit->text().toUtf8().constData(),
-        deg_edit->text().toUtf8().constData(),
-        rot_edit->text().toUtf8().constData()
-    });
+    emit scan_button_pressed(FormsPayload(name_edit->text(),
+                                          deg_edit->text(),
+                                          rot_edit->text()));
 
 }

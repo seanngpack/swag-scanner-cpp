@@ -1,4 +1,5 @@
 #include "ProcessControls.h"
+#include "FormsPayload.h"
 #include <QLineEdit>
 #include <QFormLayout>
 #include <QPushButton>
@@ -22,7 +23,5 @@ ProcessControls::ProcessControls(QWidget *parent)
 }
 
 void ProcessControls::send_process_button_pressed() {
-    emit process_button_pressed(std::vector<std::string>{
-            name_edit->text().toUtf8().constData()
-    });
+    emit process_button_pressed(FormsPayload(name_edit->text()));
 }

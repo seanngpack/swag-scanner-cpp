@@ -1,15 +1,17 @@
 #include "SwagGUI.h"
-#include <QPushButton>
+#include "FormsPayload.h"
 #include "SideBar.h"
+#include "ScanControls.h"
+#include "CalibrateControls.h"
+#include "ProcessControls.h"
+#include <QPushButton>
 #include <QHBoxLayout>
 #include <QDesktopWidget>
 #include <QComboBox>
 #include <QPlainTextEdit>
 #include <QSpacerItem>
 #include <iostream>
-#include "ScanControls.h"
-#include "CalibrateControls.h"
-#include "ProcessControls.h"
+
 
 SwagGUI::SwagGUI(QWidget *parent)
         : QMainWindow(parent) {
@@ -46,49 +48,31 @@ void SwagGUI::handle_combo_index_changed(int index) {
     }
 }
 
-void SwagGUI::handle_scan_button_pressed(const std::vector<std::string> &vars) {
-    name = vars[0];
-    deg = stoi(vars[1]);
-    rot = stoi(vars[2]);
+void SwagGUI::handle_scan_button_pressed(const FormsPayload &vars) {
+    name = vars.name;
+    deg = vars.deg;
+    rot = vars.rot;
 
-    std::cout << name << std::endl;
-    std::cout << deg << std::endl;
-    std::cout << rot << std::endl;
+    std::cout << "scan name: " << name << std::endl;
+    std::cout << "scan deg: " << deg << std::endl;
+    std::cout << "scan rot: " << rot << std::endl;
     // call observer to run controller method
 }
 
-void SwagGUI::handle_calibrate_button_pressed(const std::vector<std::string> &vars) {
-    name = vars[0];
-    deg = stoi(vars[1]);
-    rot = stoi(vars[2]);
-    std::cout << name << std::endl;
-    std::cout << deg << std::endl;
-    std::cout << rot << std::endl;
+void SwagGUI::handle_calibrate_button_pressed(const FormsPayload &vars) {
+    name = vars.name;
+    deg = vars.deg;
+    rot = vars.rot;
+    std::cout << "cal name: " << name << std::endl;
+    std::cout << "cal deg: " << deg << std::endl;
+    std::cout << "cal rot: " << rot << std::endl;
     // call observer to run controller method
 }
 
-void SwagGUI::handle_process_button_pressed(const std::vector<std::string> &vars) {
-    name = vars[0];
-    std::cout << name << std::endl;
+void SwagGUI::handle_process_button_pressed(const FormsPayload &vars) {
+    name = vars.name;
+    std::cout << "process name: " << name << std::endl;
     // call observer to run controller method
-}
-
-void SwagGUI::handle_name_text_edited(const QString &text) {
-    std::string utf8_text = text.toUtf8().constData();
-    name = utf8_text;
-    std::cout << utf8_text << std::endl;
-}
-
-void SwagGUI::handle_deg_text_edited(const QString &text) {
-    std::string utf8_text = text.toUtf8().constData();
-    deg = stoi(utf8_text);
-    std::cout << utf8_text << std::endl;
-}
-
-void SwagGUI::handle_rot_text_edited(const QString &text) {
-    std::string utf8_text = text.toUtf8().constData();
-    rot = stoi(utf8_text);
-    std::cout << utf8_text << std::endl;
 }
 
 void SwagGUI::set_up_main() {
@@ -135,12 +119,12 @@ void SwagGUI::set_up_right() {
     right_side->addWidget(process_controls);
 
     connect(options_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(handle_combo_index_changed(int)));
-    connect(scan_controls, SIGNAL(scan_button_pressed(const std::vector<std::string> &)), this,
-            SLOT(handle_scan_button_pressed(const std::vector<std::string> &)));
-    connect(calibrate_controls, SIGNAL(calibrate_button_pressed(const std::vector<std::string> &)), this,
-            SLOT(handle_calibrate_button_pressed(const std::vector<std::string> &)));
-    connect(process_controls, SIGNAL(process_button_pressed(const std::vector<std::string> &)), this,
-            SLOT(handle_process_button_pressed(const std::vector<std::string> &)));
+    connect(scan_controls, SIGNAL(scan_button_pressed(const FormsPayload &)), this,
+            SLOT(handle_scan_button_pressed(const FormsPayload &)));
+    connect(calibrate_controls, SIGNAL(calibrate_button_pressed(const FormsPayload &)), this,
+            SLOT(handle_calibrate_button_pressed(const FormsPayload &)));
+    connect(process_controls, SIGNAL(process_button_pressed(const FormsPayload &)), this,
+            SLOT(handle_process_button_pressed(const FormsPayload &)));
 
 
     calibrate_controls->setVisible(false);

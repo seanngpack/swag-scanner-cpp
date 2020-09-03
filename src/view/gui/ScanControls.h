@@ -14,6 +14,8 @@ class QLineEdit;
 
 class QPushButton;
 
+class FormsPayload;
+
 class ScanControls : public QWidget {
 
 Q_OBJECT
@@ -24,7 +26,7 @@ public:
 
 signals:
 
-    void scan_button_pressed(const std::vector<std::string> &vars);
+    void scan_button_pressed(const FormsPayload &vars);
 
 private slots:
     void send_scan_button_pressed();

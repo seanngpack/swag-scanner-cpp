@@ -12,6 +12,8 @@ class QHBoxLayout;
 
 class QComboBox;
 
+class FormsPayload;
+
 class SwagGUI : public QMainWindow {
 Q_OBJECT
 public:
@@ -49,11 +51,11 @@ private slots:
      * Handler what happens when the "scan" button is pressed.
      * @param vars vector containing scan, rot, and deg text fields.
      */
-    void handle_scan_button_pressed(const std::vector<std::string> &vars);
+    void handle_scan_button_pressed(const FormsPayload &vars);
 
-    void handle_calibrate_button_pressed(const std::vector<std::string> &vars);
+    void handle_calibrate_button_pressed(const FormsPayload &vars);
 
-    void handle_process_button_pressed(const std::vector<std::string> &vars);
+    void handle_process_button_pressed(const FormsPayload &vars);
 
     /**
      * Handle when combobox for selecting "scan", "calibrate", or "process" changes.
@@ -61,11 +63,6 @@ private slots:
      */
     void handle_combo_index_changed(int index);
 
-    void handle_name_text_edited(const QString &text);
-
-    void handle_deg_text_edited(const QString &text);
-
-    void handle_rot_text_edited(const QString &text);
 
 private:
     QWidget *main;

@@ -12,6 +12,8 @@ class QLineEdit;
 
 class QPushButton;
 
+class FormsPayload;
+
 class ProcessControls : public QWidget {
 
 Q_OBJECT
@@ -20,7 +22,7 @@ public:
 
 signals:
 
-    void process_button_pressed(const std::vector<std::string> &vars);
+    void process_button_pressed(const FormsPayload &vars);
 
 private slots:
     void send_process_button_pressed();

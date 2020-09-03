@@ -1,4 +1,5 @@
 #include "CalibrateControls.h"
+#include "FormsPayload.h"
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QPushButton>
@@ -28,10 +29,8 @@ CalibrateControls::CalibrateControls(QWidget *parent)
 }
 
 void CalibrateControls::send_calibrate_button_pressed() {
-    emit calibrate_button_pressed(std::vector<std::string>{
-            name_edit->text().toUtf8().constData(),
-            deg_edit->text().toUtf8().constData(),
-            rot_edit->text().toUtf8().constData()
-    });
+    emit calibrate_button_pressed(FormsPayload(name_edit->text(),
+                                               deg_edit->text(),
+                                               rot_edit->text()));
 
 }
