@@ -1,5 +1,5 @@
-#ifndef SWAG_SCANNER_PROCESS_CONTROLS_H
-#define SWAG_SCANNER_PROCESS_CONTROLS_H
+#ifndef SWAG_SCANNER_PROCESSCONTROLS_H
+#define SWAG_SCANNER_PROCESSCONTROLS_H
 
 
 #include <QWidget>
@@ -19,7 +19,11 @@ public:
     explicit ProcessControls(QWidget *parent = 0);
 
 signals:
-    void name_text_edited(QString text);
+
+    void process_button_pressed(const std::vector<std::string> &vars);
+
+private slots:
+    void send_process_button_pressed();
 
 private:
     QVBoxLayout *v_layout;
@@ -27,9 +31,8 @@ private:
 
     QLineEdit *name_edit;
 
-    QPushButton *calibrate_button;
-
+    QPushButton *process_button;
 };
 
 
-#endif //SWAG_SCANNER_PROCESS_CONTROLS_H
+#endif //SWAG_SCANNER_PROCESSCONTROLS_H

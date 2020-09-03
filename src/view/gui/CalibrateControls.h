@@ -1,5 +1,5 @@
-#ifndef SWAG_SCANNER_CALIBRATE_CONTROLS_H
-#define SWAG_SCANNER_CALIBRATE_CONTROLS_H
+#ifndef SWAG_SCANNER_CALIBRATECONTROLS_H
+#define SWAG_SCANNER_CALIBRATECONTROLS_H
 
 
 #include <QWidget>
@@ -20,11 +20,11 @@ public:
 
 signals:
 
-    void name_text_edited(QString text);
+    void calibrate_button_pressed(const std::vector<std::string> &vars);
 
-    void deg_text_edited(QString text);
+private slots:
 
-    void rot_text_edited(QString text);
+    void send_calibrate_button_pressed();
 
 private:
     QVBoxLayout *v_layout;
@@ -39,4 +39,4 @@ private:
 };
 
 
-#endif //SWAG_SCANNER_CALIBRATE_CONTROLS_H
+#endif //SWAG_SCANNER_CALIBRATECONTROLS_H

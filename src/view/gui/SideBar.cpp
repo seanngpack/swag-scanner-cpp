@@ -1,4 +1,4 @@
-#include "sidebar.h"
+#include "SideBar.h"
 #include <QComboBox>
 #include <QVBoxLayout>
 #include <QPlainTextEdit>

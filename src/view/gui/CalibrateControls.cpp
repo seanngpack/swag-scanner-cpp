@@ -1,4 +1,4 @@
-#include "calibrate_controls.h"
+#include "CalibrateControls.h"
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QPushButton>
@@ -18,13 +18,20 @@ CalibrateControls::CalibrateControls(QWidget *parent)
     form_layout->addRow("Degrees:", deg_edit);
     form_layout->addRow("# Rotations: ", rot_edit);
 
-    connect(name_edit, QOverload<const QString &>::of(&QLineEdit::textEdited), this, &CalibrateControls::name_text_edited);
-    connect(deg_edit, QOverload<const QString &>::of(&QLineEdit::textEdited), this, &CalibrateControls::deg_text_edited);
-    connect(rot_edit, QOverload<const QString &>::of(&QLineEdit::textEdited), this, &CalibrateControls::rot_text_edited);
 
     calibrate_button = new QPushButton("calibrate");
 
+    connect(calibrate_button, SIGNAL(pressed()), this, SLOT(send_calibrate_button_pressed()));
     v_layout->addLayout(form_layout);
     v_layout->addWidget(calibrate_button);
+
+}
+
+void CalibrateControls::send_calibrate_button_pressed() {
+    emit calibrate_button_pressed(std::vector<std::string>{
+            name_edit->text().toUtf8().constData(),
+            deg_edit->text().toUtf8().constData(),
+            rot_edit->text().toUtf8().constData()
+    });
 
 }

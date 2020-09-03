@@ -1,7 +1,8 @@
-#include "scan_controls.h"
+#include "ScanControls.h"
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QPushButton>
+#include <iostream>
 
 ScanControls::ScanControls(QWidget *parent)
         : QWidget(parent) {
@@ -18,13 +19,24 @@ ScanControls::ScanControls(QWidget *parent)
     form_layout->addRow("Degrees:", deg_edit);
     form_layout->addRow("# Rotations: ", rot_edit);
 
-    connect(name_edit, QOverload<const QString &>::of(&QLineEdit::textEdited), this, &ScanControls::name_text_edited);
-    connect(deg_edit, QOverload<const QString &>::of(&QLineEdit::textEdited), this, &ScanControls::deg_text_edited);
-    connect(rot_edit, QOverload<const QString &>::of(&QLineEdit::textEdited), this, &ScanControls::rot_text_edited);
-
     scan_button = new QPushButton("scan");
+
+    connect(scan_button, SIGNAL(pressed()), this, SLOT(send_scan_button_pressed()));
 
     v_layout->addLayout(form_layout);
     v_layout->addWidget(scan_button);
+
+}
+
+std::string ScanControls::get_name() {
+    return name_edit->text().toUtf8().constData();
+}
+
+void ScanControls::send_scan_button_pressed() {
+    emit scan_button_pressed(std::vector<std::string>{
+        name_edit->text().toUtf8().constData(),
+        deg_edit->text().toUtf8().constData(),
+        rot_edit->text().toUtf8().constData()
+    });
 
 }

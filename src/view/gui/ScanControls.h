@@ -1,10 +1,11 @@
-#ifndef SWAG_SCANNER_SCAN_CONTROLS_H
-#define SWAG_SCANNER_SCAN_CONTROLS_H
+#ifndef SWAG_SCANNER_SCANCONTROLS_H
+#define SWAG_SCANNER_SCANCONTROLS_H
 
 
 #include <QWidget>
 
 class QVBoxLayout;
+
 class QHBoxLayout;
 
 class QFormLayout;
@@ -19,14 +20,18 @@ Q_OBJECT
 public:
     explicit ScanControls(QWidget *parent = 0);
 
+    std::string get_name();
+
 signals:
-    void name_text_edited(QString text);
-    void deg_text_edited(QString text);
-    void rot_text_edited(QString text);
+
+    void scan_button_pressed(const std::vector<std::string> &vars);
+
+private slots:
+    void send_scan_button_pressed();
+
 
 private:
     QVBoxLayout *v_layout;
-    QHBoxLayout *h_layout;
     QFormLayout *form_layout;
 
     QLineEdit *name_edit;
@@ -35,6 +40,7 @@ private:
 
     QPushButton *scan_button;
 
+
 };
 
-#endif //SWAG_SCANNER_SCAN_CONTROLS_H
+#endif //SWAG_SCANNER_SCANCONTROLS_H

@@ -1,24 +1,36 @@
-#include "swag_gui.h"
+#include "SwagGUI.h"
 #include <QPushButton>
-#include "sidebar.h"
+#include "SideBar.h"
 #include <QHBoxLayout>
 #include <QDesktopWidget>
 #include <QComboBox>
 #include <QPlainTextEdit>
 #include <QSpacerItem>
 #include <iostream>
-#include "scan_controls.h"
-#include "calibrate_controls.h"
-#include "process_controls.h"
+#include "ScanControls.h"
+#include "CalibrateControls.h"
+#include "ProcessControls.h"
 
-swag_gui::swag_gui(QWidget *parent)
+SwagGUI::SwagGUI(QWidget *parent)
         : QMainWindow(parent) {
     set_up_main();
     set_up_left();
     set_up_right();
 }
 
-void swag_gui::handle_combo_index_changed(int index) {
+std::string SwagGUI::get_name() {
+    return name;
+}
+
+int SwagGUI::get_deg() {
+    return deg;
+}
+
+int SwagGUI::get_rot() {
+    return deg;
+}
+
+void SwagGUI::handle_combo_index_changed(int index) {
     if (index == 0) {
         scan_controls->setVisible(true);
         calibrate_controls->setVisible(false);
@@ -34,22 +46,52 @@ void swag_gui::handle_combo_index_changed(int index) {
     }
 }
 
-void swag_gui::handle_name_text_edited(const QString &text) {
+void SwagGUI::handle_scan_button_pressed(const std::vector<std::string> &vars) {
+    name = vars[0];
+    deg = stoi(vars[1]);
+    rot = stoi(vars[2]);
+
+    std::cout << name << std::endl;
+    std::cout << deg << std::endl;
+    std::cout << rot << std::endl;
+    // call observer to run controller method
+}
+
+void SwagGUI::handle_calibrate_button_pressed(const std::vector<std::string> &vars) {
+    name = vars[0];
+    deg = stoi(vars[1]);
+    rot = stoi(vars[2]);
+    std::cout << name << std::endl;
+    std::cout << deg << std::endl;
+    std::cout << rot << std::endl;
+    // call observer to run controller method
+}
+
+void SwagGUI::handle_process_button_pressed(const std::vector<std::string> &vars) {
+    name = vars[0];
+    std::cout << name << std::endl;
+    // call observer to run controller method
+}
+
+void SwagGUI::handle_name_text_edited(const QString &text) {
     std::string utf8_text = text.toUtf8().constData();
+    name = utf8_text;
     std::cout << utf8_text << std::endl;
 }
 
-void swag_gui::handle_deg_text_edited(const QString &text) {
+void SwagGUI::handle_deg_text_edited(const QString &text) {
     std::string utf8_text = text.toUtf8().constData();
+    deg = stoi(utf8_text);
     std::cout << utf8_text << std::endl;
 }
 
-void swag_gui::handle_rot_text_edited(const QString &text) {
+void SwagGUI::handle_rot_text_edited(const QString &text) {
     std::string utf8_text = text.toUtf8().constData();
+    rot = stoi(utf8_text);
     std::cout << utf8_text << std::endl;
 }
 
-void swag_gui::set_up_main() {
+void SwagGUI::set_up_main() {
     main = new QWidget;
     main_layout = new QHBoxLayout;
     main->setLayout(main_layout);
@@ -67,7 +109,7 @@ void swag_gui::set_up_main() {
 
 }
 
-void swag_gui::set_up_left() {
+void SwagGUI::set_up_left() {
     connect(this, SIGNAL(update_scan_list(const std::vector<std::string> &)), left_side,
             SLOT(update_scan_list(const std::vector<std::string> &)));
     connect(this, SIGNAL(update_cal_list(const std::vector<std::string> &)), left_side,
@@ -75,7 +117,7 @@ void swag_gui::set_up_left() {
 
 }
 
-void swag_gui::set_up_right() {
+void SwagGUI::set_up_right() {
     // edit right side
     console_widget = new QPlainTextEdit;
     scan_controls = new ScanControls;
@@ -93,23 +135,12 @@ void swag_gui::set_up_right() {
     right_side->addWidget(process_controls);
 
     connect(options_combo_box, SIGNAL(currentIndexChanged(int)), this, SLOT(handle_combo_index_changed(int)));
-
-    connect(scan_controls, SIGNAL(name_text_edited(const QString &)), this,
-            SLOT(handle_name_text_edited(const QString &)));
-    connect(scan_controls, SIGNAL(deg_text_edited(const QString &)), this,
-            SLOT(handle_deg_text_edited(const QString &)));
-    connect(scan_controls, SIGNAL(rot_text_edited(const QString &)), this,
-            SLOT(handle_rot_text_edited(const QString &)));
-
-    connect(calibrate_controls, SIGNAL(name_text_edited(const QString &)), this,
-            SLOT(handle_name_text_edited(const QString &)));
-    connect(calibrate_controls, SIGNAL(deg_text_edited(const QString &)), this,
-            SLOT(handle_deg_text_edited(const QString &)));
-    connect(calibrate_controls, SIGNAL(rot_text_edited(const QString &)), this,
-            SLOT(handle_rot_text_edited(const QString &)));
-
-    connect(process_controls, SIGNAL(name_text_edited(const QString &)), this,
-            SLOT(handle_name_text_edited(const QString &)));
+    connect(scan_controls, SIGNAL(scan_button_pressed(const std::vector<std::string> &)), this,
+            SLOT(handle_scan_button_pressed(const std::vector<std::string> &)));
+    connect(calibrate_controls, SIGNAL(calibrate_button_pressed(const std::vector<std::string> &)), this,
+            SLOT(handle_calibrate_button_pressed(const std::vector<std::string> &)));
+    connect(process_controls, SIGNAL(process_button_pressed(const std::vector<std::string> &)), this,
+            SLOT(handle_process_button_pressed(const std::vector<std::string> &)));
 
 
     calibrate_controls->setVisible(false);
@@ -117,3 +148,6 @@ void swag_gui::set_up_right() {
 //    right_side->addStretch();
     right_side->addWidget(console_widget);
 }
+
+
+

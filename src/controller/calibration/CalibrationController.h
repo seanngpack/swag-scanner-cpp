@@ -45,7 +45,6 @@ namespace controller {
         /**
          * Scan calibration fixture with member info for degs and # of rotations into a new
          * calibration folder. Calculate configuration properties and save to that folder.
-         *
          */
         void run() override;
 
@@ -54,7 +53,7 @@ namespace controller {
         void set_num_rot(int num_rot);
 
 
-    private:
+    protected:
         std::shared_ptr<camera::ICamera> camera;
         std::shared_ptr<arduino::Arduino> arduino;
         std::shared_ptr<model::Model> model;
