@@ -2,28 +2,26 @@
 #define SWAG_SCANNER_CALIBRATIONCONTROLLERGUI_H
 
 #include "CalibrationController.h"
-
-class SwagGUI;
+#include "IControllerGUI.h"
 
 namespace controller {
-    class CalibrationControllerGUI : public CalibrationController {
+    class CalibrationControllerGUI : public CalibrationController, public IControllerGUI {
     public:
         CalibrationControllerGUI(std::shared_ptr<camera::ICamera> camera,
                                  std::shared_ptr<arduino::Arduino> arduino,
                                  std::shared_ptr<model::Model> model,
                                  std::shared_ptr<file::CalibrationFileHandler> file_handler,
-                                 std::shared_ptr<visual::Visualizer> viewer,
-                                 std::shared_ptr<SwagGUI> gui);
-
-
-    private:
-        std::shared_ptr<SwagGUI> gui;
+                                 std::shared_ptr<visual::Visualizer> viewer);
 
         /**
-         * Get the degree from GUI.
-         * @return degree.
+         * This run method is a little different than CalibrationController's run method. This will
+         * fetch the values from the view before proceeding.
          */
-        int get_deg();
+        void run() override;
+
+    private:
+
+
     };
 
 }

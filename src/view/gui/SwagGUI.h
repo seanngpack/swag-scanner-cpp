@@ -3,6 +3,8 @@
 
 
 #include <QMainWindow>
+#include "IControllerGUI.h" // can probably remove this one
+#include "CalibrationControllerGUI.h" // i think it's important to include this one
 
 class QPlainTextEdit;
 
@@ -17,26 +19,31 @@ class FormsPayload;
 class SwagGUI : public QMainWindow {
 Q_OBJECT
 public:
-    explicit SwagGUI(QWidget *parent = 0);
+    explicit SwagGUI(std::shared_ptr<controller::IControllerGUI> controller, QWidget *parent = 0);
 
     /**
      * Get the name text in the current form.
      * @return name.
      */
-    std::string get_name();
+    std::string update_name() const;
 
     /**
      * Get the degree text in the current form.
      * @return degree.
      */
-    int get_deg();
+    int update_deg() const;
 
     /**
      * Get the number of rotations in the current form.
      * @return num of rotations.
      */
-    int get_rot();
+    int update_rot() const;
 
+    /**
+     * Append info to the console.
+     * @param info the information you want to append.
+     */
+    void update_console(const std::string &info);
 
 
 signals:
@@ -65,6 +72,8 @@ private slots:
 
 
 private:
+    std::shared_ptr<controller::IControllerGUI> controller;
+
     QWidget *main;
     QHBoxLayout *main_layout;
     QWidget *left_side;

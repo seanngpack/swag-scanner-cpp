@@ -13,23 +13,27 @@
 #include <iostream>
 
 
-SwagGUI::SwagGUI(QWidget *parent)
-        : QMainWindow(parent) {
+SwagGUI::SwagGUI(std::shared_ptr<controller::IControllerGUI> controller, QWidget *parent)
+        : controller(std::move(controller)), QMainWindow(parent) {
     set_up_main();
     set_up_left();
     set_up_right();
 }
 
-std::string SwagGUI::get_name() {
+std::string SwagGUI::update_name() const {
     return name;
 }
 
-int SwagGUI::get_deg() {
+int SwagGUI::update_deg() const {
     return deg;
 }
 
-int SwagGUI::get_rot() {
+int SwagGUI::update_rot() const {
     return deg;
+}
+
+void SwagGUI::update_console(const std::string &info) {
+    console_widget->appendPlainText(QString::fromStdString(info));
 }
 
 void SwagGUI::handle_combo_index_changed(int index) {
@@ -63,6 +67,7 @@ void SwagGUI::handle_calibrate_button_pressed(const FormsPayload &vars) {
     name = vars.name;
     deg = vars.deg;
     rot = vars.rot;
+    controller->run();
     std::cout << "cal name: " << name << std::endl;
     std::cout << "cal deg: " << deg << std::endl;
     std::cout << "cal rot: " << rot << std::endl;

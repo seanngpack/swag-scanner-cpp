@@ -15,11 +15,13 @@
 //}
 
 #include <QApplication>
+#include "IControllerGUI.h"
 #include "SwagGUI.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    SwagGUI gui;
+    auto g = std::make_shared<controller::IControllerGUI>();
+    SwagGUI gui(g);
     gui.show();
 
     return app.exec();
