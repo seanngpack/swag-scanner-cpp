@@ -1,6 +1,7 @@
 #include <iostream>
 #include "CLIParser.h"
 #include "IController.h"
+#include "IFileHandler.h"
 #include "ControllerFactory.h"
 #include <boost/program_options.hpp>
 

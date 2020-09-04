@@ -15,7 +15,7 @@ namespace file {
     public:
 
         /**
-         * Construstor creates a file handler object. Will point to the latest calibration.
+         * Constructor creates a file handler object. Will point to the latest calibration.
          */
         CalibrationFileHandler();
 
@@ -41,8 +41,7 @@ namespace file {
                         const std::string &cloud_name,
                         CloudType::Type cloud_type) override;
 
-        void load_clouds(
-                std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
+        void load_clouds(std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
                 CloudType::Type cloud_type) override;
 
         std::string get_scan_name() override;

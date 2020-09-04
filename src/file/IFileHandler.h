@@ -11,7 +11,10 @@
 
 namespace file {
     /**
-     * Abstract class for File Handling objects.
+     * Abstract base class for File Handling objects.
+     * This class is specialized into CalibrationFileHandler and ScanFileHandler, so it serves more as
+     * an interface. There is currently no need to modify this class to be a base type for CalibrationFileHandler
+     * and ScanFileHandler.
      */
     class IFileHandler {
     public:
@@ -76,9 +79,7 @@ namespace file {
 
         virtual void set_scan_name(const std::string &scan_name) = 0;
 
-        virtual ~IFileHandler() {
-            std::cout << "calling IFileHandler destructor \n";
-        }
+        virtual ~IFileHandler() {}
 
     protected:
         static boost::filesystem::path swag_scanner_path;

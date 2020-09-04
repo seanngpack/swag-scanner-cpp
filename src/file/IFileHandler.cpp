@@ -1,5 +1,4 @@
 #include "IFileHandler.h"
-#include <pcl/io/pcd_io.h>
 #include <CoreServices/CoreServices.h>
 
 using namespace boost::filesystem;
