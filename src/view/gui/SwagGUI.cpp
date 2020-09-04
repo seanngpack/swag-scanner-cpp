@@ -16,8 +16,8 @@
 #include <iostream>
 
 
-SwagGUI::SwagGUI(QWidget *parent) :
-        factory(std::make_unique<controller::ControllerFactory>()), QMainWindow(parent) {
+SwagGUI::SwagGUI(controller::ControllerFactory *factory, QWidget *parent) :
+        factory(factory), QMainWindow(parent) {
 
     set_up_main();
     std::cout << "madeit here" << std::endl;
@@ -25,8 +25,11 @@ SwagGUI::SwagGUI(QWidget *parent) :
     std::cout << "madeit past left" << std::endl;
     set_up_right();
     std::cout << "madeit past right" << std::endl;
-    controller = factory->get_gui_controller("calibrate");
     std::cout << "madeit past controller" << std::endl;
+}
+
+void SwagGUI::set_controller(controller::IControllerGUI *c) {
+    controller = c;
 }
 
 std::string SwagGUI::update_name() const {
@@ -77,7 +80,7 @@ void SwagGUI::handle_calibrate_button_pressed(const FormsPayload &vars) {
     std::cout << "cal name: " << name << std::endl;
     deg = vars.deg;
     rot = vars.rot;
-    std::cout << "bout to run calibration" <<std::endl;
+    std::cout << "bout to run calibration" << std::endl;
     controller->run();
     std::cout << "cal name: " << name << std::endl;
     std::cout << "cal deg: " << deg << std::endl;
@@ -148,7 +151,6 @@ void SwagGUI::set_up_right() {
     right_side->addWidget(console_widget);
 }
 
-
-
+SwagGUI::~SwagGUI() = default;
 
 

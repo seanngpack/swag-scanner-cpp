@@ -21,7 +21,12 @@ controller::CalibrationControllerGUI::CalibrationControllerGUI(std::shared_ptr<c
                               std::move(model),
                               std::move(file_handler),
                               std::move(viewer)),
-        gui(std::move(gui)) {}
+        gui(std::move(gui)) {
+}
+
+void controller::CalibrationControllerGUI::setup_gui() {
+    gui->set_controller(this);
+}
 
 void controller::CalibrationControllerGUI::run() {
     std::cout << "gets ehre" << std::endl;
@@ -51,15 +56,15 @@ void controller::CalibrationControllerGUI::run() {
 }
 
 std::string controller::CalibrationControllerGUI::get_name() {
-    gui->update_name();
+    file_handler->set_calibration(gui->update_name());
 }
 
 int controller::CalibrationControllerGUI::get_deg() {
-    gui->update_deg();
+    deg = gui->update_deg();
 }
 
 int controller::CalibrationControllerGUI::get_rot() {
-    gui->update_rot();
+    num_rot = gui->update_rot();
 }
 
 void controller::CalibrationControllerGUI::update_console(const std::string &info) {

@@ -42,6 +42,8 @@ namespace controller {
     class HomeController;
 
     class MoveController;
+
+    class ControllerFactory;
 }
 
 
@@ -55,7 +57,9 @@ namespace controller {
          * Default constructor preallocates expensive objects that are probably gonna be used.
          * Preallocated objects: Model, ScanFileHandler, CalibrationFileHandler
          */
-        ControllerFactoryCache();
+        ControllerFactoryCache(ControllerFactory *factory);
+
+        ~ControllerFactoryCache();
 
         std::shared_ptr<camera::SR305> get_camera();
 
@@ -101,6 +105,8 @@ namespace controller {
         get_home_controller(const boost::program_options::variables_map &vm);
 
     private:
+        ControllerFactory *factory;
+
         std::shared_ptr<camera::SR305> camera;
         std::shared_ptr<arduino::Arduino> arduino;
         std::shared_ptr<model::Model> model;

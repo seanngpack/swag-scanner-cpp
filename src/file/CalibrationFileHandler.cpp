@@ -2,11 +2,13 @@
 #include "Normal.h"
 #include "Point.h"
 #include <pcl/io/pcd_io.h>
+#include <memory>
 
 using namespace boost::filesystem;
 using json = nlohmann::json;
 
 file::CalibrationFileHandler::CalibrationFileHandler() {
+    std::cout << "calibration file handler constructor called" << std::endl;
     scan_folder_path = find_latest_calibration().parent_path();
     scan_name = scan_folder_path.stem().string();
 }
@@ -92,9 +94,6 @@ std::string file::CalibrationFileHandler::get_scan_name() {
     return this->scan_name;
 }
 
-void file::CalibrationFileHandler::set_scan_name(const std::string &scan_name) {
-    this->scan_name = scan_name;
-}
 
 void file::CalibrationFileHandler::update_calibration_json(const equations::Normal &dir, const equations::Point &pt) {
     json calibration_json = get_calibration_json();

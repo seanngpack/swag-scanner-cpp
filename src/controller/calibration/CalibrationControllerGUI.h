@@ -22,6 +22,12 @@ namespace controller {
          */
         void run() override;
 
+        /**
+         * This method connects gui to this controller. Must run this method whenever
+         * swapping controllers for GUI. Call this in the factory class.
+         */
+        void setup_gui();
+
         std::string get_name();
 
         int get_deg();

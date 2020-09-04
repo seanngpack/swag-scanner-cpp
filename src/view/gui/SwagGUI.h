@@ -3,7 +3,6 @@
 
 
 #include <QMainWindow>
-#include "ControllerFactory.h"
 
 
 class QPlainTextEdit;
@@ -17,13 +16,19 @@ class QComboBox;
 class FormsPayload;
 
 namespace controller {
+    class ControllerFactory;
+
     class IControllerGUI;
 }
 
 class SwagGUI : public QMainWindow {
 Q_OBJECT
 public:
-    explicit SwagGUI(QWidget *parent = 0);
+    explicit SwagGUI(controller::ControllerFactory *factory, QWidget *parent = 0);
+
+    ~SwagGUI();
+
+    void set_controller(controller::IControllerGUI *c);
 
     /**
      * Get the name text in the current form.
@@ -76,8 +81,8 @@ private slots:
 
 
 private:
-    std::unique_ptr<controller::ControllerFactory> factory;
-    std::shared_ptr<controller::IControllerGUI> controller;
+    controller::ControllerFactory *factory;
+    controller::IControllerGUI *controller;
 
     QWidget *main;
     QHBoxLayout *main_layout;

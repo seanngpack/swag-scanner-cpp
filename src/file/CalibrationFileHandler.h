@@ -56,9 +56,7 @@ namespace file {
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> load_clouds(
                 const CloudType::Type &cloud_type) override;
 
-        std::string get_scan_name() override;
-
-        void set_scan_name(const std::string &scan_name) override;
+        std::string get_scan_name();
 
         /**
          * Update the calibration .json file in the current scan folder with the

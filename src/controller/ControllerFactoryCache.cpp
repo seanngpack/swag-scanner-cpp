@@ -13,9 +13,11 @@
 #include "CalibrationControllerGUI.h"
 #include "HomeController.h"
 #include "SwagGUI.h"
+#include "ControllerFactory.h"
 #include <iostream>
 
-controller::ControllerFactoryCache::ControllerFactoryCache() :
+controller::ControllerFactoryCache::ControllerFactoryCache(controller::ControllerFactory *factory) :
+        factory(factory),
         model(std::make_shared<model::Model>()),
         scan_file_handler(std::make_shared<file::ScanFileHandler>()),
         calibration_file_handler(std::make_shared<file::CalibrationFileHandler>()) {}
@@ -55,9 +57,11 @@ std::shared_ptr<visual::Visualizer> controller::ControllerFactoryCache::get_view
 
 std::shared_ptr<file::ScanFileHandler> controller::ControllerFactoryCache::get_scan_file_handler() {
     if (scan_file_handler == nullptr) {
+        std::cout << " it's making another new made scan file handler" << std::endl;
         scan_file_handler = std::make_shared<file::ScanFileHandler>();
         return scan_file_handler;
     }
+    std::cout << " it's returning already made scan file handler" << std::endl;
     return scan_file_handler;
 }
 
@@ -66,12 +70,13 @@ std::shared_ptr<file::CalibrationFileHandler> controller::ControllerFactoryCache
         calibration_file_handler = std::make_shared<file::CalibrationFileHandler>();
         return calibration_file_handler;
     }
+    std::cout << "called get calibration file handler" << std::endl;
     return calibration_file_handler;
 }
 
 std::shared_ptr<SwagGUI> controller::ControllerFactoryCache::get_gui() {
     if (gui == nullptr) {
-        gui = std::make_shared<SwagGUI>();
+        gui = std::make_shared<SwagGUI>(factory);
         gui->show();
         return gui;
     }
@@ -208,9 +213,9 @@ controller::ControllerFactoryCache::get_filter_testing_controller(const boost::p
         camera->set_spatial_smooth_delta(vm["s_delta"].as<int>());
     }
     return std::make_unique<controller::FilterTestingController>(camera,
-                                                                   std::make_shared<model::Model>(),
-                                                                   std::make_shared<file::ScanFileHandler>(),
-                                                                   std::make_shared<visual::Visualizer>());
+                                                                 std::make_shared<model::Model>(),
+                                                                 std::make_shared<file::ScanFileHandler>(),
+                                                                 std::make_shared<visual::Visualizer>());
 }
 
 std::shared_ptr<controller::MoveController>
@@ -244,10 +249,12 @@ controller::ControllerFactoryCache::get_calibration_controller_gui() {
                                                                                             get_calibration_file_handler(),
                                                                                             get_viewer(),
                                                                                             get_gui());
+        calibration_controller_gui->setup_gui();
         return calibration_controller_gui;
     }
     return calibration_controller_gui;
 
 }
 
+controller::ControllerFactoryCache::~ControllerFactoryCache() = default;
 

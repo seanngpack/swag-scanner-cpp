@@ -7,6 +7,7 @@ using json = nlohmann::json;
 file::ScanFileHandler::ScanFileHandler() {
     // todo: i need this logic moved somewhere else. This will create SwagScanner folder
     // and set the first scan to something. It's pretty crucial
+    std::cout << "scan file handler constructor called wtf" << std::endl;
     bool exists = check_program_folder();
     if (!exists) {
         scan_folder_path = find_next_scan_folder_numeric();
@@ -106,9 +107,6 @@ std::string file::ScanFileHandler::get_scan_name() {
     return this->scan_name;
 }
 
-void file::ScanFileHandler::set_scan_name(const std::string &scan_name) {
-    this->scan_name = scan_name;
-}
 
 json file::ScanFileHandler::get_info_json() {
     std::ifstream info(scan_folder_path.string() + "/info/info.json");

@@ -19,7 +19,7 @@
 
 namespace po = boost::program_options;
 
-controller::ControllerFactory::ControllerFactory() : cache(std::make_unique<ControllerFactoryCache>()) {}
+controller::ControllerFactory::ControllerFactory() : cache(std::make_unique<ControllerFactoryCache>(this)) {}
 
 std::shared_ptr<controller::IController> controller::ControllerFactory::get_controller(const po::variables_map &vm) {
     if (vm.count("scan")) {

@@ -75,9 +75,6 @@ namespace file {
         virtual std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>
         load_clouds(const CloudType::Type &cloud_type) = 0;
 
-        virtual std::string get_scan_name() = 0;
-
-        virtual void set_scan_name(const std::string &scan_name) = 0;
 
         virtual ~IFileHandler() {}
 
