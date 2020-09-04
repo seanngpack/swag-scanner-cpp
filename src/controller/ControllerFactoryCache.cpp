@@ -1,4 +1,17 @@
 #include "ControllerFactoryCache.h"
+#include "SR305.h"
+#include "Arduino.h"
+#include "Model.h"
+#include "Visualizer.h"
+#include "CalibrationFileHandler.h"
+#include "CalibrationController.h"
+#include "ProcessingController.h"
+#include "ScanController.h"
+#include "MoveController.h"
+#include "FilterTestingController.h"
+#include "CalibrationControllerGUI.h"
+#include "HomeController.h"
+#include "MoveController.h"
 
 controller::ControllerFactoryCache::ControllerFactoryCache() :
         model(std::make_shared<model::Model>()),
@@ -196,6 +209,11 @@ controller::ControllerFactoryCache::get_move_controller(const boost::program_opt
 std::shared_ptr<controller::HomeController>
 controller::ControllerFactoryCache::get_home_controller(const boost::program_options::variables_map &vm) {
     return std::make_shared<controller::HomeController>();
+}
+
+std::shared_ptr<controller::CalibrationControllerGUI>
+controller::ControllerFactoryCache::get_calibration_controller_gui() {
+    return std::shared_ptr<controller::CalibrationControllerGUI>();
 }
 
 

@@ -6,6 +6,7 @@
 
 namespace controller {
     class IController;
+    class IControllerGUI;
 }
 
 namespace controller {
@@ -17,6 +18,8 @@ namespace controller {
         std::shared_ptr<IController> get_controller(const boost::program_options::variables_map &vm);
 
         std::shared_ptr<IController> get_controller(const std::string &name);
+
+        std::shared_ptr<IControllerGUI> get_gui_controller(const std::string &name);
 
 
     private:

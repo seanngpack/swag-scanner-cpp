@@ -1,21 +1,40 @@
 #ifndef SWAG_SCANNER_CONTROLLERFACTORYCACHE_H
 #define SWAG_SCANNER_CONTROLLERFACTORYCACHE_H
 
-#include "SR305.h"
-#include "Arduino.h"
-#include "Model.h"
-#include "Visualizer.h"
-#include "CalibrationFileHandler.h"
-#include "CalibrationController.h"
-#include "ProcessingController.h"
-#include "ScanController.h"
-#include "MoveController.h"
-#include "FilterTestingController.h"
-#include "HomeController.h"
-#include "MoveController.h"
 #include <memory>
 #include <ScanFileHandler.h>
 #include <boost/program_options.hpp>
+
+namespace camera {
+    class SR305;
+}
+
+namespace arduino {
+    class Arduino;
+}
+
+namespace model {
+    class Model;
+}
+
+namespace visual {
+    class Visualizer;
+}
+
+namespace file {
+    class CalibrationFileHandler;
+    class ScanFileHandler;
+}
+
+namespace controller {
+    class ScanController;
+    class CalibrationController;
+    class CalibrationControllerGUI;
+    class ProcessingController;
+    class FilterTestingController;
+    class HomeController;
+    class MoveController;
+}
 
 
 namespace controller {
@@ -55,6 +74,8 @@ namespace controller {
 
         std::shared_ptr<controller::CalibrationController> get_calibration_controller();
 
+        std::shared_ptr<controller::CalibrationControllerGUI> get_calibration_controller_gui();
+
         std::shared_ptr<controller::ProcessingController>
         get_process_controller(const boost::program_options::variables_map &vm);
 
@@ -77,12 +98,13 @@ namespace controller {
         std::shared_ptr<file::ScanFileHandler> scan_file_handler;
         std::shared_ptr<file::CalibrationFileHandler> calibration_file_handler;
 
+        // controllers
         std::shared_ptr<controller::ScanController> scan_controller;
         std::shared_ptr<controller::CalibrationController> calibration_controller;
         std::shared_ptr<controller::ProcessingController> process_controller;
 
-        // controllers
-
+        // gui controllers
+        std::shared_ptr<controller::CalibrationControllerGUI> calibration_controller_gui;
     };
 }
 

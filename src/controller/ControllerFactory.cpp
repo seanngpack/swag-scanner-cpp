@@ -1,19 +1,20 @@
 #include "ControllerFactory.h"
 #include "IController.h"
-#include "CalibrationController.h"
-#include "ProcessingController.h"
-#include "ScanController.h"
-#include "FilterTestingController.h"
-#include "MoveController.h"
-#include "HomeController.h"
-
-#include "CalibrationFileHandler.h"
-#include "ScanFileHandler.h"
-
+#include "IControllerGUI.h"
 #include "SR305.h"
 #include "Arduino.h"
 #include "Model.h"
 #include "Visualizer.h"
+#include "CalibrationFileHandler.h"
+#include "CalibrationController.h"
+#include "ProcessingController.h"
+#include "ScanController.h"
+#include "MoveController.h"
+#include "FilterTestingController.h"
+#include "CalibrationControllerGUI.h"
+#include "HomeController.h"
+#include "MoveController.h"
+
 
 namespace po = boost::program_options;
 
@@ -47,6 +48,22 @@ std::shared_ptr<controller::IController> controller::ControllerFactory::get_cont
     } else {
         throw std::invalid_argument("Error, must enter a valid base command.");
     }
-    return std::shared_ptr<IController>();
+}
+
+std::shared_ptr<controller::IControllerGUI> controller::ControllerFactory::get_gui_controller(const std::string &name) {
+    if (name == "calibrate") {
+        return cache->get_calibration_controller_gui();
+    } else {
+        throw std::invalid_argument("Error, must enter a valid controller name.");
+    }
+//    if (name == "scan") {
+//        return cache->get_scan_controller();
+//    } else if (name == "calibrate") {
+//        return cache->get_calibration_controller();
+//    } else if (name == "process") {
+//        return cache->get_process_controller();
+//    } else {
+//        throw std::invalid_argument("Error, must enter a valid base command.");
+//    }
 }
 
