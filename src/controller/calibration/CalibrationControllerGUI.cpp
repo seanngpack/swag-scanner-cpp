@@ -28,9 +28,8 @@ void controller::CalibrationControllerGUI::run() {
     update_console("Starting scan");
     scan();
     update_console("Scan complete");
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector;
     update_console("Loading clouds...");
-    file_handler->load_clouds(cloud_vector, CloudType::Type::CALIBRATION);
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(CloudType::Type::CALIBRATION);
     update_console("Load complete");
     update_console("Performing calculations...");
     equations::Normal axis_dir = model->calculate_axis_dir(ground_planes);

@@ -17,7 +17,7 @@
 
 namespace po = boost::program_options;
 
-std::unique_ptr<controller::IController> cli::ControllerFactory::create(const po::variables_map &vm) {
+std::unique_ptr<controller::IController> controller::ControllerFactory::create(const po::variables_map &vm) {
     if (vm.count("scan")) {
         return create_scan_controller(vm);
     } else if (vm.count("calibrate")) {
@@ -36,7 +36,7 @@ std::unique_ptr<controller::IController> cli::ControllerFactory::create(const po
 }
 
 std::unique_ptr<controller::IController>
-cli::ControllerFactory::create_scan_controller(const po::variables_map &vm) {
+controller::ControllerFactory::create_scan_controller(const po::variables_map &vm) {
     std::shared_ptr<file::ScanFileHandler> file_handler;
     if (vm.count("name")) {
         const char *c = vm["name"].as<std::string>().c_str();
@@ -61,7 +61,7 @@ cli::ControllerFactory::create_scan_controller(const po::variables_map &vm) {
 }
 
 std::unique_ptr<controller::IController>
-cli::ControllerFactory::create_calibrate_controller(const po::variables_map &vm) {
+controller::ControllerFactory::create_calibrate_controller(const po::variables_map &vm) {
     std::shared_ptr<file::CalibrationFileHandler> file_handler;
     if (vm.count("name")) {
         const char *c = vm["name"].as<std::string>().c_str();
@@ -87,7 +87,7 @@ cli::ControllerFactory::create_calibrate_controller(const po::variables_map &vm)
 }
 
 std::unique_ptr<controller::IController>
-cli::ControllerFactory::create_processing_controller(const po::variables_map &vm) {
+controller::ControllerFactory::create_processing_controller(const po::variables_map &vm) {
     std::shared_ptr<file::ScanFileHandler> file_handler;
     if (vm.count("name")) {
         const char *c = vm["name"].as<std::string>().c_str();
@@ -101,7 +101,7 @@ cli::ControllerFactory::create_processing_controller(const po::variables_map &vm
 }
 
 std::unique_ptr<controller::IController>
-cli::ControllerFactory::create_filter_testing_controller(const po::variables_map &vm) {
+controller::ControllerFactory::create_filter_testing_controller(const po::variables_map &vm) {
     std::shared_ptr<camera::SR305> camera = std::make_shared<camera::SR305>();
     if (vm.count("d_mag")) {
         camera->set_decimation_magnitude(vm["d_mag"].as<int>());
@@ -122,7 +122,7 @@ cli::ControllerFactory::create_filter_testing_controller(const po::variables_map
 }
 
 std::unique_ptr<controller::IController>
-cli::ControllerFactory::create_move_controller(const po::variables_map &vm) {
+controller::ControllerFactory::create_move_controller(const po::variables_map &vm) {
     auto arduino = std::make_shared<arduino::Arduino>();
     std::unique_ptr<controller::MoveController> move_controller = std::make_unique<controller::MoveController>(arduino);
     if (vm.count("to")) {
@@ -139,7 +139,7 @@ cli::ControllerFactory::create_move_controller(const po::variables_map &vm) {
 }
 
 std::unique_ptr<controller::IController>
-cli::ControllerFactory::create_home_controller(const po::variables_map &vm) {
+controller::ControllerFactory::create_home_controller(const po::variables_map &vm) {
     return std::make_unique<controller::HomeController>();
 }
 

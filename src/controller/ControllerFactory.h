@@ -1,22 +1,24 @@
 #ifndef SWAG_SCANNER_CONTROLLERFACTORY_H
 #define SWAG_SCANNER_CONTROLLERFACTORY_H
 
+#include "ControllerProxy.h"
 #include <boost/program_options.hpp>
 
 namespace controller {
     class IController;
 }
 
-namespace cli {
+namespace controller {
     class ControllerFactory {
     public:
 
         ControllerFactory() = default;
 
-        std::unique_ptr<controller::IController> create(const boost::program_options::variables_map &vm);
+        std::unique_ptr<IController> create(const boost::program_options::variables_map &vm);
 
 
     private:
+        std::unique_ptr<ControllerProxy> cache;
 
         /**
          * Creates a new scanning controller. if -name is not passed, it will create
@@ -24,7 +26,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_scan_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -33,7 +35,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_calibrate_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -42,7 +44,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_processing_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -50,7 +52,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_filter_testing_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -58,7 +60,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_move_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -66,7 +68,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_home_controller(const boost::program_options::variables_map &vm);
     };
 }
