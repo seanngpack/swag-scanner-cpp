@@ -1,6 +1,7 @@
 #ifndef SWAG_SCANNER_CONTROLLERFACTORY_H
 #define SWAG_SCANNER_CONTROLLERFACTORY_H
 
+#include "ControllerFactoryCache.h"
 #include <boost/program_options.hpp>
 #include <SR305.h>
 #include <Arduino.h>
@@ -13,22 +14,17 @@ namespace controller {
     class IController;
 }
 
-namespace cli {
+namespace controller {
     class ControllerFactory {
     public:
 
         ControllerFactory() = default;
 
-        std::unique_ptr<controller::IController> create(boost::program_options::variables_map vm);
+        std::unique_ptr<IController> create(boost::program_options::variables_map vm);
 
 
     private:
-        std::shared_ptr<camera::SR305> camera;
-        std::shared_ptr<arduino::Arduino> arduino;
-        std::shared_ptr<model::Model> model;
-        std::shared_ptr<visual::Visualizer> viewer;
-        std::shared_ptr<file::ScanFileHandler> scan_file_handler;
-        std::shared_ptr<file::CalibrationFileHandler> calibration_file_handler;
+        std::unique_ptr<ControllerFactoryCache> cache;
 
         /**
          * Creates a new scanning controller. if -name is not passed, it will create
@@ -36,7 +32,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_scan_controller(boost::program_options::variables_map vm);
 
         /**
@@ -45,7 +41,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_calibrate_controller(boost::program_options::variables_map vm);
 
         /**
@@ -54,7 +50,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_processing_controller(boost::program_options::variables_map vm);
 
         /**
@@ -62,7 +58,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_filter_testing_controller(boost::program_options::variables_map vm);
 
         /**
@@ -70,7 +66,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_move_controller(boost::program_options::variables_map vm);
 
         /**
@@ -78,7 +74,7 @@ namespace cli {
          * @param vm
          * @return
          */
-        std::unique_ptr<controller::IController>
+        std::unique_ptr<IController>
         create_home_controller(boost::program_options::variables_map vm);
     };
 }
