@@ -16,7 +16,7 @@ namespace file {
     public:
 
         /**
-         * Default constructor makes a IFileHandler. Searches for SwagScanner in the /applications path
+         * Default constructor makes a ScanFileHandler. Searches for SwagScanner in the /applications path
          * and creates a new SwagScanner directory if it doesn't exist. Will also create a folder "1" under
          * the /data directory and set it as the current scan folder. * Then it will update the settings.json on the
          * latest scan. If SwagScanner exists, then it will use the current scan folder according to the
@@ -39,6 +39,19 @@ namespace file {
          * @param scan_name name of the scan.
          */
         ScanFileHandler(const char *scan_name);
+
+        /**
+         * Scan folder will be created and name will be be assigned based on previous scans in
+         * alphanumeric order.
+         */
+        void auto_create_new_scan();
+
+        /**
+         * Point to the given scan. If the scan does not exist then create a new one.
+         *
+         * @param scan name of the scan.
+         */
+        void set_scan(const std::string &scan_name);
 
         void save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                         const std::string &cloud_name,
@@ -99,9 +112,11 @@ namespace file {
 
         /**
          * Finds the last scan folder using the settings.json file in the /settings directory.
+         * TODO: Might wanna move this to IFilehandler. Also might wanna not depend on the json file to accomplish this.
+         *
          * @return path to the latest scan.
          */
-        boost::filesystem::path find_latest_scan_folder();
+        boost::filesystem::path find_latest_scan();
 
 
         /**

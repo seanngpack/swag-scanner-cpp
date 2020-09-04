@@ -13,23 +13,33 @@ file::ScanFileHandler::ScanFileHandler() {
         create_sub_folders();
         set_settings_latest_scan(scan_folder_path);
     } else {
-        scan_folder_path = find_latest_scan_folder();
+        scan_folder_path = find_latest_scan();
     }
 }
 
 file::ScanFileHandler::ScanFileHandler(bool auto_create_flag) {
-    scan_folder_path = find_next_scan_folder_numeric();
-    scan_name = scan_folder_path.stem().string();
-    std::cout << scan_folder_path << std::endl;
     if (auto_create_flag) {
-        create_directory(scan_folder_path);
-        create_sub_folders();
-        set_settings_latest_scan(scan_folder_path);
+        auto_create_new_scan();
+    } else {
+        scan_folder_path = find_latest_scan().parent_path();
+        scan_name = scan_folder_path.stem().string();
     }
 }
 
 
 file::ScanFileHandler::ScanFileHandler(const char *scan_name) {
+    set_scan((std::string) scan_name);
+}
+
+void file::ScanFileHandler::auto_create_new_scan() {
+    scan_folder_path = find_next_scan_folder_numeric();
+    scan_name = scan_folder_path.stem().string();
+    create_directory(scan_folder_path);
+    create_sub_folders();
+    set_settings_latest_scan(scan_folder_path);
+}
+
+void file::ScanFileHandler::set_scan(const std::string &scan_name) {
     this->scan_name = scan_name;
     scan_folder_path = swag_scanner_path / "scans" / scan_name;
     if (!is_directory(scan_folder_path)) {
@@ -126,7 +136,7 @@ json file::ScanFileHandler::get_calibration_json() {
     return calibration_json;
 }
 
-path file::ScanFileHandler::find_latest_scan_folder() {
+path file::ScanFileHandler::find_latest_scan() {
     std::ifstream settings(swag_scanner_path.string() + "/settings/settings.json");
     json settings_json;
     settings >> settings_json;
@@ -197,3 +207,4 @@ void file::ScanFileHandler::set_settings_latest_scan(const path &folder_path) {
     std::ofstream updated_file(swag_scanner_path.string() + "/settings/settings.json");
     updated_file << std::setw(4) << settings_json << std::endl; // write to file
 }
+
