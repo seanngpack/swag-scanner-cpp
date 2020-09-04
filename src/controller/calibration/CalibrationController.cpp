@@ -31,7 +31,7 @@ void controller::CalibrationController::run() {
     file_handler->update_calibration_json(axis_dir, center);
     arduino->rotate_to(0);
 
-    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
+//    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
 }
 
 void controller::CalibrationController::scan() {

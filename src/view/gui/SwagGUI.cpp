@@ -33,6 +33,7 @@ void SwagGUI::set_controller(controller::IControllerGUI *c) {
 }
 
 std::string SwagGUI::update_name() const {
+    std::cout << "update name called " << std::endl;
     return name;
 }
 

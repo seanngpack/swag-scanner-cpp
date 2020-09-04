@@ -28,11 +28,11 @@ namespace controller {
          */
         void setup_gui();
 
-        std::string get_name();
+        void update_name();
 
-        int get_deg();
+        void update_deg();
 
-        int get_rot();
+        void update_rot();
 
         void update_console(const std::string &info);
 

@@ -29,13 +29,9 @@ void controller::CalibrationControllerGUI::setup_gui() {
 }
 
 void controller::CalibrationControllerGUI::run() {
-    std::cout << "gets ehre" << std::endl;
-    get_name();
-    std::cout << "finished getting name" << std::endl;
-    get_deg();
-    std::cout << "finished getting deg" << std::endl;
-    get_rot();
-    std::cout << "prints the getters just fine" << get_rot() << std::endl;
+    update_name();
+    update_deg();
+    update_rot();
 
     update_console("Starting scan");
     scan();
@@ -55,15 +51,16 @@ void controller::CalibrationControllerGUI::run() {
     viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
 }
 
-std::string controller::CalibrationControllerGUI::get_name() {
+void controller::CalibrationControllerGUI::update_name() {
     file_handler->set_calibration(gui->update_name());
+    std::cout << " end of get-name method " << std::endl;
 }
 
-int controller::CalibrationControllerGUI::get_deg() {
+void controller::CalibrationControllerGUI::update_deg() {
     deg = gui->update_deg();
 }
 
-int controller::CalibrationControllerGUI::get_rot() {
+void controller::CalibrationControllerGUI::update_rot() {
     num_rot = gui->update_rot();
 }
 

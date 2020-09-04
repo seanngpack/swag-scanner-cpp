@@ -33,8 +33,8 @@ void file::CalibrationFileHandler::auto_create_new_calibration() {
 }
 
 void file::CalibrationFileHandler::set_calibration(const std::string &cal_name) {
-    this->scan_name = scan_name;
-    scan_folder_path = swag_scanner_path / "calibration" / scan_name;
+    scan_name = cal_name;
+    scan_folder_path = swag_scanner_path / "calibration" / cal_name;
     if (!is_directory(scan_folder_path)) {
         create_directory(scan_folder_path);
         create_calibration_json();

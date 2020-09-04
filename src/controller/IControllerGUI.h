@@ -20,19 +20,19 @@ namespace controller {
          * Get the name from GUI.
          * @return name.
          */
-        std::string get_name();
+        void update_name();
 
         /**
          * Get the degree from GUI.
          * @return degree.
          */
-        int get_deg();
+        void update_deg();
 
         /**
          * Get the rot from GUI.
          * @return rot.
          */
-        int get_rot();
+        void update_rot();
 
         /**
          * Write message to GUI console.
