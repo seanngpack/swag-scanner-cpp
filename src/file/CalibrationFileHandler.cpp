@@ -13,9 +13,7 @@ file::CalibrationFileHandler::CalibrationFileHandler() {
 
 file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {
     if (auto_create_flag) {
-        scan_folder_path = find_next_scan_folder_numeric(CloudType::Type::CALIBRATION);
-        scan_name = scan_folder_path.stem().string();
-        create_directory(scan_folder_path);
+        auto_create_new_calibration();
     } else {
         scan_folder_path = find_latest_calibration().parent_path();
         scan_name = scan_folder_path.stem().string();
@@ -23,8 +21,18 @@ file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {
 }
 
 file::CalibrationFileHandler::CalibrationFileHandler(const char *scan_name) {
+    set_calibration((std::string) scan_name);
+}
+
+void file::CalibrationFileHandler::auto_create_new_calibration() {
+    scan_folder_path = find_next_scan_folder_numeric(CloudType::Type::CALIBRATION);
+    scan_name = scan_folder_path.stem().string();
+    create_directory(scan_folder_path);
+}
+
+void file::CalibrationFileHandler::set_calibration(const std::string &cal_name) {
     this->scan_name = scan_name;
-    scan_folder_path = swag_scanner_path / "/calibration/" / scan_name;
+    scan_folder_path = swag_scanner_path / "calibration" / scan_name;
     if (!is_directory(scan_folder_path)) {
         create_directory(scan_folder_path);
         create_calibration_json();
@@ -115,3 +123,5 @@ json file::CalibrationFileHandler::get_calibration_json() {
     calibration >> calibration_json;
     return calibration_json;
 }
+
+

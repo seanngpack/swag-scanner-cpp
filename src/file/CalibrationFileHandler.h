@@ -34,6 +34,18 @@ namespace file {
          */
         CalibrationFileHandler(const char *scan_name);
 
+        /**
+         * Calibration folder will be created and name will be be assigned based on previous calibrations in
+         * alphanumeric order.
+         */
+        void auto_create_new_calibration();
+
+        /**
+         * Point to the given calibration. If the calibration does not exist then create a new one.
+         * @param cal_name name of the calibration.
+         */
+        void set_calibration(const std::string &cal_name);
+
         void save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                         const std::string &cloud_name,
                         const CloudType::Type &cloud_type) override;
