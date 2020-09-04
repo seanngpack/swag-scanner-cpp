@@ -5,6 +5,8 @@ using namespace boost::filesystem;
 using json = nlohmann::json;
 
 file::ScanFileHandler::ScanFileHandler() {
+    // todo: i need this logic moved somewhere else. This will create SwagScanner folder
+    // and set the first scan to something. It's pretty crucial
     bool exists = check_program_folder();
     if (!exists) {
         scan_folder_path = find_next_scan_folder_numeric();

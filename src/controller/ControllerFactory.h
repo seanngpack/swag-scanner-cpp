@@ -1,7 +1,7 @@
 #ifndef SWAG_SCANNER_CONTROLLERFACTORY_H
 #define SWAG_SCANNER_CONTROLLERFACTORY_H
 
-#include "ControllerProxy.h"
+#include "ControllerFactoryCache.h"
 #include <boost/program_options.hpp>
 
 namespace controller {
@@ -12,13 +12,13 @@ namespace controller {
     class ControllerFactory {
     public:
 
-        ControllerFactory() = default;
+        ControllerFactory();
 
-        std::unique_ptr<IController> create(const boost::program_options::variables_map &vm);
+        std::shared_ptr<IController> create(const boost::program_options::variables_map &vm);
 
 
     private:
-        std::unique_ptr<ControllerProxy> cache;
+        std::shared_ptr<ControllerFactoryCache> cache;
 
         /**
          * Creates a new scanning controller. if -name is not passed, it will create
@@ -26,7 +26,7 @@ namespace controller {
          * @param vm
          * @return
          */
-        std::unique_ptr<IController>
+        std::shared_ptr<IController>
         create_scan_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -35,7 +35,7 @@ namespace controller {
          * @param vm
          * @return
          */
-        std::unique_ptr<IController>
+        std::shared_ptr<IController>
         create_calibrate_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -44,7 +44,7 @@ namespace controller {
          * @param vm
          * @return
          */
-        std::unique_ptr<IController>
+        std::shared_ptr<IController>
         create_processing_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -52,7 +52,7 @@ namespace controller {
          * @param vm
          * @return
          */
-        std::unique_ptr<IController>
+        std::shared_ptr<IController>
         create_filter_testing_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -60,7 +60,7 @@ namespace controller {
          * @param vm
          * @return
          */
-        std::unique_ptr<IController>
+        std::shared_ptr<IController>
         create_move_controller(const boost::program_options::variables_map &vm);
 
         /**
@@ -68,7 +68,7 @@ namespace controller {
          * @param vm
          * @return
          */
-        std::unique_ptr<IController>
+        std::shared_ptr<IController>
         create_home_controller(const boost::program_options::variables_map &vm);
     };
 }

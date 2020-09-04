@@ -1,5 +1,10 @@
 #include "ControllerFactoryCache.h"
 
+controller::ControllerFactoryCache::ControllerFactoryCache() :
+        model(std::make_shared<model::Model>()),
+        scan_file_handler(std::make_shared<file::ScanFileHandler>()),
+        calibration_file_handler(std::make_shared<file::CalibrationFileHandler>()) {}
+
 std::shared_ptr<camera::SR305> controller::ControllerFactoryCache::get_camera() {
     if (camera == nullptr) {
         return std::make_shared<camera::SR305>();
@@ -41,3 +46,117 @@ std::shared_ptr<file::CalibrationFileHandler> controller::ControllerFactoryCache
     }
     return calibration_file_handler;
 }
+
+std::shared_ptr<controller::ScanController>
+controller::ControllerFactoryCache::get_scan_controller(const boost::program_options::variables_map &vm) {
+    if (scan_controller != nullptr) {
+        // call setters in here
+        return scan_controller;
+    }
+    std::shared_ptr<file::ScanFileHandler> file_handler;
+    if (vm.count("name")) {
+        std::string name = vm["name"].as<std::string>();
+        file_handler = get_scan_file_handler();
+        file_handler->set_scan(name);
+    } else {
+        file_handler = get_scan_file_handler();
+    }
+
+    std::shared_ptr<controller::ScanController> controller = std::make_unique<controller::ScanController>(
+            get_camera(),
+            get_arduino(),
+            get_model(),
+            file_handler);
+
+    if (vm.count("deg")) {
+        controller->set_deg(vm["deg"].as<int>());
+    }
+    if (vm.count("rot")) {
+        controller->set_num_rot(vm["rot"].as<int>());
+    }
+    return controller;
+}
+
+std::shared_ptr<controller::ScanController> controller::ControllerFactoryCache::get_scan_controller() {
+    if (scan_controller == nullptr) {
+        return std::make_shared<controller::ScanController>(get_camera(),
+                                                            get_arduino(),
+                                                            get_model(),
+                                                            get_scan_file_handler());
+    }
+    return scan_controller;
+}
+
+std::shared_ptr<controller::CalibrationController>
+controller::ControllerFactoryCache::get_calibration_controller(const boost::program_options::variables_map &vm) {
+    if (calibration_controller != nullptr) {
+        // call setters in here
+        return calibration_controller;
+    }
+    std::shared_ptr<file::CalibrationFileHandler> file_handler;
+    if (vm.count("name")) {
+        const char *c = vm["name"].as<std::string>().c_str();
+        file_handler = std::make_shared<file::CalibrationFileHandler>(c);
+    } else {
+        file_handler = std::make_shared<file::CalibrationFileHandler>();
+    }
+
+    std::shared_ptr<controller::CalibrationController> controller = std::make_unique<controller::CalibrationController>(
+            get_camera(),
+            get_arduino(),
+            get_model(),
+            file_handler,
+            get_viewer());
+
+    if (vm.count("deg")) {
+        controller->set_deg(vm["deg"].as<int>());
+    }
+    if (vm.count("rot")) {
+        controller->set_num_rot(vm["rot"].as<int>());
+    }
+    return controller;
+}
+
+std::shared_ptr<controller::CalibrationController> controller::ControllerFactoryCache::get_calibration_controller() {
+    if (calibration_controller == nullptr) {
+        return std::make_shared<controller::CalibrationController>(get_camera(),
+                                                                   get_arduino(),
+                                                                   get_model(),
+                                                                   get_calibration_file_handler(),
+                                                                   get_viewer());
+    }
+    return calibration_controller;
+}
+
+std::shared_ptr<controller::ProcessingController>
+controller::ControllerFactoryCache::get_process_controller(const boost::program_options::variables_map &vm) {
+    if (process_controller != nullptr) {
+        // do setting in here
+        return process_controller;
+    }
+    std::shared_ptr<file::ScanFileHandler> file_handler;
+    if (vm.count("name")) {
+        const char *c = vm["name"].as<std::string>().c_str();
+        file_handler = std::make_shared<file::ScanFileHandler>(c);
+    } else {
+        file_handler = std::make_shared<file::ScanFileHandler>();
+    }
+    return std::make_unique<controller::ProcessingController>(get_model(),
+                                                              get_viewer(),
+                                                              file_handler);
+}
+
+std::shared_ptr<controller::ProcessingController> controller::ControllerFactoryCache::get_process_controller() {
+    if (process_controller == nullptr) {
+        return std::make_shared<controller::ProcessingController>(get_model(),
+                                                                  get_viewer(),
+                                                                  get_scan_file_handler());
+    }
+    return process_controller;
+}
+
+
+
+
+
+

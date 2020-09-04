@@ -10,8 +10,6 @@ target_sources(swag_scanner_lib PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/IController.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/IControllerGUI.h
         ${CMAKE_CURRENT_SOURCE_DIR}/IControllerGUI.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ControllerProxy.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/ControllerProxy.h
         ${CMAKE_CURRENT_SOURCE_DIR}/ControllerFactory.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/ControllerFactory.h
         ${CMAKE_CURRENT_SOURCE_DIR}/ControllerFactoryCache.cpp
