@@ -3,6 +3,7 @@
 #include "Arduino.h"
 #include "Model.h"
 #include "Visualizer.h"
+#include "ScanFileHandler.h"
 #include "CalibrationFileHandler.h"
 #include "CalibrationController.h"
 #include "ProcessingController.h"
@@ -11,12 +12,14 @@
 #include "FilterTestingController.h"
 #include "CalibrationControllerGUI.h"
 #include "HomeController.h"
-#include "MoveController.h"
+#include <iostream>
 
 controller::ControllerFactoryCache::ControllerFactoryCache() :
         model(std::make_shared<model::Model>()),
         scan_file_handler(std::make_shared<file::ScanFileHandler>()),
-        calibration_file_handler(std::make_shared<file::CalibrationFileHandler>()) {}
+        calibration_file_handler(std::make_shared<file::CalibrationFileHandler>()) {
+    std::cout << "made cache" << std::endl;
+}
 
 std::shared_ptr<camera::SR305> controller::ControllerFactoryCache::get_camera() {
     if (camera == nullptr) {
@@ -213,11 +216,15 @@ controller::ControllerFactoryCache::get_home_controller(const boost::program_opt
 
 std::shared_ptr<controller::CalibrationControllerGUI>
 controller::ControllerFactoryCache::get_calibration_controller_gui() {
-    return std::shared_ptr<controller::CalibrationControllerGUI>();
+    if (calibration_controller_gui == nullptr) {
+        return std::make_shared<controller::CalibrationControllerGUI>(get_camera(),
+                                                                      get_arduino(),
+                                                                      get_model(),
+                                                                      get_calibration_file_handler(),
+                                                                      get_viewer());
+    }
+    return calibration_controller_gui;
+
 }
-
-
-
-
 
 

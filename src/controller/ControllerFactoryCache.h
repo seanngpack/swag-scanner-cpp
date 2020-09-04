@@ -2,7 +2,6 @@
 #define SWAG_SCANNER_CONTROLLERFACTORYCACHE_H
 
 #include <memory>
-#include <ScanFileHandler.h>
 #include <boost/program_options.hpp>
 
 namespace camera {

@@ -3,7 +3,10 @@
 #include "SideBar.h"
 #include "ScanControls.h"
 #include "CalibrateControls.h"
+#include "ControllerFactory.h"
 #include "ProcessControls.h"
+#include "IControllerGUI.h"
+#include "CalibrationControllerGUI.h"
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QDesktopWidget>
@@ -13,11 +16,17 @@
 #include <iostream>
 
 
-SwagGUI::SwagGUI(std::shared_ptr<controller::IControllerGUI> controller, QWidget *parent)
-        : controller(std::move(controller)), QMainWindow(parent) {
+SwagGUI::SwagGUI(QWidget *parent) :
+        factory(std::make_unique<controller::ControllerFactory>()), QMainWindow(parent) {
+
     set_up_main();
+    std::cout << "madeit here" << std::endl;
     set_up_left();
+    std::cout << "madeit past left" << std::endl;
     set_up_right();
+    std::cout << "madeit past right" << std::endl;
+    controller = factory->get_gui_controller("calibrate");
+    std::cout << "madeit past controller" << std::endl;
 }
 
 std::string SwagGUI::update_name() const {
@@ -71,7 +80,6 @@ void SwagGUI::handle_calibrate_button_pressed(const FormsPayload &vars) {
     std::cout << "cal name: " << name << std::endl;
     std::cout << "cal deg: " << deg << std::endl;
     std::cout << "cal rot: " << rot << std::endl;
-    // call observer to run controller method
 }
 
 void SwagGUI::handle_process_button_pressed(const FormsPayload &vars) {
@@ -137,6 +145,8 @@ void SwagGUI::set_up_right() {
 //    right_side->addStretch();
     right_side->addWidget(console_widget);
 }
+
+
 
 
 

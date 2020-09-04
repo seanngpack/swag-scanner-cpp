@@ -13,12 +13,15 @@
 #include "FilterTestingController.h"
 #include "CalibrationControllerGUI.h"
 #include "HomeController.h"
+#include "ControllerFactoryCache.h"
 #include "MoveController.h"
 
 
 namespace po = boost::program_options;
 
-controller::ControllerFactory::ControllerFactory() : cache(std::make_unique<ControllerFactoryCache>()) {}
+controller::ControllerFactory::ControllerFactory() : cache(std::make_unique<ControllerFactoryCache>()) {
+    std::cout << "cache addres: " << cache << std::endl;
+}
 
 std::shared_ptr<controller::IController> controller::ControllerFactory::get_controller(const po::variables_map &vm) {
     if (vm.count("scan")) {
@@ -52,6 +55,10 @@ std::shared_ptr<controller::IController> controller::ControllerFactory::get_cont
 
 std::shared_ptr<controller::IControllerGUI> controller::ControllerFactory::get_gui_controller(const std::string &name) {
     if (name == "calibrate") {
+        std::cout << "caling cache to get gui " << std::endl;
+        cache->printHi();
+        std::cout << cache << std::endl;
+        std::cout << cache->printHi() << std::endl;
         return cache->get_calibration_controller_gui();
     } else {
         throw std::invalid_argument("Error, must enter a valid controller name.");
@@ -67,3 +74,4 @@ std::shared_ptr<controller::IControllerGUI> controller::ControllerFactory::get_g
 //    }
 }
 
+controller::ControllerFactory::~ControllerFactory() = default;

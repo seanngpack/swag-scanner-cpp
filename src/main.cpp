@@ -1,18 +1,32 @@
-#include <iostream>
 #include "CLIParser.h"
 #include "IController.h"
-#include "IFileHandler.h"
 #include "ControllerFactory.h"
+#include "ControllerFactoryCache.h"
+#include "SwagGUI.h"
 #include <boost/program_options.hpp>
+#include <iostream>
+#include <QApplication>
 
 
-int main(int argc, char* argv[]) {
-    controller::ControllerFactory factory;
+int main(int argc, char *argv[]) {
+
     std::unique_ptr<cli::CLIParser> cli_parser = std::make_unique<cli::CLIParser>();
     boost::program_options::variables_map vm = cli_parser->get_variables_map(argc, argv);
-    std::shared_ptr<controller::IController> controller = factory.get_controller(vm);
-    controller->run();
-    return 0;
+
+    if (vm.count("gui")) {
+        QApplication app(argc, argv);
+        SwagGUI gui;
+        gui.show();
+
+        return app.exec();
+    } else {
+        controller::ControllerFactory factory;
+        std::shared_ptr<controller::IController> controller = factory.get_controller(vm);
+        controller->run();
+        return 0;
+    }
+
+
 }
 
 //#include <QApplication>

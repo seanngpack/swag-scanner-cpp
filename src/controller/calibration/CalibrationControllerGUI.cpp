@@ -44,4 +44,4 @@ void controller::CalibrationControllerGUI::run() {
 
 
 
-//TOTO: at some point do some checking to make sure deg and rot is not 0, if they are then use default values
+//TODO: at some point do some checking to make sure deg and rot is not 0, if they are then use default values

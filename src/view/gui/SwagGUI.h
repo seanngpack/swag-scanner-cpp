@@ -3,8 +3,8 @@
 
 
 #include <QMainWindow>
-#include "IControllerGUI.h" // can probably remove this one
-#include "CalibrationControllerGUI.h" // i think it's important to include this one
+#include "ControllerFactory.h"
+
 
 class QPlainTextEdit;
 
@@ -16,10 +16,14 @@ class QComboBox;
 
 class FormsPayload;
 
+namespace controller {
+    class IControllerGUI;
+}
+
 class SwagGUI : public QMainWindow {
 Q_OBJECT
 public:
-    explicit SwagGUI(std::shared_ptr<controller::IControllerGUI> controller, QWidget *parent = 0);
+    explicit SwagGUI(QWidget *parent = 0);
 
     /**
      * Get the name text in the current form.
@@ -72,6 +76,7 @@ private slots:
 
 
 private:
+    std::unique_ptr<controller::ControllerFactory> factory;
     std::shared_ptr<controller::IControllerGUI> controller;
 
     QWidget *main;
