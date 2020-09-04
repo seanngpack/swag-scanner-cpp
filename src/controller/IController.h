@@ -2,12 +2,15 @@
 #define SWAG_SCANNER_ICONTROLLER_H
 
 namespace controller {
+    /**
+     * Represents an abstract base for controllers.
+     */
     class IController {
     public:
         /**
          * Run the controller
          */
-        virtual void run() = 0;
+        virtual void run();
 
         virtual ~IController() {}
     };

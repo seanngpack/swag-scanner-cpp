@@ -6,7 +6,7 @@
 
 
 int main(int argc, char* argv[]) {
-    cli::ControllerFactory factory;
+    controller::ControllerFactory factory;
     std::unique_ptr<cli::CLIParser> cli_parser = std::make_unique<cli::CLIParser>();
     boost::program_options::variables_map vm = cli_parser->get_variables_map(argc, argv);
     std::unique_ptr<controller::IController> controller = factory.create(vm);
@@ -14,18 +14,18 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-#include <QApplication>
-#include "IControllerGUI.h"
-#include "SwagGUI.h"
-
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
-    auto g = std::make_shared<controller::IControllerGUI>();
-    SwagGUI gui(g);
-    gui.show();
-
-    return app.exec();
-}
+//#include <QApplication>
+//#include "IControllerGUI.h"
+//#include "SwagGUI.h"
+//
+//int main(int argc, char *argv[]) {
+//    QApplication app(argc, argv);
+//    auto g = std::make_shared<controller::IControllerGUI>();
+//    SwagGUI gui(g);
+//    gui.show();
+//
+//    return app.exec();
+//}
 
 
 
