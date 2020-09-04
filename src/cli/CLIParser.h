@@ -23,12 +23,7 @@ namespace cli {
 
 
 
-//        std::shared_ptr<camera::SR305> camera;
-//        std::shared_ptr<arduino::Arduino> arduino;
-//        std::shared_ptr<model::Model> model;
-//        std::shared_ptr<visual::Visualizer> viewer;
-//        std::shared_ptr<file::ScanFileHandler> scan_file_handler;
-//        std::shared_ptr<file::CalibrationFileHandler> calibration_file_handler;
+
     };
 
 };

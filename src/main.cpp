@@ -1,18 +1,18 @@
-//#include <iostream>
-//#include "CLIParser.h"
-//#include "IController.h"
-//#include "ControllerFactory.h"
-//#include <boost/program_options.hpp>
-//
-//
-//int main(int argc, char* argv[]) {
-//    cli::ControllerFactory factory;
-//    std::unique_ptr<cli::CLIParser> cli_parser = std::make_unique<cli::CLIParser>();
-//    boost::program_options::variables_map vm = cli_parser->get_variables_map(argc, argv);
-//    std::unique_ptr<controller::IController> controller = factory.create(vm);
-//    controller->run();
-//    return 0;
-//}
+#include <iostream>
+#include "CLIParser.h"
+#include "IController.h"
+#include "ControllerFactory.h"
+#include <boost/program_options.hpp>
+
+
+int main(int argc, char* argv[]) {
+    cli::ControllerFactory factory;
+    std::unique_ptr<cli::CLIParser> cli_parser = std::make_unique<cli::CLIParser>();
+    boost::program_options::variables_map vm = cli_parser->get_variables_map(argc, argv);
+    std::unique_ptr<controller::IController> controller = factory.create(vm);
+    controller->run();
+    return 0;
+}
 
 #include <QApplication>
 #include "IControllerGUI.h"

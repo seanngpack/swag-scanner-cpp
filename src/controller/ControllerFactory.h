@@ -2,6 +2,12 @@
 #define SWAG_SCANNER_CONTROLLERFACTORY_H
 
 #include <boost/program_options.hpp>
+#include <SR305.h>
+#include <Arduino.h>
+#include <Model.h>
+#include <Visualizer.h>
+#include <ScanFileHandler.h>
+#include <CalibrationFileHandler.h>
 
 namespace controller {
     class IController;
@@ -17,6 +23,12 @@ namespace cli {
 
 
     private:
+        std::shared_ptr<camera::SR305> camera;
+        std::shared_ptr<arduino::Arduino> arduino;
+        std::shared_ptr<model::Model> model;
+        std::shared_ptr<visual::Visualizer> viewer;
+        std::shared_ptr<file::ScanFileHandler> scan_file_handler;
+        std::shared_ptr<file::CalibrationFileHandler> calibration_file_handler;
 
         /**
          * Creates a new scanning controller. if -name is not passed, it will create
