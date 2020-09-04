@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
     controller::ControllerFactory factory;
     std::unique_ptr<cli::CLIParser> cli_parser = std::make_unique<cli::CLIParser>();
     boost::program_options::variables_map vm = cli_parser->get_variables_map(argc, argv);
-    std::unique_ptr<controller::IController> controller = factory.create(vm);
+    std::shared_ptr<controller::IController> controller = factory.get_controller(vm);
     controller->run();
     return 0;
 }

@@ -10,6 +10,9 @@
 #include "ProcessingController.h"
 #include "ScanController.h"
 #include "MoveController.h"
+#include "FilterTestingController.h"
+#include "HomeController.h"
+#include "MoveController.h"
 #include <memory>
 #include <ScanFileHandler.h>
 #include <boost/program_options.hpp>
@@ -56,6 +59,15 @@ namespace controller {
         get_process_controller(const boost::program_options::variables_map &vm);
 
         std::shared_ptr<controller::ProcessingController> get_process_controller();
+
+        std::shared_ptr<controller::FilterTestingController>
+        get_filter_testing_controller(const boost::program_options::variables_map &vm);
+
+        std::shared_ptr<controller::MoveController>
+        get_move_controller(const boost::program_options::variables_map &vm);
+
+        std::shared_ptr<controller::HomeController>
+        get_home_controller(const boost::program_options::variables_map &vm);
 
     private:
         std::shared_ptr<camera::SR305> camera;

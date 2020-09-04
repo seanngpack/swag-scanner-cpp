@@ -155,6 +155,49 @@ std::shared_ptr<controller::ProcessingController> controller::ControllerFactoryC
     return process_controller;
 }
 
+std::shared_ptr<controller::FilterTestingController>
+controller::ControllerFactoryCache::get_filter_testing_controller(const boost::program_options::variables_map &vm) {
+    std::shared_ptr<camera::SR305> camera = std::make_shared<camera::SR305>();
+    if (vm.count("d_mag")) {
+        camera->set_decimation_magnitude(vm["d_mag"].as<int>());
+    }
+    if (vm.count("s_mag")) {
+        camera->set_spatial_filter_magnitude(vm["s_mag"].as<int>());
+    }
+    if (vm.count("s_alpha")) {
+        camera->set_spatial_smooth_alpha(vm["s_alpha"].as<float>());
+    }
+    if (vm.count("s_delta")) {
+        camera->set_spatial_smooth_delta(vm["s_delta"].as<int>());
+    }
+    return std::make_unique<controller::FilterTestingController>(camera,
+                                                                 std::make_shared<model::Model>(),
+                                                                 std::make_shared<file::ScanFileHandler>(),
+                                                                 std::make_shared<visual::Visualizer>());
+}
+
+std::shared_ptr<controller::MoveController>
+controller::ControllerFactoryCache::get_move_controller(const boost::program_options::variables_map &vm) {
+    auto arduino = std::make_shared<arduino::Arduino>();
+    std::shared_ptr<controller::MoveController> move_controller = std::make_unique<controller::MoveController>(arduino);
+    if (vm.count("to")) {
+        move_controller->set_deg(vm["to"].as<int>());
+        move_controller->set_move_method("to");
+    } else if (vm.count("by")) {
+        move_controller->set_deg(vm["by"].as<int>());
+        move_controller->set_move_method("by");
+    } else if (vm.count("home")) {
+        move_controller->set_deg(0);
+        move_controller->set_move_method("to");
+    }
+    return move_controller;
+}
+
+std::shared_ptr<controller::HomeController>
+controller::ControllerFactoryCache::get_home_controller(const boost::program_options::variables_map &vm) {
+    return std::make_shared<controller::HomeController>();
+}
+
 
 
 
