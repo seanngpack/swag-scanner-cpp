@@ -22,16 +22,25 @@ namespace visual {
 
 namespace file {
     class CalibrationFileHandler;
+
     class ScanFileHandler;
 }
 
+class SwagGUI;
+
 namespace controller {
     class ScanController;
+
     class CalibrationController;
+
     class CalibrationControllerGUI;
+
     class ProcessingController;
+
     class FilterTestingController;
+
     class HomeController;
+
     class MoveController;
 }
 
@@ -59,6 +68,8 @@ namespace controller {
         std::shared_ptr<file::ScanFileHandler> get_scan_file_handler();
 
         std::shared_ptr<file::CalibrationFileHandler> get_calibration_file_handler();
+
+        std::shared_ptr<SwagGUI> get_gui();
 
         // Controllers
 
@@ -102,8 +113,13 @@ namespace controller {
         std::shared_ptr<controller::CalibrationController> calibration_controller;
         std::shared_ptr<controller::ProcessingController> process_controller;
 
+        //gui
+        std::shared_ptr<SwagGUI> gui;
+
         // gui controllers
         std::shared_ptr<controller::CalibrationControllerGUI> calibration_controller_gui;
+
+
     };
 }
 

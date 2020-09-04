@@ -15,8 +15,10 @@ int main(int argc, char *argv[]) {
 
     if (vm.count("gui")) {
         QApplication app(argc, argv);
-        SwagGUI gui;
-        gui.show();
+        controller::ControllerFactory factory;
+        factory.get_gui_controller("calibrate");
+//        SwagGUI gui;
+//        gui.show();
 
         return app.exec();
     } else {

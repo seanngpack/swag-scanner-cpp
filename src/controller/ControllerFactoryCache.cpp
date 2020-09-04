@@ -12,55 +12,70 @@
 #include "FilterTestingController.h"
 #include "CalibrationControllerGUI.h"
 #include "HomeController.h"
+#include "SwagGUI.h"
 #include <iostream>
 
 controller::ControllerFactoryCache::ControllerFactoryCache() :
         model(std::make_shared<model::Model>()),
         scan_file_handler(std::make_shared<file::ScanFileHandler>()),
-        calibration_file_handler(std::make_shared<file::CalibrationFileHandler>()) {
-    std::cout << "made cache" << std::endl;
-}
+        calibration_file_handler(std::make_shared<file::CalibrationFileHandler>()) {}
 
 std::shared_ptr<camera::SR305> controller::ControllerFactoryCache::get_camera() {
     if (camera == nullptr) {
-        return std::make_shared<camera::SR305>();
+        camera = std::make_shared<camera::SR305>();
+        std::cout << "memory address of camera: " << camera.get() << std::endl;
+        return camera;
     }
     return camera;
 }
 
 std::shared_ptr<arduino::Arduino> controller::ControllerFactoryCache::get_arduino() {
     if (arduino == nullptr) {
-        return std::make_shared<arduino::Arduino>();
+        arduino = std::make_shared<arduino::Arduino>();
+        return arduino;
     }
     return arduino;
 }
 
 std::shared_ptr<model::Model> controller::ControllerFactoryCache::get_model() {
     if (model == nullptr) {
-        return std::make_shared<model::Model>();
+        model = std::make_shared<model::Model>();
+        return model;
     }
     return model;
 }
 
 std::shared_ptr<visual::Visualizer> controller::ControllerFactoryCache::get_viewer() {
     if (viewer == nullptr) {
-        return std::make_shared<visual::Visualizer>();
+        viewer = std::make_shared<visual::Visualizer>();
+        return viewer;
     }
     return viewer;
 }
 
 std::shared_ptr<file::ScanFileHandler> controller::ControllerFactoryCache::get_scan_file_handler() {
     if (scan_file_handler == nullptr) {
-        return std::make_shared<file::ScanFileHandler>();
+        scan_file_handler = std::make_shared<file::ScanFileHandler>();
+        return scan_file_handler;
     }
     return scan_file_handler;
 }
 
 std::shared_ptr<file::CalibrationFileHandler> controller::ControllerFactoryCache::get_calibration_file_handler() {
     if (calibration_file_handler == nullptr) {
-        return std::make_shared<file::CalibrationFileHandler>();
+        calibration_file_handler = std::make_shared<file::CalibrationFileHandler>();
+        return calibration_file_handler;
     }
     return calibration_file_handler;
+}
+
+std::shared_ptr<SwagGUI> controller::ControllerFactoryCache::get_gui() {
+    if (gui == nullptr) {
+        gui = std::make_shared<SwagGUI>();
+        gui->show();
+        return gui;
+    }
+    return gui;
 }
 
 std::shared_ptr<controller::ScanController>
@@ -90,15 +105,17 @@ controller::ControllerFactoryCache::get_scan_controller(const boost::program_opt
     if (vm.count("rot")) {
         controller->set_num_rot(vm["rot"].as<int>());
     }
+    scan_controller = controller;
     return controller;
 }
 
 std::shared_ptr<controller::ScanController> controller::ControllerFactoryCache::get_scan_controller() {
     if (scan_controller == nullptr) {
-        return std::make_shared<controller::ScanController>(get_camera(),
-                                                            get_arduino(),
-                                                            get_model(),
-                                                            get_scan_file_handler());
+        scan_controller = std::make_shared<controller::ScanController>(get_camera(),
+                                                                       get_arduino(),
+                                                                       get_model(),
+                                                                       get_scan_file_handler());
+        return scan_controller;
     }
     return scan_controller;
 }
@@ -130,16 +147,18 @@ controller::ControllerFactoryCache::get_calibration_controller(const boost::prog
     if (vm.count("rot")) {
         controller->set_num_rot(vm["rot"].as<int>());
     }
+    calibration_controller = controller;
     return controller;
 }
 
 std::shared_ptr<controller::CalibrationController> controller::ControllerFactoryCache::get_calibration_controller() {
     if (calibration_controller == nullptr) {
-        return std::make_shared<controller::CalibrationController>(get_camera(),
-                                                                   get_arduino(),
-                                                                   get_model(),
-                                                                   get_calibration_file_handler(),
-                                                                   get_viewer());
+        calibration_controller = std::make_shared<controller::CalibrationController>(get_camera(),
+                                                                                     get_arduino(),
+                                                                                     get_model(),
+                                                                                     get_calibration_file_handler(),
+                                                                                     get_viewer());
+        return calibration_controller;
     }
     return calibration_controller;
 }
@@ -157,16 +176,18 @@ controller::ControllerFactoryCache::get_process_controller(const boost::program_
     } else {
         file_handler = std::make_shared<file::ScanFileHandler>();
     }
-    return std::make_unique<controller::ProcessingController>(get_model(),
-                                                              get_viewer(),
-                                                              file_handler);
+    process_controller = std::make_unique<controller::ProcessingController>(get_model(),
+                                                                            get_viewer(),
+                                                                            file_handler);
+    return process_controller;
 }
 
 std::shared_ptr<controller::ProcessingController> controller::ControllerFactoryCache::get_process_controller() {
     if (process_controller == nullptr) {
-        return std::make_shared<controller::ProcessingController>(get_model(),
-                                                                  get_viewer(),
-                                                                  get_scan_file_handler());
+        process_controller = std::make_shared<controller::ProcessingController>(get_model(),
+                                                                                get_viewer(),
+                                                                                get_scan_file_handler());
+        return process_controller;
     }
     return process_controller;
 }
@@ -187,9 +208,9 @@ controller::ControllerFactoryCache::get_filter_testing_controller(const boost::p
         camera->set_spatial_smooth_delta(vm["s_delta"].as<int>());
     }
     return std::make_unique<controller::FilterTestingController>(camera,
-                                                                 std::make_shared<model::Model>(),
-                                                                 std::make_shared<file::ScanFileHandler>(),
-                                                                 std::make_shared<visual::Visualizer>());
+                                                                   std::make_shared<model::Model>(),
+                                                                   std::make_shared<file::ScanFileHandler>(),
+                                                                   std::make_shared<visual::Visualizer>());
 }
 
 std::shared_ptr<controller::MoveController>
@@ -217,11 +238,13 @@ controller::ControllerFactoryCache::get_home_controller(const boost::program_opt
 std::shared_ptr<controller::CalibrationControllerGUI>
 controller::ControllerFactoryCache::get_calibration_controller_gui() {
     if (calibration_controller_gui == nullptr) {
-        return std::make_shared<controller::CalibrationControllerGUI>(get_camera(),
-                                                                      get_arduino(),
-                                                                      get_model(),
-                                                                      get_calibration_file_handler(),
-                                                                      get_viewer());
+        calibration_controller_gui = std::make_shared<controller::CalibrationControllerGUI>(get_camera(),
+                                                                                            get_arduino(),
+                                                                                            get_model(),
+                                                                                            get_calibration_file_handler(),
+                                                                                            get_viewer(),
+                                                                                            get_gui());
+        return calibration_controller_gui;
     }
     return calibration_controller_gui;
 

@@ -74,8 +74,10 @@ void SwagGUI::handle_scan_button_pressed(const FormsPayload &vars) {
 
 void SwagGUI::handle_calibrate_button_pressed(const FormsPayload &vars) {
     name = vars.name;
+    std::cout << "cal name: " << name << std::endl;
     deg = vars.deg;
     rot = vars.rot;
+    std::cout << "bout to run calibration" <<std::endl;
     controller->run();
     std::cout << "cal name: " << name << std::endl;
     std::cout << "cal deg: " << deg << std::endl;

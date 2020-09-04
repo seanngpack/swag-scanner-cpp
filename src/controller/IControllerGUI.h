@@ -40,7 +40,7 @@ namespace controller {
         void update_console(const std::string &info);
 
     protected:
-        std::shared_ptr<SwagGUI> gui;
+//        std::shared_ptr<SwagGUI> gui;
 
 
     };
