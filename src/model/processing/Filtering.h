@@ -15,10 +15,11 @@ namespace filtering {
      * @param cloud cloud you want to crop.
      * @return the cropped cloud.
      */
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> crop_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                                   float minX, float maxX,
-                                                   float minY, float maxY,
-                                                   float minZ, float maxZ);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+    crop_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+               float minX, float maxX,
+               float minY, float maxY,
+               float minZ, float maxZ);
 
     /**
      * Downsample the given cloud using a voxel grid filter and leaf size.
@@ -26,8 +27,9 @@ namespace filtering {
      * @param leafSize size of leaf.
      * @return the filtered cloud.
      */
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                                          float leafSize);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+    voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                      float leafSize);
 }
 
 #endif //SWAG_SCANNER_FILTERING_H

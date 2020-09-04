@@ -13,7 +13,9 @@ namespace camera {
 
 namespace equations {
     class Normal;
+
     class Plane;
+
     class Point;
 }
 
@@ -35,7 +37,7 @@ namespace algos {
     pcl::PointXYZ deproject_pixel_to_point(float x_pixel,
                                            float y_pixel,
                                            float z,
-                                           const camera::intrinsics *intrinsics);
+                                           const camera::intrinsics &intrinsics);
 
     /**
      * Given a copy of a point from the pointcloud, a point that a line passes through,
@@ -48,9 +50,9 @@ namespace algos {
      * @param line_direction direction vector (normalized) of the axis.
      * @return a new rotated point.
      */
-    pcl::PointXYZ rotate_point_about_line(pcl::PointXYZ point,
-                                          std::vector<float> line_point,
-                                          std::vector<float> line_direction,
+    pcl::PointXYZ rotate_point_about_line(const pcl::PointXYZ &point,
+                                          const std::vector<float> &line_point,
+                                          const std::vector<float> &line_direction,
                                           float theta);
 
     /**
@@ -59,8 +61,8 @@ namespace algos {
      * @param ground_normal normal vector of ground plane.
      * @return
      */
-    Eigen::Matrix4f calc_transform_to_world_matrix(pcl::PointXYZ center,
-                                                   equations::Normal ground_normal);
+    Eigen::Matrix4f calc_transform_to_world_matrix(const pcl::PointXYZ &center,
+                                                   const equations::Normal &ground_normal);
 }
 
 #endif //SWAG_SCANNER_ALGORITHMS_H

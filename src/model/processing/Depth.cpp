@@ -3,7 +3,7 @@
 #include <librealsense2/rsutil.h>
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> depth::create_point_cloud(const std::vector<uint16_t> &depth_frame,
-                                                       const camera::intrinsics intrinsics) {
+                                                                          const camera::intrinsics &intrinsics) {
     // cloud setup
     auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     cloud->height = intrinsics.height;

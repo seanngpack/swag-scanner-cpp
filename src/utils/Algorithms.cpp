@@ -4,12 +4,12 @@
 #include "CameraTypes.h"
 
 pcl::PointXYZ algos::deproject_pixel_to_point(float x_pixel,
-                                                          float y_pixel,
-                                                          float z,
-                                                          const camera::intrinsics *intrinsics) {
-    float depth = z * intrinsics->depth_scale;
-    float x = (x_pixel - intrinsics->ppx) / intrinsics->fx;
-    float y = (y_pixel - intrinsics->ppy) / intrinsics->fy;
+                                              float y_pixel,
+                                              float z,
+                                              const camera::intrinsics &intrinsics) {
+    float depth = z * intrinsics.depth_scale;
+    float x = (x_pixel - intrinsics.ppx) / intrinsics.fx;
+    float y = (y_pixel - intrinsics.ppy) / intrinsics.fy;
     float ux = x * depth;
     float uy = y * depth;
 
@@ -17,10 +17,10 @@ pcl::PointXYZ algos::deproject_pixel_to_point(float x_pixel,
     return point;
 }
 
-pcl::PointXYZ algos::rotate_point_about_line(pcl::PointXYZ point,
-                                      std::vector<float> line_point,
-                                      std::vector<float> line_direction,
-                                      float theta) {
+pcl::PointXYZ algos::rotate_point_about_line(const pcl::PointXYZ &point,
+                                             const std::vector<float> &line_point,
+                                             const std::vector<float> &line_direction,
+                                             float theta) {
     float x = point.x;
     float y = point.y;
     float z = point.z;
@@ -42,8 +42,8 @@ pcl::PointXYZ algos::rotate_point_about_line(pcl::PointXYZ point,
     return p;
 }
 
-Eigen::Matrix4f algos::calc_transform_to_world_matrix(pcl::PointXYZ center,
-                                                      equations::Normal ground_normal) {
+Eigen::Matrix4f algos::calc_transform_to_world_matrix(const pcl::PointXYZ &center,
+                                                      const equations::Normal &ground_normal) {
     Eigen::Vector3f translation_vect(center.getVector3fMap());
     translation_vect = -translation_vect;
     Eigen::Translation<float, 3> translation(translation_vect);

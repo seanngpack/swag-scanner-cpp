@@ -101,7 +101,7 @@ TEST_F(CalibrationPhysicalFixture, VisualizePlaneCalibration) {
 
 
     visual::Visualizer visualizer;
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{cloudOut, transformed};
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{cloudOut, transformed};
     visualizer.simpleVis(clouds);
 
 }

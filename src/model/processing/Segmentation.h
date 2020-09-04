@@ -13,10 +13,10 @@ namespace segmentation {
     /**
      * Given a cloud with plane, detect the plane using RANSAC, remove it, and return
      * a cloud without the plane.
-     * @param cloudIn cloud with plane.
+     * @param cloud cloud with plane.
      * @return cloud without plane.
      */
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> remove_plane(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
 
     /**
@@ -26,14 +26,14 @@ namespace segmentation {
      * @return a vector of coefficients for the two planes.
      * First element in vector is upright plane. Second element is ground plane.
      */
-    std::vector<equations::Plane> get_calibration_planes_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud);
+    std::vector<equations::Plane> get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
     /**
      * Get the plane coefficients of the base of the given cloud.
      * @param cloud input cloud.
      * @return coefficients vector of size 4 of the cloud.
      */
-    std::vector<float> get_plane_coefs(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud);
+    std::vector<float> get_plane_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 }
 
 #endif //SWAG_SCANNER_SEGMENTATION_H

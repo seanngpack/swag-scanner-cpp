@@ -40,28 +40,29 @@ file::ScanFileHandler::ScanFileHandler(const char *scan_name) {
 }
 
 
-void file::ScanFileHandler::save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+void file::ScanFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                        const std::string &cloud_name,
-                                       CloudType::Type cloud_type) {
+                                       const CloudType::Type &cloud_type) {
     std::cout << "saving file to ";
     path out_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
     std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
 
-void file::ScanFileHandler::load_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                       const std::string &cloud_name,
-                                       CloudType::Type cloud_type) {
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::ScanFileHandler::load_cloud(const std::string &cloud_name,
+                                                                                  const CloudType::Type &cloud_type) {
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud;
     path open_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
+    return cloud;
 }
 
 
-void file::ScanFileHandler::load_clouds(
-        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
-        CloudType::Type cloud_type) {
+std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> file::ScanFileHandler::load_clouds(
+        const CloudType::Type &cloud_type) {
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector;
     std::vector<path> cloud_paths;
     path load_path = scan_folder_path / CloudType::String(cloud_type);
 
@@ -86,6 +87,7 @@ void file::ScanFileHandler::load_clouds(
         cloud_vector.push_back(cloud);
     }
     std::cout << "finished loading clouds" << std::endl;
+    return cloud_vector;
 }
 
 std::string file::ScanFileHandler::get_scan_name() {
@@ -103,7 +105,9 @@ json file::ScanFileHandler::get_info_json() {
     return info_json;
 }
 
-void file::ScanFileHandler::update_info_json(std::string date, int angle, std::string cal) {
+void file::ScanFileHandler::update_info_json(const std::string &date,
+                                             int angle,
+                                             const std::string &cal) {
     json info_json = get_info_json();
     info_json["date"] = date;
     info_json["angle"] = angle;
@@ -184,7 +188,7 @@ void file::ScanFileHandler::create_sub_folders() {
 }
 
 
-void file::ScanFileHandler::set_settings_latest_scan(path folder_path) {
+void file::ScanFileHandler::set_settings_latest_scan(const path &folder_path) {
     std::ifstream settings(swag_scanner_path.string() + "/settings/settings.json");
     json settings_json;
     settings >> settings_json;

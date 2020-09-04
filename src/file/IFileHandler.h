@@ -29,7 +29,7 @@ namespace file {
          * Static method write to settings.json.
          * @param j json file that follows format of settings.json
          */
-        static void write_settings_json(nlohmann::json j);
+        static void write_settings_json(const nlohmann::json &j);
 
         /**
          * Go to the SwagScanner/calibration directory and find the latest calibration by date.
@@ -44,21 +44,21 @@ namespace file {
          * @param cloud the cloud you want to save.
          * @para cloud_type enum for the type of cloud you are saving. Affects the subfolder path.
          */
-        virtual void save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+        virtual void save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                 const std::string &cloud_name,
-                                CloudType::Type cloud_type) = 0;
+                                const CloudType::Type &cloud_type) = 0;
 
         /*
          * Load a pointcloud from the scan folder given the name and type.
-         * @param cloud the cloud you want to load the cloud into
+         *
          * @param cloud_name name of the cloud.
          * @param cloud_type type of the cloud.
+         * @return cloud.
          *
-         * Example: load_cloud(cloud, "testScan", "12.pcd", CloudType::RAW)
+         * Example: load_cloud("12", CloudType::RAW)
          */
-        virtual void load_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                                const std::string &cloud_name,
-                                CloudType::Type cloud_type) = 0;
+        virtual std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> load_cloud(const std::string &cloud_name,
+                                                                   const CloudType::Type &cloud_type) = 0;
 
 
         /**
@@ -67,13 +67,13 @@ namespace file {
          *
          * @Edge case when passed CALIBRATION as the type, it will search through the
          * /calibration folder in the root directory and load the latest calibration.
-         * @param cloud_vector the vector you want to load the clouds into.
+         *
          * @param cloud_type determines which folder to search for.
+         * @return vector of loaded cloud pointers.
          *
          */
-        virtual void load_clouds(std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
-                                 CloudType::Type cloud_type) = 0;
-
+        virtual std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>
+        load_clouds(const CloudType::Type &cloud_type) = 0;
 
         virtual std::string get_scan_name() = 0;
 
@@ -92,7 +92,7 @@ namespace file {
          * @param path2 second path.
          * @return true if the first file is smaller than the second, false otherwise.
          */
-        static bool path_sort(boost::filesystem::path &path1, boost::filesystem::path &path2);
+        static bool path_sort(const boost::filesystem::path &path1, const boost::filesystem::path &path2);
 
         /**
          * Find the next scan folder by sorting the existing scans numerically.
@@ -101,7 +101,7 @@ namespace file {
          *
          */
         virtual boost::filesystem::path
-        find_next_scan_folder_numeric(CloudType::Type const &type);
+        find_next_scan_folder_numeric(const CloudType::Type &type);
 
         boost::filesystem::path find_next_scan_folder_numeric();
     };

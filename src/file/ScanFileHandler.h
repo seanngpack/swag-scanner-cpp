@@ -40,17 +40,15 @@ namespace file {
          */
         ScanFileHandler(const char *scan_name);
 
-        void save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+        void save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                         const std::string &cloud_name,
-                        CloudType::Type cloud_type) override;
+                        const CloudType::Type &cloud_type) override;
 
-        void load_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-                        const std::string &cloud_name,
-                        CloudType::Type cloud_type) override;
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> load_cloud(const std::string &cloud_name,
+                                                                   const CloudType::Type &cloud_type) override;
 
-        void load_clouds(
-                std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &cloud_vector,
-                CloudType::Type cloud_type) override;
+        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> load_clouds(
+                const CloudType::Type &cloud_type) override;
 
         std::string get_scan_name() override;
 
@@ -76,7 +74,9 @@ namespace file {
          * @param angle angle intervals of the scan.
          * @param cal calibration path.
          */
-        void update_info_json(std::string date, int angle, std::string cal = "None");
+        void update_info_json(const std::string &date,
+                              int angle,
+                              const std::string &cal = "None");
 
     private:
         /**
@@ -107,7 +107,7 @@ namespace file {
         /**
          * Update the settings.json file "latest_scan" field.
          */
-        void set_settings_latest_scan(boost::filesystem::path folder_path);
+        void set_settings_latest_scan(const boost::filesystem::path &folder_path);
 
     };
 }

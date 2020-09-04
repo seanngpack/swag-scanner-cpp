@@ -14,7 +14,7 @@ namespace equations {
 
         Point(double x, double y, double z);
 
-        Point(std::vector<double> in);
+        Point(const std::vector<double> &in);
 
         ~Point() = default;
     } Point;
