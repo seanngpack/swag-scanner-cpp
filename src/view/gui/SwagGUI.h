@@ -56,10 +56,20 @@ public:
 
 
 signals:
+    /**
+     * Send signal to update the scans in the left bar scan list.
+     *
+     * @param scans vector of scan names.
+     */
+    void update_scan_list(const std::vector<std::string> &scans);
 
-    void update_scan_list(const std::vector<std::string> &input);
+    /**
+     * Send signal to update the calibrations in the left bar scan list.
+     *
+     * @param scans vector of calibration names.
+     */
+    void update_cal_list(const std::vector<std::string> &scans);
 
-    void update_cal_list(const std::vector<std::string> &input);
 
 private slots:
 
@@ -78,6 +88,13 @@ private slots:
      * @param index
      */
     void handle_combo_index_changed(int index);
+
+    /**
+     * Handler when the previous scans section for "scan" or "calibrate" changes.
+     * Will emit update_scan_list or update_cal_list signal
+     * @param index
+     */
+    void handle_scan_cal_combo_changed(int index);
 
 
 private:

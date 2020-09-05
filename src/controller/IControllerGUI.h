@@ -39,6 +39,10 @@ namespace controller {
          */
         void update_console(const std::string &info);
 
+        std::vector<std::string> get_all_scans();
+
+        std::vector<std::string> get_all_calibrations();
+
     protected:
 //        std::shared_ptr<SwagGUI> gui;
 

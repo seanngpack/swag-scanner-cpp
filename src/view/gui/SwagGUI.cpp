@@ -113,11 +113,13 @@ void SwagGUI::set_up_main() {
 }
 
 void SwagGUI::set_up_left() {
+    connect(left_side, SIGNAL(scan_cal_combo_changed(int)), this,
+            SLOT(handle_scan_cal_combo_changed(int)));
     connect(this, SIGNAL(update_scan_list(const std::vector<std::string> &)), left_side,
             SLOT(update_scan_list(const std::vector<std::string> &)));
     connect(this, SIGNAL(update_cal_list(const std::vector<std::string> &)), left_side,
             SLOT(update_cal_list(const std::vector<std::string> &)));
-
+    handle_scan_cal_combo_changed(0);
 }
 
 void SwagGUI::set_up_right() {
@@ -150,6 +152,19 @@ void SwagGUI::set_up_right() {
     process_controls->setVisible(false);
 //    right_side->addStretch();
     right_side->addWidget(console_widget);
+}
+
+void SwagGUI::handle_scan_cal_combo_changed(int index) {
+    if (index == 0) {
+        std::vector<std::string> scans = controller->get_all_scans();
+        emit update_scan_list(scans);
+    }
+    if (index == 1) {
+        std::vector<std::string> cals = controller->get_all_calibrations();
+        emit update_cal_list(cals);
+    }
+
+
 }
 
 SwagGUI::~SwagGUI() = default;

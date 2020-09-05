@@ -58,7 +58,21 @@ namespace file {
          * Example: load_cloud("12", CloudType::RAW)
          */
         virtual std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> load_cloud(const std::string &cloud_name,
-                                                                   const CloudType::Type &cloud_type) = 0;
+                                                                           const CloudType::Type &cloud_type) = 0;
+
+        /**
+         * Get all the scans.
+         *
+         * @return vector of all the scan names.
+         */
+        static std::vector<std::string> get_all_scans();
+
+        /**
+         * Get all the calibrations.
+         *
+         * @return vector of all the calibration names.
+         */
+        static std::vector < std::string > get_all_calibrations();
 
 
         /**
