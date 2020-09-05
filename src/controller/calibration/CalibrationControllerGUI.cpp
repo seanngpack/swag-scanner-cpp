@@ -33,6 +33,9 @@ void controller::CalibrationControllerGUI::run() {
     update_deg();
     update_rot();
 
+    std::cout << "number of deg is: " << deg << std::endl;
+    std::cout << "number of rot is: " << num_rot << std::endl;
+
     update_console("Starting scan");
     scan();
     update_console("Scan complete");

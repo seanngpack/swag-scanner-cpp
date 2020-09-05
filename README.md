@@ -12,10 +12,19 @@ SwagScanner is a device that can scan your small/medium-sized objects into the v
   on [my website](https://www.seanngpack.com/swagscanner/).
 
 ### Status
-This is the C++ codebase of Swag Scanner. Currently in development. Expect massive improvements in
-codebase design, performance gains, and results.
+This is the C++ codebase of Swag Scanner. Everything is highly subject to change.
+
+Currently working on physical model complete overhaul. Designing for manufacturing.
+
+Currently refining registration algorithms and refining auto calibration.
+
+And as always, squashing many bugs.
 
 ### Dependencies
+
+<details>
+  <summary>Click to see dependencies</summary>
+
 * pcl 1.11
 ```
 $ git clone https://github.com/PointCloudLibrary/pcl
@@ -51,7 +60,17 @@ $ cmake ..
 $ sudo make install
 ```
 
-### Commands
+</details>
+
+### GUI
+
+SwagScanner has a GUI now!
+
+![GUI image](doc/img/GUI.png)
+
+### CLI Commands
+
+SwagScanner can also be accessed through the commandline.
 
 | --scan          | --calibrate     | --process       | --move       |
 |-----------------|-----------------|-----------------|--------------|
