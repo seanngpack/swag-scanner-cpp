@@ -1,5 +1,4 @@
 #include "IFileHandler.h"
-#include <pcl/io/pcd_io.h>
 #include <CoreServices/CoreServices.h>
 
 using namespace boost::filesystem;
@@ -32,13 +31,13 @@ void file::IFileHandler::write_settings_json(const json &j) {
 }
 
 path file::IFileHandler::find_latest_calibration() {
-    std::string someDir = swag_scanner_path.string() + "/calibration";
+    std::string calibrations_folder = swag_scanner_path.string() + "/calibration";
     typedef std::multimap<std::time_t, boost::filesystem::path> result_set_t;
     result_set_t result_set;
 
     // store folders in ascending order
-    if (boost::filesystem::exists(someDir) && boost::filesystem::is_directory(someDir)) {
-        for (auto &&x : boost::filesystem::directory_iterator(someDir)) {
+    if (boost::filesystem::exists(calibrations_folder) && boost::filesystem::is_directory(calibrations_folder)) {
+        for (auto &&x : boost::filesystem::directory_iterator(calibrations_folder)) {
             if (is_directory(x) && x.path().filename() != ".DS_Store") {
                 result_set.insert(result_set_t::value_type(last_write_time(x.path()), x.path()));
             }
@@ -130,4 +129,28 @@ path file::IFileHandler::find_next_scan_folder_numeric(const CloudType::Type &ty
 
 path file::IFileHandler::find_next_scan_folder_numeric() {
     find_next_scan_folder_numeric(CloudType::Type::NONE);
+}
+
+
+std::vector<std::string> file::IFileHandler::get_all_scans() {
+    boost::filesystem::path scans_folder = swag_scanner_path / "scans";
+    std::vector<std::string> scans;
+    for (auto &&x : boost::filesystem::directory_iterator(scans_folder)) {
+        if (is_directory(x) && x.path().filename() != ".DS_Store") {
+            scans.push_back(x.path().filename().string());
+        }
+    }
+    return scans;
+}
+
+
+std::vector<std::string> file::IFileHandler::get_all_calibrations() {
+    boost::filesystem::path calibrations_folder = swag_scanner_path / "calibration";
+    std::vector<std::string> calibrations;
+    for (auto &&x : boost::filesystem::directory_iterator(calibrations_folder)) {
+        if (is_directory(x) && x.path().filename() != ".DS_Store") {
+            calibrations.push_back(x.path().filename().string());
+        }
+    }
+    return calibrations;
 }

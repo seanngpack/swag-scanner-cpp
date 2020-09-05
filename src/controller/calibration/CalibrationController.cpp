@@ -31,16 +31,20 @@ void controller::CalibrationController::run() {
     file_handler->update_calibration_json(axis_dir, center);
     arduino->rotate_to(0);
 
-    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
+//    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
 }
 
 void controller::CalibrationController::scan() {
     using namespace constants;
 
+    std::cout << "number of deg base is: " << deg << std::endl;
+    std::cout << "number of rot base is: " << num_rot << std::endl;
+
     camera->scan();
     const camera::intrinsics intrin = camera->get_intrinsics_processed();
     std::cout << "starting scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
+        std::cout << "number of rot in loop is: " << num_rot << std::endl;
         std::string name = std::to_string(i * deg) + ".pcd";
         camera->scan();
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();

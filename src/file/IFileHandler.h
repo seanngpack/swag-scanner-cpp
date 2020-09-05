@@ -11,7 +11,10 @@
 
 namespace file {
     /**
-     * Abstract class for File Handling objects.
+     * Abstract base class for File Handling objects.
+     * This class is specialized into CalibrationFileHandler and ScanFileHandler, so it serves more as
+     * an interface. There is currently no need to modify this class to be a base type for CalibrationFileHandler
+     * and ScanFileHandler.
      */
     class IFileHandler {
     public:
@@ -55,7 +58,21 @@ namespace file {
          * Example: load_cloud("12", CloudType::RAW)
          */
         virtual std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> load_cloud(const std::string &cloud_name,
-                                                                   const CloudType::Type &cloud_type) = 0;
+                                                                           const CloudType::Type &cloud_type) = 0;
+
+        /**
+         * Get all the scans.
+         *
+         * @return vector of all the scan names.
+         */
+        static std::vector<std::string> get_all_scans();
+
+        /**
+         * Get all the calibrations.
+         *
+         * @return vector of all the calibration names.
+         */
+        static std::vector < std::string > get_all_calibrations();
 
 
         /**
@@ -72,13 +89,8 @@ namespace file {
         virtual std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>
         load_clouds(const CloudType::Type &cloud_type) = 0;
 
-        virtual std::string get_scan_name() = 0;
 
-        virtual void set_scan_name(const std::string &scan_name) = 0;
-
-        virtual ~IFileHandler() {
-            std::cout << "calling IFileHandler destructor \n";
-        }
+        virtual ~IFileHandler() {}
 
     protected:
         static boost::filesystem::path swag_scanner_path;

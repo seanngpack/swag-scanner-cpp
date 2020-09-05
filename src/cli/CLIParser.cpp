@@ -16,6 +16,9 @@ cli::CLIParser::CLIParser() {
             ("move", "move calibration bed")
             ("set_home", "move calibration bed")
 
+            // gui
+            ("gui", "start gui application")
+
             // arguments for main commands
             ("name", po::value<std::string>(), "set name of scan")
             ("deg", po::value<int>(), "degrees")

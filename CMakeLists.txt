@@ -6,13 +6,22 @@ set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 set(JSON_BuildTests OFF CACHE INTERNAL "")
+# these are for qt .ui and .qrc files
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+if(NOT Qt5_DIR)
+    set(Qt5_DIR "/usr/local/opt/qt/lib/cmake/Qt5")
+endif()
 
 option(BUILD_TESTS "Build the tests" OFF)
+
 
 # --------------------------------------------------------------------------------
 #                          Find libraries
 # --------------------------------------------------------------------------------
 find_package(PCL REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Quick REQUIRED)
 find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(feeling-blue REQUIRED)

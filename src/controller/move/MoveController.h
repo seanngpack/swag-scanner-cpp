@@ -15,7 +15,7 @@ namespace controller {
     class MoveController : public IController {
     public:
 
-        MoveController(std::shared_ptr<arduino::Arduino> arduino);
+        explicit MoveController(std::shared_ptr<arduino::Arduino> arduino);
 
         /**
          * Move table to position, or by given amount.

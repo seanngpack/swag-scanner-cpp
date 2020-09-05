@@ -91,9 +91,11 @@ segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud
                   << coefficients->values[1] << " "
                   << coefficients->values[2] << " "
                   << coefficients->values[3] << std::endl;
-        visual::Visualizer visualizer;
-        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{temp_cloud, cloud_plane};
-        visualizer.simpleVis(clouds);
+
+
+//        visual::Visualizer visualizer;
+//        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{temp_cloud, cloud_plane};
+//        visualizer.simpleVis(clouds);
 
         // Remove the planar inliers, extract the rest
         extract.setNegative(true);
