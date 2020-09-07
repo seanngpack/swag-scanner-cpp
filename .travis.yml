@@ -17,11 +17,12 @@ matrix:
             - vtk
             - librealsense
             - opencv
+            - pcl
 
 dist: trusty
 
 before_install:
-  - brew install pcl --HEAD
+  - brew upgrade pcl
 
 install:
   - git clone https://github.com/seanngpack/feeling-blue-cpp
