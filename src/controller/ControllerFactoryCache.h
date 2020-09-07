@@ -43,6 +43,8 @@ namespace controller {
 
     class MoveController;
 
+    class MoveControllerGUI;
+
     class ControllerFactory;
 }
 
@@ -101,6 +103,8 @@ namespace controller {
         std::shared_ptr<controller::MoveController>
         get_move_controller(const boost::program_options::variables_map &vm);
 
+        std::shared_ptr<controller::MoveControllerGUI> get_move_controller_gui();
+
         std::shared_ptr<controller::HomeController>
         get_home_controller(const boost::program_options::variables_map &vm);
 
@@ -118,12 +122,14 @@ namespace controller {
         std::shared_ptr<controller::ScanController> scan_controller;
         std::shared_ptr<controller::CalibrationController> calibration_controller;
         std::shared_ptr<controller::ProcessingController> process_controller;
+        std::shared_ptr<controller::MoveController> move_controller;
 
         //gui
         std::shared_ptr<SwagGUI> gui;
 
         // gui controllers
         std::shared_ptr<controller::CalibrationControllerGUI> calibration_controller_gui;
+        std::shared_ptr<controller::MoveControllerGUI> move_controller_gui;
 
 
     };

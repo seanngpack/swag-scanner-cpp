@@ -1,12 +1,13 @@
 #include "CalibrationControllerGUI.h"
-#include "Model.h"
 #include "CalibrationFileHandler.h"
+#include "Model.h"
 #include "Normal.h"
 #include "Point.h"
 #include "SR305.h"
 #include "Arduino.h"
 #include "Visualizer.h"
 #include "SwagGUI.h"
+#include "FormsPayload.h"
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
@@ -29,10 +30,6 @@ void controller::CalibrationControllerGUI::setup_gui() {
 }
 
 void controller::CalibrationControllerGUI::run() {
-    update_name();
-    update_deg();
-    update_rot();
-
     std::cout << "number of deg is: " << deg << std::endl;
     std::cout << "number of rot is: " << num_rot << std::endl;
 
@@ -54,21 +51,16 @@ void controller::CalibrationControllerGUI::run() {
     viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
 }
 
-void controller::CalibrationControllerGUI::update_name() {
-    file_handler->set_calibration(gui->update_name());
-    std::cout << " end of get-name method " << std::endl;
-}
-
-void controller::CalibrationControllerGUI::update_deg() {
-    deg = gui->update_deg();
-}
-
-void controller::CalibrationControllerGUI::update_rot() {
-    num_rot = gui->update_rot();
-}
 
 void controller::CalibrationControllerGUI::update_console(const std::string &info) {
     gui->update_console(info);
+}
+
+void controller::CalibrationControllerGUI::update(const IFormsPayload &payload) {
+    const auto &p = dynamic_cast<const FormsPayload &>(payload);
+    file_handler->set_calibration(p.name);
+    set_deg(p.deg);
+    set_num_rot(p.rot);
 }
 
 

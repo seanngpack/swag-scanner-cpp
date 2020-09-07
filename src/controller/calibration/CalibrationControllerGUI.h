@@ -6,6 +6,8 @@
 
 class SwagGUI;
 
+class IFormsPayload;
+
 namespace controller {
     class CalibrationControllerGUI : public CalibrationController, public IControllerGUI {
     public:
@@ -25,16 +27,16 @@ namespace controller {
         /**
          * This method connects gui to this controller. Must run this method whenever
          * swapping controllers for GUI. Call this in the factory class.
+         *
+         * // TODO: Can move to base class
          */
         void setup_gui();
 
-        void update_name();
 
-        void update_deg();
+        void update(const IFormsPayload &payload) override;
 
-        void update_rot();
-
-        void update_console(const std::string &info);
+        // TODO: Can move to base class
+        void update_console(const std::string &info) override;
 
     private:
         std::shared_ptr<SwagGUI> gui;

@@ -1,6 +1,7 @@
 # SwagScanner
 [![HitCount](http://hits.dwyl.com/{seanngpack}/{swag-scanner}.svg)](http://hits.dwyl.com/{seanngpack}/{swag-scanner})
 [![Issues](https://img.shields.io/github/issues-raw/tterb/PlayMusic.svg?maxAge=25000)](https://github.com/seanngpack/swag-scanner/issues)
+[![Build Status](https://travis-ci.com/seanngpack/swag-scanner-cpp.svg?branch=master)](https://travis-ci.com/seanngpack/swag-scanner-cpp)
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/seanngpack/swag-scanner/master/LICENSE)  
 
 ![Test Image 1](doc/img/swaggg.png)

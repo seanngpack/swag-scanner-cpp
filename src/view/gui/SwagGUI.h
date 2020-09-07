@@ -15,6 +15,8 @@ class QComboBox;
 
 class FormsPayload;
 
+class MoveFormsPayload;
+
 namespace controller {
     class ControllerFactory;
 
@@ -31,24 +33,6 @@ public:
     void set_controller(controller::IControllerGUI *c);
 
     /**
-     * Get the name text in the current form.
-     * @return name.
-     */
-    std::string update_name() const;
-
-    /**
-     * Get the degree text in the current form.
-     * @return degree.
-     */
-    int update_deg() const;
-
-    /**
-     * Get the number of rotations in the current form.
-     * @return num of rotations.
-     */
-    int update_rot() const;
-
-    /**
      * Append info to the console.
      * @param info the information you want to append.
      */
@@ -56,6 +40,7 @@ public:
 
 
 signals:
+
     /**
      * Send signal to update the scans in the left bar scan list.
      *
@@ -75,13 +60,35 @@ private slots:
 
     /**
      * Handler what happens when the "scan" button is pressed.
+     *
      * @param vars vector containing scan, rot, and deg text fields.
      */
     void handle_scan_button_pressed(const FormsPayload &vars);
 
+    /**
+     * When the "calibrate" button is pressed, will retrieve a calibration controller from the factory,
+     * update the controller with form parameters, and finally call the run() method.
+     *
+     * @param vars payload variables.
+     */
     void handle_calibrate_button_pressed(const FormsPayload &vars);
 
+    /**
+     * Handle what happens when "process" button is pressed.
+     *
+     * @param vars
+     */
     void handle_process_button_pressed(const FormsPayload &vars);
+
+
+    /**
+     * When the "move" button is pressed, will retrieve a move controller from the factory,
+     * update the controller with form parameters, and finall call the run() method.
+     * If both the move_to and move_by forms are filled, then it will use the move_to value.
+     *
+     * @param vars
+     */
+    void handle_move_button_pressed(const MoveFormsPayload &vars);
 
     /**
      * Handle when combobox for selecting "scan", "calibrate", or "process" changes.
@@ -110,11 +117,7 @@ private:
     QWidget *scan_controls;
     QWidget *calibrate_controls;
     QWidget *process_controls;
-
-    std::string name;
-    int deg = 0;
-    int rot = 0;
-
+    QWidget *move_controls;
 
     void set_up_main();
 
