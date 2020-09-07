@@ -2,8 +2,6 @@
 
 #include "IFileHandler.h"
 #include <nlohmann/json.hpp>
-#include <thread>
-#include <iostream>
 
 using json = nlohmann::json;
 using namespace std::literals::chrono_literals;
@@ -22,13 +20,14 @@ arduino::Arduino::Arduino() {
 
     using namespace std::placeholders;
     // subscribe to is_table_rotating characteristic
-    std::function<void(std::vector<std::byte>)> binded_handler = std::bind(&Arduino::handle_rotation_notification, this, std::placeholders::_1);
+    std::function<void(const std::vector<std::byte> &)> binded_handler = std::bind(
+            &Arduino::handle_rotation_notification, this, std::placeholders::_1);
     is_table_rot_char->notify(binded_handler);
 
 }
 
-void arduino::Arduino::handle_rotation_notification(std::vector<std::byte> data) {
-    if (bytes_to_short(data)==0) {
+void arduino::Arduino::handle_rotation_notification(const std::vector<std::byte> &data) {
+    if (bytes_to_short(data) == 0) {
         std::unique_lock<std::mutex> lock(mtx);
         ready = true;
         cv.notify_all();
@@ -38,7 +37,7 @@ void arduino::Arduino::handle_rotation_notification(std::vector<std::byte> data)
 void arduino::Arduino::rotate_by(int deg) {
     rotate_char->write_with_response<short>((short) deg);
     std::unique_lock<std::mutex> lock(mtx);
-    while(!ready) {
+    while (!ready) {
         cv.wait(lock);
     }
 

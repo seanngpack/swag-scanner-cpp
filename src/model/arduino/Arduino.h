@@ -54,7 +54,7 @@ namespace arduino {
          *
          * @param data payload from notification.
          */
-        void handle_rotation_notification(std::vector<std::byte> data);
+        void handle_rotation_notification(const std::vector<std::byte> &data);
 
         /**
          * Updates the current position in the settings.json file.

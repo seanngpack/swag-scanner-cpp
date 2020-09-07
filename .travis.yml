@@ -4,7 +4,7 @@ branches:
   only:
     - master
     - model
-    - the-great-refactor
+    - gui-implementation
 
 matrix:
   include:
@@ -16,12 +16,12 @@ matrix:
           packages:
             - vtk
             - librealsense
-            - pcl
             - opencv
 
 dist: trusty
 
-#before_install:
+before_install:
+  - brew install pcl --HEAD
 
 install:
   - git clone https://github.com/seanngpack/feeling-blue-cpp
