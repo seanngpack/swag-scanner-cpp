@@ -3,6 +3,8 @@
 
 #include <memory>
 #include "feeling-blue/feeling-blue.h"
+#include <mutex>
+#include <condition_variable>
 
 namespace arduino {
     class Arduino {
@@ -42,6 +44,18 @@ namespace arduino {
         std::string TABLE_POSITION_CHAR_UUID = "5ffba523-2363-41da-92f5-46adc56b2d37";
         std::string IS_TABLE_ROTATING_CHAR_UUID = "5ffba524-2363-41da-92f5-46adc56b2d37";
 
+        std::mutex mtx;
+        std::condition_variable cv;
+        bool ready = false;
+
+        /**
+         * Unlock main thred when is_rotating notification received and the table is no
+         * longer rotating.
+         *
+         * @param data payload from notification.
+         */
+        void handle_rotation_notification(const std::vector<std::byte> &data);
+
         /**
          * Updates the current position in the settings.json file.
          * TODO: this is very slow because I'm reading the file, then writing to it.
@@ -49,6 +63,8 @@ namespace arduino {
         void update_current_pos();
 
         int get_least(int x, int y);
+
+        short bytes_to_short(const std::vector<std::byte> &bytes);
 
     };
 }

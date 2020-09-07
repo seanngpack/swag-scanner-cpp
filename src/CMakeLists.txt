@@ -11,7 +11,7 @@ target_link_libraries(swag_scanner_lib PRIVATE
         ${PCL_LIBRARIES}
         ${Boost_PROGRAM_OPTIONS_LIBRARY}
         ${realsense2_LIBRARY}
-
+        Qt5::Quick Qt5::Core Qt5::Widgets
         nlohmann_json::nlohmann_json
         )
 

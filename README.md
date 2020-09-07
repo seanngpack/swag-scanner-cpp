@@ -27,6 +27,12 @@ And as always, squashing many bugs.
 
 * pcl 1.11
 ```
+$ brew install pcl
+```
+
+Or compile from source
+
+```
 $ git clone https://github.com/PointCloudLibrary/pcl
 $ cd pcl
 $ mkdir build
@@ -42,12 +48,23 @@ brew install opencv
 
 * librealsense
 ```
+$ brew install librealsense
+```
+
+Or compile from source
+```
 $ git clone https://github.com/IntelRealSense/librealsense
 $ cd librealsense
 $ mkdir build
 $ cd build
 $ cmake ..
 $ sudo make install
+```
+
+* Qt
+
+```
+$ brew install qt
 ```
 
 * feeling-blue-cpp

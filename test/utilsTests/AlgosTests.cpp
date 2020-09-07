@@ -127,7 +127,7 @@ TEST_F(AlgosFixture, TestTransformCoordinate) {
     visual::Visualizer visualizer;
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{cloud_in, result};
 //    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{result, result_cropped};
-    visualizer.simpleVisColor(clouds);
+//    visualizer.simpleVisColor(clouds);
 //    visualizer.ptVis(cloudIn, pt);
 }
 
