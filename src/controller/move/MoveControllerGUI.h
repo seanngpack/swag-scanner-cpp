@@ -23,14 +23,10 @@ namespace controller {
          */
         void run() override;
 
-        void setup_gui();
-
         void update(const IFormsPayload &payload) override;
 
-        void update_console(const std::string &info) override;
-
     private:
-        std::shared_ptr<SwagGUI> gui;
+//        std::shared_ptr<SwagGUI> gui;
     };
 }
 

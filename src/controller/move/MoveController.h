@@ -13,7 +13,7 @@ namespace controller {
     /**
      * This controller allows for manual rotation of the table using commands from the commandline.
      */
-    class MoveController : public IController {
+    class MoveController : public virtual IController {
     public:
 
         explicit MoveController(std::shared_ptr<arduino::Arduino> arduino);

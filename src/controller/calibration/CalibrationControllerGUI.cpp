@@ -22,12 +22,8 @@ controller::CalibrationControllerGUI::CalibrationControllerGUI(std::shared_ptr<c
                               std::move(model),
                               std::move(file_handler),
                               std::move(viewer)),
-        gui(std::move(gui)) {
-}
+        IControllerGUI(std::move(gui)) {}
 
-void controller::CalibrationControllerGUI::setup_gui() {
-    gui->set_controller(this);
-}
 
 void controller::CalibrationControllerGUI::run() {
     std::cout << "number of deg is: " << deg << std::endl;
@@ -51,10 +47,6 @@ void controller::CalibrationControllerGUI::run() {
     viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
 }
 
-
-void controller::CalibrationControllerGUI::update_console(const std::string &info) {
-    gui->update_console(info);
-}
 
 void controller::CalibrationControllerGUI::update(const IFormsPayload &payload) {
     const auto &p = dynamic_cast<const FormsPayload &>(payload);

@@ -13,12 +13,20 @@ namespace controller {
     /**
      * Represents a controller for GUIs.
      */
-    class IControllerGUI : public IController {
+    class IControllerGUI : public virtual IController {
     public:
 
-        IControllerGUI() = default;
+        explicit IControllerGUI(std::shared_ptr<SwagGUI> gui);
 
         virtual ~IControllerGUI() = default;
+
+
+        /**
+         * This method connects gui to this controller. Must run this method whenever
+         * swapping controllers for GUI. Call this method in the factory class.
+         *
+         */
+        void setup_gui();
 
         /**
          * Update the controller with the given payload.
@@ -28,18 +36,19 @@ namespace controller {
         virtual void update(const IFormsPayload &payload) = 0;
 
         /**
-         * Write message to GUI console.
+         * Write message to the GUI console.
+         *
+         * @param info message you want to write.
          */
-        virtual void update_console(const std::string &info) = 0;
+        void update_console(const std::string &info);
+
 
         std::vector<std::string> get_all_scans();
 
         std::vector<std::string> get_all_calibrations();
 
     protected:
-        //TODO: later make this a variable and add a constructor.
-//        std::shared_ptr<SwagGUI> gui;
-
+        std::shared_ptr<SwagGUI> gui;
 
     };
 

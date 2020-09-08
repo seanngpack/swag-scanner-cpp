@@ -24,22 +24,13 @@ namespace controller {
          */
         void run() override;
 
-        /**
-         * This method connects gui to this controller. Must run this method whenever
-         * swapping controllers for GUI. Call this in the factory class.
-         *
-         * // TODO: Can move to base class
-         */
-        void setup_gui();
-
 
         void update(const IFormsPayload &payload) override;
 
-        // TODO: Can move to base class
-        void update_console(const std::string &info) override;
+
 
     private:
-        std::shared_ptr<SwagGUI> gui;
+//        std::shared_ptr<SwagGUI> gui;
 
 
     };
