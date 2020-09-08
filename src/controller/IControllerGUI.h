@@ -7,45 +7,48 @@
 
 class SwagGUI;
 
+class IFormsPayload;
+
 namespace controller {
-/**
- * Represents a controller for GUIs.
- */
-    class IControllerGUI : public IController {
+    /**
+     * Represents a controller for GUIs.
+     */
+    class IControllerGUI : public virtual IController {
     public:
 
-        virtual ~IControllerGUI() {}
+        explicit IControllerGUI(std::shared_ptr<SwagGUI> gui);
+
+        virtual ~IControllerGUI() = default;
+
 
         /**
-         * Get the name from GUI.
-         * @return name.
+         * This method connects gui to this controller. Must run this method whenever
+         * swapping controllers for GUI. Call this method in the factory class.
+         *
          */
-        void update_name();
+        void setup_gui();
 
         /**
-         * Get the degree from GUI.
-         * @return degree.
+         * Update the controller with the given payload.
+         *
+         * @param payload payload from GUI.
          */
-        void update_deg();
+        virtual void update(const IFormsPayload &payload) = 0;
 
         /**
-         * Get the rot from GUI.
-         * @return rot.
-         */
-        void update_rot();
-
-        /**
-         * Write message to GUI console.
+         * Write message to the GUI console.
+         *
+         * @param info message you want to write.
          */
         void update_console(const std::string &info);
+
 
         std::vector<std::string> get_all_scans();
 
         std::vector<std::string> get_all_calibrations();
 
     protected:
-//        std::shared_ptr<SwagGUI> gui;
-
+        std::shared_ptr<SwagGUI> gui;
 
     };
 

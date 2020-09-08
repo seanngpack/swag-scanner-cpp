@@ -1,7 +1,7 @@
 #include "CLIParser.h"
 #include "IController.h"
-#include "ControllerFactory.h"
-#include "ControllerFactoryCache.h"
+#include "factory/ControllerFactory.h"
+#include "factory/ControllerFactoryCache.h"
 #include "SwagGUI.h"
 #include <boost/program_options.hpp>
 #include <iostream>

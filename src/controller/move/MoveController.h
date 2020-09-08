@@ -2,6 +2,7 @@
 #define SWAG_SCANNER_MOVECONTROLLER_H
 
 #include "IController.h"
+#include "MoveMethod.h"
 #include <string>
 
 namespace arduino {
@@ -12,7 +13,7 @@ namespace controller {
     /**
      * This controller allows for manual rotation of the table using commands from the commandline.
      */
-    class MoveController : public IController {
+    class MoveController : public virtual IController {
     public:
 
         explicit MoveController(std::shared_ptr<arduino::Arduino> arduino);
@@ -29,20 +30,17 @@ namespace controller {
         void set_deg(int deg);
 
         /**
-         * Set the table either to move TO a position, or BY a degree amount.
+         * Set the controller to move the table either move TO a position, or BY a degree amount.
          *
-         * Note: Using string comparison. Not ideal.
          * @param input either "to" or "by" command.
          */
-        void set_move_method(const std::string &input);
+        void set_move_method(const MoveMethod &move_method);
 
 
-    private:
+    protected:
         std::shared_ptr<arduino::Arduino> arduino;
-        std::string move_method;
+        MoveMethod move_method;
         int deg = 0;
-
-
     };
 }
 

@@ -13,6 +13,7 @@ target_link_libraries(swag_scanner_lib PRIVATE
         ${realsense2_LIBRARY}
         Qt5::Quick Qt5::Core Qt5::Widgets
         nlohmann_json::nlohmann_json
+        spdlog::spdlog
         )
 
 # --------------------------------------------------------------------------------

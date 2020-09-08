@@ -5,10 +5,9 @@ controller::MoveController::MoveController(std::shared_ptr<arduino::Arduino> ard
         arduino(std::move(arduino)) {}
 
 void controller::MoveController::run() {
-    if (move_method == "to") {
+    if (move_method == MoveMethod::TO) {
         arduino->rotate_to(deg);
-    }
-    else if (move_method == "by") {
+    } else if (move_method == MoveMethod::BY) {
         arduino->rotate_by(deg);
     }
 }
@@ -17,6 +16,6 @@ void controller::MoveController::set_deg(int degs) {
     this->deg = degs;
 }
 
-void controller::MoveController::set_move_method(const std::string &input) {
-    this->move_method = input;
+void controller::MoveController::set_move_method(const MoveMethod &move_method) {
+    this->move_method = move_method;
 }

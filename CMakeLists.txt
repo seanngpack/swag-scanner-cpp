@@ -28,6 +28,7 @@ find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(feeling-blue REQUIRED)
 find_package(realsense2 REQUIRED)
+find_package(spdlog REQUIRED)
 
 
 add_definitions(${PCL_DEFINITIONS})

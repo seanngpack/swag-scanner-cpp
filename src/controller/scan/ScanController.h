@@ -50,13 +50,15 @@ namespace controller {
         void scan();
 
 
-    private:
+    protected:
         std::shared_ptr<camera::ICamera> camera;
         std::shared_ptr<arduino::Arduino> arduino;
         std::shared_ptr<model::Model> model;
         std::shared_ptr<file::ScanFileHandler> file_handler;
         int deg = 20;
         int num_rot = 18;
+
+        void update_json_time();
     };
 }
 

@@ -9,7 +9,9 @@
 #include "CalibrationController.h"
 #include "ProcessingController.h"
 #include "ScanController.h"
+#include "ScanControllerGUI.h"
 #include "MoveController.h"
+#include "MoveControllerGUI.h"
 #include "FilterTestingController.h"
 #include "CalibrationControllerGUI.h"
 #include "HomeController.h"
@@ -52,14 +54,16 @@ std::shared_ptr<controller::IController> controller::ControllerFactory::get_cont
 }
 
 std::shared_ptr<controller::IControllerGUI> controller::ControllerFactory::get_gui_controller(const std::string &name) {
-    if (name == "calibrate") {
-        std::cout << "calling cache to retreive controller" << std::endl;
+    if (name == "scan") {
+        return cache->get_scan_controller_gui();
+    } else if (name == "calibrate") {
+        std::cout << "calling cache to retrieve controller" << std::endl;
         return cache->get_calibration_controller_gui();
+    } else if (name == "move") {
+        return cache->get_move_controller_gui();
     } else {
         throw std::invalid_argument("Error, must enter a valid controller name.");
     }
-//    if (name == "scan") {
-//        return cache->get_scan_controller();
 //    } else if (name == "calibrate") {
 //        return cache->get_calibration_controller();
 //    } else if (name == "process") {

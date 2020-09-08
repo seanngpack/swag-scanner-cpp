@@ -25,16 +25,14 @@ signals:
     void process_button_pressed(const FormsPayload &vars);
 
 private slots:
+
     void send_process_button_pressed();
 
 private:
     QVBoxLayout *v_layout;
     QFormLayout *form_layout;
-
     QLineEdit *name_edit;
-
     QPushButton *process_button;
 };
-
 
 #endif //SWAG_SCANNER_PROCESSCONTROLS_H

@@ -34,7 +34,7 @@ namespace controller {
     /**
      * This controller handles calibration.
      */
-    class CalibrationController : public IController {
+    class CalibrationController : public virtual IController {
     public:
         CalibrationController(std::shared_ptr<camera::ICamera> camera,
                               std::shared_ptr<arduino::Arduino> arduino,

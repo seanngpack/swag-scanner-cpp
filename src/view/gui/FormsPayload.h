@@ -1,13 +1,14 @@
 #ifndef SWAG_SCANNER_FORMSPAYLOAD_H
 #define SWAG_SCANNER_FORMSPAYLOAD_H
 
+#include "IFormsPayload.h"
 #include <string>
 #include <QString>
 
 /**
  * Represents an object containing information from the forms.
  */
-struct FormsPayload {
+struct FormsPayload : public IFormsPayload {
     /**
      * This constructor creates a new FormsPayload object. Does conversions from QString to std::string and int.
      * @param name name field.
