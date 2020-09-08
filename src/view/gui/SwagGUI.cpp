@@ -8,6 +8,7 @@
 #include "factory/ControllerFactory.h"
 #include "ProcessControls.h"
 #include "IControllerGUI.h"
+#include "MoveControllerGUI.h"
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QDesktopWidget>
@@ -63,6 +64,12 @@ void SwagGUI::handle_move_button_pressed(const MoveFormsPayload &vars) {
     controller = factory->get_gui_controller("move").get();
     controller->update(vars);
     controller->run();
+}
+
+void SwagGUI::handle_set_home_button_pressed() {
+    controller = factory->get_gui_controller("move").get();
+    dynamic_cast<controller::MoveControllerGUI *>(controller)->set_home();
+    update_console("set current position to home");
 }
 
 void SwagGUI::handle_combo_index_changed(int index) {
@@ -163,6 +170,8 @@ void SwagGUI::set_up_right() {
             SLOT(handle_process_button_pressed(const FormsPayload &)));
     connect(move_controls, SIGNAL(move_button_pressed(const MoveFormsPayload &)), this,
             SLOT(handle_move_button_pressed(const MoveFormsPayload &)));
+    connect(move_controls, SIGNAL(set_home_button_pressed()), this,
+            SLOT(handle_set_home_button_pressed()));
 
 
     calibrate_controls->setVisible(false);

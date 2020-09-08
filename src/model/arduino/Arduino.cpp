@@ -47,7 +47,6 @@ void arduino::Arduino::rotate_by(int deg) {
     current_pos += deg;
     current_pos %= 360;
     update_current_pos();
-//    std::this_thread::sleep_for(3s);
     ready = false;
 }
 

@@ -30,6 +30,11 @@ namespace controller {
         void set_deg(int deg);
 
         /**
+         * Set the current position to the home position. Writes this to settings.json.
+         */
+        void set_home();
+
+        /**
          * Set the controller to move the table either move TO a position, or BY a degree amount.
          *
          * @param input either "to" or "by" command.

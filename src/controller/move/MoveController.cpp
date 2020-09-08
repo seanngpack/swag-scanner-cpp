@@ -1,5 +1,9 @@
 #include "MoveController.h"
 #include "Arduino.h"
+#include "IFileHandler.h"
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 controller::MoveController::MoveController(std::shared_ptr<arduino::Arduino> arduino) :
         arduino(std::move(arduino)) {}
@@ -14,6 +18,12 @@ void controller::MoveController::run() {
 
 void controller::MoveController::set_deg(int degs) {
     this->deg = degs;
+}
+
+void controller::MoveController::set_home() {
+    json settings_json = file::IFileHandler::load_settings_json();
+    settings_json["current_position"] = 0;
+    file::IFileHandler::write_settings_json(settings_json);
 }
 
 void controller::MoveController::set_move_method(const MoveMethod &move_method) {
