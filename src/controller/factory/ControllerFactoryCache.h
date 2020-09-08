@@ -31,6 +31,8 @@ class SwagGUI;
 namespace controller {
     class ScanController;
 
+    class ScanControllerGUI;
+
     class CalibrationController;
 
     class CalibrationControllerGUI;
@@ -63,6 +65,10 @@ namespace controller {
 
         ~ControllerFactoryCache();
 
+        // --------------------------------------------------------------------------------
+        //                          Get objects
+        // --------------------------------------------------------------------------------
+
         std::shared_ptr<camera::SR305> get_camera();
 
         std::shared_ptr<arduino::Arduino> get_arduino();
@@ -77,12 +83,16 @@ namespace controller {
 
         std::shared_ptr<SwagGUI> get_gui();
 
-        // Controllers
+        // --------------------------------------------------------------------------------
+        //                          Get controllers
+        // --------------------------------------------------------------------------------
 
         std::shared_ptr<controller::ScanController>
         get_scan_controller(const boost::program_options::variables_map &vm);
 
         std::shared_ptr<controller::ScanController> get_scan_controller();
+
+        std::shared_ptr<controller::ScanControllerGUI> get_scan_controller_gui();
 
 
         std::shared_ptr<controller::CalibrationController>
@@ -128,6 +138,7 @@ namespace controller {
         std::shared_ptr<SwagGUI> gui;
 
         // gui controllers
+        std::shared_ptr<controller::ScanControllerGUI> scan_controller_gui;
         std::shared_ptr<controller::CalibrationControllerGUI> calibration_controller_gui;
         std::shared_ptr<controller::MoveControllerGUI> move_controller_gui;
 

@@ -4,7 +4,6 @@
 #include "SR305.h"
 #include "Visualizer.h"
 #include "ScanFileHandler.h"
-
 #include <utility>
 
 controller::ScanController::ScanController(std::shared_ptr<camera::ICamera> camera,
@@ -28,16 +27,7 @@ void controller::ScanController::set_num_rot(int num_rot) {
 
 
 void controller::ScanController::scan() {
-
-    // get current time
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "%m-%d-%Y %H:%M:%S");
-    auto str = oss.str();
-
-    file_handler->update_info_json(str, deg, file_handler->find_latest_calibration().string());
-
+    update_json_time();
     camera->scan();
     const camera::intrinsics intrin = camera->get_intrinsics();
     const camera::intrinsics intrin_filt = camera->get_intrinsics_processed();
@@ -48,14 +38,24 @@ void controller::ScanController::scan() {
         std::vector<uint16_t> depth_frame_raw = camera->get_depth_frame();
         std::vector<uint16_t> depth_frame_filt = camera->get_depth_frame_processed();
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_raw = model->create_point_cloud(depth_frame_raw, intrin);
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filt = model->create_point_cloud(depth_frame_filt, intrin);
-
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filt = model->create_point_cloud(depth_frame_filt,
+                                                                                               intrin);
         file_handler->save_cloud(cloud_raw, name, CloudType::Type::RAW);
         file_handler->save_cloud(cloud_filt, name, CloudType::Type::FILTERED);
         arduino->rotate_by(deg);
     }
 }
 
+void controller::ScanController::update_json_time() {
+    // get current time
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%m-%d-%Y %H:%M:%S");
+    auto str = oss.str();
+
+    file_handler->update_info_json(str, deg, file_handler->find_latest_calibration().string());
+}
 
 
 

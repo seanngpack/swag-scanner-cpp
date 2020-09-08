@@ -5,7 +5,7 @@
 #include "ScanControls.h"
 #include "CalibrateControls.h"
 #include "MoveControls.h"
-#include "ControllerFactory.h"
+#include "factory/ControllerFactory.h"
 #include "ProcessControls.h"
 #include "IControllerGUI.h"
 #include <QPushButton>

@@ -26,7 +26,7 @@ namespace controller {
         void update(const IFormsPayload &payload) override;
 
     private:
-//        std::shared_ptr<SwagGUI> gui;
+
     };
 }
 
