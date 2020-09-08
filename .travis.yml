@@ -17,6 +17,7 @@ matrix:
           - /usr/local/Homebrew
       addons:
         homebrew:
+          update: true
           packages:
             - vtk
             - librealsense
@@ -31,8 +32,8 @@ before_cache:
   # Cache only .git files under "/usr/local/Homebrew" so "brew update" does not take 5min every build
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then find /usr/local/Homebrew \! -regex ".+\.git.+" -delete; fi
 
-before_install:
-  - brew upgrade pcl
+#before_install:
+#  - brew upgrade pcl
 
 install:
   - git clone https://github.com/seanngpack/feeling-blue-cpp
