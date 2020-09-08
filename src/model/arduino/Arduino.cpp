@@ -27,7 +27,7 @@ arduino::Arduino::Arduino() {
 }
 
 void arduino::Arduino::handle_rotation_notification(const std::vector<std::byte> &data) {
-    if (bytes_to_short(data) == 0) {
+    if (bytes_to_int(data) == 0) {
         std::unique_lock<std::mutex> lock(mtx);
         ready = true;
         cv.notify_all();
@@ -35,7 +35,7 @@ void arduino::Arduino::handle_rotation_notification(const std::vector<std::byte>
 }
 
 void arduino::Arduino::rotate_by(int deg) {
-    rotate_char->write_with_response<short>((short) deg);
+    rotate_char->write_with_response<int>(deg);
     std::unique_lock<std::mutex> lock(mtx);
     while (!ready) {
         cv.wait(lock);
@@ -47,7 +47,6 @@ void arduino::Arduino::rotate_by(int deg) {
     current_pos += deg;
     current_pos %= 360;
     update_current_pos();
-//    std::this_thread::sleep_for(3s);
     ready = false;
 }
 
@@ -79,10 +78,12 @@ int arduino::Arduino::get_least(int x, int y) {
     }
 }
 
-short arduino::Arduino::bytes_to_short(const std::vector<std::byte> &bytes) {
-    if (bytes.size() == 2) {
-        short s = (((unsigned char) bytes[1] << 8) | (unsigned char) bytes[0]);
-        return s;
+int arduino::Arduino::bytes_to_int(const std::vector<std::byte> &bytes) {
+    if (bytes.size() == 4) {
+        return int((unsigned char) (bytes[0]) << 24 |
+                   (unsigned char) (bytes[1]) << 16 |
+                   (unsigned char) (bytes[2]) << 8 |
+                   (unsigned char) (bytes[3]));
     }
     return 0;
 }

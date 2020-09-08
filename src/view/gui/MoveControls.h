@@ -22,9 +22,13 @@ signals:
 
     void move_button_pressed(const MoveFormsPayload &vars);
 
+    void set_home_button_pressed();
+
 private slots:
 
     void send_move_button_pressed();
+
+    void send_set_home_button_pressed();
 
 private:
     QVBoxLayout *v_layout;
@@ -32,6 +36,7 @@ private:
     QLineEdit *to_edit;
     QLineEdit *by_edit;
     QPushButton *move_button;
+    QPushButton *set_home_button;
 
 };
 

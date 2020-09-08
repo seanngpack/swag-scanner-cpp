@@ -91,6 +91,11 @@ private slots:
     void handle_move_button_pressed(const MoveFormsPayload &vars);
 
     /**
+     * Set the home position to current position when the "set home" button is pressed.
+     */
+    void handle_set_home_button_pressed();
+
+    /**
      * Handle when combobox for selecting "scan", "calibrate", or "process" changes.
      * @param index
      */

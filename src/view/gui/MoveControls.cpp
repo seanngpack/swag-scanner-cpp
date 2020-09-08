@@ -19,15 +19,21 @@ MoveControls::MoveControls(QWidget *parent)
     form_layout->addRow("move by degrees: ", by_edit);
 
     move_button = new QPushButton("move");
+    set_home_button = new QPushButton("set home");
 
     connect(move_button, SIGNAL(pressed()), this, SLOT(send_move_button_pressed()));
+    connect(set_home_button, SIGNAL(pressed()), this, SLOT(send_set_home_button_pressed()));
 
     v_layout->addLayout(form_layout);
     v_layout->addWidget(move_button);
+    v_layout->addWidget(set_home_button);
 
 }
 
 void MoveControls::send_move_button_pressed() {
-
     emit move_button_pressed(MoveFormsPayload(to_edit->text(), by_edit->text()));
+}
+
+void MoveControls::send_set_home_button_pressed() {
+    emit set_home_button_pressed();
 }

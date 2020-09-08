@@ -25,7 +25,7 @@ namespace controller {
     /**
      * This controller handles data processing commands.
      */
-    class ProcessingController : public IController {
+    class ProcessingController : public virtual IController {
     public:
         ProcessingController(std::shared_ptr<model::Model> model,
                              std::shared_ptr<visual::Visualizer> viewer,
