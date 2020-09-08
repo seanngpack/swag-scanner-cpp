@@ -68,6 +68,8 @@ void SwagGUI::handle_move_button_pressed(const MoveFormsPayload &vars) {
 
 void SwagGUI::handle_set_home_button_pressed() {
     controller = factory->get_gui_controller("move").get();
+    // intentially casting because the alternative would be to use a HomeController class
+    // where the run() method sets home. I think this is cleaner.
     dynamic_cast<controller::MoveControllerGUI *>(controller)->set_home();
     update_console("set current position to home");
 }
