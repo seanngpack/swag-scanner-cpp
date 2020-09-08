@@ -68,6 +68,12 @@ $ sudo make install
 $ brew install qt
 ```
 
+* spdlog
+
+```
+$ brew install spdlog
+```
+
 * feeling-blue-cpp
 ```
 $ git clone https://github.com/seanngpack/feeling-blue-cpp
