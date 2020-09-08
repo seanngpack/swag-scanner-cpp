@@ -22,6 +22,7 @@ matrix:
             - vtk
             - librealsense
             - opencv
+            - spdlog
             - pcl
 
 dist: trusty
