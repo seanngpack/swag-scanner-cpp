@@ -28,7 +28,7 @@ namespace controller {
     /**
     * This controller handles data acquisition.
     */
-    class ScanController : public IController {
+    class ScanController : public virtual IController {
     public:
         ScanController(std::shared_ptr<camera::ICamera> camera,
                        std::shared_ptr<arduino::Arduino> arduino,

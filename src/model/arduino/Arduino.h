@@ -64,7 +64,7 @@ namespace arduino {
 
         int get_least(int x, int y);
 
-        short bytes_to_short(const std::vector<std::byte> &bytes);
+        int bytes_to_int(const std::vector<std::byte> &bytes);
 
     };
 }
