@@ -54,7 +54,3 @@ void controller::CalibrationControllerGUI::update(const IFormsPayload &payload) 
     set_deg(p.deg);
     set_num_rot(p.rot);
 }
-
-
-
-//TODO: at some point do some checking to make sure deg and rot is not 0, if they are then use default values

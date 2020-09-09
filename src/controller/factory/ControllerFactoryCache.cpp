@@ -7,6 +7,7 @@
 #include "CalibrationFileHandler.h"
 #include "CalibrationController.h"
 #include "ProcessingController.h"
+#include "ProcessingControllerGUI.h"
 #include "MoveMethod.h"
 #include "ScanController.h"
 #include "ScanControllerGUI.h"
@@ -131,10 +132,10 @@ std::shared_ptr<controller::ScanController> controller::ControllerFactoryCache::
 std::shared_ptr<controller::ScanControllerGUI> controller::ControllerFactoryCache::get_scan_controller_gui() {
     if (scan_controller_gui == nullptr) {
         scan_controller_gui = std::make_shared<controller::ScanControllerGUI>(get_camera(),
-                                                                                     get_arduino(),
-                                                                                     get_model(),
-                                                                                     get_scan_file_handler(),
-                                                                                     get_gui());
+                                                                              get_arduino(),
+                                                                              get_model(),
+                                                                              get_scan_file_handler(),
+                                                                              get_gui());
 //        scan_controller_gui->setup_gui();
         return scan_controller_gui;
     }
@@ -177,11 +178,11 @@ std::shared_ptr<controller::CalibrationControllerGUI>
 controller::ControllerFactoryCache::get_calibration_controller_gui() {
     if (calibration_controller_gui == nullptr) {
         calibration_controller_gui = std::make_shared<controller::CalibrationControllerGUI>(get_camera(),
-                                                                                     get_arduino(),
-                                                                                     get_model(),
-                                                                                     get_calibration_file_handler(),
-                                                                                     get_viewer(),
-                                                                                     get_gui());
+                                                                                            get_arduino(),
+                                                                                            get_model(),
+                                                                                            get_calibration_file_handler(),
+                                                                                            get_viewer(),
+                                                                                            get_gui());
 //        calibration_controller_gui->setup_gui();
         return calibration_controller_gui;
     }
@@ -227,6 +228,17 @@ std::shared_ptr<controller::ProcessingController> controller::ControllerFactoryC
         return process_controller;
     }
     return process_controller;
+}
+
+std::shared_ptr<controller::ProcessingControllerGUI> controller::ControllerFactoryCache::get_process_controller_gui() {
+    if (process_controller_gui == nullptr) {
+        process_controller_gui = std::make_shared<controller::ProcessingControllerGUI>(get_model(),
+                                                                                       get_viewer(),
+                                                                                       get_scan_file_handler(),
+                                                                                       get_gui());
+        return process_controller_gui;
+    }
+    return process_controller_gui;
 }
 
 std::shared_ptr<controller::FilterTestingController>
@@ -282,7 +294,6 @@ std::shared_ptr<controller::HomeController>
 controller::ControllerFactoryCache::get_home_controller(const boost::program_options::variables_map &vm) {
     return std::make_shared<controller::HomeController>();
 }
-
 
 
 controller::ControllerFactoryCache::~ControllerFactoryCache() = default;

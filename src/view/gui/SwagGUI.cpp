@@ -16,8 +16,6 @@
 #include <QComboBox>
 #include <QThreadPool>
 #include <QPlainTextEdit>
-#include <QSpacerItem>
-#include <iostream>
 
 
 SwagGUI::SwagGUI(controller::ControllerFactory *factory, QWidget *parent) :
@@ -33,9 +31,6 @@ SwagGUI::SwagGUI(controller::ControllerFactory *factory, QWidget *parent) :
 // --------------------------------------------------------------------------------
 
 
-//void SwagGUI::set_controller(controller::IControllerGUI *c) {
-//    controller = c;
-//}
 
 // --------------------------------------------------------------------------------
 //                          SLOTS
