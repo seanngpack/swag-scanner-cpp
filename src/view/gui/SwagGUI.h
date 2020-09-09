@@ -17,6 +17,8 @@ class FormsPayload;
 
 class MoveFormsPayload;
 
+class QThreadPool;
+
 namespace controller {
     class ControllerFactory;
 
@@ -30,13 +32,7 @@ public:
 
     ~SwagGUI();
 
-    void set_controller(controller::IControllerGUI *c);
-
-    /**
-     * Append info to the console.
-     * @param info the information you want to append.
-     */
-    void update_console(const std::string &info);
+//    void set_controller(controller::IControllerGUI *c);
 
 
 signals:
@@ -108,11 +104,19 @@ private slots:
      */
     void handle_scan_cal_combo_changed(int index);
 
+    /**
+     * Append info to the console. This method is called from a threaded worker.
+     *
+     * @param info the information you want to append.
+     */
+    void update_console(const std::string &info);
+
 
 private:
     controller::ControllerFactory *factory;
-    controller::IControllerGUI *controller;
+//    controller::IControllerGUI *controller;
 
+    QThreadPool *thread_pool;
     QWidget *main;
     QHBoxLayout *main_layout;
     QWidget *left_side;

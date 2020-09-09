@@ -9,10 +9,12 @@
 #include "ProcessControls.h"
 #include "IControllerGUI.h"
 #include "MoveControllerGUI.h"
+#include "IFileHandler.h"
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QDesktopWidget>
 #include <QComboBox>
+#include <QThreadPool>
 #include <QPlainTextEdit>
 #include <QSpacerItem>
 #include <iostream>
@@ -20,22 +22,20 @@
 
 SwagGUI::SwagGUI(controller::ControllerFactory *factory, QWidget *parent) :
         factory(factory), QMainWindow(parent) {
+    thread_pool = QThreadPool::globalInstance();
     set_up_main();
     set_up_left();
     set_up_right();
 }
 
 // --------------------------------------------------------------------------------
-//                          SIGNALS
+//                          PUBLIC METHODS
 // --------------------------------------------------------------------------------
 
-void SwagGUI::set_controller(controller::IControllerGUI *c) {
-    controller = c;
-}
 
-void SwagGUI::update_console(const std::string &info) {
-    console_widget->appendPlainText(QString::fromStdString(info));
-}
+//void SwagGUI::set_controller(controller::IControllerGUI *c) {
+//    controller = c;
+//}
 
 // --------------------------------------------------------------------------------
 //                          SLOTS
@@ -43,34 +43,39 @@ void SwagGUI::update_console(const std::string &info) {
 
 
 void SwagGUI::handle_scan_button_pressed(const FormsPayload &vars) {
-    controller = factory->get_gui_controller("scan").get();
-    controller->update(vars);
-    controller->run();
+    controller::IControllerGUI *c = factory->get_gui_controller("scan").get();
+    c->update(vars);
+    c->setAutoDelete(false);
+    thread_pool->start(c);
 }
 
 void SwagGUI::handle_calibrate_button_pressed(const FormsPayload &vars) {
-    controller = factory->get_gui_controller("calibrate").get();
-    controller->update(vars);
-    controller->run();
+    controller::IControllerGUI *c = factory->get_gui_controller("calibrate").get();
+    c->update(vars);
+    c->setAutoDelete(false);
+    thread_pool->start(c);
 }
 
 void SwagGUI::handle_process_button_pressed(const FormsPayload &vars) {
-    controller = factory->get_gui_controller("process").get();
-    controller->update(vars);
-    controller->run();
+    controller::IControllerGUI *c = factory->get_gui_controller("process").get();
+    c->update(vars);
+    c->setAutoDelete(false);
+    thread_pool->start(c);
 }
 
 void SwagGUI::handle_move_button_pressed(const MoveFormsPayload &vars) {
-    controller = factory->get_gui_controller("move").get();
-    controller->update(vars);
-    controller->run();
+    controller::IControllerGUI *c = factory->get_gui_controller("move").get();
+    c->update(vars);
+    c->setAutoDelete(false);
+    thread_pool->start(c);
 }
 
 void SwagGUI::handle_set_home_button_pressed() {
-    controller = factory->get_gui_controller("move").get();
+    controller::IControllerGUI *c = factory->get_gui_controller("move").get();
     // intentially casting because the alternative would be to use a HomeController class
     // where the run() method sets home. I think this is cleaner.
-    dynamic_cast<controller::MoveControllerGUI *>(controller)->set_home();
+    // TODO: just use a home controller lol
+    dynamic_cast<controller::MoveControllerGUI *>(c)->set_home();
     update_console("set current position to home");
 }
 
@@ -100,15 +105,17 @@ void SwagGUI::handle_combo_index_changed(int index) {
 
 void SwagGUI::handle_scan_cal_combo_changed(int index) {
     if (index == 0) {
-        std::vector<std::string> scans = controller->get_all_scans();
+        std::vector<std::string> scans = file::IFileHandler::get_all_scans();
         emit update_scan_list(scans);
     }
     if (index == 1) {
-        std::vector<std::string> cals = controller->get_all_calibrations();
+        std::vector<std::string> cals = file::IFileHandler::get_all_calibrations();
         emit update_cal_list(cals);
     }
+}
 
-
+void SwagGUI::update_console(const std::string &info) {
+    console_widget->appendPlainText(QString::fromStdString(info));
 }
 
 // --------------------------------------------------------------------------------

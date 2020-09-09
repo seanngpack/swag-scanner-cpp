@@ -135,7 +135,7 @@ std::shared_ptr<controller::ScanControllerGUI> controller::ControllerFactoryCach
                                                                                      get_model(),
                                                                                      get_scan_file_handler(),
                                                                                      get_gui());
-        scan_controller_gui->setup_gui();
+//        scan_controller_gui->setup_gui();
         return scan_controller_gui;
     }
     return scan_controller_gui;
@@ -182,7 +182,7 @@ controller::ControllerFactoryCache::get_calibration_controller_gui() {
                                                                                      get_calibration_file_handler(),
                                                                                      get_viewer(),
                                                                                      get_gui());
-        calibration_controller_gui->setup_gui();
+//        calibration_controller_gui->setup_gui();
         return calibration_controller_gui;
     }
     return calibration_controller_gui;
@@ -272,7 +272,7 @@ controller::ControllerFactoryCache::get_move_controller_gui() {
     if (move_controller_gui == nullptr) {
         move_controller_gui = std::make_shared<controller::MoveControllerGUI>(get_arduino(),
                                                                               get_gui());
-        move_controller_gui->setup_gui();
+//        move_controller_gui->setup_gui();
         return move_controller_gui;
     }
     return move_controller_gui;

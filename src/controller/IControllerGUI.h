@@ -1,9 +1,10 @@
 #ifndef SWAG_SCANNER_ICONTROLLERGUI_H
 #define SWAG_SCANNER_ICONTROLLERGUI_H
 
+#include "IController.h"
 #include <memory>
 #include <string>
-#include "IController.h"
+
 
 class SwagGUI;
 
@@ -13,7 +14,8 @@ namespace controller {
     /**
      * Represents a controller for GUIs.
      */
-    class IControllerGUI : public virtual IController {
+    class IControllerGUI : public IController {
+    Q_OBJECT
     public:
 
         explicit IControllerGUI(std::shared_ptr<SwagGUI> gui);
@@ -26,7 +28,7 @@ namespace controller {
          * swapping controllers for GUI. Call this method in the factory class.
          *
          */
-        void setup_gui();
+//        void setup_gui();
 
         /**
          * Update the controller with the given payload.
@@ -35,6 +37,13 @@ namespace controller {
          */
         virtual void update(const IFormsPayload &payload) = 0;
 
+
+        std::vector<std::string> get_all_scans();
+
+        std::vector<std::string> get_all_calibrations();
+
+    signals:
+
         /**
          * Write message to the GUI console.
          *
@@ -42,10 +51,6 @@ namespace controller {
          */
         void update_console(const std::string &info);
 
-
-        std::vector<std::string> get_all_scans();
-
-        std::vector<std::string> get_all_calibrations();
 
     protected:
         std::shared_ptr<SwagGUI> gui;
