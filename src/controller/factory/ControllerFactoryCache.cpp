@@ -61,11 +61,9 @@ std::shared_ptr<visual::Visualizer> controller::ControllerFactoryCache::get_view
 
 std::shared_ptr<file::ScanFileHandler> controller::ControllerFactoryCache::get_scan_file_handler() {
     if (scan_file_handler == nullptr) {
-        std::cout << " it's making another new made scan file handler" << std::endl;
         scan_file_handler = std::make_shared<file::ScanFileHandler>();
         return scan_file_handler;
     }
-    std::cout << " it's returning already made scan file handler" << std::endl;
     return scan_file_handler;
 }
 
@@ -74,7 +72,6 @@ std::shared_ptr<file::CalibrationFileHandler> controller::ControllerFactoryCache
         calibration_file_handler = std::make_shared<file::CalibrationFileHandler>();
         return calibration_file_handler;
     }
-    std::cout << "called get calibration file handler" << std::endl;
     return calibration_file_handler;
 }
 
@@ -90,7 +87,6 @@ std::shared_ptr<SwagGUI> controller::ControllerFactoryCache::get_gui() {
 std::shared_ptr<controller::ScanController>
 controller::ControllerFactoryCache::get_scan_controller(const boost::program_options::variables_map &vm) {
     if (scan_controller != nullptr) {
-        // call setters in here
         return scan_controller;
     }
     std::shared_ptr<file::ScanFileHandler> file_handler;
@@ -136,7 +132,6 @@ std::shared_ptr<controller::ScanControllerGUI> controller::ControllerFactoryCach
                                                                               get_model(),
                                                                               get_scan_file_handler(),
                                                                               get_gui());
-//        scan_controller_gui->setup_gui();
         return scan_controller_gui;
     }
     return scan_controller_gui;
@@ -145,7 +140,6 @@ std::shared_ptr<controller::ScanControllerGUI> controller::ControllerFactoryCach
 std::shared_ptr<controller::CalibrationController>
 controller::ControllerFactoryCache::get_calibration_controller(const boost::program_options::variables_map &vm) {
     if (calibration_controller != nullptr) {
-        // call setters in here
         return calibration_controller;
     }
     std::shared_ptr<file::CalibrationFileHandler> file_handler;
@@ -204,7 +198,6 @@ std::shared_ptr<controller::CalibrationController> controller::ControllerFactory
 std::shared_ptr<controller::ProcessingController>
 controller::ControllerFactoryCache::get_process_controller(const boost::program_options::variables_map &vm) {
     if (process_controller != nullptr) {
-        // do setting in here
         return process_controller;
     }
     std::shared_ptr<file::ScanFileHandler> file_handler;
@@ -284,7 +277,6 @@ controller::ControllerFactoryCache::get_move_controller_gui() {
     if (move_controller_gui == nullptr) {
         move_controller_gui = std::make_shared<controller::MoveControllerGUI>(get_arduino(),
                                                                               get_gui());
-//        move_controller_gui->setup_gui();
         return move_controller_gui;
     }
     return move_controller_gui;

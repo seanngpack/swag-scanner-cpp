@@ -31,7 +31,7 @@ void controller::ScanController::scan() {
     camera->scan();
     const camera::intrinsics intrin = camera->get_intrinsics();
     const camera::intrinsics intrin_filt = camera->get_intrinsics_processed();
-    std::cout << "starting scanning..." << std::endl;
+    std::cout << "started scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";
         camera->scan();
@@ -39,7 +39,7 @@ void controller::ScanController::scan() {
         std::vector<uint16_t> depth_frame_filt = camera->get_depth_frame_processed();
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_raw = model->create_point_cloud(depth_frame_raw, intrin);
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filt = model->create_point_cloud(depth_frame_filt,
-                                                                                               intrin);
+                                                                                               intrin_filt);
         file_handler->save_cloud(cloud_raw, name, CloudType::Type::RAW);
         file_handler->save_cloud(cloud_filt, name, CloudType::Type::FILTERED);
         arduino->rotate_by(deg);
