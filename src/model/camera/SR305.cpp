@@ -72,6 +72,7 @@ void camera::SR305::initialize_camera() {
             .as<rs2::video_stream_profile>().get_intrinsics();
     depth_scale = sensor.get_depth_scale();
     intrin = intrinsics(sensor_intrin, depth_scale);
+    scan(); // set current frame so I can get processed intrinsics
 
     // set filter parameters
     set_decimation_magnitude(decimation_magnitude);
@@ -81,9 +82,6 @@ void camera::SR305::initialize_camera() {
 
 
 rs2::frame camera::SR305::get_rs2_frame() {
-    if (current_frame.get_data() == nullptr) {
-        throw std::runtime_error("can't get depth frame, scan() has not been called yet");
-    }
     return current_frame;
 }
 

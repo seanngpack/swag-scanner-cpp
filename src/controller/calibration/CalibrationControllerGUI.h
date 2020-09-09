@@ -10,6 +10,7 @@ class IFormsPayload;
 
 namespace controller {
     class CalibrationControllerGUI : public CalibrationController, public IControllerGUI {
+
     public:
         CalibrationControllerGUI(std::shared_ptr<camera::ICamera> camera,
                                  std::shared_ptr<arduino::Arduino> arduino,
@@ -26,7 +27,6 @@ namespace controller {
 
 
         void update(const IFormsPayload &payload) override;
-
 
 
     private:

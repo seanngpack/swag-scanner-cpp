@@ -8,6 +8,7 @@
 #include "CalibrationFileHandler.h"
 #include "CalibrationController.h"
 #include "ProcessingController.h"
+#include "ProcessingControllerGUI.h"
 #include "ScanController.h"
 #include "ScanControllerGUI.h"
 #include "MoveController.h"
@@ -61,16 +62,11 @@ std::shared_ptr<controller::IControllerGUI> controller::ControllerFactory::get_g
         return cache->get_calibration_controller_gui();
     } else if (name == "move") {
         return cache->get_move_controller_gui();
+    } else if (name == "process") {
+        return cache->get_process_controller_gui();
     } else {
         throw std::invalid_argument("Error, must enter a valid controller name.");
     }
-//    } else if (name == "calibrate") {
-//        return cache->get_calibration_controller();
-//    } else if (name == "process") {
-//        return cache->get_process_controller();
-//    } else {
-//        throw std::invalid_argument("Error, must enter a valid base command.");
-//    }
 }
 
 controller::ControllerFactory::~ControllerFactory() = default;

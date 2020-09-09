@@ -11,13 +11,13 @@ controller::MoveControllerGUI::MoveControllerGUI(std::shared_ptr<arduino::Arduin
 
 void controller::MoveControllerGUI::run() {
     if (move_method == MoveMethod::TO) {
-        update_console("moving to position: " + std::to_string(deg));
+        emit update_console("moving to position: " + std::to_string(deg));
         arduino->rotate_to(deg);
-        update_console("done moving");
+        emit update_console("done moving");
     } else if (move_method == MoveMethod::BY) {
-        update_console("moving by: " + std::to_string(deg) + " degrees");
+        emit update_console("moving by: " + std::to_string(deg) + " degrees");
         arduino->rotate_by(deg);
-        update_console("done moving");
+        emit update_console("done moving");
     }
 }
 
