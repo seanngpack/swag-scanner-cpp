@@ -10,12 +10,15 @@ class SwagGUI;
 
 class IFormsPayload;
 
+Q_DECLARE_METATYPE(std::string)
+
 namespace controller {
     /**
      * Represents a controller for GUIs.
      */
     class IControllerGUI : public IController {
     Q_OBJECT
+
     public:
 
         explicit IControllerGUI(std::shared_ptr<SwagGUI> gui);

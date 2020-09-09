@@ -4,11 +4,9 @@
 #include <iostream>
 
 controller::IControllerGUI::IControllerGUI(std::shared_ptr<SwagGUI> gui) :
-        gui(std::move(gui)) {}
-
-//void controller::IControllerGUI::setup_gui() {
-//    gui->set_controller(this);
-//}
+        gui(std::move(gui)) {
+    qRegisterMetaType<std::string>();
+}
 
 std::vector<std::string> controller::IControllerGUI::get_all_scans() {
     return file::IFileHandler::get_all_scans();

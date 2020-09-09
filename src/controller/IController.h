@@ -7,6 +7,8 @@
 namespace controller {
     /**
      * Represents an abstract base for controllers.
+     * Have to inherit from QObject and QRunnable here because Qt requires these
+     * to be at the base class. SMH.
      */
     class IController : public QObject, public QRunnable  {
     public:

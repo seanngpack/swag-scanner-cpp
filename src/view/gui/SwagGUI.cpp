@@ -46,6 +46,8 @@ void SwagGUI::handle_scan_button_pressed(const FormsPayload &vars) {
     controller::IControllerGUI *c = factory->get_gui_controller("scan").get();
     c->update(vars);
     c->setAutoDelete(false);
+    connect(c, SIGNAL(update_console(const std::string &)), this, SLOT(update_console(const std::string &)),
+            Qt::UniqueConnection);
     thread_pool->start(c);
 }
 
@@ -53,6 +55,8 @@ void SwagGUI::handle_calibrate_button_pressed(const FormsPayload &vars) {
     controller::IControllerGUI *c = factory->get_gui_controller("calibrate").get();
     c->update(vars);
     c->setAutoDelete(false);
+    connect(c, SIGNAL(update_console(const std::string &)), this, SLOT(update_console(const std::string &)),
+            Qt::UniqueConnection);
     thread_pool->start(c);
 }
 
@@ -60,6 +64,8 @@ void SwagGUI::handle_process_button_pressed(const FormsPayload &vars) {
     controller::IControllerGUI *c = factory->get_gui_controller("process").get();
     c->update(vars);
     c->setAutoDelete(false);
+    connect(c, SIGNAL(update_console(const std::string &)), this, SLOT(update_console(const std::string &)),
+            Qt::UniqueConnection);
     thread_pool->start(c);
 }
 
@@ -67,6 +73,8 @@ void SwagGUI::handle_move_button_pressed(const MoveFormsPayload &vars) {
     controller::IControllerGUI *c = factory->get_gui_controller("move").get();
     c->update(vars);
     c->setAutoDelete(false);
+    connect(c, SIGNAL(update_console(const std::string &)), this, SLOT(update_console(const std::string &)),
+            Qt::UniqueConnection);
     thread_pool->start(c);
 }
 
