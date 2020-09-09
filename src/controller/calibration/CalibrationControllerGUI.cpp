@@ -44,7 +44,7 @@ void controller::CalibrationControllerGUI::run() {
     update_console("Returning to home position");
     arduino->rotate_to(0);
 
-    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
+//    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
 }
 
 
