@@ -79,10 +79,10 @@ void camera::SR305::initialize_camera() {
 
     // load configuration file
     json config_json = file::IFileHandler::get_swag_scanner_config_json();
-    decimation_magnitude = config_json["axis_direction"];
+    decimation_magnitude = config_json["decimation_magnitude"];
     spatial_filter_magnitude = config_json["spatial_filter_magnitude"];
-    spatial_smooth_alpha = config_json["sptial_smooth_alpha"];
-    spatial_smooth_delta = config_json["sptial_smooth_delta"];
+    spatial_smooth_alpha = config_json["spatial_smooth_alpha"];
+    spatial_smooth_delta = config_json["spatial_smooth_delta"];
 
     // set filter parameters
     set_decimation_magnitude(decimation_magnitude);
