@@ -90,7 +90,9 @@ namespace file {
         load_clouds(const CloudType::Type &cloud_type) = 0;
 
 
-        virtual ~IFileHandler() {}
+        virtual ~IFileHandler() {
+            std::cout << "IFilehandler destructor" << std::endl;
+        }
 
     protected:
         static boost::filesystem::path swag_scanner_path;

@@ -4,6 +4,7 @@
 #include "IController.h"
 #include <memory>
 #include <string>
+#include <iostream>
 
 
 class SwagGUI;
@@ -23,7 +24,9 @@ namespace controller {
 
         explicit IControllerGUI(std::shared_ptr<SwagGUI> gui);
 
-        virtual ~IControllerGUI() = default;
+        virtual ~IControllerGUI() {
+         std::cout << "IControllerGUI destructor" << std::endl;
+        }
 
 
         /**

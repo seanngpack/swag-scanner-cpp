@@ -19,6 +19,8 @@
 #include "SwagGUI.h"
 #include "ControllerFactory.h"
 #include <iostream>
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#include "spdlog/spdlog.h"
 
 controller::ControllerFactoryCache::ControllerFactoryCache(controller::ControllerFactory *factory) :
         factory(factory),
@@ -289,5 +291,8 @@ controller::ControllerFactoryCache::get_home_controller(const boost::program_opt
 }
 
 
-controller::ControllerFactoryCache::~ControllerFactoryCache() = default;
+controller::ControllerFactoryCache::~ControllerFactoryCache() {
+    spdlog::set_level(spdlog::level::debug);
+    spdlog::debug("ControllerFactoryCache destructor called");
+}
 
