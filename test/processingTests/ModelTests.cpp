@@ -5,6 +5,10 @@
 #include "CameraTypes.h"
 #include <memory>
 
+/*
+ * To be honest, there's not really much of a point of having this suite and the tests for segmentation, calibration, etc.
+ * Because this is just calling those exact same methods. Probably should delete this soon.
+ */
 
 class ModelFixture : public ::testing::Test {
 

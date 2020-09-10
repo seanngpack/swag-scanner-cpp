@@ -16,10 +16,8 @@ int main(int argc, char *argv[]) {
     if (vm.count("gui")) {
         QApplication app(argc, argv);
         controller::ControllerFactory factory;
-        factory.get_gui_controller("calibrate");
-//        SwagGUI gui;
-//        gui.show();
-
+        std::shared_ptr<SwagGUI> gui = factory.get_gui();
+        gui->show();
         return app.exec();
     } else {
         controller::ControllerFactory factory;

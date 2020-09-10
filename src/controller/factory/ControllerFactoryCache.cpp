@@ -23,6 +23,7 @@
 controller::ControllerFactoryCache::ControllerFactoryCache(controller::ControllerFactory *factory) :
         factory(factory),
         model(std::make_shared<model::Model>()),
+        arduino(std::make_shared<arduino::Arduino>()),
         scan_file_handler(std::make_shared<file::ScanFileHandler>()),
         calibration_file_handler(std::make_shared<file::CalibrationFileHandler>()) {}
 
