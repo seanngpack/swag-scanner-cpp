@@ -17,6 +17,7 @@ if(NOT Qt5_DIR)
 endif()
 
 option(BUILD_TESTS "Build the tests" OFF)
+option(BUILD_TESTS_VISUAL "Build the visual tests" OFF)
 
 
 # --------------------------------------------------------------------------------
