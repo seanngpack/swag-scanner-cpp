@@ -20,16 +20,25 @@ namespace file {
     public:
 
         /**
+         * Checks to see if a /SwagScanner folder exists in Library/Application Support.
+         * If the folder does not exist, then create one and load in default configuration.
+         * Otherwise, continue.
+         *
+         * @returns true if the program folder is already there. False if it isn't.
+         */
+        static bool check_program_folder();
+
+        /**
          * Static method get the settings.json file from root of project.
          * @return json file.
          */
-        static nlohmann::json load_settings_json();
+        static nlohmann::json load_swag_scanner_info_json();
 
         /**
          * Static method write to settings.json.
          * @param j json file that follows format of settings.json
          */
-        static void write_settings_json(const nlohmann::json &j);
+        static void write_swag_scanner_info_json(const nlohmann::json &j);
 
         /**
          * Go to the SwagScanner/calibration directory and find the latest calibration by date.

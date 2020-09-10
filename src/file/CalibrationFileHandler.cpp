@@ -97,8 +97,8 @@ std::string file::CalibrationFileHandler::get_scan_name() {
 
 void file::CalibrationFileHandler::update_calibration_json(const equations::Normal &dir, const equations::Point &pt) {
     json calibration_json = get_calibration_json();
-    calibration_json["axis direction"] = {dir.A, dir.B, dir.C};
-    calibration_json["origin point"] = {pt.x, pt.y, pt.z};
+    calibration_json["axis_direction"] = {dir.A, dir.B, dir.C};
+    calibration_json["origin_point"] = {pt.x, pt.y, pt.z};
 
     std::string calibration_path = scan_folder_path.string() + "/" + scan_name + ".json";
     std::ofstream updated_file(calibration_path);
@@ -109,8 +109,8 @@ void file::CalibrationFileHandler::create_calibration_json() {
     std::string calibration_path = scan_folder_path.string() + "/" + scan_name + ".json";
     std::ofstream calibration(calibration_path); // create json file
     json calibration_json = {
-            {"origin point",   {0.0, 0.0, 0.0}},
-            {"axis direction", {0.0, 0.0, 0.0}}
+            {"origin_point",   {0.0, 0.0, 0.0}},
+            {"axis_direction", {0.0, 0.0, 0.0}}
     };
     calibration << std::setw(4) << calibration_json << std::endl; // write to file
 }

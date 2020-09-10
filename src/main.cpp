@@ -1,7 +1,8 @@
 #include "CLIParser.h"
 #include "IController.h"
-#include "factory/ControllerFactory.h"
-#include "factory/ControllerFactoryCache.h"
+#include "ControllerFactory.h"
+#include "ControllerFactoryCache.h"
+#include "IFileHandler.h"
 #include "SwagGUI.h"
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -9,6 +10,7 @@
 
 
 int main(int argc, char *argv[]) {
+    file::IFileHandler::check_program_folder();
     std::unique_ptr<cli::CLIParser> cli_parser = std::make_unique<cli::CLIParser>();
     boost::program_options::variables_map vm = cli_parser->get_variables_map(argc, argv);
 

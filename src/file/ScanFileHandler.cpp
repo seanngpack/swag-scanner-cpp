@@ -5,19 +5,17 @@ using namespace boost::filesystem;
 using json = nlohmann::json;
 
 file::ScanFileHandler::ScanFileHandler() {
-    // todo: i need this logic moved somewhere else. This will create SwagScanner folder
-    // and set the first scan to something. It's pretty crucial
-    std::cout << "scan file handler constructor called wtf" << std::endl;
-    bool exists = check_program_folder();
-    if (!exists) {
-        scan_folder_path = find_next_scan_folder_numeric();
-        scan_name = scan_folder_path.stem().string();
-        create_directory(scan_folder_path);
-        create_sub_folders();
-        set_settings_latest_scan(scan_folder_path);
-    } else {
+//    bool exists = check_program_folder();
+//    if (!exists) {
+//        scan_folder_path = find_next_scan_folder_numeric();
+//        scan_name = scan_folder_path.stem().string();
+//        create_directory(scan_folder_path);
+//        create_sub_folders();
+//        set_swag_scanner_info_latest_scan(scan_folder_path);
+//    } else {
+        // probably gonna be an error if I use the GUI for the first time and then forget to enter a scan name
         scan_folder_path = find_latest_scan();
-    }
+//    }
 }
 
 file::ScanFileHandler::ScanFileHandler(bool auto_create_flag) {
@@ -39,7 +37,7 @@ void file::ScanFileHandler::auto_create_new_scan() {
     scan_name = scan_folder_path.stem().string();
     create_directory(scan_folder_path);
     create_sub_folders();
-    set_settings_latest_scan(scan_folder_path);
+    set_swag_scanner_info_latest_scan(scan_folder_path);
 }
 
 void file::ScanFileHandler::set_scan(const std::string &scan_name) {
@@ -48,7 +46,7 @@ void file::ScanFileHandler::set_scan(const std::string &scan_name) {
     if (!is_directory(scan_folder_path)) {
         create_directory(scan_folder_path);
         create_sub_folders();
-        set_settings_latest_scan(scan_folder_path);
+        set_swag_scanner_info_latest_scan(scan_folder_path);
     }
 }
 
@@ -137,43 +135,13 @@ json file::ScanFileHandler::get_calibration_json() {
 }
 
 path file::ScanFileHandler::find_latest_scan() {
-    std::ifstream settings(swag_scanner_path.string() + "/settings/settings.json");
-    json settings_json;
-    settings >> settings_json;
-    std::string latest = settings_json["latest_scan"];
-    std::cout << "found latest scan in settings.json file to be " << latest << std::endl;
+    std::ifstream info(swag_scanner_path.string() + "/settings/info.json");
+    json info_json;
+    info >> info_json;
+    std::string latest = info_json["latest_scan"];
+    std::cout << "found latest scan in /settings/info.json file to be " << latest << std::endl;
     return latest;
 }
-
-bool file::ScanFileHandler::check_program_folder() {
-    if (!exists(swag_scanner_path)) {
-        std::cout << "No SwagScanner application folder detected, creating one at: " + swag_scanner_path.string()
-                  << std::endl;
-        create_directory(swag_scanner_path);
-        create_directory(swag_scanner_path / "settings");
-        create_directory(swag_scanner_path / "scans");
-        create_directory(swag_scanner_path / "calibration");
-        create_directory(swag_scanner_path / "calibration/default_calibration");
-        std::ofstream settings(swag_scanner_path.string() + "/settings/settings.json"); // create json file
-        json settings_json = {
-                {"version",          .1},
-                {"latest_scan",      "none"},
-                {"current_position", 0}
-        };
-        settings << std::setw(4) << settings_json << std::endl; // write to file
-        std::ofstream calibration(
-                swag_scanner_path.string() +
-                "/calibration/default_calibration/default_calibration.json"); // create json file
-        json calibration_json = {
-                {"origin point",   {-0.0002, 0.0344,  0.4294}},
-                {"axis direction", {-0.0158, -0.8661, -0.4996}}
-        };
-        calibration << std::setw(4) << calibration_json << std::endl; // write to file
-        return false;
-    }
-    return true;
-}
-
 
 void file::ScanFileHandler::create_sub_folders() {
     for (const auto &element : CloudType::All) {
@@ -198,13 +166,13 @@ void file::ScanFileHandler::create_sub_folders() {
 }
 
 
-void file::ScanFileHandler::set_settings_latest_scan(const path &folder_path) {
-    std::ifstream settings(swag_scanner_path.string() + "/settings/settings.json");
+void file::ScanFileHandler::set_swag_scanner_info_latest_scan(const path &folder_path) {
+    std::ifstream settings(swag_scanner_path.string() + "/settings/info.json");
     json settings_json;
     settings >> settings_json;
     settings_json["latest_scan"] = folder_path.string();
 
-    std::ofstream updated_file(swag_scanner_path.string() + "/settings/settings.json");
+    std::ofstream updated_file(swag_scanner_path.string() + "/settings/info.json");
     updated_file << std::setw(4) << settings_json << std::endl; // write to file
 }
 

@@ -18,16 +18,16 @@ namespace file {
         /**
          * Default constructor makes a ScanFileHandler. Searches for SwagScanner in the /applications path
          * and creates a new SwagScanner directory if it doesn't exist. Will also create a folder "1" under
-         * the /data directory and set it as the current scan folder. * Then it will update the settings.json on the
+         * the /data directory and set it as the current scan folder. * Then it will update the settings/info.json on the
          * latest scan. If SwagScanner exists, then it will use the current scan folder according to the
-         * settings.json file.
+         * settings/info.json file.
          */
         ScanFileHandler();
 
         /**
          * Constructor takes in a flag and determines whether to create a new scan folder
          * or not. If the flag is set to true then it will create a new scan folder numerically.
-         * Then it will update the settings.json on the latest scan.
+         * Then it will update the settings/info.json on the latest scan.
          * @param auto_create_flag
          */
         ScanFileHandler(bool auto_create_flag);
@@ -91,16 +91,7 @@ namespace file {
                               const std::string &cal = "None");
 
     private:
-        /**
-         * Checks to see if a /SwagScanner folder exists in Library/Application Support.
-         * If the folder does not exist, then create one and load in default configuration.
-         * Otherwise, continue.
-         *
-         * TODO: I should probably move this out of this derived class. Might want to make it
-         * higher level, or apply to all file handlers.
-         * @returns true if the program folder is already there. False if it isn't.
-         */
-        bool check_program_folder();
+
 
         /**
          * Create the sub folders defined in CloudTypes in the scan_folder_path if they
@@ -110,7 +101,7 @@ namespace file {
         void create_sub_folders();
 
         /**
-         * Finds the last scan folder using the settings.json file in the /settings directory.
+         * Finds the last scan folder using the settings/info.json file.
          * TODO: Might wanna move this to IFilehandler. Also might wanna not depend on the json file to accomplish this.
          *
          * @return path to the latest scan.
@@ -119,9 +110,9 @@ namespace file {
 
 
         /**
-         * Update the settings.json file "latest_scan" field.
+         * Update the settings/info.json file "latest_scan" field.
          */
-        void set_settings_latest_scan(const boost::filesystem::path &folder_path);
+        void set_swag_scanner_info_latest_scan(const boost::filesystem::path &folder_path);
 
     };
 }

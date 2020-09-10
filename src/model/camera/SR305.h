@@ -71,12 +71,12 @@ namespace camera {
         float depth_scale;
 
         // decimation filter parameters
-        int decimation_magnitude = 2;
+        int decimation_magnitude;
 
         // spatial edge-preservation filter parameters
-        int spatial_filter_magnitude = 1;
-        float spatial_smooth_alpha = 0.45;
-        int spatial_smooth_delta = 5;
+        int spatial_filter_magnitude;
+        float spatial_smooth_alpha;
+        int spatial_smooth_delta;
 
 
         int width = 640;

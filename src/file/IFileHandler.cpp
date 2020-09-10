@@ -16,16 +16,55 @@ path file::IFileHandler::swag_scanner_path = []() {
     return program_folder;
 }();
 
-json file::IFileHandler::load_settings_json() {
-    std::string settings_path = swag_scanner_path.string() + "/settings/settings.json";
+bool file::IFileHandler::check_program_folder() {
+    if (!exists(swag_scanner_path)) {
+        std::cout << "No SwagScanner application folder detected, creating one at: " + swag_scanner_path.string()
+                  << std::endl;
+        create_directory(swag_scanner_path);
+        create_directory(swag_scanner_path / "settings");
+        create_directory(swag_scanner_path / "scans");
+        create_directory(swag_scanner_path / "calibration");
+        create_directory(swag_scanner_path / "calibration/default_calibration");
+        // create info JSON
+        std::ofstream info(swag_scanner_path.string() + "/settings/info.json"); // create json file
+        json swag_scanner_info_json = {
+                {"version",          .1},
+                {"latest_scan",      "none"},
+                {"current_position", 0}
+        };
+        // create default calibration JSON
+        info << std::setw(4) << swag_scanner_info_json << std::endl; // write to file
+        std::ofstream calibration(swag_scanner_path.string() +
+                                  "/calibration/default_calibration/default_calibration.json"); // create json file
+        json calibration_json = {
+                {"origin_point",   {-0.0002, 0.0344,  0.4294}},
+                {"axis_direction", {-0.0158, -0.8661, -0.4996}}
+        };
+        // create config JSON
+        calibration << std::setw(4) << calibration_json << std::endl; // write to file
+        std::ofstream config(swag_scanner_path.string() + "/settings/config.json"); // create json file
+        json config_json = {
+                {"decimation_magnitude",     2},
+                {"spatial_filter_magnitude", 1},
+                {"spatial_smooth_alpha",     .45},
+                {"spatial_smooth_delta",     5}
+        };
+        config << std::setw(4) << config_json << std::endl; // write to file
+        return false;
+    }
+    return true;
+}
+
+json file::IFileHandler::load_swag_scanner_info_json() {
+    std::string settings_path = swag_scanner_path.string() + "/settings/info.json";
     std::ifstream settings(settings_path);
     json settings_json;
     settings >> settings_json;
     return settings_json;
 }
 
-void file::IFileHandler::write_settings_json(const json &j) {
-    std::string settings_path = swag_scanner_path.string() + "/settings/settings.json";
+void file::IFileHandler::write_swag_scanner_info_json(const json &j) {
+    std::string settings_path = swag_scanner_path.string() + "/settings/info.json";
     std::ofstream updated_file(settings_path);
     updated_file << std::setw(4) << j << std::endl; // write to file
 }
@@ -154,3 +193,5 @@ std::vector<std::string> file::IFileHandler::get_all_calibrations() {
     }
     return calibrations;
 }
+
+
