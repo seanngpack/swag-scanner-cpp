@@ -1,4 +1,4 @@
-#Tests
+# Tests
 
 SwagScanner has a wide suite of testing to verify math, behavior, and control flow of its
 functionalities.

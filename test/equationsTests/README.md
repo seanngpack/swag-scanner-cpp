@@ -1,4 +1,4 @@
-#equationsTests
+# equationsTests
 
 This folder contains tests for verifying custom equations:: types.
 
