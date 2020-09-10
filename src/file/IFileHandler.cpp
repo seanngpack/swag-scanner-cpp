@@ -16,6 +16,7 @@ path file::IFileHandler::swag_scanner_path = []() {
     return program_folder;
 }();
 
+
 bool file::IFileHandler::check_program_folder() {
     if (!exists(swag_scanner_path)) {
         std::cout << "No SwagScanner application folder detected, creating one at: " + swag_scanner_path.string()
@@ -55,6 +56,7 @@ bool file::IFileHandler::check_program_folder() {
     return true;
 }
 
+
 json file::IFileHandler::load_swag_scanner_info_json() {
     std::string settings_path = swag_scanner_path.string() + "/settings/info.json";
     std::ifstream settings(settings_path);
@@ -63,11 +65,21 @@ json file::IFileHandler::load_swag_scanner_info_json() {
     return settings_json;
 }
 
+
 void file::IFileHandler::write_swag_scanner_info_json(const json &j) {
     std::string settings_path = swag_scanner_path.string() + "/settings/info.json";
     std::ofstream updated_file(settings_path);
     updated_file << std::setw(4) << j << std::endl; // write to file
 }
+
+nlohmann::json file::IFileHandler::get_swag_scanner_config_json() {
+    std::string config_path = swag_scanner_path.string() + "/settings/config.json";
+    std::ifstream config(config_path);
+    json config_json;
+    config >> config_json;
+    return config_json;
+}
+
 
 path file::IFileHandler::find_latest_calibration() {
     std::string calibrations_folder = swag_scanner_path.string() + "/calibration";
@@ -89,6 +101,7 @@ path file::IFileHandler::find_latest_calibration() {
                                     result_set.rbegin()->second.filename().string() + ".json");
     return p;
 }
+
 
 bool file::IFileHandler::path_sort(const boost::filesystem::path &path1, const boost::filesystem::path &path2) {
     std::string string1 = path1.string();
@@ -118,6 +131,7 @@ bool file::IFileHandler::path_sort(const boost::filesystem::path &path1, const b
     }
     return (std::stoi(result1) < std::stoi(result2));
 }
+
 
 path file::IFileHandler::find_next_scan_folder_numeric(const CloudType::Type &type) {
     boost::filesystem::path folder = swag_scanner_path / "/scans";
@@ -193,5 +207,6 @@ std::vector<std::string> file::IFileHandler::get_all_calibrations() {
     }
     return calibrations;
 }
+
 
 

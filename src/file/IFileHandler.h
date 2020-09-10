@@ -30,18 +30,29 @@ namespace file {
 
         /**
          * Static method get the settings.json file from root of project.
+         *
          * @return json file.
          */
         static nlohmann::json load_swag_scanner_info_json();
 
         /**
          * Static method write to settings.json.
+         *
          * @param j json file that follows format of settings.json
          */
         static void write_swag_scanner_info_json(const nlohmann::json &j);
 
+
+        /**
+         * Get ./settings/config.json
+         *
+         * @return config.json file
+         */
+        static nlohmann::json get_swag_scanner_config_json();
+
         /**
          * Go to the SwagScanner/calibration directory and find the latest calibration by date.
+         *
          * @return path to the latest calibration.
          *
          * ex: find_latest_calibration() -> .../SwagScanner/calibration/testCal1/testCal1.json
@@ -81,7 +92,7 @@ namespace file {
          *
          * @return vector of all the calibration names.
          */
-        static std::vector < std::string > get_all_calibrations();
+        static std::vector<std::string> get_all_calibrations();
 
 
         /**
