@@ -18,6 +18,7 @@
 #include "HomeController.h"
 #include "ControllerFactoryCache.h"
 #include "MoveController.h"
+#include "SwagGUI.h"
 
 
 namespace po = boost::program_options;
@@ -67,6 +68,10 @@ std::shared_ptr<controller::IControllerGUI> controller::ControllerFactory::get_g
     } else {
         throw std::invalid_argument("Error, must enter a valid controller name.");
     }
+}
+
+std::shared_ptr<SwagGUI> controller::ControllerFactory::get_gui() {
+    return cache->get_gui();
 }
 
 controller::ControllerFactory::~ControllerFactory() = default;

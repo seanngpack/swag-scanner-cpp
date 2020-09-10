@@ -10,6 +10,8 @@ namespace controller {
     class ControllerFactoryCache;
 }
 
+class SwagGUI;
+
 namespace controller {
     class ControllerFactory {
     public:
@@ -23,6 +25,8 @@ namespace controller {
         std::shared_ptr<IController> get_controller(const std::string &name);
 
         std::shared_ptr<IControllerGUI> get_gui_controller(const std::string &name);
+
+        std::shared_ptr<SwagGUI> get_gui();
 
 
     private:

@@ -19,7 +19,8 @@
 
 
 SwagGUI::SwagGUI(controller::ControllerFactory *factory, QWidget *parent) :
-        factory(factory), QMainWindow(parent) {
+        factory(factory),
+        QMainWindow(parent) {
     thread_pool = QThreadPool::globalInstance();
     set_up_main();
     set_up_left();
@@ -71,6 +72,7 @@ void SwagGUI::handle_move_button_pressed(const MoveFormsPayload &vars) {
     connect(c, SIGNAL(update_console(const std::string &)), this, SLOT(update_console(const std::string &)),
             Qt::UniqueConnection);
     thread_pool->start(c);
+    thread_pool->waitForDone();
 }
 
 void SwagGUI::handle_set_home_button_pressed() {
