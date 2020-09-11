@@ -86,6 +86,7 @@ void camera::SR305::initialize_camera() {
 
     // set filter parameters
     set_decimation_magnitude(decimation_magnitude);
+    set_spatial_filter_magnitude(spatial_filter_magnitude);
     set_spatial_smooth_alpha(spatial_smooth_alpha);
     set_spatial_smooth_delta(spatial_smooth_delta);
 }
