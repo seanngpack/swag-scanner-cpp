@@ -54,7 +54,9 @@ void controller::ScanController::update_json_time() {
     oss << std::put_time(&tm, "%m-%d-%Y %H:%M:%S");
     auto str = oss.str();
 
-    file_handler->update_info_json(str, deg, file_handler->find_latest_calibration().string());
+    std::string info_json_path =
+            file_handler->find_latest_calibration().string() + "/" + file_handler->get_scan_name() + ".json";;
+    file_handler->update_info_json(str, deg, info_json_path);
 }
 
 
