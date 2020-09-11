@@ -185,7 +185,7 @@ fs::path file::IFileHandler::find_next_scan_folder_numeric(const CloudType::Type
 }
 
 fs::path file::IFileHandler::find_next_scan_folder_numeric() {
-    find_next_scan_folder_numeric(CloudType::Type::NONE);
+    return find_next_scan_folder_numeric(CloudType::Type::NONE);
 }
 
 
