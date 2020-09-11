@@ -7,7 +7,7 @@ using json = nlohmann::json;
 using namespace std::literals::chrono_literals;
 
 arduino::Arduino::Arduino() {
-    current_pos = file::IFileHandler::load_settings_json()["current_position"];
+    current_pos = file::IFileHandler::load_swag_scanner_info_json()["current_position"];
 
     // connect to peripheral, service, chars...
     central_manager = std::make_unique<bluetooth::Central>();
@@ -64,9 +64,9 @@ void arduino::Arduino::rotate_to(int target) {
 
 
 void arduino::Arduino::update_current_pos() {
-    json settings_json = file::IFileHandler::load_settings_json();
+    json settings_json = file::IFileHandler::load_swag_scanner_info_json();
     settings_json["current_position"] = current_pos;
-    file::IFileHandler::write_settings_json(settings_json);
+    file::IFileHandler::write_swag_scanner_info_json(settings_json);
 }
 
 

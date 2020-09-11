@@ -18,8 +18,11 @@ add_subdirectory(calibrationTests)
 add_subdirectory(equationsTests)
 add_subdirectory(fileTests)
 add_subdirectory(processingTests)
-add_subdirectory(research)
 add_subdirectory(typesTests)
 add_subdirectory(utilsTests)
+
+if (BUILD_TESTS_VISUAL)
+    add_subdirectory(research)
+endif()
 
 add_test(${TEST_MAIN} ${TEST_MAIN})

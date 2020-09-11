@@ -21,9 +21,9 @@ void controller::MoveController::set_deg(int degs) {
 }
 
 void controller::MoveController::set_home() {
-    json settings_json = file::IFileHandler::load_settings_json();
+    json settings_json = file::IFileHandler::load_swag_scanner_info_json();
     settings_json["current_position"] = 0;
-    file::IFileHandler::write_settings_json(settings_json);
+    file::IFileHandler::write_swag_scanner_info_json(settings_json);
 }
 
 void controller::MoveController::set_move_method(const MoveMethod &move_method) {

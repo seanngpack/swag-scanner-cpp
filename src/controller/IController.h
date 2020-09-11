@@ -17,7 +17,7 @@ namespace controller {
          */
         virtual void run();
 
-        virtual ~IController() {}
+        virtual ~IController();
     };
 }
 

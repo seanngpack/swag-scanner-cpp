@@ -1,4 +1,4 @@
-#calibrationTests
+# calibrationTests
 
 This folder contains tests for verifying mathematical and visual accuracy
 of the calibration algorithm.

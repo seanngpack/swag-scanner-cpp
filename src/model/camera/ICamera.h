@@ -48,7 +48,9 @@ namespace camera {
         /**
          * Virtual destructor, must be defined or else it will never call the base class's destructor.
          */
-        virtual ~ICamera() {}
+        virtual ~ICamera() {
+            std::cout << "Icamera destructor" << std::endl;
+        }
 
 
     protected:

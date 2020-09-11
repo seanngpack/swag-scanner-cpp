@@ -77,8 +77,8 @@ void controller::ProcessingController::rotate_all_clouds(const CloudType::Type &
     json info_json = file_handler->get_info_json();
     json calibration_json = file_handler->get_calibration_json();
 
-    std::vector<float> origin = calibration_json["origin point"];
-    std::vector<float> direction = calibration_json["axis direction"];
+    std::vector<float> origin = calibration_json["origin_point"];
+    std::vector<float> direction = calibration_json["axis_direction"];
     float theta = -(float) info_json["angle"] * (M_PI / 180.0);
 
     auto global_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();

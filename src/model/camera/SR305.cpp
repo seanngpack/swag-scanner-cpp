@@ -1,5 +1,9 @@
 #include "SR305.h"
 #include "CameraTypes.h"
+#include "IFileHandler.h"
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 camera::SR305::SR305() {
     initialize_camera();
@@ -68,11 +72,17 @@ void camera::SR305::initialize_camera() {
 
 
     // grab the intrin
-    auto sensor_intrin = pipe_profile.get_stream(RS2_STREAM_DEPTH)
-            .as<rs2::video_stream_profile>().get_intrinsics();
+    auto sensor_intrin = pipe_profile.get_stream(RS2_STREAM_DEPTH).as<rs2::video_stream_profile>().get_intrinsics();
     depth_scale = sensor.get_depth_scale();
     intrin = intrinsics(sensor_intrin, depth_scale);
     scan(); // set current frame so I can get processed intrinsics
+
+    // load configuration file
+    json config_json = file::IFileHandler::get_swag_scanner_config_json();
+    decimation_magnitude = config_json["decimation_magnitude"];
+    spatial_filter_magnitude = config_json["spatial_filter_magnitude"];
+    spatial_smooth_alpha = config_json["spatial_smooth_alpha"];
+    spatial_smooth_delta = config_json["spatial_smooth_delta"];
 
     // set filter parameters
     set_decimation_magnitude(decimation_magnitude);
