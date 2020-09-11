@@ -292,7 +292,6 @@ controller::ControllerFactoryCache::get_home_controller(const boost::program_opt
 
 
 controller::ControllerFactoryCache::~ControllerFactoryCache() {
-    spdlog::set_level(spdlog::level::debug);
-    spdlog::debug("ControllerFactoryCache destructor called");
+    spdlog::get("swag_logger")->debug("ControllerFactoryCache destructor called");
 }
 
