@@ -76,6 +76,5 @@ std::shared_ptr<SwagGUI> controller::ControllerFactory::get_gui() {
 }
 
 controller::ControllerFactory::~ControllerFactory() {
-    spdlog::set_level(spdlog::level::debug);
-    spdlog::debug("ControllerFactory destructor called");
+    spdlog::get("swag_logger")->debug("ControllerFactory destructor called");
 }

@@ -23,6 +23,7 @@ add_subdirectory(utilsTests)
 
 if (BUILD_TESTS_VISUAL)
     add_subdirectory(research)
+
 endif()
 
 add_test(${TEST_MAIN} ${TEST_MAIN})

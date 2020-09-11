@@ -43,6 +43,22 @@ namespace visual {
                         const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud2);
 
         /**
+         * Visualize four points clouds in a grid.
+         * @param cloud1
+         * @param cloud2
+         * @param cloud3
+         * @param cloud4
+         */
+        void compareVisFour(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud1,
+                            const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud2,
+                            const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud3,
+                            const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud4,
+                            const std::string &cloud1_desc = "cloud 1",
+                            const std::string &cloud2_desc = "cloud 2",
+                            const std::string &cloud3_desc = "cloud 3",
+                            const std::string &cloud4_desc = "cloud 4");
+
+        /**
          * Visualize normal vectors.
          * @param cloud base cloud.
          * @param normal normal cloud for base cloud.
