@@ -8,12 +8,11 @@ using json = nlohmann::json;
 fs::path file::IFileHandler::swag_scanner_path = []() {
     FSRef ref;
     OSType folderType = kApplicationSupportFolderType;
-    char path[PATH_MAX];
+    char mac_path[PATH_MAX];
 
     FSFindFolder(kUserDomain, folderType, kCreateFolder, &ref);
-    FSRefMakePath(&ref, (UInt8 *) &path, PATH_MAX);
-    fs::path program_folder = "/SwagScanner";
-    program_folder = path / program_folder;
+    FSRefMakePath(&ref, (UInt8 *) &mac_path, PATH_MAX);
+    fs::path program_folder = fs::path(mac_path) / "SwagScanner";
     return program_folder;
 }();
 
@@ -28,7 +27,7 @@ bool file::IFileHandler::check_program_folder() {
         create_directory(swag_scanner_path / "calibration");
         create_directory(swag_scanner_path / "calibration/default_calibration");
         // create info JSON
-        std::string info_path = swag_scanner_path.string() + "/settings/info.json";
+        std::string info_path = swag_scanner_path / "settings/info.json";
         std::ofstream info(info_path); // create json file
         json swag_scanner_info_json = {
                 {"version",          .1},
@@ -37,15 +36,15 @@ bool file::IFileHandler::check_program_folder() {
         };
         // create default calibration JSON
         info << std::setw(4) << swag_scanner_info_json << std::endl; // write to file
-        std::ofstream calibration(swag_scanner_path.string() +
-                                  "/calibration/default_calibration/default_calibration.json"); // create json file
+        std::ofstream calibration(
+                swag_scanner_path / "calibration/default_calibration/default_calibration.json"); // create json file
         json calibration_json = {
                 {"origin_point",   {-0.0002, 0.0344,  0.4294}},
                 {"axis_direction", {-0.0158, -0.8661, -0.4996}}
         };
         // create config JSON
         calibration << std::setw(4) << calibration_json << std::endl; // write to file
-        std::ofstream config(swag_scanner_path.string() + "/settings/config.json"); // create json file
+        std::ofstream config(swag_scanner_path / "settings/config.json"); // create json file
         json config_json = {
                 {"decimation_magnitude",     2},
                 {"spatial_filter_magnitude", 1},
@@ -60,8 +59,7 @@ bool file::IFileHandler::check_program_folder() {
 
 
 json file::IFileHandler::load_swag_scanner_info_json() {
-    std::string settings_path = swag_scanner_path.string() + "/settings/info.json";
-    std::ifstream settings(settings_path);
+    std::ifstream settings(swag_scanner_path / "settings/info.json");
     json settings_json;
     settings >> settings_json;
     return settings_json;
@@ -69,13 +67,12 @@ json file::IFileHandler::load_swag_scanner_info_json() {
 
 
 void file::IFileHandler::write_swag_scanner_info_json(const json &j) {
-    std::string settings_path = swag_scanner_path.string() + "/settings/info.json";
-    std::ofstream updated_file(settings_path);
+    std::ofstream updated_file(swag_scanner_path / "settings/info.json");
     updated_file << std::setw(4) << j << std::endl; // write to file
 }
 
 nlohmann::json file::IFileHandler::get_swag_scanner_config_json() {
-    std::string config_path = swag_scanner_path.string() + "/settings/config.json";
+    std::string config_path = swag_scanner_path / "settings/config.json";
     std::ifstream config(config_path);
     json config_json;
     config >> config_json;
@@ -141,7 +138,7 @@ bool file::IFileHandler::path_sort(const fs::path &path1, const fs::path &path2)
 
 
 fs::path file::IFileHandler::find_next_scan_folder_numeric(const CloudType::Type &type) {
-    fs::path folder = swag_scanner_path / "/scans";
+    fs::path folder = swag_scanner_path / "scans";
     if (type == CloudType::Type::CALIBRATION) {
         folder = swag_scanner_path / "calibration";
     }

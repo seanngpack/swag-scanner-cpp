@@ -57,7 +57,7 @@ namespace file {
          *
          * ex: find_latest_calibration() -> .../SwagScanner/calibration/testCal1/testCal1.json
          */
-        virtual std::filesystem::path find_latest_calibration();
+        std::filesystem::path find_latest_calibration();
 
         /**
          * Save the given cloud to the current output_path.

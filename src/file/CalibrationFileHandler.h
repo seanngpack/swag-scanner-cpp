@@ -2,7 +2,6 @@
 #define SWAG_SCANNER_CALIBRATIONFILEHANDLER_H
 
 #include "IFileHandler.h"
-#include <nlohmann/json.hpp>
 
 namespace equations {
     class Normal;
