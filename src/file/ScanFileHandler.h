@@ -6,7 +6,6 @@
 #define SWAG_SCANNER_SCANFILEHANDLER_H
 
 #include "IFileHandler.h"
-#include <nlohmann/json.hpp>
 
 namespace file {
     /**
@@ -66,7 +65,6 @@ namespace file {
         std::string get_scan_name();
 
 
-
         /**
          * Get the latest calibration json file.
          * Finds the latest calibration file via info.json.
@@ -106,13 +104,13 @@ namespace file {
          *
          * @return path to the latest scan.
          */
-        boost::filesystem::path find_latest_scan();
+        std::filesystem::path find_latest_scan();
 
 
         /**
          * Update the settings/info.json file "latest_scan" field.
          */
-        void set_swag_scanner_info_latest_scan(const boost::filesystem::path &folder_path);
+        void set_swag_scanner_info_latest_scan(const std::filesystem::path &folder_path);
 
     };
 }

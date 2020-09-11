@@ -4,12 +4,12 @@
 #include <pcl/io/pcd_io.h>
 #include <memory>
 
-using namespace boost::filesystem;
+namespace fs = std::filesystem;
 using json = nlohmann::json;
 
 file::CalibrationFileHandler::CalibrationFileHandler() {
     std::cout << "calibration file handler constructor called" << std::endl;
-    scan_folder_path = find_latest_calibration().parent_path();
+    scan_folder_path = find_latest_calibration();
     scan_name = scan_folder_path.stem().string();
 }
 
@@ -17,7 +17,7 @@ file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {
     if (auto_create_flag) {
         auto_create_new_calibration();
     } else {
-        scan_folder_path = find_latest_calibration().parent_path();
+        scan_folder_path = find_latest_calibration();
         scan_name = scan_folder_path.stem().string();
     }
 }
@@ -45,7 +45,7 @@ void file::CalibrationFileHandler::save_cloud(const std::shared_ptr<pcl::PointCl
                                               const std::string &cloud_name,
                                               const CloudType::Type &cloud_type) {
     std::cout << "saving file to ";
-    path out_path = scan_folder_path / cloud_name;
+    fs::path out_path = scan_folder_path / cloud_name;
     std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
 }
@@ -53,7 +53,7 @@ void file::CalibrationFileHandler::save_cloud(const std::shared_ptr<pcl::PointCl
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::CalibrationFileHandler::load_cloud(const std::string &cloud_name,
                                                                                          const CloudType::Type &cloud_type) {
     std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud;
-    path open_path = scan_folder_path / cloud_name;
+    fs::path open_path = scan_folder_path / cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }
@@ -63,11 +63,11 @@ std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::CalibrationFileHandler::lo
 std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> file::CalibrationFileHandler::load_clouds(
         const CloudType::Type &cloud_type) {
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector;
-    std::vector<path> cloud_paths;
-    path load_path = scan_folder_path;
+    std::vector<fs::path> cloud_paths;
+    fs::path load_path = scan_folder_path;
 
     // load paths into cloud_paths vector
-    for (auto &p : directory_iterator(load_path)) {
+    for (const auto &p : fs::directory_iterator(load_path)) {
         // extension must be .pcd and must have number in the filename
         if (p.path().extension() == ".pcd" && p.path().string().find_first_of("0123456789") != std::string::npos) {
             cloud_paths.push_back(p.path());
@@ -94,20 +94,18 @@ std::string file::CalibrationFileHandler::get_scan_name() {
     return this->scan_name;
 }
 
-
 void file::CalibrationFileHandler::update_calibration_json(const equations::Normal &dir, const equations::Point &pt) {
     json calibration_json = get_calibration_json();
     calibration_json["axis_direction"] = {dir.A, dir.B, dir.C};
     calibration_json["origin_point"] = {pt.x, pt.y, pt.z};
 
-    std::string calibration_path = scan_folder_path.string() + "/" + scan_name + ".json";
-    std::ofstream updated_file(calibration_path);
+//    scan_folder_path.string() + "/" + scan_name + ".json";
+    std::ofstream updated_file(scan_folder_path / fs::path(scan_name + ".json"));
     updated_file << std::setw(4) << calibration_json << std::endl; // write to file
 }
 
 void file::CalibrationFileHandler::create_calibration_json() {
-    std::string calibration_path = scan_folder_path.string() + "/" + scan_name + ".json";
-    std::ofstream calibration(calibration_path); // create json file
+    std::ofstream calibration(scan_folder_path / fs::path(scan_name + ".json")); // create json file
     json calibration_json = {
             {"origin_point",   {0.0, 0.0, 0.0}},
             {"axis_direction", {0.0, 0.0, 0.0}}
@@ -116,8 +114,7 @@ void file::CalibrationFileHandler::create_calibration_json() {
 }
 
 json file::CalibrationFileHandler::get_calibration_json() {
-    std::string calibration_path = scan_folder_path.string() + "/" + scan_name + ".json";
-    std::ifstream calibration(calibration_path);
+    std::ifstream calibration(scan_folder_path / fs::path(scan_name + ".json"));
     json calibration_json;
     calibration >> calibration_json;
     return calibration_json;

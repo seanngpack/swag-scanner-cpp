@@ -1,10 +1,10 @@
 #ifndef SWAG_SCANNER_IFILEHANDLER_H
 #define SWAG_SCANNER_IFILEHANDLER_H
 
-#include <boost/filesystem.hpp>
+#include "CloudType.h"
+#include <filesystem>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-#include "CloudType.h"
 #include <string>
 #include <unordered_map>
 #include <nlohmann/json.hpp>
@@ -21,7 +21,7 @@ namespace file {
 
         /**
          * Checks to see if a /SwagScanner folder exists in Library/Application Support.
-         * If the folder does not exist, then create one and load in default configuration.
+         * If the folder does not exist, then create one and load in default configduration.
          * Otherwise, continue.
          *
          * @returns true if the program folder is already there. False if it isn't.
@@ -57,7 +57,7 @@ namespace file {
          *
          * ex: find_latest_calibration() -> .../SwagScanner/calibration/testCal1/testCal1.json
          */
-        virtual boost::filesystem::path find_latest_calibration();
+        std::filesystem::path find_latest_calibration();
 
         /**
          * Save the given cloud to the current output_path.
@@ -115,8 +115,8 @@ namespace file {
         }
 
     protected:
-        static boost::filesystem::path swag_scanner_path;
-        boost::filesystem::path scan_folder_path;
+        static std::filesystem::path swag_scanner_path;
+        std::filesystem::path scan_folder_path;
         std::string scan_name;
 
         /**
@@ -125,7 +125,7 @@ namespace file {
          * @param path2 second path.
          * @return true if the first file is smaller than the second, false otherwise.
          */
-        static bool path_sort(const boost::filesystem::path &path1, const boost::filesystem::path &path2);
+        static bool path_sort(const std::filesystem::path &path1, const std::filesystem::path &path2);
 
         /**
          * Find the next scan folder by sorting the existing scans numerically.
@@ -133,10 +133,10 @@ namespace file {
          * scan must be 11.
          *
          */
-        virtual boost::filesystem::path
+        virtual std::filesystem::path
         find_next_scan_folder_numeric(const CloudType::Type &type);
 
-        boost::filesystem::path find_next_scan_folder_numeric();
+        std::filesystem::path find_next_scan_folder_numeric();
     };
 }
 #endif //SWAG_SCANNER_IFILEHANDLER_H
