@@ -1,5 +1,6 @@
 add_subdirectory(depthFiltering)
 add_subdirectory(registration)
+add_subdirectory(segmentation)
 
 target_sources(${TEST_MAIN} PRIVATE
 

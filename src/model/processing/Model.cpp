@@ -73,7 +73,7 @@ model::Model::voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::Point
 std::vector<equations::Plane>
 model::Model::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                            bool visual_flag) {
-    return segmentation::get_calibration_planes_coefs(cloud);
+    return segmentation::get_calibration_planes_coefs(cloud, visual_flag);
 }
 
 std::vector<float> model::Model::get_plane_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
