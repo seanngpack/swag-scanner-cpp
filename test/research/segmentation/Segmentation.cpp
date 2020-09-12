@@ -53,7 +53,7 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
     auto cloud_plane = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto cloud_normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
 
-    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/segmentation/data/20.pcd", *cloud);;
+    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/segmentation/data/0.pcd", *cloud);;
     cloud = (mod->crop_cloud(cloud, -.10, .10, -100, .11, -100, .49));
 
     // calculate the normals
@@ -64,35 +64,31 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
     ne.setKSearch(50);
     ne.compute(*cloud_normals);
 
-    auto coefficients = std::make_shared<pcl::ModelCoefficients>();
+    auto ground_coeff = std::make_shared<pcl::ModelCoefficients>();
     auto inliers = std::make_shared<pcl::PointIndices>();
-    // Create the segmentation object
     pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> seg;
-    // Optional
+
     seg.setOptimizeCoefficients(true);
-    // Mandatory
     seg.setModelType(pcl::SACMODEL_NORMAL_PARALLEL_PLANE);
-    seg.setNormalDistanceWeight(0.08);
+    seg.setNormalDistanceWeight(0.02);
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setMaxIterations(10000);
-    seg.setDistanceThreshold(0.1);
+    seg.setDistanceThreshold(0.005);
     seg.setInputCloud(cloud);
     seg.setInputNormals(cloud_normals);
+    // set hardcoded ground normal axis value with wide epsilon value
     seg.setAxis(Eigen::Vector3f(.00295, -.7803, -.3831));
     seg.setEpsAngle(0.523599);
-    seg.segment(*inliers, *coefficients);
+    seg.segment(*inliers, *ground_coeff);
 
-    if (inliers->indices.size() == 0) {
+    if (inliers->indices.empty()) {
         PCL_ERROR ("Could not estimate a planar model for the given dataset.");
-
     }
 
-    std::cerr << "Model coefficients: " << coefficients->values[0] << " "
-              << coefficients->values[1] << " "
-              << coefficients->values[2] << " "
-              << coefficients->values[3] << std::endl;
-
-    //  -0.0320766 -0.877187 -0.479076 0.254496
+    std::cerr << "Model coefficients: " << ground_coeff->values[0] << " "
+              << ground_coeff->values[1] << " "
+              << ground_coeff->values[2] << " "
+              << ground_coeff->values[3] << std::endl;
 
     pcl::ExtractIndices<pcl::PointXYZ> extract;
     pcl::ExtractIndices<pcl::Normal> extract_normals;
@@ -107,60 +103,37 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{cloud, cloud_plane};
     visualizer.simpleVis(clouds);
 
-    // everything below we remove the other plane
     // Remove the planar inliers, extract the rest
     extract.setNegative(true);
     extract.filter(*cloud);
 
+    // remove normal inliers
     extract_normals.setNegative(true);
     extract_normals.setInputCloud(cloud_normals);
     extract_normals.setIndices(inliers);
     extract_normals.filter(*cloud_normals);
 
+    viewer->normalsVis(cloud, cloud_normals);
 
-//    viewer->normalsVis(cloud, cloud_normals);
+    // LETS GET THE UPRIGHT PLANE!!
 
+    auto up_coeff = std::make_shared<pcl::ModelCoefficients>();
+    pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> seg2;
 
-    pcl::SACSegmentation<pcl::PointXYZ> seg2;
-    // Optional
     seg2.setOptimizeCoefficients(true);
-    // Mandatory
-    seg2.setModelType(pcl::SACMODEL_PERPENDICULAR_PLANE);
+    seg2.setModelType(pcl::SACMODEL_NORMAL_PLANE);
+    seg2.setNormalDistanceWeight(0.02);
     seg2.setMethodType(pcl::SAC_RANSAC);
     seg2.setMaxIterations(10000);
-    seg2.setDistanceThreshold(0.1);
-    seg2.setAxis(Eigen::Vector3f(coefficients->values[0], coefficients->values[1],
-                                 coefficients->values[2]));
-    seg2.setEpsAngle(0.2);
-    std::cerr << seg2.getAxis() << std::endl;
+    seg2.setDistanceThreshold(0.003);
     seg2.setInputCloud(cloud);
-    seg2.segment(*inliers, *coefficients);
+    seg2.setInputNormals(cloud_normals);
+    seg2.segment(*inliers, *up_coeff);
 
-    extract.setInputCloud(cloud);
-    extract.setIndices(inliers);
-    extract.setNegative(false);
-
-    // Get the points associated with the planar surface
-    extract.filter(*cloud_plane);
-
-    visualizer.simpleVis(clouds);
-
-    std::cerr << "Model coefficients: " << coefficients->values[0] << " "
-              << coefficients->values[1] << " "
-              << coefficients->values[2] << " "
-              << coefficients->values[3] << std::endl;
-
-
-    seg.setModelType(pcl::SACMODEL_NORMAL_PARALLEL_PLANE);
-    seg.setAxis(Eigen::Vector3f(coefficients->values[0], coefficients->values[1],
-                                 coefficients->values[2]));
-    std::cerr << seg.getAxis() << std::endl;
-    seg.segment(*inliers, *coefficients);
-
-    std::cerr << "Model coefficients: " << coefficients->values[0] << " "
-              << coefficients->values[1] << " "
-              << coefficients->values[2] << " "
-              << coefficients->values[3] << std::endl;
+    std::cerr << "Up Model coefficients: " << up_coeff->values[0] << " "
+              << up_coeff->values[1] << " "
+              << up_coeff->values[2] << " "
+              << up_coeff->values[3] << std::endl;
 
     extract.setInputCloud(cloud);
     extract.setIndices(inliers);
@@ -170,5 +143,14 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
     extract.filter(*cloud_plane);
 
 
+    clouds = {cloud, cloud_plane};
     visualizer.simpleVis(clouds);
+
+    auto ground_vect = Eigen::Vector3f(ground_coeff->values[0], ground_coeff->values[1],ground_coeff->values[2]);
+    auto up_vect = Eigen::Vector3f(up_coeff->values[0], up_coeff->values[1], up_coeff->values[2]);
+
+    double angle = std::atan2(ground_vect.cross(up_vect).norm(), ground_vect.dot(up_vect));
+    double angle_deg = angle * (180.0/3.141592653589793238463);
+    std::cout << "the angle between two planes is " << angle_deg << std::endl;
+    std::cout << "the error is: " << abs((angle_deg-90)/90.0) * 100.0 << "%" << std::endl;
 }
