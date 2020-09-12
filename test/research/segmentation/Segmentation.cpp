@@ -53,7 +53,7 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
     auto cloud_plane = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto cloud_normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
 
-    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/segmentation/data/0.pcd", *cloud);;
+    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/segmentation/data/20.pcd", *cloud);;
     cloud = (mod->crop_cloud(cloud, -.10, .10, -100, .11, -100, .49));
 
     // calculate the normals
@@ -71,13 +71,15 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
     // Optional
     seg.setOptimizeCoefficients(true);
     // Mandatory
-    seg.setModelType(pcl::SACMODEL_NORMAL_PLANE);
-    seg.setNormalDistanceWeight(0.1);
+    seg.setModelType(pcl::SACMODEL_NORMAL_PARALLEL_PLANE);
+    seg.setNormalDistanceWeight(0.08);
     seg.setMethodType(pcl::SAC_RANSAC);
-    seg.setMaxIterations(100);
-    seg.setDistanceThreshold(0.05);
+    seg.setMaxIterations(10000);
+    seg.setDistanceThreshold(0.1);
     seg.setInputCloud(cloud);
     seg.setInputNormals(cloud_normals);
+    seg.setAxis(Eigen::Vector3f(.00295, -.7803, -.3831));
+    seg.setEpsAngle(0.523599);
     seg.segment(*inliers, *coefficients);
 
     if (inliers->indices.size() == 0) {
@@ -90,14 +92,10 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
               << coefficients->values[2] << " "
               << coefficients->values[3] << std::endl;
 
-//    std::cerr << "Model inliers: " << inliers->indices.size () << std::endl;
-//    for (std::size_t i = 0; i < inliers->indices.size (); ++i)
-//        for (const auto& idx: inliers->indices)
-//            std::cerr << idx << "    " << cloud->points[idx].x << " "
-//                      << cloud->points[idx].y << " "
-//                      << cloud->points[idx].z << std::endl;
+    //  -0.0320766 -0.877187 -0.479076 0.254496
 
     pcl::ExtractIndices<pcl::PointXYZ> extract;
+    pcl::ExtractIndices<pcl::Normal> extract_normals;
     extract.setInputCloud(cloud);
     extract.setIndices(inliers);
     extract.setNegative(false);
@@ -107,5 +105,70 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
 
     visual::Visualizer visualizer;
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{cloud, cloud_plane};
+    visualizer.simpleVis(clouds);
+
+    // everything below we remove the other plane
+    // Remove the planar inliers, extract the rest
+    extract.setNegative(true);
+    extract.filter(*cloud);
+
+    extract_normals.setNegative(true);
+    extract_normals.setInputCloud(cloud_normals);
+    extract_normals.setIndices(inliers);
+    extract_normals.filter(*cloud_normals);
+
+
+//    viewer->normalsVis(cloud, cloud_normals);
+
+
+    pcl::SACSegmentation<pcl::PointXYZ> seg2;
+    // Optional
+    seg2.setOptimizeCoefficients(true);
+    // Mandatory
+    seg2.setModelType(pcl::SACMODEL_PERPENDICULAR_PLANE);
+    seg2.setMethodType(pcl::SAC_RANSAC);
+    seg2.setMaxIterations(10000);
+    seg2.setDistanceThreshold(0.1);
+    seg2.setAxis(Eigen::Vector3f(coefficients->values[0], coefficients->values[1],
+                                 coefficients->values[2]));
+    seg2.setEpsAngle(0.2);
+    std::cerr << seg2.getAxis() << std::endl;
+    seg2.setInputCloud(cloud);
+    seg2.segment(*inliers, *coefficients);
+
+    extract.setInputCloud(cloud);
+    extract.setIndices(inliers);
+    extract.setNegative(false);
+
+    // Get the points associated with the planar surface
+    extract.filter(*cloud_plane);
+
+    visualizer.simpleVis(clouds);
+
+    std::cerr << "Model coefficients: " << coefficients->values[0] << " "
+              << coefficients->values[1] << " "
+              << coefficients->values[2] << " "
+              << coefficients->values[3] << std::endl;
+
+
+    seg.setModelType(pcl::SACMODEL_NORMAL_PARALLEL_PLANE);
+    seg.setAxis(Eigen::Vector3f(coefficients->values[0], coefficients->values[1],
+                                 coefficients->values[2]));
+    std::cerr << seg.getAxis() << std::endl;
+    seg.segment(*inliers, *coefficients);
+
+    std::cerr << "Model coefficients: " << coefficients->values[0] << " "
+              << coefficients->values[1] << " "
+              << coefficients->values[2] << " "
+              << coefficients->values[3] << std::endl;
+
+    extract.setInputCloud(cloud);
+    extract.setIndices(inliers);
+    extract.setNegative(false);
+
+    // Get the points associated with the planar surface
+    extract.filter(*cloud_plane);
+
+
     visualizer.simpleVis(clouds);
 }

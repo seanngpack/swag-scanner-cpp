@@ -76,7 +76,7 @@ segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud
     seg.setNormalDistanceWeight(0.1);
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setMaxIterations(100);
-    seg.setDistanceThreshold(0.05);
+    seg.setDistanceThreshold(0.07);
     seg.setInputNormals(cloud_normals);
 
     int i = 0, nr_points = (int) temp_cloud->points.size();
