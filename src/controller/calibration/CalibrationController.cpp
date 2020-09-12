@@ -37,14 +37,8 @@ void controller::CalibrationController::run() {
 void controller::CalibrationController::scan() {
     using namespace constants;
 
-    std::cout << "number of deg base is: " << deg << std::endl;
-    std::cout << "number of rot base is: " << num_rot << std::endl;
-
-    camera->scan();
     const camera::intrinsics intrin = camera->get_intrinsics_processed();
-    std::cout << "starting scanning..." << std::endl;
     for (int i = 0; i < num_rot; i++) {
-        std::cout << "number of rot in loop is: " << num_rot << std::endl;
         std::string name = std::to_string(i * deg) + ".pcd";
         camera->scan();
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();

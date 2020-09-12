@@ -83,11 +83,14 @@ namespace model {
 
         /**
          * Get the upright and ground plane equations.
+         *
          * @param cloud calibration cloud.
+         * @param visual_flag flag whether to visualize segmentation or not.
          * @return vector of upright and ground plane equations.
          */
         std::vector<equations::Plane>
-        get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
+        get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                     bool visual_flag = false);
 
         /**
          * Get the coefficients of the base plane of the given cloud.

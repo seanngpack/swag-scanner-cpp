@@ -30,6 +30,7 @@ matrix:
 
 dist: trusty
 
+# https://gist.github.com/gfreezy/52cb2afe807d59b821c82a50cd183f4b
 before_install: |
   if [ -n "$IS_OSX" ]; then
       TAPS="$(brew --repository)/Library/Taps"

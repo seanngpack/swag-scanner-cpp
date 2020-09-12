@@ -50,7 +50,8 @@ segmentation::remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 }
 
 std::vector<equations::Plane>
-segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                           bool visual_flag) {
     std::vector<equations::Plane> planes;
     // Create the segmentation object for the planar model and set all the parameters
     pcl::SACSegmentation<pcl::PointXYZ> seg;
@@ -65,7 +66,7 @@ segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud
     seg.setModelType(pcl::SACMODEL_PLANE);
     seg.setMethodType(pcl::SAC_RANSAC);
     seg.setMaxIterations(100);
-    seg.setDistanceThreshold(0.002);
+    seg.setDistanceThreshold(0.5);
 
     int i = 0, nr_points = (int) temp_cloud->points.size();
     while (temp_cloud->points.size() > 0.3 * nr_points) {
@@ -93,9 +94,11 @@ segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud
                   << coefficients->values[3] << std::endl;
 
 
-//        visual::Visualizer visualizer;
-//        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{temp_cloud, cloud_plane};
-//        visualizer.simpleVis(clouds);
+        if (visual_flag) {
+            visual::Visualizer visualizer;
+            std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{temp_cloud, cloud_plane};
+            visualizer.simpleVis(clouds);
+        }
 
         // Remove the planar inliers, extract the rest
         extract.setNegative(true);

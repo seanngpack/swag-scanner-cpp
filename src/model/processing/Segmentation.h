@@ -16,17 +16,22 @@ namespace segmentation {
      * @param cloud cloud with plane.
      * @return cloud without plane.
      */
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+    remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
 
     /**
-     * Given a calibration cloud, extract the ground and upright plane.
+     * Given a calibration cloud, extract the upright and ground plane.
      *
      * @param cloud calibration cloud.
+     * @param visual_flag flag to show visual segmentation.
      * @return a vector of coefficients for the two planes.
      * First element in vector is upright plane. Second element is ground plane.
      */
-    std::vector<equations::Plane> get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
+    std::vector<equations::Plane>
+    get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                 bool visual_flag = false);
+
 
     /**
      * Get the plane coefficients of the base of the given cloud.
