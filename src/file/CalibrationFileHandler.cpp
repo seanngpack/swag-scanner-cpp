@@ -10,7 +10,10 @@ using json = nlohmann::json;
 file::CalibrationFileHandler::CalibrationFileHandler() {
     std::cout << "calibration file handler constructor called" << std::endl;
     scan_folder_path = find_latest_calibration();
+    std::cout << "make it ehre " << std::endl;
+    std::cout << scan_folder_path << std::endl;
     scan_name = scan_folder_path.stem().string();
+    std::cout << "make it ehre " << std::endl;
 }
 
 file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {

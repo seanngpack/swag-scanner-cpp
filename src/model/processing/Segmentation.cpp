@@ -53,6 +53,7 @@ segmentation::remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 std::vector<equations::Plane>
 segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                            bool visual_flag) {
+
     visual::Visualizer *viewer = nullptr;
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
     if (visual_flag) {
@@ -60,6 +61,7 @@ segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud
     }
     std::vector<equations::Plane> planes;
     auto cloud_cpy = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    *cloud_cpy = *cloud;
     auto cloud_plane = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto cloud_normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
 
@@ -92,6 +94,8 @@ segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud
         PCL_ERROR ("Could not estimate a planar model for the given dataset.");
     }
 
+    planes.emplace_back(ground_coeff);
+
     std::cerr << "Model coefficients: " << ground_coeff->values[0] << " "
               << ground_coeff->values[1] << " "
               << ground_coeff->values[2] << " "
@@ -111,6 +115,8 @@ segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud
         viewer->simpleVis(clouds);
     }
 
+
+
     // Remove the planar inliers, extract the rest
     extract.setNegative(true);
     extract.filter(*cloud_cpy);
@@ -120,8 +126,6 @@ segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud
     extract_normals.setInputCloud(cloud_normals);
     extract_normals.setIndices(inliers);
     extract_normals.filter(*cloud_normals);
-
-    viewer->normalsVis(cloud_cpy, cloud_normals);
 
     // LETS GET THE UPRIGHT PLANE!!
 
@@ -137,6 +141,8 @@ segmentation::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud
     seg2.setInputCloud(cloud_cpy);
     seg2.setInputNormals(cloud_normals);
     seg2.segment(*inliers, *up_coeff);
+
+    planes.emplace_back(up_coeff);
 
     std::cerr << "Up Model coefficients: " << up_coeff->values[0] << " "
               << up_coeff->values[1] << " "

@@ -13,6 +13,7 @@
 #include "Point.h"
 #include "Constants.h"
 #include "ScanFileHandler.h"
+#include "CalibrationFileHandler.h"
 
 namespace fs = std::filesystem;
 
@@ -45,17 +46,17 @@ TEST_F(RegistrationFixture, NotSureWhatTestThisIsYet) {
     auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/registration/data/0.pcd",
                                         *fixture_raw);
-    auto *file_handler = new file::ScanFileHandler();
+    auto *cal_file_handler = new file::CalibrationFileHandler();
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cropped_clouds;
     std::vector<equations::Plane> upright_planes;
     std::vector<equations::Plane> ground_planes;
-    auto clouds = file_handler->load_clouds(CloudType::Type::FILTERED);
+    auto clouds = cal_file_handler->load_clouds(CloudType::Type::CALIBRATION);
     for (const auto &cloud : clouds) {
         auto cropped = (mod->crop_cloud(cloud, -.10, .10, -100, .11, -100, .49));
         cropped_clouds.push_back(cropped);
-        std::vector<equations::Plane> coeffs = mod->get_calibration_planes_coefs(cropped, true);
-        upright_planes.emplace_back(coeffs[0]);
-        ground_planes.emplace_back(coeffs[1]);
+        std::vector<equations::Plane> coeffs = mod->get_calibration_planes_coefs(cropped, false);
+        ground_planes.emplace_back(coeffs[0]);
+        upright_planes.emplace_back(coeffs[1]);
     }
 
     equations::Normal axis_dir = mod->calculate_axis_dir(ground_planes);

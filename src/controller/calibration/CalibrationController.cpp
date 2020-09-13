@@ -47,8 +47,8 @@ void controller::CalibrationController::scan() {
         cloud = model->voxel_grid_filter(cloud, .003);
 
         std::vector<equations::Plane> coeffs = model->get_calibration_planes_coefs(cloud);
-        upright_planes.emplace_back(coeffs[0]);
-        ground_planes.emplace_back(coeffs[1]);
+        ground_planes.emplace_back(coeffs[0]);
+        upright_planes.emplace_back(coeffs[1]);
 
         file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);
         arduino->rotate_by(deg);
