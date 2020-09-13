@@ -29,6 +29,13 @@ namespace camera {
     class ICamera;
 }
 
+namespace pcl {
+    class PointXYZ;
+
+    template<class pointT>
+    class PointCloud;
+}
+
 
 namespace controller {
     /**
@@ -63,6 +70,7 @@ namespace controller {
         int num_rot = 8;
         std::vector<equations::Plane> upright_planes;
         std::vector<equations::Plane> ground_planes;
+        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
 
 
         /**

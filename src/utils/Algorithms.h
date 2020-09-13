@@ -62,7 +62,7 @@ namespace algos {
      */
     pcl::PointXYZ find_point_in_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                       const equations::Plane &plane,
-                                      double delta = .1);
+                                      double delta = .00001);
 
     /**
      * Check if a point is inside a plane with given threshold.

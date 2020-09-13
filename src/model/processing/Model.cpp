@@ -98,6 +98,21 @@ equations::Normal model::Model::calculate_axis_dir(const std::vector<equations::
     return g_n;
 }
 
+equations::Plane model::Model::average_planes(const std::vector<equations::Plane> &planes) {
+    equations::Plane avg;
+    for (auto &g: planes) {
+        avg.A += g.A;
+        avg.B += g.B;
+        avg.C += g.C;
+        avg.D += g.D;
+    }
+    avg.A /= planes.size();
+    avg.B /= planes.size();
+    avg.C /= planes.size();
+    avg.D /= planes.size();
+    return avg;
+}
+
 equations::Point model::Model::calculate_center_pt(const equations::Normal &axis_dir,
                                                    const std::vector<equations::Plane> &upright_planes) {
 
@@ -107,6 +122,14 @@ equations::Point model::Model::calculate_center_pt(const equations::Normal &axis
     equations::Point center = calibration::calculate_center_pt(A, b);
 
     return center;
+}
+
+pcl::PointXYZ model::Model::refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                             const pcl::PointXYZ &pt,
+                                             const equations::Plane &plane,
+                                             double delta) {
+    pcl::PointXYZ plane_pt = algos::find_point_in_plane(cloud, plane, delta);
+    return algos::project_point_to_plane(pt, plane_pt, plane.get_normal());
 }
 
 pcl::PointCloud<pcl::PointXYZ>

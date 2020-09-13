@@ -116,6 +116,14 @@ namespace model {
         equations::Normal calculate_axis_dir(const std::vector<equations::Plane> &ground_planes);
 
         /**
+         * Given a vector of planes, average them.
+         *
+         * @param planes planes.
+         * @return average of the planes.
+         */
+        equations::Plane average_planes(const std::vector<equations::Plane> &planes);
+
+        /**
          * Calculate the origin point of the turntable using equation of rotation axis and equations
          * for the upright planes.
          * @param axis_dir direction of rotation axis.
@@ -124,6 +132,34 @@ namespace model {
          */
         equations::Point calculate_center_pt(const equations::Normal &axis_dir,
                                              const std::vector<equations::Plane> &upright_planes);
+
+        /**
+         * Project center point to ground plane.
+         *
+         * @param cloud the cloud that the plane you are projecting to belongs to.
+         * @param pt point you want to project.
+         * @param plane the plane you want to project onto.
+         * @param delta the threshold to search for point on plane.
+         * @return projected point on the plane.
+         */
+        pcl::PointXYZ refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                       const pcl::PointXYZ &pt,
+                                       const equations::Plane &plane,
+                                       double delta = .00001
+        );
+
+
+        /**
+         * Find a point lying on the given plane in the cloud.
+         *
+         * @param cloud cloud.
+         * @param plane plane.
+         * @param delta error threshold for finding the point.
+         * @return point in the plane or point of 0,0,0.
+         */
+        pcl::PointXYZ find_point_in_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                          const equations::Plane &plane,
+                                          double delta = .1);
 
 
         /**

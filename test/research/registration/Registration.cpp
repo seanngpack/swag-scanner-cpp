@@ -76,7 +76,7 @@ TEST_F(RegistrationFixture, NotSureWhatTestThisIsYet) {
 //    }
     pcl::PointXYZ projected_pt;
     projected_pt = algos::project_point_to_plane(pcl::PointXYZ(center.x, center.y, center.z),
-                                                 algos::find_point_in_plane(clouds[0], ground_planes[0], .0002),
+                                                 algos::find_point_in_plane(clouds[0], ground_planes[0], .00001),
                                                  axis_dir);
 
     std::cout << "new projected point" << projected_pt << std::endl;

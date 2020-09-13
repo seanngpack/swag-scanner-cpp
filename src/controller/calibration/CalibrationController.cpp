@@ -30,6 +30,7 @@ void controller::CalibrationController::run() {
     equations::Point center = model->calculate_center_pt(axis_dir, upright_planes);
     file_handler->update_calibration_json(axis_dir, center);
 
+    clouds.clear();
 //    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
 }
 
@@ -50,7 +51,7 @@ void controller::CalibrationController::scan() {
     }
     arduino->rotate_to(0);
 
-    auto clouds = file_handler->load_clouds(CloudType::Type::CALIBRATION);
+    clouds = file_handler->load_clouds(CloudType::Type::CALIBRATION);
     for (const auto &c : clouds) {
         std::vector<equations::Plane> coeffs = model->get_calibration_planes_coefs(c);
         ground_planes.emplace_back(coeffs[0]);
