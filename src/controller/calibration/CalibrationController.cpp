@@ -24,13 +24,8 @@ controller::CalibrationController::CalibrationController(std::shared_ptr<camera:
 
 void controller::CalibrationController::run() {
     scan();
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(
-            CloudType::Type::CALIBRATION);
-    equations::Normal axis_dir = model->calculate_axis_dir(ground_planes);
-    pcl::PointXYZ center = model->calculate_center_pt(axis_dir, upright_planes);
-    file_handler->update_calibration_json(axis_dir, center);
-
-    clouds.clear();
+    get_calibration_planes();
+    calculate();
 //    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
 }
 
@@ -43,20 +38,12 @@ void controller::CalibrationController::scan() {
         camera->scan();
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = model->create_point_cloud(depth_frame, intrin);
-//        viewer->simpleVis(cloud);
         cloud = model->crop_cloud(cloud, min_x, max_x, min_y, max_y, min_z, max_z);
-//        cloud = model->voxel_grid_filter(cloud, .003);
+        cloud = model->voxel_grid_filter(cloud, .001);
         file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);
         arduino->rotate_by(deg);
     }
     arduino->rotate_to(0);
-
-    clouds = file_handler->load_clouds(CloudType::Type::CALIBRATION);
-    for (const auto &c : clouds) {
-        std::vector<equations::Plane> coeffs = model->get_calibration_planes_coefs(c);
-        ground_planes.emplace_back(coeffs[0]);
-        upright_planes.emplace_back(coeffs[1]);
-    }
 
 }
 
@@ -66,6 +53,27 @@ void controller::CalibrationController::set_deg(int deg) {
 
 void controller::CalibrationController::set_num_rot(int num_rot) {
     this->num_rot = num_rot;
+}
+
+void controller::CalibrationController::get_calibration_planes() {
+    clouds = file_handler->load_clouds(CloudType::Type::CALIBRATION);
+    for (const auto &c : clouds) {
+        std::vector<equations::Plane> coeffs = model->get_calibration_planes_coefs(c);
+        ground_planes.emplace_back(coeffs[0]);
+        upright_planes.emplace_back(coeffs[1]);
+    }
+}
+
+void controller::CalibrationController::calculate() {
+    equations::Normal axis_dir = model->calculate_axis_dir(ground_planes);
+    pcl::PointXYZ center = model->calculate_center_pt(axis_dir, upright_planes);
+    equations::Plane averaged_ground_plane = model->average_planes(ground_planes);
+    pcl::PointXYZ refined_center = model->refine_center_pt(clouds[0],
+                                                           center,
+                                                           averaged_ground_plane);
+    file_handler->update_calibration_json(axis_dir, refined_center);
+
+    clouds.clear();
 }
 
 

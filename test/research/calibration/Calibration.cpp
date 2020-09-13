@@ -51,7 +51,7 @@ TEST_F(CalibrationFixture, CalibrationTests) {
     std::vector<equations::Plane> ground_planes;
     auto clouds = cal_file_handler->load_clouds(CloudType::Type::CALIBRATION);
     for (const auto &cloud : clouds) {
-        std::vector<equations::Plane> coeffs = mod->get_calibration_planes_coefs(cloud, false);
+        std::vector<equations::Plane> coeffs = mod->get_calibration_planes_coefs(cloud, true);
         ground_planes.emplace_back(coeffs[0]);
         upright_planes.emplace_back(coeffs[1]);
     }
