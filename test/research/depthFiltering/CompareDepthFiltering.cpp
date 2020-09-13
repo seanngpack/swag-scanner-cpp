@@ -6,6 +6,7 @@
 #include <iostream>
 #include "Visualizer.h"
 #include "Model.h"
+#include "Constants.h"
 
 namespace fs = std::filesystem;
 
@@ -44,6 +45,7 @@ protected:
  */
 
 TEST_F(CompareDepthFilteringFixture, CompareCalFixture) {
+    using namespace constants;
     std::cout << "Current path is " << fs::current_path() << '\n';
     auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto fixture_1 = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
@@ -53,6 +55,7 @@ TEST_F(CompareDepthFilteringFixture, CompareCalFixture) {
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_1.pcd", *fixture_1);
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_2.pcd", *fixture_2);
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_3.pcd", *fixture_3);
+    fixture_1 = mod->crop_cloud(fixture_1, min_x, max_x, min_y, max_y, min_z, max_z);
 
     viewer->compareVisFour(fixture_raw, fixture_1, fixture_2, fixture_3);
 }

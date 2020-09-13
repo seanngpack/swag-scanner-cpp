@@ -11,7 +11,7 @@ namespace constants {
     inline constexpr float min_x = -.10;
     inline constexpr float max_x = .10;
     inline constexpr float min_y = - 100;
-    inline constexpr float max_y = .1;
+    inline constexpr float max_y = .13;
     inline constexpr float min_z = -100;
     inline constexpr float max_z = .49;
 }

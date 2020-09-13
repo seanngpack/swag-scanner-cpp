@@ -52,16 +52,18 @@ TEST_F(RegistrationFixture, NotSureWhatTestThisIsYet) {
     std::vector<equations::Plane> ground_planes;
     auto clouds = cal_file_handler->load_clouds(CloudType::Type::CALIBRATION);
     for (const auto &cloud : clouds) {
-        auto cropped = (mod->crop_cloud(cloud, -.10, .10, -100, .11, -100, .49));
-        cropped_clouds.push_back(cropped);
-        std::vector<equations::Plane> coeffs = mod->get_calibration_planes_coefs(cropped, false);
+//        viewer->simpleVis(cloud);
+//        auto cropped = (mod->crop_cloud(cloud, -.10, .10, -100, .13, -100, .49));
+//        cropped_clouds.push_back(cropped);
+        std::vector<equations::Plane> coeffs = mod->get_calibration_planes_coefs(cloud, false);
         ground_planes.emplace_back(coeffs[0]);
         upright_planes.emplace_back(coeffs[1]);
     }
 
     equations::Normal axis_dir = mod->calculate_axis_dir(ground_planes);
     equations::Point center = mod->calculate_center_pt(axis_dir, upright_planes);
-
+    std::cout << axis_dir.A << " " << axis_dir.B << " " << axis_dir.C << std::endl;
+    std::cout << center.x << " " << center.y << " " << center.z << std::endl;
 
 
 //    auto global_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
@@ -73,7 +75,7 @@ TEST_F(RegistrationFixture, NotSureWhatTestThisIsYet) {
 //    }
 
 
-    viewer->ptVis(cropped_clouds[0], pcl::PointXYZ(center.x, center.y, center.z));
+    viewer->ptVis(clouds[0], pcl::PointXYZ(center.x, center.y, center.z));
 
 
 //    viewer->ptVis(fixture_raw, pcl::PointXYZ(-0.018700590463195308,

@@ -29,7 +29,6 @@ void controller::CalibrationController::run() {
     equations::Normal axis_dir = model->calculate_axis_dir(ground_planes);
     equations::Point center = model->calculate_center_pt(axis_dir, upright_planes);
     file_handler->update_calibration_json(axis_dir, center);
-    arduino->rotate_to(0);
 
 //    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
 }
@@ -43,16 +42,21 @@ void controller::CalibrationController::scan() {
         camera->scan();
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = model->create_point_cloud(depth_frame, intrin);
+//        viewer->simpleVis(cloud);
         cloud = model->crop_cloud(cloud, min_x, max_x, min_y, max_y, min_z, max_z);
-        cloud = model->voxel_grid_filter(cloud, .003);
-
-        std::vector<equations::Plane> coeffs = model->get_calibration_planes_coefs(cloud);
-        ground_planes.emplace_back(coeffs[0]);
-        upright_planes.emplace_back(coeffs[1]);
-
+//        cloud = model->voxel_grid_filter(cloud, .003);
         file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);
         arduino->rotate_by(deg);
     }
+    arduino->rotate_to(0);
+
+    auto clouds = file_handler->load_clouds(CloudType::Type::CALIBRATION);
+    for (const auto &c : clouds) {
+        std::vector<equations::Plane> coeffs = model->get_calibration_planes_coefs(c);
+        ground_planes.emplace_back(coeffs[0]);
+        upright_planes.emplace_back(coeffs[1]);
+    }
+
 }
 
 void controller::CalibrationController::set_deg(int deg) {
