@@ -130,7 +130,7 @@ namespace model {
          * @param upright_planes vector of upright planes.
          * @return the origin point.
          */
-        equations::Point calculate_center_pt(const equations::Normal &axis_dir,
+        pcl::PointXYZ calculate_center_pt(const equations::Normal &axis_dir,
                                              const std::vector<equations::Plane> &upright_planes);
 
         /**

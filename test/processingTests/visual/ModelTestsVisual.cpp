@@ -87,7 +87,7 @@ TEST_F(ModelPhysicalFixture, TestCalculateCenterPt) {
             equations::Plane(-0.3655, -0.4537, 0.8128, -.359423)
     };
 
-    equations::Point p = mod->calculate_center_pt(axis_dir, upright_planes);
+    pcl::PointXYZ p = mod->calculate_center_pt(axis_dir, upright_planes);
     ASSERT_NEAR(p.x, -0.000213082, .001);
     ASSERT_NEAR(p.y, 0.0298714, .001);
     ASSERT_NEAR(p.z, 0.42673, .001);

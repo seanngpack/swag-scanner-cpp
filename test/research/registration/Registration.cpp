@@ -11,14 +11,13 @@
 #include "Normal.h"
 #include "Plane.h"
 #include "Point.h"
-#include "Constants.h"
 #include "ScanFileHandler.h"
 #include "Algorithms.h"
 #include "CalibrationFileHandler.h"
 
 namespace fs = std::filesystem;
 
-class RegistrationFixture : public ::testing::Test {
+class CalibrationFixture : public ::testing::Test {
 
 protected:
     model::Model *mod;
@@ -43,7 +42,7 @@ protected:
     "spatial_smooth_delta": 5
  */
 
-TEST_F(RegistrationFixture, NotSureWhatTestThisIsYet) {
+TEST_F(CalibrationFixture, NotSureWhatTestThisIsYet) {
     auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/registration/data/0.pcd",
                                         *fixture_raw);
@@ -62,7 +61,7 @@ TEST_F(RegistrationFixture, NotSureWhatTestThisIsYet) {
     }
 
     equations::Normal axis_dir = mod->calculate_axis_dir(ground_planes);
-    equations::Point center = mod->calculate_center_pt(axis_dir, upright_planes);
+    pcl::PointXYZ center = mod->calculate_center_pt(axis_dir, upright_planes);
     std::cout << axis_dir.A << " " << axis_dir.B << " " << axis_dir.C << std::endl;
     std::cout << "found point" << center.x << " " << center.y << " " << center.z << std::endl;
 
@@ -75,14 +74,14 @@ TEST_F(RegistrationFixture, NotSureWhatTestThisIsYet) {
 //        *global_cloud += rotated;
 //    }
     pcl::PointXYZ projected_pt;
-    projected_pt = algos::project_point_to_plane(pcl::PointXYZ(center.x, center.y, center.z),
+    projected_pt = algos::project_point_to_plane(center,
                                                  algos::find_point_in_plane(clouds[0], ground_planes[0], .00001),
                                                  axis_dir);
 
     std::cout << "new projected point" << projected_pt << std::endl;
 
-    viewer->ptVis(clouds[0], pcl::PointXYZ(center.x, center.y, center.z));
-    viewer->ptVis(clouds[0], pcl::PointXYZ(projected_pt.x, projected_pt.y, projected_pt.z));
+    viewer->ptVis(clouds[0], center);
+    viewer->ptVis(clouds[0], projected_pt);
 
 
 //    viewer->ptVis(fixture_raw, pcl::PointXYZ(-0.018700590463195308,

@@ -35,9 +35,10 @@ void controller::CalibrationControllerGUI::run() {
     emit update_console("Load complete");
     emit update_console("Performing calculations...");
     equations::Normal axis_dir = model->calculate_axis_dir(ground_planes);
-    equations::Point center = model->calculate_center_pt(axis_dir, upright_planes);
+    pcl::PointXYZ center = model->calculate_center_pt(axis_dir, upright_planes);
     equations::Plane averaged_ground_plane = model->average_planes(ground_planes);
-    pcl::PointXYZ refined_center = model->refine_center_pt(clouds[0], pcl::PointXYZ(center.x, center.y, center.z),
+    pcl::PointXYZ refined_center = model->refine_center_pt(clouds[0],
+                                                           center,
                                                            averaged_ground_plane);
     emit update_console("Calculations complete. Latest calibration updated.");
     file_handler->update_calibration_json(axis_dir, refined_center);

@@ -113,13 +113,13 @@ equations::Plane model::Model::average_planes(const std::vector<equations::Plane
     return avg;
 }
 
-equations::Point model::Model::calculate_center_pt(const equations::Normal &axis_dir,
+pcl::PointXYZ model::Model::calculate_center_pt(const equations::Normal &axis_dir,
                                                    const std::vector<equations::Plane> &upright_planes) {
 
     Eigen::MatrixXd A = calibration::build_A_matrix(axis_dir, upright_planes);
     Eigen::MatrixXd b = calibration::build_b_matrix(axis_dir, upright_planes);
 
-    equations::Point center = calibration::calculate_center_pt(A, b);
+    pcl::PointXYZ center = calibration::calculate_center_pt(A, b);
 
     return center;
 }
