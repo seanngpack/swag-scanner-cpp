@@ -40,6 +40,43 @@ namespace algos {
                                            const camera::intrinsics &intrinsics);
 
     /**
+     * Project point to plane
+     *
+     * @param pt point you want to project.
+     * @param plane_pt a point on the plane.
+     * @param plane the plane you want to project onto.
+     * @param normal normal of the plane.
+     * @return projected point on the plane.
+     */
+    pcl::PointXYZ project_point_to_plane(const pcl::PointXYZ &pt,
+                                         const pcl::PointXYZ &plane_pt,
+                                         const equations::Normal &normal);
+
+    /**
+     * Find a point lying on the given plane in the cloud.
+     *
+     * @param cloud cloud.
+     * @param plane plane.
+     * @param delta error threshold for finding the point.
+     * @return point in the plane or point of 0,0,0.
+     */
+    pcl::PointXYZ find_point_in_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                      const equations::Plane &plane,
+                                      double delta = .1);
+
+    /**
+     * Check if a point is inside a plane with given threshold.
+     *
+     * @param pt point you want to check.
+     * @param plane plane the pt belongs to.
+     * @param delta error threshold.
+     * @return true if the point is in the plane, false otherwise.
+     */
+    bool check_point_in_plane(const pcl::PointXYZ &pt,
+                              const equations::Plane &plane,
+                              double delta);
+
+    /**
      * Given a copy of a point from the pointcloud, a point that a line passes through,
      * and a direction vector, rotate the pointcloud point about that line and return
      * a copy of the new point.

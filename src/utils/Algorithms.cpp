@@ -17,6 +17,55 @@ pcl::PointXYZ algos::deproject_pixel_to_point(float x_pixel,
     return point;
 }
 
+pcl::PointXYZ algos::project_point_to_plane(const pcl::PointXYZ &pt,
+                                            const pcl::PointXYZ &plane_pt,
+                                            const equations::Normal &normal) {
+    double a = normal.A;
+    double b = normal.B;
+    double c = normal.C;
+    double d = plane_pt.x;
+    double e = plane_pt.y;
+    double f = plane_pt.z;
+
+    double x = pt.x;
+    double y = pt.y;
+    double z = pt.z;
+
+    double t = (a * d - a * x + b * e - b * y + c * f - c * z) / (a * a + b * b + c * c);
+
+    pcl::PointXYZ point = pcl::PointXYZ(x + t * a,
+                                        y + t * b,
+                                        z + t * c);
+    return point;
+}
+
+bool algos::check_point_in_plane(const pcl::PointXYZ &pt,
+                                 const equations::Plane &plane,
+                                 double delta) {
+
+
+    double lhs = pt.x * plane.A + pt.y * plane.B + pt.z * plane.C + plane.D;
+    if (lhs > -delta && lhs < delta) {
+        std::cout << "Found point with error: " << lhs << std::endl;
+        return true;
+    }
+    return false;
+}
+
+
+pcl::PointXYZ algos::find_point_in_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                         const equations::Plane &plane,
+                                         double delta) {
+    for (const auto &pt: cloud->points) {
+        if (check_point_in_plane(pt, plane, delta)) {
+            return pt;
+        }
+    }
+    std::cout << "cannot find point in threshold, try loosening it" << std::endl;
+    return pcl::PointXYZ(0, 0, 0);
+}
+
+
 pcl::PointXYZ algos::rotate_point_about_line(const pcl::PointXYZ &point,
                                              const std::vector<float> &line_point,
                                              const std::vector<float> &line_direction,

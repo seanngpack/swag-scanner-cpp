@@ -13,6 +13,7 @@
 #include "Point.h"
 #include "Constants.h"
 #include "ScanFileHandler.h"
+#include "Algorithms.h"
 #include "CalibrationFileHandler.h"
 
 namespace fs = std::filesystem;
@@ -63,7 +64,7 @@ TEST_F(RegistrationFixture, NotSureWhatTestThisIsYet) {
     equations::Normal axis_dir = mod->calculate_axis_dir(ground_planes);
     equations::Point center = mod->calculate_center_pt(axis_dir, upright_planes);
     std::cout << axis_dir.A << " " << axis_dir.B << " " << axis_dir.C << std::endl;
-    std::cout << center.x << " " << center.y << " " << center.z << std::endl;
+    std::cout << "found point" << center.x << " " << center.y << " " << center.z << std::endl;
 
 
 //    auto global_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
@@ -73,9 +74,15 @@ TEST_F(RegistrationFixture, NotSureWhatTestThisIsYet) {
 //        rotated = mod->rotate_cloud_about_line(filtered_clouds[i], origin, direction, 20 * i);
 //        *global_cloud += rotated;
 //    }
+    pcl::PointXYZ projected_pt;
+    projected_pt = algos::project_point_to_plane(pcl::PointXYZ(center.x, center.y, center.z),
+                                                 algos::find_point_in_plane(clouds[0], ground_planes[0], .0002),
+                                                 axis_dir);
 
+    std::cout << "new projected point" << projected_pt << std::endl;
 
     viewer->ptVis(clouds[0], pcl::PointXYZ(center.x, center.y, center.z));
+    viewer->ptVis(clouds[0], pcl::PointXYZ(projected_pt.x, projected_pt.y, projected_pt.z));
 
 
 //    viewer->ptVis(fixture_raw, pcl::PointXYZ(-0.018700590463195308,
