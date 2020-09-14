@@ -182,13 +182,13 @@ namespace model {
          *
          * @param cloud cloud to transform.
          * @param center the center coordinate of turntable.
-         * @param ground_normal direction vector of ground.
+         * @param rotation_axis direction vector of ground.
          * @return
          */
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
         transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                  const pcl::PointXYZ &center,
-                                 const equations::Normal &ground_normal);
+                                 const equations::Normal &rotation_axis);
 
         /**
          * Use ICP to register an input and target cloud.

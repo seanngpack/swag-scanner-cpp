@@ -153,9 +153,9 @@ model::Model::rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl:
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 model::Model::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                        const pcl::PointXYZ &center,
-                                       const equations::Normal &ground_normal) {
+                                       const equations::Normal &rotation_axis) {
     auto result = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    Eigen::Matrix4f transform = algos::calc_transform_to_world_matrix(center, ground_normal);
+    Eigen::Matrix4f transform = algos::calc_transform_to_world_matrix(center, rotation_axis);
     pcl::transformPointCloud(*cloud, *result, transform);
     return result;
 }

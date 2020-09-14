@@ -38,7 +38,7 @@ void controller::CalibrationController::scan() {
         camera->scan();
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = model->create_point_cloud(depth_frame, intrin);
-        cloud = model->crop_cloud(cloud, min_x, max_x, min_y, max_y, min_z, max_z);
+        cloud = model->crop_cloud(cloud, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
         cloud = model->voxel_grid_filter(cloud, .001);
         file_handler->save_cloud(cloud, name, CloudType::Type::CALIBRATION);
         arduino->rotate_by(deg);

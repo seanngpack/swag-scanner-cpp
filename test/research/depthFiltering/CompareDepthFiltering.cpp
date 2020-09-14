@@ -55,7 +55,7 @@ TEST_F(CompareDepthFilteringFixture, CompareCalFixture) {
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_1.pcd", *fixture_1);
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_2.pcd", *fixture_2);
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_3.pcd", *fixture_3);
-    fixture_1 = mod->crop_cloud(fixture_1, min_x, max_x, min_y, max_y, min_z, max_z);
+    fixture_1 = mod->crop_cloud(fixture_1, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
 
     viewer->compareVisFour(fixture_raw, fixture_1, fixture_2, fixture_3);
 }

@@ -13,6 +13,7 @@
 #include "Point.h"
 #include "ScanFileHandler.h"
 #include "Algorithms.h"
+#include "Constants.h"
 #include "CalibrationFileHandler.h"
 
 namespace fs = std::filesystem;
@@ -43,27 +44,28 @@ protected:
  */
 
 TEST_F(CalibrationFixture, NotSureWhatTestThisIsYet) {
+    using namespace constants;
+
     auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/registration/data/0.pcd",
                                         *fixture_raw);
-    auto *cal_file_handler = new file::CalibrationFileHandler();
+    auto *file_handler = new file::ScanFileHandler();
+    equations::Normal rot_axis(0.002451460662859972, -0.8828002989292145,-0.4696775645017624);
+    pcl::PointXYZ center_pt(-0.005918797571212053,0.06167422607541084,0.42062291502952576);
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cropped_clouds;
-    std::vector<equations::Plane> upright_planes;
-    std::vector<equations::Plane> ground_planes;
-    auto clouds = cal_file_handler->load_clouds(CloudType::Type::CALIBRATION);
-    for (const auto &cloud : clouds) {
-//        viewer->simpleVis(cloud);
-//        auto cropped = (mod->crop_cloud(cloud, -.10, .10, -100, .13, -100, .49));
-//        cropped_clouds.push_back(cropped);
-        std::vector<equations::Plane> coeffs = mod->get_calibration_planes_coefs(cloud, false);
-        ground_planes.emplace_back(coeffs[0]);
-        upright_planes.emplace_back(coeffs[1]);
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> world_clouds;
+    auto clouds = file_handler->load_clouds(CloudType::Type::FILTERED);
+    for (const auto &c :clouds) {
+        cropped_clouds.push_back(mod->crop_cloud(c, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z));
     }
 
-    equations::Normal axis_dir = mod->calculate_axis_dir(ground_planes);
-    pcl::PointXYZ center = mod->calculate_center_pt(axis_dir, upright_planes);
-    std::cout << axis_dir.A << " " << axis_dir.B << " " << axis_dir.C << std::endl;
-    std::cout << "found point" << center.x << " " << center.y << " " << center.z << std::endl;
+    for (const auto&c : cropped_clouds) {
+        auto transformed = mod->transform_cloud_to_world(c, center_pt, rot_axis);
+        auto transformed_cropped = mod->crop_cloud(transformed, scan_min_x, scan_max_x, scan_min_y, scan_max_y, scan_min_z, scan_max_z);
+        world_clouds.push_back(transformed_cropped);
+        viewer->simpleVis(transformed_cropped);
+    }
+
 
 
 //    auto global_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
@@ -73,20 +75,5 @@ TEST_F(CalibrationFixture, NotSureWhatTestThisIsYet) {
 //        rotated = mod->rotate_cloud_about_line(filtered_clouds[i], origin, direction, 20 * i);
 //        *global_cloud += rotated;
 //    }
-    pcl::PointXYZ projected_pt;
-    projected_pt = algos::project_point_to_plane(center,
-                                                 algos::find_point_in_plane(clouds[0], ground_planes[0], .00001),
-                                                 axis_dir);
 
-    std::cout << "new projected point" << projected_pt << std::endl;
-
-    viewer->ptVis(clouds[0], center);
-    viewer->ptVis(clouds[0], projected_pt);
-
-
-//    viewer->ptVis(fixture_raw, pcl::PointXYZ(-0.018700590463195308,
-//                                             0.7106068939489973,
-//                                             0.8040320766701974));
-
-//    viewer->compareVisFour(fixture_raw, fixture_1, fixture_2, fixture_3);
 }
