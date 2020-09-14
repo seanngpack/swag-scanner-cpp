@@ -134,7 +134,7 @@ pcl::PointXYZ model::Model::refine_center_pt(const std::shared_ptr<pcl::PointClo
 
 pcl::PointCloud<pcl::PointXYZ>
 model::Model::rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                      const std::vector<float> &line_point,
+                                      const std::vector<float> &pt,
                                       const std::vector<float> &line_direction,
                                       float theta) {
     pcl::PointCloud<pcl::PointXYZ> transformed;
@@ -143,12 +143,23 @@ model::Model::rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl:
 
     for (int i = 0; i < cloud->size(); i++) {
         transformed.points[i] = algos::rotate_point_about_line(cloud->points[i],
-                                                               line_point,
+                                                               pt,
                                                                line_direction,
                                                                theta);
     }
     return transformed;
 }
+
+pcl::PointCloud<pcl::PointXYZ>
+model::Model::rotate_cloud_about_z_axis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud, float theta) {
+    pcl::PointCloud<pcl::PointXYZ> rotated;
+    Eigen::Affine3f transform(Eigen::Affine3f::Identity());
+    // note, rotating in negative direction
+    transform.rotate(Eigen::AngleAxisf(-(theta*M_PI) / 180, Eigen::Vector3f::UnitZ()));
+    pcl::transformPointCloud(*cloud, rotated, transform);
+    return rotated;
+}
+
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 model::Model::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
@@ -161,9 +172,9 @@ model::Model::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl
 }
 
 Eigen::Matrix4f model::Model::icp_register_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_in,
-                                                       const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_out,
+                                                       const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_target,
                                                        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &transformed_cloud) {
-    return registration::icp_register_pair_clouds(cloud_in, cloud_out, transformed_cloud);
+    return registration::icp_register_pair_clouds(cloud_in, cloud_target, transformed_cloud);
 
 }
 
@@ -180,5 +191,6 @@ void model::Model::sac_align_pair_clouds(const std::shared_ptr<pcl::PointCloud<p
     registration::sac_align_pair_clouds(cloudIn, cloudTarget, cloudInFeatures, cloudTargetFeatures,
                                         cloudAligned, transformation);
 }
+
 
 
