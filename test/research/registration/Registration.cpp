@@ -10,6 +10,7 @@
 #include <memory>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/console/time.h>   // TicToc
+#include <pcl/filters/filter.h>
 #include "Visualizer.h"
 #include "Model.h"
 #include "Normal.h"
@@ -69,6 +70,8 @@ TEST_F(RegistrationFixture, TestRegistration) {
         auto transformed = mod->transform_cloud_to_world(c, center_pt, rot_axis);
         auto transformed_cropped = mod->crop_cloud(transformed, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
                                                    scan_min_z, scan_max_z);
+        std::vector<int> indices;
+        pcl::removeNaNFromPointCloud(*transformed_cropped, *transformed_cropped, indices);
         world_clouds.push_back(transformed_cropped);
 //        viewer->simpleVis(transformed_cropped);
     }
@@ -86,163 +89,113 @@ TEST_F(RegistrationFixture, TestRegistration) {
         rotated.clear();
     }
 
-    viewer->simpleVis(global_cloud);
 
-}
+    auto global_cloud_icp = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto result = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto source = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto target = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto tgt_to_src = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto temp = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
 
-bool next_iteration = false;
-void
-print4x4Matrix (const Eigen::Matrix4d & matrix)
-{
-    printf ("Rotation matrix :\n");
-    printf ("    | %6.3f %6.3f %6.3f | \n", matrix (0, 0), matrix (0, 1), matrix (0, 2));
-    printf ("R = | %6.3f %6.3f %6.3f | \n", matrix (1, 0), matrix (1, 1), matrix (1, 2));
-    printf ("    | %6.3f %6.3f %6.3f | \n", matrix (2, 0), matrix (2, 1), matrix (2, 2));
-    printf ("Translation vector :\n");
-    printf ("t = < %6.3f, %6.3f, %6.3f >\n\n", matrix (0, 3), matrix (1, 3), matrix (2, 3));
-}
+    // create global transform and start it at 20 deg
+    Eigen::Matrix4f global_trans = Eigen::Matrix4f::Identity();
+    Eigen::Affine3f rot_trans(Eigen::Affine3f::Identity());
+    rot_trans.rotate(Eigen::AngleAxisf(-(20 * M_PI) / 180, Eigen::Vector3f::UnitZ()));
+    global_trans *= rot_trans.matrix();
 
-void
-keyboardEventOccurred (const pcl::visualization::KeyboardEvent& event,
-                       void* nothing)
-{
-    if (event.getKeySym () == "space" && event.keyDown ())
-        next_iteration = true;
-}
-
-/**
- * Test ICP step by step
- */
-TEST_F(RegistrationFixture, TestICPStepByStep) {
-    typedef pcl::PointXYZ PointT;
-    typedef pcl::PointCloud<PointT> PointCloudT;
-
-    auto cloud_in = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    auto cloud_tr = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    auto cloud_icp = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/calibration/data/0.pcd",
-                                        *cloud_in);
-    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/calibration/data/20.pcd",
-                                        *cloud_tr);
-    *cloud_tr = mod->rotate_cloud_about_z_axis(cloud_tr, 20);
+    Eigen::Matrix4f pair_trans = Eigen::Matrix4f::Identity();
+    for (int i = 1; i < world_clouds.size(); i++) {
+        target = world_clouds[i-1];
+        source = world_clouds[i];
+        *tgt_to_src = mod->rotate_cloud_about_z_axis(target, -20); // rotate source to target, store it as a copy
 
 
+        pair_trans = mod->icp_register_pair_clouds(tgt_to_src, source, temp);
+        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = {tgt_to_src, temp};
+        pcl::transformPointCloud(*temp, *result, global_trans);
 
-    int iterations = 100;  // Default number of ICP iterations
+//        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = {world_clouds[0], result};
+//        viewer->simpleVis(clouds);
+        // rotate global trans by 20 * i
+        // note, rotating in negative direction
+        global_trans *= pair_trans;
+        global_trans *= rot_trans.matrix();
 
-    pcl::console::TicToc time;
-    time.tic ();
+        *global_cloud_icp += *result;
 
-    // Defining a rotation matrix and translation vector
-    Eigen::Matrix4d transformation_matrix = Eigen::Matrix4d::Identity ();
+        viewer->simpleVis(global_cloud_icp);
 
-    // The Iterative Closest Point algorithm
-    time.tic ();
-    pcl::IterativeClosestPoint<PointT, PointT> icp;
-    icp.setInputSource (cloud_icp);
-    icp.setInputTarget (cloud_in);
-    icp.setMaximumIterations (iterations);
-    icp.setTransformationEpsilon (1e-8);
-    icp.setMaxCorrespondenceDistance (0.5);
-    icp.setEuclideanFitnessEpsilon (1);
-    icp.align (*cloud_icp);
-
-    std::cout << "Applied " << iterations << " ICP iteration(s) in " << time.toc () << " ms" << std::endl;
-
-    if (icp.hasConverged ())
-    {
-        std::cout << "\nICP has converged, score is " << icp.getFitnessScore () << std::endl;
-        std::cout << "\nICP transformation " << iterations << " : cloud_icp -> cloud_in" << std::endl;
-        transformation_matrix = icp.getFinalTransformation ().cast<double>();
-        print4x4Matrix (transformation_matrix);
     }
-    else
-    {"/"
-     ""
-     "   "
+
+    viewer->compareVis(global_cloud, global_cloud_icp);
+
+}
+
+TEST_F(RegistrationFixture, TestICPSwag) {
+    using namespace constants;
+    auto cloud_tgt = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto cloud_src = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto cloud_icp = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    Eigen::Matrix4d transformation_matrix = Eigen::Matrix4d::Identity();
+    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/registration/data/40.pcd",
+                                        *cloud_tgt);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/registration/data/60.pcd",
+                                        *cloud_src);
+    equations::Normal rot_axis(0.002451460662859972, -0.8828002989292145, -0.4696775645017624);
+    pcl::PointXYZ center_pt(-0.005918797571212053, 0.06167422607541084, 0.42062291502952576);
+    cloud_tgt =mod->crop_cloud(cloud_tgt, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
+    cloud_src = mod->crop_cloud(cloud_src, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
+
+    cloud_tgt = mod->transform_cloud_to_world(cloud_tgt, center_pt, rot_axis);
+    cloud_src = mod->transform_cloud_to_world(cloud_src, center_pt, rot_axis);
+
+    cloud_tgt = mod->crop_cloud(cloud_tgt, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
+                                scan_min_z, scan_max_z);
+    cloud_src = mod->crop_cloud(cloud_src, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
+                                scan_min_z, scan_max_z);
+
+    std::vector<int> indices;
+    pcl::removeNaNFromPointCloud(*cloud_tgt, *cloud_tgt, indices);
+    std::vector<int> indices2;
+    pcl::removeNaNFromPointCloud(*cloud_src, *cloud_src, indices2);
+    std::cout << "removed" << std::endl;
+
+    // somewhat align the cloud to within 4 deg of the target 0 cloud
+//    *cloud_src = mod->rotate_cloud_about_z_axis(cloud_src, 16);
+    *cloud_src = mod->rotate_cloud_about_z_axis(cloud_src, 20);
+
+    std::cout << "rotated" << std::endl;
+
+    // apply translation in x direction and y direction of 1.4cm
+//    Eigen::Matrix4f trans = Eigen::Matrix4f::Identity();
+//    trans(0, 3) = .015;
+//    trans(1, 3) = .015;
+//    pcl::transformPointCloud (*cloud_src, *cloud_src, trans);
+//
+//    viewer->simpleVis(cloud_src);
+//    std::cout << "transformed" << std::endl;
+
+    pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
+    icp.setInputSource(cloud_src);
+    icp.setInputTarget(cloud_tgt);
+    icp.setMaximumIterations(100);
+    icp.setTransformationEpsilon(1e-10);
+    icp.setMaxCorrespondenceDistance (.05); // not really sure how this affects results
+    icp.setEuclideanFitnessEpsilon(.0001); // big effect
+    icp.setRANSACOutlierRejectionThreshold(.0001); // doesn't seem to affect results much
+    std::cout << "aligning..." << std::endl;
+    icp.align(*cloud_icp);
+
+    if (icp.hasConverged()) {
+        std::cout << "\nICP has converged, score is " << icp.getFitnessScore() << std::endl;
+        transformation_matrix = icp.getFinalTransformation().cast<double>();
+        std::cout << transformation_matrix << std::endl;
+    } else {
         PCL_ERROR ("\nICP has not converged.\n");
     }
 
-    // Visualization
-    pcl::visualization::PCLVisualizer viewer ("ICP demo");
-    // Create two vertically separated viewports
-    int v1 (0);
-    int v2 (1);
-    viewer.createViewPort (0.0, 0.0, 0.5, 1.0, v1);
-    viewer.createViewPort (0.5, 0.0, 1.0, 1.0, v2);
-
-    // The color we will be using
-    float bckgr_gray_level = 0.0;  // Black
-    float txt_gray_lvl = 1.0 - bckgr_gray_level;
-
-    // Original point cloud is white
-    pcl::visualization::PointCloudColorHandlerCustom<PointT> cloud_in_color_h (cloud_in, (int) 255 * txt_gray_lvl, (int) 255 * txt_gray_lvl,
-                                                                               (int) 255 * txt_gray_lvl);
-    viewer.addPointCloud (cloud_in, cloud_in_color_h, "cloud_in_v1", v1);
-    viewer.addPointCloud (cloud_in, cloud_in_color_h, "cloud_in_v2", v2);
-
-    // Transformed point cloud is green
-    pcl::visualization::PointCloudColorHandlerCustom<PointT> cloud_tr_color_h (cloud_tr, 20, 180, 20);
-    viewer.addPointCloud (cloud_tr, cloud_tr_color_h, "cloud_tr_v1", v1);
-
-    // ICP aligned point cloud is red
-    pcl::visualization::PointCloudColorHandlerCustom<PointT> cloud_icp_color_h (cloud_icp, 180, 20, 20);
-    viewer.addPointCloud (cloud_icp, cloud_icp_color_h, "cloud_icp_v2", v2);
-
-    // Adding text descriptions in each viewport
-    viewer.addText ("White: Original point cloud\nGreen: Matrix transformed point cloud", 10, 15, 16, txt_gray_lvl, txt_gray_lvl, txt_gray_lvl, "icp_info_1", v1);
-    viewer.addText ("White: Original point cloud\nRed: ICP aligned point cloud", 10, 15, 16, txt_gray_lvl, txt_gray_lvl, txt_gray_lvl, "icp_info_2", v2);
-
-    std::stringstream ss;
-    ss << iterations;
-    std::string iterations_cnt = "ICP iterations = " + ss.str ();
-    viewer.addText (iterations_cnt, 10, 60, 16, txt_gray_lvl, txt_gray_lvl, txt_gray_lvl, "iterations_cnt", v2);
-
-    // Set background color
-    viewer.setBackgroundColor (bckgr_gray_level, bckgr_gray_level, bckgr_gray_level, v1);
-    viewer.setBackgroundColor (bckgr_gray_level, bckgr_gray_level, bckgr_gray_level, v2);
-
-    // Set camera position and orientation
-    viewer.setCameraPosition (-3.68332, 2.94092, 5.71266, 0.289847, 0.921947, -0.256907, 0);
-    viewer.setSize (1280, 1024);  // Visualiser window size
-
-    // Register keyboard callback :
-    viewer.registerKeyboardCallback (&keyboardEventOccurred, (void*) NULL);
-
-    // Display the visualiser
-    while (!viewer.wasStopped ())
-    {
-        viewer.spinOnce ();
-
-        // The user pressed "space" :
-        if (next_iteration)
-        {
-            // The Iterative Closest Point algorithm
-            time.tic ();
-            icp.align (*cloud_icp);
-            std::cout << "Applied 1 ICP iteration in " << time.toc () << " ms" << std::endl;
-
-            if (icp.hasConverged ())
-            {
-                printf ("\033[11A");  // Go up 11 lines in terminal output.
-                printf ("\nICP has converged, score is %+.0e\n", icp.getFitnessScore ());
-                std::cout << "\nICP transformation " << ++iterations << " : cloud_icp -> cloud_in" << std::endl;
-                transformation_matrix *= icp.getFinalTransformation ().cast<double>();  // WARNING /!\ This is not accurate! For "educational" purpose only!
-                print4x4Matrix (transformation_matrix);  // Print the transformation between original pose and current pose
-
-                ss.str ("");
-                ss << iterations;
-                std::string iterations_cnt = "ICP iterations = " + ss.str ();
-                viewer.updateText (iterations_cnt, 10, 60, 16, txt_gray_lvl, txt_gray_lvl, txt_gray_lvl, "iterations_cnt");
-                viewer.updatePointCloud (cloud_icp, cloud_icp_color_h, "cloud_icp_v2");
-            }
-            else
-            {
-                PCL_ERROR ("\nICP has not converged.\n");
-            }
-        }
-        next_iteration = false;
-    }
-
-
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds1 = {cloud_tgt, cloud_src};
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = {cloud_tgt, cloud_icp};
+    viewer->simpleVis(clouds1);
+    viewer->simpleVis(clouds);
 }

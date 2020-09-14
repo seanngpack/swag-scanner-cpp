@@ -8,16 +8,20 @@ Eigen::Matrix4f registration::icp_register_pair_clouds(const std::shared_ptr<pcl
     pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
     icp.setInputSource(cloudIn);
     icp.setInputTarget(cloudOut);
-    icp.setMaximumIterations (200);
-    icp.setTransformationEpsilon(1e-10);
-    icp.setMaxCorrespondenceDistance(0.01); // 1cm
-    icp.setEuclideanFitnessEpsilon (.001);
-    icp.setRANSACOutlierRejectionThreshold (.0001); // .1mm
+    icp.setMaximumIterations(100);
+    icp.setTransformationEpsilon(1e-1);
+    icp.setMaxCorrespondenceDistance (.05); // not really sure how this affects results
+    icp.setEuclideanFitnessEpsilon(.0001); // big effect
+    icp.setRANSACOutlierRejectionThreshold(.0001); // doesn't seem to affect results much
     std::cout << "registering clouds..." << std::endl;
     icp.align(*transformedCloud);
-    std::cout << "has converged:" << icp.hasConverged() << " score: " <<
-              icp.getFitnessScore() << std::endl;
-    std::cout << icp.getFinalTransformation() << std::endl;
+    if (icp.hasConverged()) {
+        std::cout << "\nICP has converged, score is " << icp.getFitnessScore() << std::endl;
+        auto trans = icp.getFinalTransformation().cast<double>();
+        std::cout << trans << std::endl;
+    } else {
+        PCL_ERROR ("\nICP has not converged.\n");
+    }
     return icp.getFinalTransformation();
 }
 
