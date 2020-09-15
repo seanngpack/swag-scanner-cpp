@@ -44,6 +44,15 @@ namespace filtering {
     remove_outliers(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                     float mean_k,
                     float thesh_mult);
+
+    /**
+     * Remove NaN points from cloud.
+     *
+     * @param cloud cloud to remove points from.
+     * @return cloud without points.
+     */
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+    remove_nan(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 }
 
 #endif //SWAG_SCANNER_FILTERING_H

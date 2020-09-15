@@ -15,21 +15,24 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Mo
         model(std::move(model)), viewer(std::move(viewer)), file_handler(std::move(file_handler)) {}
 
 void controller::ProcessingController::run() {
-    rotate_all_clouds(CloudType::Type::FILTERED);
+    filter(CloudType::Type::FILTERED);
 }
 
-void controller::ProcessingController::crop(const CloudType::Type &cloud_type) {
+void controller::ProcessingController::filter(const CloudType::Type &cloud_type) {
     using namespace constants;
 
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(cloud_type);
-    for (int i = 0; i < cloud_vector.size(); i++) {
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-                cropped_cloud = model->crop_cloud(cloud_vector[i],
-                                                  cal_min_x, cal_max_x,
-                                                  cal_min_y, cal_max_y,
-                                                  cal_min_z, cal_max_z);
-        std::cout << "saving cropped cloud to" << std::endl;
-        file_handler->save_cloud(cropped_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
+    /**
+     * Perform cropping
+     */
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = file_handler->load_clouds(cloud_type);
+    for (int i = 0; i < clouds.size(); i++) {
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtered_cloud = model->crop_cloud(clouds[i],
+                                                                                           cal_min_x, cal_max_x,
+                                                                                           cal_min_y, cal_max_y,
+                                                                                           cal_min_z, cal_max_z);
+        filtered_cloud = model->remove_nan(filtered_cloud);
+        filtered_cloud = model->remove_outliers(filtered_cloud);
+        file_handler->save_cloud(filtered_cloud, std::to_string(i), CloudType::Type::PROCESSED); // remove this later
     }
 }
 
@@ -59,7 +62,7 @@ void controller::ProcessingController::register_all_clouds(const CloudType::Type
 
     }
 
-    visualize_cloud(global_cloud);
+    viewer->simpleVis(global_cloud);
 }
 
 

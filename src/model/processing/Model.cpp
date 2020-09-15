@@ -71,10 +71,15 @@ model::Model::voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::Point
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-filtering::remove_outliers(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                           float mean_k,
-                           float thesh_mult) {
+model::Model::remove_outliers(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                              float mean_k,
+                              float thresh_mult) {
     return filtering::remove_outliers(cloud, mean_k, thresh_mult);
+}
+
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+model::Model::remove_nan(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+    return filtering::remove_nan(cloud);
 }
 
 std::vector<equations::Plane>
