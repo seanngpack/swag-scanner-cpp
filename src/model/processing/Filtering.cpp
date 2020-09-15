@@ -31,3 +31,17 @@ filtering::voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ
               << " data points (" << pcl::getFieldsList(*cloud_filtered) << ")." << std::endl;
     return cloud_filtered;
 }
+
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+filtering::remove_outliers(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                           float mean_k,
+                           float thesh_mult) {
+    auto filtered = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+    sor.setInputCloud(cloud);
+    sor.setMeanK(mean_k);
+    sor.setStddevMulThresh(thresh);
+    sor.filter(*filtered);
+
+    return filtered;
+}

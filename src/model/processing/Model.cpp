@@ -70,6 +70,13 @@ model::Model::voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::Point
     return filtering::voxel_grid_filter(cloud, leafSize);
 }
 
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+filtering::remove_outliers(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                           float mean_k,
+                           float thesh_mult) {
+    return filtering::remove_outliers(cloud, mean_k, thresh_mult);
+}
+
 std::vector<equations::Plane>
 model::Model::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                            bool visual_flag) {
@@ -114,7 +121,7 @@ equations::Plane model::Model::average_planes(const std::vector<equations::Plane
 }
 
 pcl::PointXYZ model::Model::calculate_center_pt(const equations::Normal &axis_dir,
-                                                   const std::vector<equations::Plane> &upright_planes) {
+                                                const std::vector<equations::Plane> &upright_planes) {
 
     Eigen::MatrixXd A = calibration::build_A_matrix(axis_dir, upright_planes);
     Eigen::MatrixXd b = calibration::build_b_matrix(axis_dir, upright_planes);
@@ -155,7 +162,7 @@ model::Model::rotate_cloud_about_z_axis(const std::shared_ptr<pcl::PointCloud<pc
     pcl::PointCloud<pcl::PointXYZ> rotated;
     Eigen::Affine3f transform(Eigen::Affine3f::Identity());
     // note, rotating in negative direction
-    transform.rotate(Eigen::AngleAxisf(-(theta*M_PI) / 180, Eigen::Vector3f::UnitZ()));
+    transform.rotate(Eigen::AngleAxisf(-(theta * M_PI) / 180, Eigen::Vector3f::UnitZ()));
     pcl::transformPointCloud(*cloud, rotated, transform);
     return rotated;
 }
