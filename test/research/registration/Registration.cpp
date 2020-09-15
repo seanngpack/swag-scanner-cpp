@@ -72,6 +72,7 @@ TEST_F(RegistrationFixture, TestRegistration) {
                                                    scan_min_z, scan_max_z);
         std::vector<int> indices;
         pcl::removeNaNFromPointCloud(*transformed_cropped, *transformed_cropped, indices);
+        std::cout << transformed_cropped->size() << std::endl;
         world_clouds.push_back(transformed_cropped);
 //        viewer->simpleVis(transformed_cropped);
     }

@@ -2,6 +2,8 @@
 #include "Visualizer.h"
 #include "ScanFileHandler.h"
 #include "Model.h"
+#include "Normal.h"
+#include "Plane.h"
 #include "Constants.h"
 #include <pcl/common/transforms.h>
 #include <memory>
@@ -20,17 +22,30 @@ void controller::ProcessingController::run() {
 
 void controller::ProcessingController::filter(const CloudType::Type &cloud_type) {
     using namespace constants;
+    json calibration_json = file_handler->get_calibration_json();
+    std::vector<double> temp0 = calibration_json["axis_direction"].get<std::vector<double>>();
+    equations::Normal rot_axis(temp0);
+    auto temp = calibration_json["origin_point"].get<std::vector<double>>();
+    pcl::PointXYZ center_pt(temp[0], temp[1], temp[2]);
 
-    /**
-     * Perform cropping
-     */
+
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = file_handler->load_clouds(cloud_type);
+
     for (int i = 0; i < clouds.size(); i++) {
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtered_cloud = model->crop_cloud(clouds[i],
-                                                                                           cal_min_x, cal_max_x,
-                                                                                           cal_min_y, cal_max_y,
-                                                                                           cal_min_z, cal_max_z);
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtered_cloud;
+        std::cout << "transforming" << std::endl;
+        filtered_cloud = model->transform_cloud_to_world(filtered_cloud, center_pt, rot_axis);
+        std::cout << "cropping.." << std::endl;
+        filtered_cloud = model->crop_cloud(clouds[i],
+                                           scan_min_x, scan_max_x,
+                                           scan_min_y, scan_max_y,
+                                           scan_min_z, scan_max_z);
+
+
+        std::cout << "removing NaN.." << std::endl;
         filtered_cloud = model->remove_nan(filtered_cloud);
+        std::cout << filtered_cloud->size() << std::endl;
+        std::cout << "removing outliers..." << std::endl;
         filtered_cloud = model->remove_outliers(filtered_cloud);
         file_handler->save_cloud(filtered_cloud, std::to_string(i), CloudType::Type::PROCESSED); // remove this later
     }

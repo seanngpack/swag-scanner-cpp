@@ -131,6 +131,7 @@ json file::ScanFileHandler::get_calibration_json() {
     std::ifstream calibration(calibration_path);
     json calibration_json;
     calibration >> calibration_json;
+    std::cout << "got json" << std::endl;
     return calibration_json;
 }
 
