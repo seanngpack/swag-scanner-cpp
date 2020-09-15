@@ -88,34 +88,40 @@ TEST_F(RegistrationFixture, TestRegistration) {
         *global_cloud += rotated;
         rotated.clear();
     }
+//    viewer->simpleVis(global_cloud);
 
 
     auto global_cloud_icp = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto result = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto source = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto target = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    auto tgt_to_src = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto src_to_tgt = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto temp = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
 
     // create global transform and start it at 20 deg
     Eigen::Matrix4f global_trans = Eigen::Matrix4f::Identity();
     Eigen::Affine3f rot_trans(Eigen::Affine3f::Identity());
     rot_trans.rotate(Eigen::AngleAxisf(-(20 * M_PI) / 180, Eigen::Vector3f::UnitZ()));
-    global_trans *= rot_trans.matrix();
+//    global_trans *= rot_trans.matrix();
 
     Eigen::Matrix4f pair_trans = Eigen::Matrix4f::Identity();
     for (int i = 1; i < world_clouds.size(); i++) {
         target = world_clouds[i-1];
         source = world_clouds[i];
-        *tgt_to_src = mod->rotate_cloud_about_z_axis(target, -20); // rotate source to target, store it as a copy
+        *src_to_tgt = mod->rotate_cloud_about_z_axis(source, 20); // rotate target to source
 
+        pair_trans = mod->icp_register_pair_clouds(src_to_tgt, target, temp);
+        // verify icp at each step
+        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = {source, src_to_tgt};
+        viewer->simpleVis(clouds);
+        clouds = {target, temp};
+        viewer->simpleVis(clouds);
 
-        pair_trans = mod->icp_register_pair_clouds(tgt_to_src, source, temp);
-        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = {tgt_to_src, temp};
         pcl::transformPointCloud(*temp, *result, global_trans);
 
-//        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = {world_clouds[0], result};
-//        viewer->simpleVis(clouds);
+        // visualize result as red, and original target cloud [0] as white
+        clouds = {world_clouds[0], result};
+        viewer->simpleVis(clouds);
         // rotate global trans by 20 * i
         // note, rotating in negative direction
         global_trans *= pair_trans;
@@ -123,7 +129,8 @@ TEST_F(RegistrationFixture, TestRegistration) {
 
         *global_cloud_icp += *result;
 
-        viewer->simpleVis(global_cloud_icp);
+        // shgows the global cloud beind added
+//        viewer->simpleVis(global_cloud_icp);
 
     }
 
@@ -181,8 +188,8 @@ TEST_F(RegistrationFixture, TestICPSwag) {
     icp.setMaximumIterations(100);
     icp.setTransformationEpsilon(1e-10);
     icp.setMaxCorrespondenceDistance (.05); // not really sure how this affects results
-    icp.setEuclideanFitnessEpsilon(.0001); // big effect
-    icp.setRANSACOutlierRejectionThreshold(.0001); // doesn't seem to affect results much
+    icp.setEuclideanFitnessEpsilon(.000001); // big effect
+    icp.setRANSACOutlierRejectionThreshold(.000001); // doesn't seem to affect results much
     std::cout << "aligning..." << std::endl;
     icp.align(*cloud_icp);
 

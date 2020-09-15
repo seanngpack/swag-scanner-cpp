@@ -9,7 +9,7 @@ Eigen::Matrix4f registration::icp_register_pair_clouds(const std::shared_ptr<pcl
     icp.setInputSource(cloudIn);
     icp.setInputTarget(cloudOut);
     icp.setMaximumIterations(100);
-    icp.setTransformationEpsilon(1e-1);
+    icp.setTransformationEpsilon(1e-10);
     icp.setMaxCorrespondenceDistance (.05); // not really sure how this affects results
     icp.setEuclideanFitnessEpsilon(.0001); // big effect
     icp.setRANSACOutlierRejectionThreshold(.0001); // doesn't seem to affect results much
