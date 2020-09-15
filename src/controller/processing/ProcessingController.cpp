@@ -25,18 +25,21 @@ void controller::ProcessingController::filter(const CloudType::Type &cloud_type)
     json calibration_json = file_handler->get_calibration_json();
     std::vector<double> temp0 = calibration_json["axis_direction"].get<std::vector<double>>();
     equations::Normal rot_axis(temp0);
+    std::cout << rot_axis.A << " " << rot_axis.B << " " << rot_axis.C << " " << std::endl;
     auto temp = calibration_json["origin_point"].get<std::vector<double>>();
     pcl::PointXYZ center_pt(temp[0], temp[1], temp[2]);
+    std::cout << center_pt << std::endl;
 
 
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = file_handler->load_clouds(cloud_type);
 
     for (int i = 0; i < clouds.size(); i++) {
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtered_cloud;
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtered_cloud = clouds[0];
+
         std::cout << "transforming" << std::endl;
         filtered_cloud = model->transform_cloud_to_world(filtered_cloud, center_pt, rot_axis);
         std::cout << "cropping.." << std::endl;
-        filtered_cloud = model->crop_cloud(clouds[i],
+        filtered_cloud = model->crop_cloud(filtered_cloud,
                                            scan_min_x, scan_max_x,
                                            scan_min_y, scan_max_y,
                                            scan_min_z, scan_max_z);
@@ -47,7 +50,7 @@ void controller::ProcessingController::filter(const CloudType::Type &cloud_type)
         std::cout << filtered_cloud->size() << std::endl;
         std::cout << "removing outliers..." << std::endl;
         filtered_cloud = model->remove_outliers(filtered_cloud);
-        file_handler->save_cloud(filtered_cloud, std::to_string(i), CloudType::Type::PROCESSED); // remove this later
+        file_handler->save_cloud(filtered_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED); // remove this later
     }
 }
 

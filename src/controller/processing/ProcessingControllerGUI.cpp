@@ -12,7 +12,9 @@ controller::ProcessingControllerGUI::ProcessingControllerGUI(std::shared_ptr<mod
         IControllerGUI(std::move(gui)) {}
 
 void controller::ProcessingControllerGUI::run() {
+    emit update_console("Starting processing");
     ProcessingController::run();
+    emit update_console("Processing done!");
 }
 
 void controller::ProcessingControllerGUI::update(const IFormsPayload &payload) {

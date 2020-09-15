@@ -19,10 +19,10 @@ namespace constants {
 
     // dimensions of scanning box
     // crop coefficients after calibration is done
-    inline constexpr float scan_min_x = -.25;
-    inline constexpr float scan_max_x = .25;
-    inline constexpr float scan_min_y = - .25;
-    inline constexpr float scan_max_y = .25;
+    inline constexpr float scan_min_x = -.20;
+    inline constexpr float scan_max_x = .20;
+    inline constexpr float scan_min_y = - .20;
+    inline constexpr float scan_max_y = .20;
     inline constexpr float scan_min_z = 0;
     inline constexpr float scan_max_z = .17;
 
