@@ -30,11 +30,10 @@ void controller::ProcessingController::filter(const CloudType::Type &cloud_type)
     pcl::PointXYZ center_pt(temp[0], temp[1], temp[2]);
     std::cout << center_pt << std::endl;
 
-
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = file_handler->load_clouds(cloud_type);
 
     for (int i = 0; i < clouds.size(); i++) {
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtered_cloud = clouds[0];
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtered_cloud = clouds[i];
 
         std::cout << "transforming" << std::endl;
         filtered_cloud = model->transform_cloud_to_world(filtered_cloud, center_pt, rot_axis);
@@ -49,7 +48,7 @@ void controller::ProcessingController::filter(const CloudType::Type &cloud_type)
         filtered_cloud = model->remove_nan(filtered_cloud);
         std::cout << filtered_cloud->size() << std::endl;
         std::cout << "removing outliers..." << std::endl;
-        filtered_cloud = model->remove_outliers(filtered_cloud);
+        filtered_cloud = model->remove_outliers(filtered_cloud, 80, 2);
         file_handler->save_cloud(filtered_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED); // remove this later
     }
 }

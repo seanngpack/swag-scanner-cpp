@@ -20,6 +20,9 @@
 #include "Algorithms.h"
 #include "Constants.h"
 #include "CalibrationFileHandler.h"
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 namespace fs = std::filesystem;
 
@@ -54,38 +57,21 @@ TEST_F(RegistrationFixture, TestRegistration) {
     using namespace constants;
 
     auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/registration/data/0.pcd",
-                                        *fixture_raw);
     auto *file_handler = new file::ScanFileHandler();
-    equations::Normal rot_axis(0.002451460662859972, -0.8828002989292145, -0.4696775645017624);
-    pcl::PointXYZ center_pt(-0.005918797571212053, 0.06167422607541084, 0.42062291502952576);
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cropped_clouds;
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> world_clouds;
-    auto clouds = file_handler->load_clouds(CloudType::Type::FILTERED);
-    for (const auto &c :clouds) {
-        cropped_clouds.push_back(mod->crop_cloud(c, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z));
-    }
-
-    for (const auto &c : cropped_clouds) {
-        auto transformed = mod->transform_cloud_to_world(c, center_pt, rot_axis);
-        auto transformed_cropped = mod->crop_cloud(transformed, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
-                                                   scan_min_z, scan_max_z);
-        std::vector<int> indices;
-        pcl::removeNaNFromPointCloud(*transformed_cropped, *transformed_cropped, indices);
-        std::cout << transformed_cropped->size() << std::endl;
-        world_clouds.push_back(transformed_cropped);
-//        viewer->simpleVis(transformed_cropped);
-    }
+    auto world_clouds = file_handler->load_clouds(CloudType::Type::PROCESSED);
 
 //    file_handler->save_cloud(world_clouds[0], "0.pcd", CloudType::Type::PROCESSED);
-//    file_handler->save_cloud(world_clouds[1], "20.pcd", CloudType::Type::PROCESSED);
+//    file_handler->save_cloud(world_clouds[1], "angle.pcd", CloudType::Type::PROCESSED);
 
+    json info_json = file_handler->get_info_json();
+    int angle = info_json["angle"];
+    std::cout << "degrees per rotation: " << angle << std::endl;
 
     auto global_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     *global_cloud = *world_clouds[0];
     pcl::PointCloud<pcl::PointXYZ> rotated;
     for (int i = 1; i < world_clouds.size(); i++) {
-        rotated = mod->rotate_cloud_about_z_axis(world_clouds[i], 20 * i);
+        rotated = mod->rotate_cloud_about_z_axis(world_clouds[i], angle * i);
         *global_cloud += rotated;
         rotated.clear();
     }
@@ -99,31 +85,31 @@ TEST_F(RegistrationFixture, TestRegistration) {
     auto src_to_tgt = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto temp = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
 
-    // create global transform and start it at 20 deg
+    // create global transform and start it at angle deg
     Eigen::Matrix4f global_trans = Eigen::Matrix4f::Identity();
     Eigen::Affine3f rot_trans(Eigen::Affine3f::Identity());
-    rot_trans.rotate(Eigen::AngleAxisf(-(20 * M_PI) / 180, Eigen::Vector3f::UnitZ()));
+    rot_trans.rotate(Eigen::AngleAxisf(-(angle * M_PI) / 180, Eigen::Vector3f::UnitZ()));
 //    global_trans *= rot_trans.matrix();
 
     Eigen::Matrix4f pair_trans = Eigen::Matrix4f::Identity();
     for (int i = 1; i < world_clouds.size(); i++) {
-        target = world_clouds[i-1];
+        target = world_clouds[i - 1];
         source = world_clouds[i];
-        *src_to_tgt = mod->rotate_cloud_about_z_axis(source, 20); // rotate target to source
+        *src_to_tgt = mod->rotate_cloud_about_z_axis(source, angle); // rotate target to source
 
         pair_trans = mod->icp_register_pair_clouds(src_to_tgt, target, temp);
         // verify icp at each step
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = {source, src_to_tgt};
-        viewer->simpleVis(clouds);
+//        viewer->simpleVis(clouds);
         clouds = {target, temp};
-        viewer->simpleVis(clouds);
+//        viewer->simpleVis(clouds);
 
         pcl::transformPointCloud(*temp, *result, global_trans);
 
         // visualize result as red, and original target cloud [0] as white
         clouds = {world_clouds[0], result};
-        viewer->simpleVis(clouds);
-        // rotate global trans by 20 * i
+//        viewer->simpleVis(clouds);
+        // rotate global trans by angle * i
         // note, rotating in negative direction
         global_trans *= pair_trans;
         global_trans *= rot_trans.matrix();
@@ -136,6 +122,9 @@ TEST_F(RegistrationFixture, TestRegistration) {
     }
 
     viewer->compareVis(global_cloud, global_cloud_icp);
+
+    global_cloud = mod->remove_outliers(global_cloud);
+    viewer->simpleVis(global_cloud);
 
 }
 
@@ -151,7 +140,7 @@ TEST_F(RegistrationFixture, TestICPSwag) {
                                         *cloud_src);
     equations::Normal rot_axis(0.002451460662859972, -0.8828002989292145, -0.4696775645017624);
     pcl::PointXYZ center_pt(-0.005918797571212053, 0.06167422607541084, 0.42062291502952576);
-    cloud_tgt =mod->crop_cloud(cloud_tgt, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
+    cloud_tgt = mod->crop_cloud(cloud_tgt, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
     cloud_src = mod->crop_cloud(cloud_src, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
 
     cloud_tgt = mod->transform_cloud_to_world(cloud_tgt, center_pt, rot_axis);
@@ -188,7 +177,7 @@ TEST_F(RegistrationFixture, TestICPSwag) {
     icp.setInputTarget(cloud_tgt);
     icp.setMaximumIterations(100);
     icp.setTransformationEpsilon(1e-10);
-    icp.setMaxCorrespondenceDistance (.05); // not really sure how this affects results
+    icp.setMaxCorrespondenceDistance(.05); // not really sure how this affects results
     icp.setEuclideanFitnessEpsilon(.000001); // big effect
     icp.setRANSACOutlierRejectionThreshold(.000001); // doesn't seem to affect results much
     std::cout << "aligning..." << std::endl;
