@@ -83,6 +83,7 @@ nlohmann::json file::IFileHandler::get_swag_scanner_config_json() {
 fs::path file::IFileHandler::find_latest_calibration() {
     fs::path calibrations_folder_path = swag_scanner_path / "calibration";
     fs::directory_entry latest_cal;
+    time_t latest_cal_time = 0;
     if (!fs::exists(calibrations_folder_path)) {
         throw std::runtime_error("error, calibrations folder does not exist");
     }
@@ -95,13 +96,15 @@ fs::path file::IFileHandler::find_latest_calibration() {
             latest_cal.assign(x.path());
             continue;
         }
-        if (is_directory(x) &&
-            x.path().filename() != ".DS_Store" &&
-            fs::last_write_time(x) > fs::last_write_time(latest_cal)) {
-            latest_cal.assign(x.path());
+        if (x.path().stem().string()[0] != '.') {
+            auto last_write_x = fs::last_write_time(x);
+            std::time_t x_time = decltype(last_write_x)::clock::to_time_t(last_write_x);
+            if (is_directory(x) && std::difftime(x_time , latest_cal_time ) > 0) {
+                latest_cal_time = x_time;
+                latest_cal.assign(x.path());
+            }
         }
     }
-
     return latest_cal.path();
 }
 
@@ -193,9 +196,12 @@ std::vector<std::string> file::IFileHandler::get_all_scans() {
     fs::path scans_folder = swag_scanner_path / "scans";
     std::vector<std::string> scans;
     for (const auto &x : fs::directory_iterator(scans_folder)) {
-        if (is_directory(x) && x.path().filename() != ".DS_Store") {
-            scans.push_back(x.path().filename().string());
+        if (x.path().stem().string()[0] != '.') {
+            if (is_directory(x)) {
+                scans.push_back(x.path().filename().string());
+            }
         }
+
     }
     return scans;
 }
@@ -205,8 +211,10 @@ std::vector<std::string> file::IFileHandler::get_all_calibrations() {
     fs::path calibrations_folder = swag_scanner_path / "calibration";
     std::vector<std::string> calibrations;
     for (auto &&x : fs::directory_iterator(calibrations_folder)) {
-        if (is_directory(x) && x.path().filename() != ".DS_Store") {
-            calibrations.push_back(x.path().filename().string());
+        if (x.path().stem().string()[0] != '.') {
+            if (is_directory(x)) {
+                calibrations.push_back(x.path().filename().string());
+            }
         }
     }
     return calibrations;

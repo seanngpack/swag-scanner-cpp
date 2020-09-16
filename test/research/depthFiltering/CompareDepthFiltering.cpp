@@ -2,10 +2,12 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
 #include <filesystem>
 #include <iostream>
 #include "Visualizer.h"
 #include "Model.h"
+#include "Constants.h"
 
 namespace fs = std::filesystem;
 
@@ -44,15 +46,19 @@ protected:
  */
 
 TEST_F(CompareDepthFilteringFixture, CompareCalFixture) {
+    using namespace constants;
     std::cout << "Current path is " << fs::current_path() << '\n';
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> fixture_raw(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> fixture_1(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> fixture_2(new pcl::PointCloud<pcl::PointXYZ>);
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> fixture_3(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/DepthFiltering/data/fixture_raw.pcd", *fixture_raw);
-    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/DepthFiltering/data/fixture_1.pcd", *fixture_1);
-    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/DepthFiltering/data/fixture_2.pcd", *fixture_2);
-    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/DepthFiltering/data/fixture_3.pcd", *fixture_3);
+    auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto fixture_1 = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto fixture_2 = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto fixture_3 = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_raw.pcd", *fixture_raw);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_1.pcd", *fixture_1);
+    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_2.pcd", *fixture_2);
+    pcl::io::loadPLYFile<pcl::PointXYZ>( "/Users/seanngpack/Desktop/test.ply", *fixture_3);
+//    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_3.pcd", *fixture_3);
+
+    fixture_1 = mod->crop_cloud(fixture_1, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
 
     viewer->compareVisFour(fixture_raw, fixture_1, fixture_2, fixture_3);
 }

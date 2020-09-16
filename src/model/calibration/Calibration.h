@@ -14,10 +14,10 @@ namespace calibration {
      * @param b rhs matrix.
      * @return origin point of the turntable in m.
      */
-    inline equations::Point calculate_center_pt(const Eigen::MatrixXd &A, const Eigen::MatrixXd &b) {
+    inline pcl::PointXYZ calculate_center_pt(const Eigen::MatrixXd &A, const Eigen::MatrixXd &b) {
         Eigen::MatrixXd sol_mat = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
         std::vector<double> sol_vec(sol_mat.data(), sol_mat.data() + sol_mat.rows() * sol_mat.cols());
-        return equations::Point(sol_vec);
+        return pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
     }
 
     /**

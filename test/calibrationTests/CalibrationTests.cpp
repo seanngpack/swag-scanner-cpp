@@ -40,7 +40,7 @@ protected:
 TEST_F(CalibrationPhysicalFixture, calculate_center_pt) {
     Eigen::MatrixXd A = calibration::build_A_matrix(g_n, planes);
     Eigen::MatrixXd b = calibration::build_b_matrix(g_n, planes);
-    equations::Point pt = calibration::calculate_center_pt(A, b);
+    pcl::PointXYZ pt = calibration::calculate_center_pt(A, b);
     ASSERT_NEAR(pt.x, -0.000213082, .001);
     ASSERT_NEAR(pt.y, 0.0298714, .001);
     ASSERT_NEAR(pt.z, 0.42673, .001);

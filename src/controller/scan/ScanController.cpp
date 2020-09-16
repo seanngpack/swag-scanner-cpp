@@ -5,6 +5,9 @@
 #include "Visualizer.h"
 #include "ScanFileHandler.h"
 #include <utility>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 controller::ScanController::ScanController(std::shared_ptr<camera::ICamera> camera,
                                            std::shared_ptr<arduino::Arduino> arduino,
@@ -54,8 +57,9 @@ void controller::ScanController::update_json_time() {
     oss << std::put_time(&tm, "%m-%d-%Y %H:%M:%S");
     auto str = oss.str();
 
-    std::string info_json_path =
-            file_handler->find_latest_calibration().string() + "/" + file_handler->get_scan_name() + ".json";;
+    fs::path latest_cal_path = file_handler->find_latest_calibration();
+    std::string info_json_path = latest_cal_path.string()
+                                 + "/" + latest_cal_path.filename().string() + ".json";;
     file_handler->update_info_json(str, deg, info_json_path);
 }
 

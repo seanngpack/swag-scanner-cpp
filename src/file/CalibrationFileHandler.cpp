@@ -10,7 +10,10 @@ using json = nlohmann::json;
 file::CalibrationFileHandler::CalibrationFileHandler() {
     std::cout << "calibration file handler constructor called" << std::endl;
     scan_folder_path = find_latest_calibration();
+    std::cout << "make it ehre " << std::endl;
+    std::cout << scan_folder_path << std::endl;
     scan_name = scan_folder_path.stem().string();
+    std::cout << "make it ehre " << std::endl;
 }
 
 file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {
@@ -99,9 +102,12 @@ void file::CalibrationFileHandler::update_calibration_json(const equations::Norm
     calibration_json["axis_direction"] = {dir.A, dir.B, dir.C};
     calibration_json["origin_point"] = {pt.x, pt.y, pt.z};
 
-//    scan_folder_path.string() + "/" + scan_name + ".json";
     std::ofstream updated_file(scan_folder_path / fs::path(scan_name + ".json"));
     updated_file << std::setw(4) << calibration_json << std::endl; // write to file
+}
+
+void file::CalibrationFileHandler::update_calibration_json(const equations::Normal &dir, const pcl::PointXYZ &pt) {
+    update_calibration_json(dir, equations::Point(pt.x, pt.y, pt.z));
 }
 
 void file::CalibrationFileHandler::create_calibration_json() {

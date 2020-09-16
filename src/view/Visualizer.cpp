@@ -15,8 +15,9 @@ void visual::Visualizer::simpleVis(const std::shared_ptr<pcl::PointCloud<pcl::Po
     viewer.setBackgroundColor(0, 0, 0);
     viewer.addPointCloud<pcl::PointXYZ>(cloud, "sample cloud");
     viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
-    viewer.addCoordinateSystem(1.0);
+    viewer.addCoordinateSystem(0.1);
     viewer.initCameraParameters();
+    viewer.setCameraPosition(0, 0, .3,    0, 0, 0,   0, 3, 0);
     while (!viewer.wasStopped()) {
         viewer.spinOnce(100);
         std::this_thread::sleep_for(100ms);
@@ -38,8 +39,9 @@ void visual::Visualizer::simpleVis(const std::vector<std::shared_ptr<pcl::PointC
 
 //    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
     viewer.setBackgroundColor(0, 0, 0);
-    viewer.addCoordinateSystem(1.0);
+    viewer.addCoordinateSystem(0.1);
     viewer.initCameraParameters();
+    viewer.setCameraPosition(0, 0, .3,    0, 0, 0,   0, 3, 0);
     while (!viewer.wasStopped()) {
         viewer.spinOnce(100);
         std::this_thread::sleep_for(100ms);

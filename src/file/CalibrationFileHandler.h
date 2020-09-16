@@ -65,6 +65,8 @@ namespace file {
          */
         void update_calibration_json(const equations::Normal &dir, const equations::Point &pt);
 
+        void update_calibration_json(const equations::Normal &dir, const pcl::PointXYZ &pt);
+
     private:
 
         /**

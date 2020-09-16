@@ -2,6 +2,8 @@
 #include "Visualizer.h"
 #include "ScanFileHandler.h"
 #include "Model.h"
+#include "Normal.h"
+#include "Plane.h"
 #include "Constants.h"
 #include <pcl/common/transforms.h>
 #include <memory>
@@ -15,31 +17,39 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Mo
         model(std::move(model)), viewer(std::move(viewer)), file_handler(std::move(file_handler)) {}
 
 void controller::ProcessingController::run() {
-    rotate_all_clouds(CloudType::Type::FILTERED);
+    filter(CloudType::Type::FILTERED);
 }
 
-void controller::ProcessingController::crop_clouds(const CloudType::Type &cloud_type) {
+void controller::ProcessingController::filter(const CloudType::Type &cloud_type) {
     using namespace constants;
+    json calibration_json = file_handler->get_calibration_json();
+    std::vector<double> temp0 = calibration_json["axis_direction"].get<std::vector<double>>();
+    equations::Normal rot_axis(temp0);
+    std::cout << rot_axis.A << " " << rot_axis.B << " " << rot_axis.C << " " << std::endl;
+    auto temp = calibration_json["origin_point"].get<std::vector<double>>();
+    pcl::PointXYZ center_pt(temp[0], temp[1], temp[2]);
+    std::cout << center_pt << std::endl;
 
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(cloud_type);
-    for (int i = 0; i < cloud_vector.size(); i++) {
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-                cropped_cloud = model->crop_cloud(cloud_vector[i],
-                                                  min_x, max_x,
-                                                  min_y, max_y,
-                                                  min_z, max_z);
-        std::cout << "saving cropped cloud to" << std::endl;
-        file_handler->save_cloud(cropped_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
-    }
-}
+    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = file_handler->load_clouds(cloud_type);
 
-void controller::ProcessingController::remove_planes(const CloudType::Type &cloud_type) {
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(cloud_type);
-    for (int i = 0; i < cloud_vector.size(); i++) {
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-                segmented_cloud = model->remove_plane(cloud_vector[i]);
-        std::cout << "saving segmented cloud" << std::endl;
-        file_handler->save_cloud(segmented_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
+    for (int i = 0; i < clouds.size(); i++) {
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtered_cloud = clouds[i];
+
+        std::cout << "transforming" << std::endl;
+        filtered_cloud = model->transform_cloud_to_world(filtered_cloud, center_pt, rot_axis);
+        std::cout << "cropping.." << std::endl;
+        filtered_cloud = model->crop_cloud(filtered_cloud,
+                                           scan_min_x, scan_max_x,
+                                           scan_min_y, scan_max_y,
+                                           scan_min_z, scan_max_z);
+
+
+        std::cout << "removing NaN.." << std::endl;
+        filtered_cloud = model->remove_nan(filtered_cloud);
+        std::cout << filtered_cloud->size() << std::endl;
+        std::cout << "removing outliers..." << std::endl;
+        filtered_cloud = model->remove_outliers(filtered_cloud, 80, 2);
+        file_handler->save_cloud(filtered_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED); // remove this later
     }
 }
 
@@ -69,29 +79,7 @@ void controller::ProcessingController::register_all_clouds(const CloudType::Type
 
     }
 
-    visualize_cloud(global_cloud);
-}
-
-void controller::ProcessingController::rotate_all_clouds(const CloudType::Type &cloud_type) {
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(cloud_type);
-    json info_json = file_handler->get_info_json();
-    json calibration_json = file_handler->get_calibration_json();
-
-    std::vector<float> origin = calibration_json["origin_point"];
-    std::vector<float> direction = calibration_json["axis_direction"];
-    float theta = -(float) info_json["angle"] * (M_PI / 180.0);
-
-    auto global_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    *global_cloud = *cloud_vector[0];
-    for (int i = 1; i < cloud_vector.size(); i++) {
-        pcl::PointCloud<pcl::PointXYZ> rotated;
-        rotated = model->rotate_cloud_about_line(cloud_vector[i], origin, direction, theta * i);
-        *global_cloud += rotated;
-    }
-
     viewer->simpleVis(global_cloud);
 }
 
-void controller::ProcessingController::visualize_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
-    viewer->simpleVis(cloud);
-}
+

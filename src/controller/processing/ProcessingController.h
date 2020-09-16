@@ -38,20 +38,12 @@ namespace controller {
 
 
         /**
-         * Crop clouds based on calibration. Then save to /processed folder
+         * Crop clouds based on box boundary defined in constants.h, remove all NaN points,
          * @param cloud_type which cloud types do you want to crop.
          * @param leaf size.
          */
-        void crop_clouds(const CloudType::Type &cloud_type);
+        void filter(const CloudType::Type &cloud_type);
 
-        /**
-         * Segment and save the clouds in the given folder path to the /segmented folder.
-         * @param folder_path path to the scans.
-         * @param cloud_type type of cloud you want to filter. You should probably do the
-         * /filtered folder.
-         *
-         */
-        void remove_planes(const CloudType::Type &cloud_type);
 
         /**
          * Register all point clouds in given folder location.
@@ -60,14 +52,6 @@ namespace controller {
          */
         void register_all_clouds(const CloudType::Type &cloud_type);
 
-        /**
-         * Use rotation axis to align all clouds to initial.
-         * @param cloud_type type determines which folder you want to select clouds from.
-         */
-        void rotate_all_clouds(const CloudType::Type &cloud_type);
-
-
-        void visualize_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
     private:
         std::shared_ptr<model::Model> model;

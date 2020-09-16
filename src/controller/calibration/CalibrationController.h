@@ -29,6 +29,13 @@ namespace camera {
     class ICamera;
 }
 
+namespace pcl {
+    class PointXYZ;
+
+    template<class pointT>
+    class PointCloud;
+}
+
 
 namespace controller {
     /**
@@ -63,12 +70,25 @@ namespace controller {
         int num_rot = 8;
         std::vector<equations::Plane> upright_planes;
         std::vector<equations::Plane> ground_planes;
+        std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
 
 
         /**
          * Scan the calibration clouds and save them into current folder.
          */
         void scan();
+
+        /**
+         * Load the recently scanned calibration clouds and calculate the planes equations. Store them
+         * into class members.
+         */
+        void get_calibration_planes();
+
+        /**
+         * Perform center point calculations and then refine the calculation.
+         * Also update JSON file with the center point coordinate and axis of rotation direction.
+         */
+        void calculate();
 
     };
 }

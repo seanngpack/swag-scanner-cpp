@@ -8,8 +8,6 @@
 #include "Visualizer.h"
 #include "SwagGUI.h"
 #include "FormsPayload.h"
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
 
 controller::CalibrationControllerGUI::CalibrationControllerGUI(std::shared_ptr<camera::ICamera> camera,
                                                                std::shared_ptr<arduino::Arduino> arduino,
@@ -26,25 +24,15 @@ controller::CalibrationControllerGUI::CalibrationControllerGUI(std::shared_ptr<c
 
 
 void controller::CalibrationControllerGUI::run() {
-    std::cout << "number of deg is: " << deg << std::endl;
-    std::cout << "number of rot is: " << num_rot << std::endl;
-
     emit update_console("Starting scan");
     scan();
     emit update_console("Scan complete");
-    emit update_console("Loading clouds...");
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector = file_handler->load_clouds(
-            CloudType::Type::CALIBRATION);
-    emit update_console("Load complete");
-    emit update_console("Performing calculations...");
-    equations::Normal axis_dir = model->calculate_axis_dir(ground_planes);
-    equations::Point center = model->calculate_center_pt(axis_dir, upright_planes);
-    emit update_console("Calculations complete. Latest calibration updated.");
-    file_handler->update_calibration_json(axis_dir, center);
-    emit update_console("Returning to home position");
-    arduino->rotate_to(0);
-
-//    viewer->ptVis(cloud_vector[0], pcl::PointXYZ(center.x, center.y, center.z));
+    emit update_console("Calculating calibration planes...");
+    get_calibration_planes();
+    emit update_console("Calculation complete");
+    emit update_console("Calculating center point and rotation axis...");
+    calculate();
+    emit update_console("Calculation complete");
 }
 
 

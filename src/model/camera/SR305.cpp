@@ -67,8 +67,20 @@ void camera::SR305::initialize_camera() {
 
     // grab the depth scale
     auto sensor = pipe_profile.get_device().first<rs2::depth_sensor>();
-//    sensor.set_option(rs2_option::RS2_OPTION_VISUAL_PRESET,
-//                      rs2_sr300_visual_preset::RS2_SR300_VISUAL_PRESET_OBJECT_SCANNING);
+
+    // set custom settings
+        sensor.set_option(RS2_OPTION_LASER_POWER, 1.f);
+        printf("SR300 New Laser Power: %f\r\n", sensor.get_option(rs2_option::RS2_OPTION_LASER_POWER));
+
+    auto range = sensor.get_option_range( RS2_OPTION_ACCURACY );
+        sensor.set_option(RS2_OPTION_ACCURACY, range.max);
+    printf("SR300 New accuracy: %f\r\n", sensor.get_option(rs2_option::RS2_OPTION_ACCURACY));
+
+        sensor.set_option(RS2_OPTION_MOTION_RANGE, 16.f);
+    printf("SR300 New motion range: %f\r\n", sensor.get_option(rs2_option::RS2_OPTION_MOTION_RANGE));
+
+        sensor.set_option(RS2_OPTION_CONFIDENCE_THRESHOLD, 1.f);
+    printf("SR300 New confidence: %f\r\n", sensor.get_option(rs2_option::RS2_OPTION_CONFIDENCE_THRESHOLD));
 
 
     // grab the intrin
@@ -84,6 +96,7 @@ void camera::SR305::initialize_camera() {
     spatial_smooth_alpha = config_json["spatial_smooth_alpha"];
     spatial_smooth_delta = config_json["spatial_smooth_delta"];
 
+    std::cout << "dec magnitude " << decimation_magnitude << std::endl;
     // set filter parameters
     set_decimation_magnitude(decimation_magnitude);
     set_spatial_filter_magnitude(spatial_filter_magnitude);
