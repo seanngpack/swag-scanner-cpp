@@ -9,6 +9,18 @@ using namespace std::chrono_literals;
 
 visual::Visualizer::Visualizer() {}
 
+void
+visual::Visualizer::pointPickingEventOccurred(const pcl::visualization::PointPickingEvent &event, void *viewer_void) {
+    std::cout << "[INFO] Point picking event occurred." << std::endl;
+
+    float x, y, z;
+    if (event.getPointIndex() == -1) {
+        return;
+    }
+    event.getPoint(x, y, z);
+    std::cout << "[INFO] Point coordinate ( " << x << ", " << y << ", " << z << ")" << std::endl;
+}
+
 void visual::Visualizer::simpleVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
 
     pcl::visualization::PCLVisualizer viewer("3D viewer");
@@ -17,7 +29,9 @@ void visual::Visualizer::simpleVis(const std::shared_ptr<pcl::PointCloud<pcl::Po
     viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
     viewer.addCoordinateSystem(0.1);
     viewer.initCameraParameters();
-    viewer.setCameraPosition(0, 0, .3,    0, 0, 0,   0, 3, 0);
+    viewer.setCameraPosition(0, 0, .3, 0, 0, 0, 0, 3, 0);
+    viewer.registerPointPickingCallback(pointPickingEventOccurred, (void *) &viewer);
+
     while (!viewer.wasStopped()) {
         viewer.spinOnce(100);
         std::this_thread::sleep_for(100ms);
@@ -41,7 +55,7 @@ void visual::Visualizer::simpleVis(const std::vector<std::shared_ptr<pcl::PointC
     viewer.setBackgroundColor(0, 0, 0);
     viewer.addCoordinateSystem(0.1);
     viewer.initCameraParameters();
-    viewer.setCameraPosition(0, 0, .3,    0, 0, 0,   0, 3, 0);
+    viewer.setCameraPosition(0, 0, .3, 0, 0, 0, 0, 3, 0);
     while (!viewer.wasStopped()) {
         viewer.spinOnce(100);
         std::this_thread::sleep_for(100ms);

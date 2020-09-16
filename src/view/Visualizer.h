@@ -5,12 +5,19 @@
 #ifndef SWAG_SCANNER_VISUALIZER_H
 #define SWAG_SCANNER_VISUALIZER_H
 
+namespace pcl {
+    namespace visualization {
+        class PointPickingEvent;
+    }
+}
+
 namespace visual {
     class Visualizer {
     public:
 
         Visualizer();
 
+        static void pointPickingEventOccurred(const pcl::visualization::PointPickingEvent& event, void* viewer_void);
 
         /**
          * Visualize one pointcloud
