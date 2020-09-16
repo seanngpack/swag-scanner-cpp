@@ -4,6 +4,7 @@
 #include "SR305.h"
 #include "Model.h"
 #include "Arduino.h"
+#include <thread>
 
 controller::ScanControllerGUI::ScanControllerGUI(std::shared_ptr<camera::ICamera> camera,
                                                  std::shared_ptr<arduino::Arduino> arduino,
@@ -46,6 +47,9 @@ void controller::ScanControllerGUI::run() {
         file_handler->save_cloud(cloud_raw, name, CloudType::Type::RAW);
         file_handler->save_cloud(cloud_filt, name, CloudType::Type::FILTERED);
         arduino->rotate_by(deg);
+        // add a delay to avoid ghosting
+        std::chrono::milliseconds timespan(500);
+        std::this_thread::sleep_for(timespan);
     }
     emit update_console("Scan complete!");
 }
