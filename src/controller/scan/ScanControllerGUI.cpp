@@ -38,6 +38,9 @@ void controller::ScanControllerGUI::run() {
 
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";
+        // add delay to avoid ghosting
+        std::chrono::milliseconds timespan(500);
+        std::this_thread::sleep_for(timespan);
         camera->scan();
         std::vector<uint16_t> depth_frame_raw = camera->get_depth_frame();
         std::vector<uint16_t> depth_frame_filt = camera->get_depth_frame_processed();
@@ -48,7 +51,6 @@ void controller::ScanControllerGUI::run() {
         file_handler->save_cloud(cloud_filt, name, CloudType::Type::FILTERED);
         arduino->rotate_by(deg);
         // add a delay to avoid ghosting
-        std::chrono::milliseconds timespan(500);
         std::this_thread::sleep_for(timespan);
     }
     emit update_console("Scan complete!");

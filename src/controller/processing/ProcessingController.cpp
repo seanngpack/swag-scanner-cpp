@@ -29,28 +29,43 @@ void controller::ProcessingController::filter(const CloudType::Type &cloud_type)
     auto temp = calibration_json["origin_point"].get<std::vector<double>>();
     pcl::PointXYZ center_pt(temp[0], temp[1], temp[2]);
     std::cout << center_pt << std::endl;
+    json info_json = file_handler->get_info_json();
+    int angle = info_json["angle"];
 
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = file_handler->load_clouds(cloud_type);
 
     for (int i = 0; i < clouds.size(); i++) {
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> filtered_cloud = clouds[i];
+//        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> clouds[i] = clouds[i];
 
         std::cout << "transforming" << std::endl;
-        filtered_cloud = model->transform_cloud_to_world(filtered_cloud, center_pt, rot_axis);
+        clouds[i] = model->transform_cloud_to_world(clouds[i], center_pt, rot_axis);
         std::cout << "cropping.." << std::endl;
-        filtered_cloud = model->crop_cloud(filtered_cloud,
+        clouds[i] = model->crop_cloud(clouds[i],
                                            scan_min_x, scan_max_x,
                                            scan_min_y, scan_max_y,
                                            scan_min_z, scan_max_z);
 
 
         std::cout << "removing NaN.." << std::endl;
-        filtered_cloud = model->remove_nan(filtered_cloud);
-        std::cout << filtered_cloud->size() << std::endl;
+        clouds[i] = model->remove_nan(clouds[i]);
+        std::cout << clouds[i]->size() << std::endl;
         std::cout << "removing outliers..." << std::endl;
-        filtered_cloud = model->remove_outliers(filtered_cloud, 80, 2);
-        file_handler->save_cloud(filtered_cloud, std::to_string(i) + ".pcd", CloudType::Type::PROCESSED); // remove this later
+        clouds[i] = model->remove_outliers(clouds[i], 80, 2);
+
+        file_handler->save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
     }
+
+    auto global_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    *global_cloud = *clouds[0];
+    pcl::PointCloud<pcl::PointXYZ> rotated;
+    for (int i = 1; i < clouds.size(); i++) {
+        rotated = model->rotate_cloud_about_z_axis(clouds[i], angle * i);
+        *global_cloud += rotated;
+    }
+
+    global_cloud = model->remove_outliers(global_cloud, 50, 1);
+    file_handler->save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::PROCESSED);
+
 }
 
 

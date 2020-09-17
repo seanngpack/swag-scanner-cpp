@@ -53,7 +53,7 @@ namespace controller {
         void register_all_clouds(const CloudType::Type &cloud_type);
 
 
-    private:
+    protected:
         std::shared_ptr<model::Model> model;
         std::shared_ptr<visual::Visualizer> viewer;
         std::shared_ptr<file::ScanFileHandler> file_handler;

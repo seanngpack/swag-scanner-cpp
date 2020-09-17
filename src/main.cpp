@@ -8,7 +8,7 @@
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_sinks.h>
 #include <boost/program_options.hpp>
-#include <iostream>ardui
+#include <iostream>
 #include <QApplication>
 
 

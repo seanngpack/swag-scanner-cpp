@@ -196,3 +196,11 @@ TEST_F(RegistrationFixture, TestICPSwag) {
     viewer->simpleVis(clouds1);
     viewer->simpleVis(clouds);
 }
+
+TEST_F(RegistrationFixture, ViewRegisteredPCD) {
+    auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    pcl::io::loadPCDFile<pcl::PointXYZ>("/Users/seanngpack/Library/Application Support/SwagScanner/scans/sponge/processed/REGISTERED.pcd",
+                                        *cloud);
+    std::cout << cloud->size() << std::endl;
+    viewer->simpleVis(cloud);
+}
