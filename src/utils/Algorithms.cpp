@@ -2,6 +2,7 @@
 #include "Normal.h"
 #include "Plane.h"
 #include "CameraTypes.h"
+#include <pcl/common/transforms.h>
 
 pcl::PointXYZ algos::deproject_pixel_to_point(float x_pixel,
                                               float y_pixel,
@@ -66,6 +67,24 @@ pcl::PointXYZ algos::find_point_in_plane(const std::shared_ptr<pcl::PointCloud<p
 }
 
 
+pcl::PointCloud<pcl::PointXYZ>
+algos::rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                               const std::vector<float> &pt,
+                               const std::vector<float> &line_direction,
+                               float theta) {
+    pcl::PointCloud<pcl::PointXYZ> transformed;
+
+    transformed.resize(cloud->size());
+
+    for (int i = 0; i < cloud->size(); i++) {
+        transformed.points[i] = rotate_point_about_line(cloud->points[i],
+                                                        pt,
+                                                        line_direction,
+                                                        theta);
+    }
+    return transformed;
+}
+
 pcl::PointXYZ algos::rotate_point_about_line(const pcl::PointXYZ &point,
                                              const std::vector<float> &line_point,
                                              const std::vector<float> &line_direction,
@@ -89,6 +108,16 @@ pcl::PointXYZ algos::rotate_point_about_line(const pcl::PointXYZ &point,
           (-b * u + a * v - v * x + u * y) * sin(theta);
 
     return p;
+}
+
+pcl::PointCloud<pcl::PointXYZ>
+algos::rotate_cloud_about_z_axis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud, float theta) {
+    pcl::PointCloud<pcl::PointXYZ> rotated;
+    Eigen::Affine3f transform(Eigen::Affine3f::Identity());
+    // note, rotating in negative direction
+    transform.rotate(Eigen::AngleAxisf(-(theta * M_PI) / 180, Eigen::Vector3f::UnitZ()));
+    pcl::transformPointCloud(*cloud, rotated, transform);
+    return rotated;
 }
 
 Eigen::Matrix4f algos::calc_transform_to_world_matrix(const pcl::PointXYZ &center,

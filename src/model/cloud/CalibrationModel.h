@@ -2,12 +2,18 @@
 #define SWAG_SCANNER_CALIBRATIONMODEL_H
 
 #include "IModel.h"
-#include "Normal.h"
-#include "Plane.h"
-#include "Equations.h"
+#include <Eigen/Dense>
 
 namespace file {
     class CalibrationFileHandler;
+}
+
+namespace equations {
+    class Normal;
+
+    class Point;
+
+    class Plane;
 }
 
 namespace model {
@@ -47,12 +53,18 @@ namespace model {
         std::unique_ptr<file::CalibrationFileHandler> file_handler;
 
         /**
-         * Solve for x using in Ax = b using SVD.
-         * @param A lhs matrix.
-         * @param b rhs matrix.
-         * @return origin point of the turntable in m.
+         * Get the upright and ground plane equations.
+         * Utilizes a hardcoded axis and RANSAC normals to find the ground plane. It finds a plane that is within
+         * the epsilon angle deviation to robustly find the ground plane. Then it will calculate the normals
+         * and find the perpendicular plane which should be the upright pane.
+         *
+         * @param cloud calibration cloud.
+         * @param visual_flag flag whether to visualize segmentation or not.
+         * @return vector of upright and ground plane equations.
          */
-        pcl::PointXYZ calculate_center_pt(const Eigen::MatrixXd &A, const Eigen::MatrixXd &b);
+        std::vector<equations::Plane>
+        get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                     bool visual_flag = false);
 
         /**
           * Calculate the A matrix in Ax = b
@@ -72,8 +84,44 @@ namespace model {
         Eigen::MatrixXd build_b_matrix(const equations::Normal &g_n,
                                        const std::vector<equations::Plane> &upright_planes);
 
+        /**
+         * Given a vector of ground planes, get the average of their normals to get the rotation axis direction.
+         *
+         * @param ground_planes planes to calculate wiht.
+         * @return rotation axis direction.
+         */
+        equations::Normal calculate_axis_dir(const std::vector<equations::Plane> &ground_planes);
+
+        /**
+         * Calculate the center point of the turntable.
+         * Solve for x using in Ax = b using SVD.
+         *
+         * @param axis_dir axis of rotation direction.
+         * @param upright_planes use the upright planes in calculation.
+         * @return center point of turntable from the camera origin in meters.
+         */
+        pcl::PointXYZ calculate_center_pt(const equations::Normal &axis_dir,
+                                          const std::vector<equations::Plane> &upright_planes);
+
+
+        /**
+         * Project center point to ground plane.
+         *
+         * @param cloud the cloud that the plane you are projecting to belongs to.
+         * @param pt point you want to project.
+         * @param plane the plane you want to project onto.
+         * @param delta the threshold to search for point on plane.
+         * @return projected point on the plane.
+         */
+        pcl::PointXYZ refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                       const pcl::PointXYZ &pt,
+                                       const equations::Plane &plane,
+                                       double delta = .00001
+        );
 
     };
+
+
 }
 
 #endif //SWAG_SCANNER_CALIBRATIONMODEL_H

@@ -103,16 +103,7 @@ namespace model {
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
         remove_nan(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
-        /**
-         * Get the upright and ground plane equations.
-         *
-         * @param cloud calibration cloud.
-         * @param visual_flag flag whether to visualize segmentation or not.
-         * @return vector of upright and ground plane equations.
-         */
-        std::vector<equations::Plane>
-        get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                     bool visual_flag = false);
+
 
         /**
          * Get the coefficients of the base plane of the given cloud.
@@ -129,13 +120,6 @@ namespace model {
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
         remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn);
 
-        /**
-         * Given a vector of ground planes, calculate the axis direction by taking the
-         * average of the coefficients.
-         * @param ground_planes vector of ground plane equations.
-         * @return the axis direction.
-         */
-        equations::Normal calculate_axis_dir(const std::vector<equations::Plane> &ground_planes);
 
         /**
          * Given a vector of planes, average them.
@@ -145,70 +129,7 @@ namespace model {
          */
         equations::Plane average_planes(const std::vector<equations::Plane> &planes);
 
-        /**
-         * Calculate the origin point of the turntable using equation of rotation axis and equations
-         * for the upright planes.
-         * @param axis_dir direction of rotation axis.
-         * @param upright_planes vector of upright planes.
-         * @return the origin point.
-         */
-        pcl::PointXYZ calculate_center_pt(const equations::Normal &axis_dir,
-                                          const std::vector<equations::Plane> &upright_planes);
 
-        /**
-         * Project center point to ground plane.
-         *
-         * @param cloud the cloud that the plane you are projecting to belongs to.
-         * @param pt point you want to project.
-         * @param plane the plane you want to project onto.
-         * @param delta the threshold to search for point on plane.
-         * @return projected point on the plane.
-         */
-        pcl::PointXYZ refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                       const pcl::PointXYZ &pt,
-                                       const equations::Plane &plane,
-                                       double delta = .00001
-        );
-
-
-        /**
-         * Find a point lying on the given plane in the cloud.
-         *
-         * @param cloud cloud.
-         * @param plane plane.
-         * @param delta error threshold for finding the point.
-         * @return point in the plane or point of 0,0,0.
-         */
-        pcl::PointXYZ find_point_in_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                          const equations::Plane &plane,
-                                          double delta = .1);
-
-
-        /**
-         * Rotate a point cloud about a line.
-         *
-         * @param cloud the cloud you want to rotate. Must be an unorganized cloud.
-         * @param pt a point on the axis you want to rotate about.
-         * @param line_direction direction vector for the line (normalized)
-         * @param theta angle in radians you want to rotate.
-         * @return the rotated cloud.
-         */
-        pcl::PointCloud<pcl::PointXYZ>
-        rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                const std::vector<float> &pt,
-                                const std::vector<float> &line_direction,
-                                float theta);
-
-        /**
-         * Rotate cloud about the z-axis.
-         *
-         * @param cloud cloud to rotate.
-         * @param theta rotation degree.
-         * @return
-         */
-        pcl::PointCloud<pcl::PointXYZ>
-        rotate_cloud_about_z_axis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                  float theta);
 
         /**
          * Transform (translate and rotate) given cloud to center it at world origin coordinate (0,0,0)
