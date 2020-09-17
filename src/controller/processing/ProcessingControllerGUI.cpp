@@ -21,6 +21,9 @@ void controller::ProcessingControllerGUI::run() {
 
 void controller::ProcessingControllerGUI::update(const IFormsPayload &payload) {
     const auto &p = dynamic_cast<const FormsPayload &>(payload);
+    if (p.name.empty()) {
+        return;
+    }
     file_handler->set_scan(p.name);
 }
 

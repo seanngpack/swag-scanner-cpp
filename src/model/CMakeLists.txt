@@ -1,5 +1,5 @@
 add_subdirectory(arduino)
-add_subdirectory(calibration)
 add_subdirectory(camera)
+add_subdirectory(cloud)
 add_subdirectory(equations)
 add_subdirectory(processing)
