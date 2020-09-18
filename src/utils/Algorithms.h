@@ -128,6 +128,15 @@ namespace algos {
      */
     Eigen::Matrix4f calc_transform_to_world_matrix(const pcl::PointXYZ &center,
                                                    const equations::Normal &ground_normal);
+
+
+    /**
+     * Given a vector of planes, average them.
+     *
+     * @param planes planes.
+     * @return average of the planes.
+     */
+    equations::Plane average_planes(const std::vector<equations::Plane> &planes);
 }
 
 #endif //SWAG_SCANNER_ALGORITHMS_H

@@ -78,17 +78,6 @@ namespace controller {
          */
         void scan();
 
-        /**
-         * Load the recently scanned calibration clouds and calculate the planes equations. Store them
-         * into class members.
-         */
-        void get_calibration_planes();
-
-        /**
-         * Perform center point calculations and then refine the calculation.
-         * Also update JSON file with the center point coordinate and axis of rotation direction.
-         */
-        void calculate();
 
     };
 }

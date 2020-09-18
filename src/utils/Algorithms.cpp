@@ -135,3 +135,18 @@ Eigen::Matrix4f algos::calc_transform_to_world_matrix(const pcl::PointXYZ &cente
     Eigen::Transform<float, 3, Eigen::Affine> transform = rotation * translation;
     return transform.matrix();
 }
+
+equations::Plane algos::average_planes(const std::vector<equations::Plane> &planes) {
+    equations::Plane avg;
+    for (auto &g: planes) {
+        avg.A += g.A;
+        avg.B += g.B;
+        avg.C += g.C;
+        avg.D += g.D;
+    }
+    avg.A /= planes.size();
+    avg.B /= planes.size();
+    avg.C /= planes.size();
+    avg.D /= planes.size();
+    return avg;
+}

@@ -1,5 +1,4 @@
 #include "CalibrationModel.h"
-#include "CalibrationFileHandler.h"
 #include "Normal.h"
 #include "Plane.h"
 #include "Equations.h"
@@ -12,10 +11,10 @@
 #include <pcl/features/normal_3d.h>
 
 model::CalibrationModel::CalibrationModel() :
-        file_handler(std::make_unique<file::CalibrationFileHandler>()) {}
+        file_handler() {}
 
 void model::CalibrationModel::set_calibration(const std::string &cal_name) {
-    file_handler->set_calibration(cal_name);
+    file_handler.set_calibration(cal_name);
 }
 
 void model::CalibrationModel::load_clouds() {
@@ -28,6 +27,36 @@ void model::CalibrationModel::load_clouds(const std::string &cal_name) {
 // TODO: overload load_clouds in calibrationFileHandler to accept a file name
 }
 
+
+pcl::PointXYZ model::CalibrationModel::calculate_center_pt() {
+    // use clouds to find ground and upright planes.
+    for (const auto &c : clouds) {
+        std::vector<equations::Plane> coeffs = get_calibration_planes_coefs(c);
+        ground_planes.emplace_back(coeffs[0]);
+        upright_planes.emplace_back(coeffs[1]);
+    }
+
+    // calculate rotation axis direction and use the calculated data so far to construct matrices
+    equations::Normal axis_dir = calculate_axis_dir(ground_planes);
+    Eigen::MatrixXd A = build_A_matrix(axis_dir, upright_planes);
+    Eigen::MatrixXd b = build_b_matrix(axis_dir, upright_planes);
+
+    // solve!!
+    Eigen::MatrixXd sol_mat = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
+    std::vector<double> sol_vec(sol_mat.data(), sol_mat.data() + sol_mat.rows() * sol_mat.cols());
+    return pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
+}
+
+pcl::PointXYZ model::CalibrationModel::refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                                        double delta) {
+    if (center_point.x == 0) {
+        throw std::runtime_error("Error, cannot refine because center point has not been calculated yet");
+    }
+    equations::Plane averaged_ground_plane = algos::average_planes(ground_planes);
+    pcl::PointXYZ plane_pt = algos::find_point_in_plane(cloud, averaged_ground_plane, delta);
+    center_point = algos::project_point_to_plane(center_point, plane_pt, averaged_ground_plane.get_normal());
+    return center_point;
+}
 
 
 
@@ -201,23 +230,4 @@ equations::Normal model::CalibrationModel::calculate_axis_dir(const std::vector<
     g_n.B /= ground_planes.size();
     g_n.C /= ground_planes.size();
     return g_n;
-}
-
-pcl::PointXYZ model::CalibrationModel::calculate_center_pt(const equations::Normal &axis_dir,
-                                                           const std::vector<equations::Plane> &upright_planes) {
-
-    Eigen::MatrixXd A = build_A_matrix(axis_dir, upright_planes);
-    Eigen::MatrixXd b = build_b_matrix(axis_dir, upright_planes);
-
-    Eigen::MatrixXd sol_mat = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
-    std::vector<double> sol_vec(sol_mat.data(), sol_mat.data() + sol_mat.rows() * sol_mat.cols());
-    return pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
-}
-
-pcl::PointXYZ model::CalibrationModel::refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                                        const pcl::PointXYZ &pt,
-                                                        const equations::Plane &plane,
-                                                        double delta) {
-    pcl::PointXYZ plane_pt = algos::find_point_in_plane(cloud, plane, delta);
-    return algos::project_point_to_plane(pt, plane_pt, plane.get_normal());
 }

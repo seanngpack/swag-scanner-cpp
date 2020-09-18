@@ -36,13 +36,6 @@ namespace model {
         Model();
 
         /**
-        * Create a new PointCloudXYZ using the instance variable depth_frame.
-        * @return a boost pointer to the new pointcloud.
-        */
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> create_point_cloud(const std::vector<uint16_t> &depth_frame,
-                                                                           const camera::intrinsics &intrinsics);
-
-        /**
          * Take in a pointcloud, calculate the normals, and return a normal cloud.
          * @return a normal cloud.
          */
@@ -59,27 +52,9 @@ namespace model {
                 const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                 const std::shared_ptr<pcl::PointCloud<pcl::Normal>> &normal_cloud);
 
-        /**
-         * Applies crop box filtering to remove outside points from cloud.
-         * @param cloud the cloud you want to crop.
-         * @param croppedCloud the cropped cloud.
-         * @return the cropped cloud.
-         */
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> crop_cloud(
-                const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                float minX, float maxX,
-                float minY, float maxY,
-                float minZ, float maxZ);
 
-        /**
-         * Downsample the given cloud using voxel grid.
-         * @param cloud cloud you want to downsample.
-         * @param leafSize size of leaf.
-         * @return the downsampled cloud.
-         */
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-        voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                          float leafSize = .01);
+
+
 
         /**
          * Remove outliers from cloud.
@@ -121,13 +96,7 @@ namespace model {
         remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn);
 
 
-        /**
-         * Given a vector of planes, average them.
-         *
-         * @param planes planes.
-         * @return average of the planes.
-         */
-        equations::Plane average_planes(const std::vector<equations::Plane> &planes);
+
 
 
 

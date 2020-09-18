@@ -18,13 +18,6 @@
 model::Model::Model() {}
 
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::create_point_cloud(const std::vector<uint16_t> &depth_frame,
-                                 const camera::intrinsics &intrinsics) {
-
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> point_cloud = depth::create_point_cloud(depth_frame, intrinsics);
-    return point_cloud;
-}
 
 std::shared_ptr<pcl::PointCloud<pcl::Normal>> model::Model::estimate_normal_cloud(
         const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
@@ -56,13 +49,7 @@ pcl::PointCloud<pcl::FPFHSignature33>::Ptr model::Model::compute_local_features(
     return features;
 }
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::crop_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                         float minX, float maxX,
-                         float minY, float maxY,
-                         float minZ, float maxZ) {
-    return filtering::crop_cloud(cloud, minX, maxX, minY, maxY, minZ, maxZ);
-}
+
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 model::Model::voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
@@ -82,11 +69,7 @@ model::Model::remove_nan(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &
     return filtering::remove_nan(cloud);
 }
 
-std::vector<equations::Plane>
-model::Model::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                           bool visual_flag) {
-    return segmentation::get_calibration_planes_coefs(cloud, visual_flag);
-}
+
 
 std::vector<float> model::Model::get_plane_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
     return segmentation::get_plane_coefs(cloud);
@@ -97,80 +80,12 @@ model::Model::remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
     return segmentation::remove_plane(cloudIn);
 }
 
-equations::Normal model::Model::calculate_axis_dir(const std::vector<equations::Plane> &ground_planes) {
-    equations::Normal g_n;
-    for (auto &g: ground_planes) {
-        g_n.A += g.A;
-        g_n.B += g.B;
-        g_n.C += g.C;
-    }
-    g_n.A /= ground_planes.size();
-    g_n.B /= ground_planes.size();
-    g_n.C /= ground_planes.size();
-    return g_n;
-}
 
-equations::Plane model::Model::average_planes(const std::vector<equations::Plane> &planes) {
-    equations::Plane avg;
-    for (auto &g: planes) {
-        avg.A += g.A;
-        avg.B += g.B;
-        avg.C += g.C;
-        avg.D += g.D;
-    }
-    avg.A /= planes.size();
-    avg.B /= planes.size();
-    avg.C /= planes.size();
-    avg.D /= planes.size();
-    return avg;
-}
 
-pcl::PointXYZ model::Model::calculate_center_pt(const equations::Normal &axis_dir,
-                                                const std::vector<equations::Plane> &upright_planes) {
 
-    Eigen::MatrixXd A = calibration::build_A_matrix(axis_dir, upright_planes);
-    Eigen::MatrixXd b = calibration::build_b_matrix(axis_dir, upright_planes);
 
-    pcl::PointXYZ center = calibration::calculate_center_pt(A, b);
 
-    return center;
-}
 
-pcl::PointXYZ model::Model::refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                             const pcl::PointXYZ &pt,
-                                             const equations::Plane &plane,
-                                             double delta) {
-    pcl::PointXYZ plane_pt = algos::find_point_in_plane(cloud, plane, delta);
-    return algos::project_point_to_plane(pt, plane_pt, plane.get_normal());
-}
-
-pcl::PointCloud<pcl::PointXYZ>
-model::Model::rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                      const std::vector<float> &pt,
-                                      const std::vector<float> &line_direction,
-                                      float theta) {
-    pcl::PointCloud<pcl::PointXYZ> transformed;
-
-    transformed.resize(cloud->size());
-
-    for (int i = 0; i < cloud->size(); i++) {
-        transformed.points[i] = algos::rotate_point_about_line(cloud->points[i],
-                                                               pt,
-                                                               line_direction,
-                                                               theta);
-    }
-    return transformed;
-}
-
-pcl::PointCloud<pcl::PointXYZ>
-model::Model::rotate_cloud_about_z_axis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud, float theta) {
-    pcl::PointCloud<pcl::PointXYZ> rotated;
-    Eigen::Affine3f transform(Eigen::Affine3f::Identity());
-    // note, rotating in negative direction
-    transform.rotate(Eigen::AngleAxisf(-(theta * M_PI) / 180, Eigen::Vector3f::UnitZ()));
-    pcl::transformPointCloud(*cloud, rotated, transform);
-    return rotated;
-}
 
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>

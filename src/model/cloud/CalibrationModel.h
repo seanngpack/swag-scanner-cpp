@@ -2,6 +2,8 @@
 #define SWAG_SCANNER_CALIBRATIONMODEL_H
 
 #include "IModel.h"
+#include "CalibrationFileHandler.h"
+#include <pcl/point_types.h>
 #include <Eigen/Dense>
 
 namespace file {
@@ -48,9 +50,24 @@ namespace model {
          */
         void load_clouds(const std::string &cal_name);
 
+        /**
+         * Calculate the center point of the turntable.
+         * Using vector of clouds, find the ground and upright planes, get the axis of rotation,
+         * build A and b matrices, and finally solve for the center point x using in Ax = b using SVD.
+         *
+         * @param axis_dir axis of rotation direction.
+         * @param upright_planes use the upright planes in calculation.
+         * @return center point of turntable from the camera origin in meters.
+         */
+        pcl::PointXYZ calculate_center_pt();
+
 
     private:
-        std::unique_ptr<file::CalibrationFileHandler> file_handler;
+        file::CalibrationFileHandler file_handler;
+        std::vector<equations::Plane> ground_planes;
+        std::vector<equations::Plane> upright_planes;
+        pcl::PointXYZ center_point;
+
 
         /**
          * Get the upright and ground plane equations.
@@ -92,32 +109,18 @@ namespace model {
          */
         equations::Normal calculate_axis_dir(const std::vector<equations::Plane> &ground_planes);
 
-        /**
-         * Calculate the center point of the turntable.
-         * Solve for x using in Ax = b using SVD.
-         *
-         * @param axis_dir axis of rotation direction.
-         * @param upright_planes use the upright planes in calculation.
-         * @return center point of turntable from the camera origin in meters.
-         */
-        pcl::PointXYZ calculate_center_pt(const equations::Normal &axis_dir,
-                                          const std::vector<equations::Plane> &upright_planes);
-
 
         /**
          * Project center point to ground plane.
          *
          * @param cloud the cloud that the plane you are projecting to belongs to.
          * @param pt point you want to project.
-         * @param plane the plane you want to project onto.
          * @param delta the threshold to search for point on plane.
          * @return projected point on the plane.
+         * @throws if the center point has not been calculated yet.
          */
         pcl::PointXYZ refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                       const pcl::PointXYZ &pt,
-                                       const equations::Plane &plane,
-                                       double delta = .00001
-        );
+                                       double delta = .00001);
 
     };
 

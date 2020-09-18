@@ -6,6 +6,12 @@
 #include <memory>
 #include <librealsense2/rs.hpp>
 
+namespace pcl {
+    class PointXYZ;
+
+    template<class pointT>
+    class PointCloud;
+}
 
 namespace camera {
 
@@ -44,6 +50,13 @@ namespace camera {
          * @return filtered depth frame vector.
          */
         virtual std::vector<uint16_t> get_depth_frame_processed() = 0;
+
+        /**
+         * Create new pointcloud given depth frame and intrinsics.
+         */
+        virtual std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+        create_point_cloud(const std::vector<uint16_t> &depth_frame,
+                           const camera::intrinsics &intrinsics) = 0;
 
         /**
          * Virtual destructor, must be defined or else it will never call the base class's destructor.

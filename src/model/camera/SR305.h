@@ -27,6 +27,10 @@ namespace camera {
          */
         std::vector<uint16_t> get_depth_frame_processed() override;
 
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+        create_point_cloud(const std::vector<uint16_t> &depth_frame,
+                           const camera::intrinsics &intrinsics) override;
+
         /**
          * Divide resolution by magnitude.
          * @param mag [2 - 8] default = 2
