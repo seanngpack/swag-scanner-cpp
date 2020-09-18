@@ -1,3 +1,5 @@
+add_subdirectory(equations)
+
 target_sources(swag_scanner_lib PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/CameraTypes.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/CameraTypes.h
