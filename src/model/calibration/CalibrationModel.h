@@ -41,7 +41,7 @@ namespace model {
         void set_calibration(const std::string &cal_name);
 
         /**
-         * Save cloud to the current calibration folder.
+         * Save calibration to the current calibration folder.
          */
         void save_cloud(const std::string &cloud_name);
 
@@ -61,7 +61,7 @@ namespace model {
         /**
          * Project center point to ground plane.
          *
-         * @param cloud the cloud that the plane you are projecting to belongs to.
+         * @param cloud the calibration that the plane you are projecting to belongs to.
          * @param pt point you want to project.
          * @param delta the threshold to search for point on plane.
          * @return projected point on the plane.
@@ -89,7 +89,7 @@ namespace model {
          * the epsilon angle deviation to robustly find the ground plane. Then it will calculate the normals
          * and find the perpendicular plane which should be the upright pane.
          *
-         * @param cloud calibration cloud.
+         * @param cloud calibration calibration.
          * @param visual_flag flag whether to visualize segmentation or not.
          * @return vector of upright and ground plane equations.
          */

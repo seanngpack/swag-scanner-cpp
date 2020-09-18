@@ -133,7 +133,7 @@ camera::SR305::~SR305() {
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 camera::SR305::create_point_cloud(const std::vector<uint16_t> &depth_frame, const camera::intrinsics &intrinsics) {
-    // cloud setup
+    // calibration setup
     auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     cloud->height = intrinsics.height;
     cloud->width = intrinsics.width;

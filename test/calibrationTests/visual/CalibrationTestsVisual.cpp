@@ -6,7 +6,7 @@
 #include "Visualizer.h"
 
 
-// This shows visually rotating a cloud about a line.
+// This shows visually rotating a calibration about a line.
 // This test is currently not working because the folder does not exist.
 TEST(CalibrationTestsVisual, VisualizePlaneCalibration) {
     std::string folder_path = "/Users/seanngpack/Programming Stuff/Projects/scanner_files/18";

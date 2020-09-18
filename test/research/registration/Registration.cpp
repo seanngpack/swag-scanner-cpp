@@ -106,7 +106,7 @@ TEST_F(RegistrationFixture, TestRegistration) {
 
         pcl::transformPointCloud(*temp, *result, global_trans);
 
-        // visualize result as red, and original target cloud [0] as white
+        // visualize result as red, and original target calibration [0] as white
         clouds = {world_clouds[0], result};
 //        viewer->simpleVis(clouds);
         // rotate global trans by angle * i
@@ -116,7 +116,7 @@ TEST_F(RegistrationFixture, TestRegistration) {
 
         *global_cloud_icp += *result;
 
-        // shgows the global cloud beind added
+        // shgows the global calibration beind added
 //        viewer->simpleVis(global_cloud_icp);
 
     }
@@ -157,7 +157,7 @@ TEST_F(RegistrationFixture, TestICPSwag) {
     pcl::removeNaNFromPointCloud(*cloud_src, *cloud_src, indices2);
     std::cout << "removed" << std::endl;
 
-    // somewhat align the cloud to within 4 deg of the target 0 cloud
+    // somewhat align the calibration to within 4 deg of the target 0 calibration
 //    *cloud_src = mod->rotate_cloud_about_z_axis(cloud_src, 16);
     *cloud_src = mod->rotate_cloud_about_z_axis(cloud_src, 20);
 

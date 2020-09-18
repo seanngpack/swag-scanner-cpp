@@ -29,7 +29,7 @@ std::shared_ptr<pcl::PointCloud<pcl::Normal>> model::Model::estimate_normal_clou
     ne.setRadiusSearch(0.03);
 
     ne.setInputCloud(cloud);
-    std::cout << "estimating normal cloud" << std::endl;
+    std::cout << "estimating normal calibration" << std::endl;
     std::cout << cloud->size() << std::endl;
     ne.compute(*normals);
     return normals;

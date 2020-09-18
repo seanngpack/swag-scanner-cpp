@@ -39,7 +39,7 @@ namespace controller {
 
         /**
          * Crop clouds based on box boundary defined in constants.h, remove all NaN points,
-         * @param cloud_type which cloud types do you want to crop.
+         * @param cloud_type which calibration types do you want to crop.
          * @param leaf size.
          */
         void filter(const CloudType::Type &cloud_type);
@@ -48,7 +48,7 @@ namespace controller {
         /**
          * Register all point clouds in given folder location.
          * @param folder_path the path to the scan folder.
-         * @param cloud_type the type of the cloud, tells which folder to look into for clouds.
+         * @param cloud_type the type of the calibration, tells which folder to look into for clouds.
          */
         void register_all_clouds(const CloudType::Type &cloud_type);
 

@@ -53,9 +53,9 @@ namespace algos {
                                          const equations::Normal &normal);
 
     /**
-     * Find a point lying on the given plane in the cloud.
+     * Find a point lying on the given plane in the calibration.
      *
-     * @param cloud cloud.
+     * @param cloud calibration.
      * @param plane plane.
      * @param delta error threshold for finding the point.
      * @return point in the plane or point of 0,0,0.
@@ -78,13 +78,13 @@ namespace algos {
 
 
     /**
-     * Rotate a point cloud about a line.
+     * Rotate a point calibration about a line.
      *
-     * @param cloud the cloud you want to rotate. Must be an unorganized cloud.
+     * @param cloud the calibration you want to rotate. Must be an unorganized calibration.
      * @param pt a point on the axis you want to rotate about.
      * @param line_direction direction vector for the line (normalized)
      * @param theta angle in radians you want to rotate.
-     * @return the rotated cloud.
+     * @return the rotated calibration.
      */
     pcl::PointCloud<pcl::PointXYZ>
     rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
@@ -110,9 +110,9 @@ namespace algos {
 
 
     /**
-      * Rotate cloud about the z-axis.
+      * Rotate calibration about the z-axis.
       *
-      * @param cloud cloud to rotate.
+      * @param cloud calibration to rotate.
       * @param theta rotation degree.
       * @return
       */

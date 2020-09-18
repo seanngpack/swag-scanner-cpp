@@ -64,9 +64,9 @@ TEST(SegmentationPhysicalTests, ViewAxis) {
 
     pcl::visualization::PCLVisualizer viewer("3D Viewer");
     viewer.setBackgroundColor(0, 0, 0);
-    viewer.addPointCloud<pcl::PointXYZ>(cloudIn, "sample cloud");
+    viewer.addPointCloud<pcl::PointXYZ>(cloudIn, "sample calibration");
     viewer.addLine(p1, p2, std::string("line"), 0);
-    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
+    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample calibration");
     viewer.addCoordinateSystem(1.0);
     viewer.initCameraParameters();
     while (!viewer.wasStopped()) {

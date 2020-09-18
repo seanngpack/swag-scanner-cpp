@@ -52,8 +52,8 @@ pcl::PointXYZ model::CalibrationModel::refine_center_point(double delta) {
         throw std::runtime_error("Error, cannot refine because center point has not been calculated yet");
     }
     equations::Plane averaged_ground_plane = algos::average_planes(ground_planes);
-    // just use the first cloud as the candidate to find a point from. in the future i can use
-    // more statistical methods to determine which is the best cloud to find the best cloud to extract from
+    // just use the first calibration as the candidate to find a point from. in the future i can use
+    // more statistical methods to determine which is the best calibration to find the best calibration to extract from
     pcl::PointXYZ plane_pt = algos::find_point_in_plane(clouds[0], averaged_ground_plane, delta);
     center_point = algos::project_point_to_plane(center_point, plane_pt, averaged_ground_plane.get_normal());
     return center_point;

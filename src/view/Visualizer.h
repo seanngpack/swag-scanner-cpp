@@ -25,7 +25,7 @@ namespace visual {
 
 
         /**
-         * Visualize pointclouds. first cloud is white, then successive clouds are red and lighter shades of red.
+         * Visualize pointclouds. first calibration is white, then successive clouds are red and lighter shades of red.
          * @param clouds vector of pointcloud you want to visualize
          */
         static void simpleVis(const std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &clouds);
@@ -33,8 +33,8 @@ namespace visual {
         static void simpleVisColor(const std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &clouds);
 
         /**
-         * Visualize a cloud and a point.
-         * @param cloud the cloud.
+         * Visualize a calibration and a point.
+         * @param cloud the calibration.
          * @param pt the point.
          */
         static void ptVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud, const pcl::PointXYZ &pt);
@@ -58,15 +58,15 @@ namespace visual {
                             const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud2,
                             const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud3,
                             const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud4,
-                            const std::string &cloud1_desc = "cloud 1",
-                            const std::string &cloud2_desc = "cloud 2",
-                            const std::string &cloud3_desc = "cloud 3",
-                            const std::string &cloud4_desc = "cloud 4");
+                            const std::string &cloud1_desc = "calibration 1",
+                            const std::string &cloud2_desc = "calibration 2",
+                            const std::string &cloud3_desc = "calibration 3",
+                            const std::string &cloud4_desc = "calibration 4");
 
         /**
          * Visualize normal vectors.
-         * @param cloud base cloud.
-         * @param normal normal cloud for base cloud.
+         * @param cloud base calibration.
+         * @param normal normal calibration for base calibration.
          */
         static void normalsVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                         const std::shared_ptr<pcl::PointCloud<pcl::Normal>> &normal);

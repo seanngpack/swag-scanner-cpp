@@ -1,5 +1,5 @@
 #include "ScanController.h"
-#include "Model.h"
+#include "ScanModel.h"
 #include "Arduino.h"
 #include "SR305.h"
 #include "Visualizer.h"
@@ -11,10 +11,10 @@ namespace fs = std::filesystem;
 
 controller::ScanController::ScanController(std::shared_ptr<camera::ICamera> camera,
                                            std::shared_ptr<arduino::Arduino> arduino,
-                                           std::shared_ptr<model::Model> model,
-                                           std::shared_ptr<file::ScanFileHandler> file_handler) :
-        camera(std::move(camera)), arduino(std::move(arduino)), model(std::move(model)),
-        file_handler(std::move(file_handler)) {}
+                                           std::unique_ptr<model::ScanModel> model) :
+        camera(std::move(camera)),
+        arduino(std::move(arduino)),
+        model(std::move(model)) {}
 
 void controller::ScanController::run() {
     scan();
@@ -28,9 +28,8 @@ void controller::ScanController::set_num_rot(int num_rot) {
     num_rot = num_rot;
 }
 
-
 void controller::ScanController::scan() {
-    update_json_time();
+    model->update_info_json(deg, num_rot);
     camera->scan();
     const camera::intrinsics intrin = camera->get_intrinsics();
     const camera::intrinsics intrin_filt = camera->get_intrinsics_processed();
@@ -40,28 +39,18 @@ void controller::ScanController::scan() {
         camera->scan();
         std::vector<uint16_t> depth_frame_raw = camera->get_depth_frame();
         std::vector<uint16_t> depth_frame_filt = camera->get_depth_frame_processed();
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_raw = model->create_point_cloud(depth_frame_raw, intrin);
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filt = model->create_point_cloud(depth_frame_filt,
-                                                                                               intrin_filt);
-        file_handler->save_cloud(cloud_raw, name, CloudType::Type::RAW);
-        file_handler->save_cloud(cloud_filt, name, CloudType::Type::FILTERED);
+        // TODO: later remove this filter folder nonsense, it makes the pipeline really confusing
+        // test the pcl bilateral filter first then commit to filtering.
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_raw = camera->create_point_cloud(depth_frame_raw, intrin);
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filt = camera->create_point_cloud(depth_frame_filt,
+                                                                                                intrin_filt);
+        model->add_cloud(cloud_filt, name);
+        model->save_cloud(name, CloudType::Type::RAW);
+        model->save_cloud(name, CloudType::Type::FILTERED);
         arduino->rotate_by(deg);
     }
 }
 
-void controller::ScanController::update_json_time() {
-    // get current time
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "%m-%d-%Y %H:%M:%S");
-    auto str = oss.str();
-
-    fs::path latest_cal_path = file_handler->find_latest_calibration();
-    std::string info_json_path = latest_cal_path.string()
-                                 + "/" + latest_cal_path.filename().string() + ".json";;
-    file_handler->update_info_json(str, deg, info_json_path);
-}
 
 
 

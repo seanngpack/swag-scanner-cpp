@@ -160,6 +160,7 @@ void file::ScanFileHandler::create_sub_folders() {
         json info_json = {
                 {"date",        "null"},
                 {"angle",       0},
+                {"rotations",   0},
                 {"calibration", find_latest_calibration().string()}
         };
         info << std::setw(4) << info_json << std::endl;

@@ -79,7 +79,7 @@ TEST_F(AlgosFixture, TestDeprojectDistortion) {
 }
 
 /**
- * Given center of bed point, axis of rotation, transform the cloud into the world
+ * Given center of bed point, axis of rotation, transform the calibration into the world
  * coordinate frame!!!
  * Then visualize it.
  */

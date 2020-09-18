@@ -23,8 +23,8 @@ void visual::Visualizer::simpleVis(const std::shared_ptr<pcl::PointCloud<pcl::Po
 
     pcl::visualization::PCLVisualizer viewer("3D viewer");
     viewer.setBackgroundColor(0, 0, 0);
-    viewer.addPointCloud<pcl::PointXYZ>(cloud, "sample cloud");
-    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
+    viewer.addPointCloud<pcl::PointXYZ>(cloud, "sample calibration");
+    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample calibration");
     viewer.addCoordinateSystem(0.1);
     viewer.initCameraParameters();
     viewer.setCameraPosition(0, 0, .3, 0, 0, 0, 0, 3, 0);
@@ -49,7 +49,7 @@ void visual::Visualizer::simpleVis(const std::vector<std::shared_ptr<pcl::PointC
         r -= delta; // doesn't scale nicely but that's okay for now'
     }
 
-//    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
+//    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample calibration");
     viewer.setBackgroundColor(0, 0, 0);
     viewer.addCoordinateSystem(0.1);
     viewer.initCameraParameters();
@@ -76,7 +76,7 @@ void visual::Visualizer::simpleVisColor(const std::vector<std::shared_ptr<pcl::P
         b -= delta; // doesn't scale nicely but that's okay for now'
     }
 
-//    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
+//    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample calibration");
     viewer.setBackgroundColor(255, 255, 255);
     viewer.addCoordinateSystem(1.0);
     viewer.initCameraParameters();
@@ -97,7 +97,7 @@ void visual::Visualizer::ptVis(const std::shared_ptr<pcl::PointCloud<pcl::PointX
 
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> color_handler(point, 255, 0, 0);
 
-    viewer.addPointCloud<pcl::PointXYZ>(cloud, "cloud");
+    viewer.addPointCloud<pcl::PointXYZ>(cloud, "calibration");
     viewer.addPointCloud<pcl::PointXYZ>(point, color_handler, "point");
     viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "point");
     while (!viewer.wasStopped()) {
@@ -114,14 +114,14 @@ void visual::Visualizer::compareVis(const std::shared_ptr<pcl::PointCloud<pcl::P
     int v1(0);
     viewer.createViewPort(0.0, 0.0, 0.5, 1.0, v1);
     viewer.setBackgroundColor(0, 0, 0, v1);
-    viewer.addText("unfiltered cloud", 10, 10, "v1 text", v1);
+    viewer.addText("unfiltered calibration", 10, 10, "v1 text", v1);
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> handler1(cloud1, 255, 255, 255);
     viewer.addPointCloud<pcl::PointXYZ>(cloud1, handler1, "sample cloud1", v1);
 
     int v2(0);
     viewer.createViewPort(0.5, 0.0, 1.0, 1.0, v2);
     viewer.setBackgroundColor(0.3, 0.3, 0.3, v2);
-    viewer.addText("filtered cloud with decimation, spatial & termporal", 10, 10, "v2 text", v2);
+    viewer.addText("filtered calibration with decimation, spatial & termporal", 10, 10, "v2 text", v2);
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> handler2(cloud2, 255, 255, 255);
     viewer.addPointCloud<pcl::PointXYZ>(cloud2, handler2, "sample cloud2", v2);
 
@@ -149,28 +149,28 @@ void visual::Visualizer::compareVisFour(const std::shared_ptr<pcl::PointCloud<pc
     int v1(0);
     viewer.createViewPort(0.0, 0.5, 0.5, 1., v1);
     viewer.setBackgroundColor(0, 0, 0, v1);
-    viewer.addText(cloud1_desc, 10, 10, "cloud 1", v1);
+    viewer.addText(cloud1_desc, 10, 10, "calibration 1", v1);
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> handler1(cloud1, 255, 255, 255);
     viewer.addPointCloud<pcl::PointXYZ>(cloud1, handler1, "sample cloud1", v1);
 
     int v2(1);
     viewer.createViewPort(0.5, 0.5, 1.0, 1.0, v2);
     viewer.setBackgroundColor(0.3, 0.3, 0.3, v2);
-    viewer.addText(cloud2_desc, 10, 10, "cloud 2", v2);
+    viewer.addText(cloud2_desc, 10, 10, "calibration 2", v2);
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> handler2(cloud2, 255, 255, 255);
     viewer.addPointCloud<pcl::PointXYZ>(cloud2, handler2, "sample cloud2", v2);
 
     int v3(2);
     viewer.createViewPort(0, 0.0, .5, 0.5, v3);
     viewer.setBackgroundColor(0.3, 0.3, 0.3, v3);
-    viewer.addText(cloud3_desc, 10, 10, "cloud 3", v3);
+    viewer.addText(cloud3_desc, 10, 10, "calibration 3", v3);
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> handler3(cloud3, 255, 255, 255);
     viewer.addPointCloud<pcl::PointXYZ>(cloud3, handler3, "sample cloud3", v3);
 
     int v4(3);
     viewer.createViewPort(0.5, 0.0, 1.0, 0.5, v4);
     viewer.setBackgroundColor(0.3, 0.3, 0.3, v4);
-    viewer.addText(cloud4_desc, 10, 10, "cloud 4", v4);
+    viewer.addText(cloud4_desc, 10, 10, "calibration 4", v4);
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> handler4(cloud4, 255, 255, 255);
     viewer.addPointCloud<pcl::PointXYZ>(cloud4, handler4, "sample cloud4", v4);
 
@@ -192,8 +192,8 @@ void visual::Visualizer::normalsVis(const std::shared_ptr<pcl::PointCloud<pcl::P
     pcl::visualization::PCLVisualizer viewer("3D viewer");
     viewer.setBackgroundColor(0, 0, 0);
     pcl::visualization::PointCloudGeometryHandlerXYZ<pcl::PointXYZ> rgb(cloud);
-    viewer.addPointCloud<pcl::PointXYZ>(cloud, rgb, "sample cloud");
-    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "sample cloud");
+    viewer.addPointCloud<pcl::PointXYZ>(cloud, rgb, "sample calibration");
+    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "sample calibration");
     viewer.addPointCloudNormals<pcl::PointXYZ, pcl::Normal>(cloud, normal, 10, 0.05, "normals");
     viewer.addCoordinateSystem(1.0);
     viewer.initCameraParameters();

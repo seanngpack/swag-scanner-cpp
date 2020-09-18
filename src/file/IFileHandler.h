@@ -60,9 +60,9 @@ namespace file {
         std::filesystem::path find_latest_calibration();
 
         /**
-         * Save the given cloud to the current output_path.
-         * @param cloud the cloud you want to save.
-         * @para cloud_type enum for the type of cloud you are saving. Affects the subfolder path.
+         * Save the given calibration to the current output_path.
+         * @param cloud the calibration you want to save.
+         * @para cloud_type enum for the type of calibration you are saving. Affects the subfolder path.
          */
         virtual void save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                 const std::string &cloud_name,
@@ -71,9 +71,9 @@ namespace file {
         /*
          * Load a pointcloud from the scan folder given the name and type.
          *
-         * @param cloud_name name of the cloud.
-         * @param cloud_type type of the cloud.
-         * @return cloud.
+         * @param cloud_name name of the calibration.
+         * @param cloud_type type of the calibration.
+         * @return calibration.
          *
          * Example: load_cloud("12", CloudType::RAW)
          */
@@ -96,14 +96,14 @@ namespace file {
 
 
         /**
-         * Loads all clouds in the current scan folder into a vector given the cloud type.
+         * Loads all clouds in the current scan folder into a vector given the calibration type.
          * Only works with files that have numbers in the file name.
          *
          * @Edge case when passed CALIBRATION as the type, it will search through the
          * /calibration folder in the root directory and load the latest calibration.
          *
          * @param cloud_type determines which folder to search for.
-         * @return vector of loaded cloud pointers.
+         * @return vector of loaded calibration pointers.
          *
          */
         virtual std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>

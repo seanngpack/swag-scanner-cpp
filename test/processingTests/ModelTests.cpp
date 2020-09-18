@@ -27,7 +27,7 @@ protected:
             depth_frame.push_back(i);
         }
 
-        // set up point cloud
+        // set up point calibration
         auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
         cloud->height = 10;
         cloud->width = 10;
@@ -57,7 +57,7 @@ protected:
 
 
 /**
- * Test creating a point cloud.
+ * Test creating a point calibration.
  */
 TEST_F(ModelFixture, TestCreatePointCloud) {
 
@@ -68,7 +68,7 @@ TEST_F(ModelFixture, TestCreatePointCloud) {
 }
 
 /**
- * Test creating the normals cloud.
+ * Test creating the normals calibration.
  */
 TEST_F(ModelFixture, TestEstimateNormals) {
     auto test = mod->create_point_cloud(depth_frame, *intrinsics_distortion);

@@ -36,17 +36,17 @@ namespace model {
         Model();
 
         /**
-         * Take in a pointcloud, calculate the normals, and return a normal cloud.
-         * @return a normal cloud.
+         * Take in a pointcloud, calculate the normals, and return a normal calibration.
+         * @return a normal calibration.
          */
         std::shared_ptr<pcl::PointCloud<pcl::Normal>>
         estimate_normal_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &point_cloud);
 
         /**
-         * Given a cloud and its normal, calculate the features.
-         * @param cloud the cloud you want to find features for.
-         * @param normal_cloud normals of cloud.
-         * @return the features of the given normal cloud.
+         * Given a calibration and its normal, calculate the features.
+         * @param cloud the calibration you want to find features for.
+         * @param normal_cloud normals of calibration.
+         * @return the features of the given normal calibration.
          */
         pcl::PointCloud<pcl::FPFHSignature33>::Ptr compute_local_features(
                 const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
@@ -61,10 +61,10 @@ namespace model {
 
 
         /**
-         * Transform (translate and rotate) given cloud to center it at world origin coordinate (0,0,0)
+         * Transform (translate and rotate) given calibration to center it at world origin coordinate (0,0,0)
          * Z axis pointer up.
          *
-         * @param cloud cloud to transform.
+         * @param cloud calibration to transform.
          * @param center the center coordinate of turntable.
          * @param rotation_axis direction vector of ground.
          * @return
@@ -75,11 +75,11 @@ namespace model {
                                  const equations::Normal &rotation_axis);
 
         /**
-         * Use ICP to register an input and target cloud.
-         * @param cloud_in input cloud.
-         * @param cloud_target target cloud.
-         * @param transformed_cloud the final transformed cloud.
-         * @returns a transformation matrix from the source to target cloud.
+         * Use ICP to register an input and target calibration.
+         * @param cloud_in input calibration.
+         * @param cloud_target target calibration.
+         * @param transformed_cloud the final transformed calibration.
+         * @returns a transformation matrix from the source to target calibration.
          */
         Eigen::Matrix4f icp_register_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_in,
                                                  const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_target,
@@ -89,8 +89,8 @@ namespace model {
         /**
          * Find initial alignment of two clouds using FPFH.
          * @param cloudIn pointcloud.
-         * @param cloudTarget target cloud.
-         * @param cloudAligned the aligned cloud.
+         * @param cloudTarget target calibration.
+         * @param cloudAligned the aligned calibration.
          */
         void sac_align_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn,
                                    const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudTarget,
