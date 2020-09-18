@@ -33,8 +33,6 @@ std::shared_ptr<controller::IController> controller::ControllerFactory::get_cont
         return cache->get_calibration_controller(vm);
     } else if (vm.count("process")) {
         return cache->get_process_controller(vm);
-    } else if (vm.count("filter_test")) {
-        return cache->get_filter_testing_controller(vm);
     } else if (vm.count("move")) {
         return cache->get_move_controller(vm);
     } else if (vm.count("set_home")) {

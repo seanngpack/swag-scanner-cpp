@@ -13,7 +13,6 @@
 #include "ScanControllerGUI.h"
 #include "MoveController.h"
 #include "MoveControllerGUI.h"
-#include "FilterTestingController.h"
 #include "CalibrationControllerGUI.h"
 #include "HomeController.h"
 #include "SwagGUI.h"
@@ -237,25 +236,6 @@ std::shared_ptr<controller::ProcessingControllerGUI> controller::ControllerFacto
     return process_controller_gui;
 }
 
-std::shared_ptr<controller::FilterTestingController>
-controller::ControllerFactoryCache::get_filter_testing_controller(const boost::program_options::variables_map &vm) {
-    if (vm.count("d_mag")) {
-        camera->set_decimation_magnitude(vm["d_mag"].as<int>());
-    }
-    if (vm.count("s_mag")) {
-        camera->set_spatial_filter_magnitude(vm["s_mag"].as<int>());
-    }
-    if (vm.count("s_alpha")) {
-        camera->set_spatial_smooth_alpha(vm["s_alpha"].as<float>());
-    }
-    if (vm.count("s_delta")) {
-        camera->set_spatial_smooth_delta(vm["s_delta"].as<int>());
-    }
-    return std::make_unique<controller::FilterTestingController>(get_camera(),
-                                                                 get_model(),
-                                                                 get_scan_file_handler(),
-                                                                 std::make_shared<visual::Visualizer>());
-}
 
 std::shared_ptr<controller::MoveController>
 controller::ControllerFactoryCache::get_move_controller(const boost::program_options::variables_map &vm) {

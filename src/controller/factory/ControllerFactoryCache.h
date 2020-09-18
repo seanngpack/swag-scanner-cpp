@@ -111,9 +111,6 @@ namespace controller {
 
         std::shared_ptr<controller::ProcessingControllerGUI> get_process_controller_gui();
 
-        std::shared_ptr<controller::FilterTestingController>
-        get_filter_testing_controller(const boost::program_options::variables_map &vm);
-
         std::shared_ptr<controller::MoveController>
         get_move_controller(const boost::program_options::variables_map &vm);
 
