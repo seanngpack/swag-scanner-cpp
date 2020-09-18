@@ -3,6 +3,7 @@
 
 #include "IModel.h"
 #include "CalibrationFileHandler.h"
+#include "Normal.h"
 #include <pcl/point_types.h>
 #include <Eigen/Dense>
 
@@ -39,6 +40,11 @@ namespace model {
         void set_calibration(const std::string &cal_name);
 
         /**
+         * Save cloud to calibration folder.
+         */
+        void save_cloud(const std::string &cloud_name);
+
+        /**
          * Load clouds from latest calibration.
          */
         void load_clouds();
@@ -59,7 +65,25 @@ namespace model {
          * @param upright_planes use the upright planes in calculation.
          * @return center point of turntable from the camera origin in meters.
          */
-        pcl::PointXYZ calculate_center_pt();
+        pcl::PointXYZ calculate_center_point();
+
+
+        /**
+         * Project center point to ground plane.
+         *
+         * @param cloud the cloud that the plane you are projecting to belongs to.
+         * @param pt point you want to project.
+         * @param delta the threshold to search for point on plane.
+         * @return projected point on the plane.
+         * @throws if the center point has not been calculated yet.
+         */
+        pcl::PointXYZ refine_center_point(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                          double delta = .00001);
+
+        /**
+         * Update calibration json with axis of rotation and center point info.
+         */
+        void update_calibration_json();
 
 
     private:
@@ -67,6 +91,7 @@ namespace model {
         std::vector<equations::Plane> ground_planes;
         std::vector<equations::Plane> upright_planes;
         pcl::PointXYZ center_point;
+        equations::Normal axis_of_rotation;
 
 
         /**
@@ -109,18 +134,6 @@ namespace model {
          */
         equations::Normal calculate_axis_dir(const std::vector<equations::Plane> &ground_planes);
 
-
-        /**
-         * Project center point to ground plane.
-         *
-         * @param cloud the cloud that the plane you are projecting to belongs to.
-         * @param pt point you want to project.
-         * @param delta the threshold to search for point on plane.
-         * @return projected point on the plane.
-         * @throws if the center point has not been calculated yet.
-         */
-        pcl::PointXYZ refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                       double delta = .00001);
 
     };
 

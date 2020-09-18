@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <map>
 #include <pcl/filters/crop_box.h>
 #include <pcl/filters/voxel_grid.h>
 
@@ -20,6 +21,17 @@ namespace model {
     class IModel {
     public:
         IModel() = default;
+
+        /**
+         * Add clouds to vector and keep a mapping of its position with a mpa of its name and index.
+         *
+         * @param cloud cloud to add.
+         * @param cloud_name name of cloud.
+         */
+        inline void add_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud, const std::string &cloud_name) {
+            clouds.push_back(cloud);
+            clouds_map.insert({cloud_name, clouds.size() - 1});
+        }
 
         /**
          * Applies crop box filtering to remove outside points from cloud in place.
@@ -59,10 +71,9 @@ namespace model {
         /**
          * Clear stored pointclouds from memory.
          */
-        inline
-
-        void clear_clouds() {
+        inline void clear_clouds() {
             clouds.clear();
+            clouds_map.clear();
         }
 
         virtual ~
@@ -71,6 +82,7 @@ namespace model {
 
     protected:
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
+        std::map<std::string, int> clouds_map;
 
     };
 }

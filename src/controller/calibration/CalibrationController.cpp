@@ -40,10 +40,10 @@ void controller::CalibrationController::scan() {
         // todo: move crop and voxel to IModel.h, i guess all models should access to these methods lol
         // crop and voxel should be in-place
         // parameter should be cloud name
-        cloud = model->crop_cloud(cloud, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
-        cloud = model->voxel_grid_filter(cloud, .001);
+        model->crop_cloud(cloud, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
+        model->voxel_grid_filter(cloud, .001);
         model->add_cloud(cloud, cloud_name);
-        model->save_cloud(cloud, cloud_name);
+        model->save_cloud(cloud_name);
 
         arduino->rotate_by(deg);
     }

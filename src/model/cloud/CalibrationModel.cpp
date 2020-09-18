@@ -17,6 +17,11 @@ void model::CalibrationModel::set_calibration(const std::string &cal_name) {
     file_handler.set_calibration(cal_name);
 }
 
+void model::CalibrationModel::save_cloud(const std::string &cloud_name) {
+    auto cloud = clouds[clouds_map["cloud_name"]];
+    file_handler.save_cloud(cloud, cloud_name);
+}
+
 void model::CalibrationModel::load_clouds() {
 //    clouds = file_handler->load_clouds();
 // TODO: modify load_clouds in calibrationFileHandler to have a default laod_clouds
@@ -28,7 +33,7 @@ void model::CalibrationModel::load_clouds(const std::string &cal_name) {
 }
 
 
-pcl::PointXYZ model::CalibrationModel::calculate_center_pt() {
+pcl::PointXYZ model::CalibrationModel::calculate_center_point() {
     // use clouds to find ground and upright planes.
     for (const auto &c : clouds) {
         std::vector<equations::Plane> coeffs = get_calibration_planes_coefs(c);
@@ -37,9 +42,9 @@ pcl::PointXYZ model::CalibrationModel::calculate_center_pt() {
     }
 
     // calculate rotation axis direction and use the calculated data so far to construct matrices
-    equations::Normal axis_dir = calculate_axis_dir(ground_planes);
-    Eigen::MatrixXd A = build_A_matrix(axis_dir, upright_planes);
-    Eigen::MatrixXd b = build_b_matrix(axis_dir, upright_planes);
+    axis_of_rotation = calculate_axis_dir(ground_planes);
+    Eigen::MatrixXd A = build_A_matrix(axis_of_rotation, upright_planes);
+    Eigen::MatrixXd b = build_b_matrix(axis_of_rotation, upright_planes);
 
     // solve!!
     Eigen::MatrixXd sol_mat = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
@@ -47,8 +52,8 @@ pcl::PointXYZ model::CalibrationModel::calculate_center_pt() {
     return pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
 }
 
-pcl::PointXYZ model::CalibrationModel::refine_center_pt(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                                        double delta) {
+pcl::PointXYZ model::CalibrationModel::refine_center_point(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                                           double delta) {
     if (center_point.x == 0) {
         throw std::runtime_error("Error, cannot refine because center point has not been calculated yet");
     }
@@ -59,7 +64,9 @@ pcl::PointXYZ model::CalibrationModel::refine_center_pt(const std::shared_ptr<pc
 }
 
 
-
+void model::CalibrationModel::update_calibration_json() {
+    file_handler.update_calibration_json(axis_of_rotation, center_point);
+}
 
 
 // --------------------------------------------------------------------------------
@@ -231,3 +238,4 @@ equations::Normal model::CalibrationModel::calculate_axis_dir(const std::vector<
     g_n.C /= ground_planes.size();
     return g_n;
 }
+
