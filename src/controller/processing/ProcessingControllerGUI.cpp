@@ -1,14 +1,12 @@
-#include "ProcessingController.h"
 #include "ProcessingControllerGUI.h"
+#include "ProcessingController.h"
+#include "ProcessingModel.h"
+#include "FormsPayload.h"
 
 
-controller::ProcessingControllerGUI::ProcessingControllerGUI(std::shared_ptr<model::Model> model,
-                                                             std::shared_ptr<visual::Visualizer> viewer,
-                                                             std::shared_ptr<file::ScanFileHandler> file_handler,
+controller::ProcessingControllerGUI::ProcessingControllerGUI(std::shared_ptr<model::ProcessingModel> model,
                                                              std::shared_ptr<SwagGUI> gui) :
-        ProcessingController(std::move(model),
-                             std::move(viewer),
-                             std::move(file_handler)),
+        ProcessingController(std::move(model)),
         IControllerGUI(std::move(gui)) {}
 
 void controller::ProcessingControllerGUI::run() {
@@ -18,6 +16,7 @@ void controller::ProcessingControllerGUI::run() {
 }
 
 void controller::ProcessingControllerGUI::update(const IFormsPayload &payload) {
-    // does nothing yet, refactor the original controller to have setters first.
+    const auto &p = dynamic_cast<const FormsPayload &>(payload);
+    model->set_scan(p.name);
 }
 

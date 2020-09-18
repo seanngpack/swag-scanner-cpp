@@ -41,6 +41,9 @@ void file::ScanFileHandler::auto_create_new_scan() {
 }
 
 void file::ScanFileHandler::set_scan(const std::string &scan_name) {
+    if (scan_name.empty()) {
+        return;
+    }
     this->scan_name = scan_name;
     scan_folder_path = swag_scanner_path / "scans" / scan_name;
     if (!is_directory(scan_folder_path)) {
@@ -71,10 +74,11 @@ std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::ScanFileHandler::load_clou
 }
 
 
-std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> file::ScanFileHandler::load_clouds(
-        const CloudType::Type &cloud_type) {
+std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>
+file::ScanFileHandler::load_clouds(const CloudType::Type &cloud_type) {
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> cloud_vector;
     std::vector<fs::path> cloud_paths;
+
     fs::path load_path = scan_folder_path / CloudType::String(cloud_type);
 
     // load paths into cloud_paths vector
@@ -131,7 +135,6 @@ json file::ScanFileHandler::get_calibration_json() {
     std::ifstream calibration(calibration_path);
     json calibration_json;
     calibration >> calibration_json;
-    std::cout << "got json" << std::endl;
     return calibration_json;
 }
 
@@ -160,6 +163,7 @@ void file::ScanFileHandler::create_sub_folders() {
         json info_json = {
                 {"date",        "null"},
                 {"angle",       0},
+                {"rotations",   0},
                 {"calibration", find_latest_calibration().string()}
         };
         info << std::setw(4) << info_json << std::endl;

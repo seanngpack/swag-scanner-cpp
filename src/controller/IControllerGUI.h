@@ -25,13 +25,13 @@ namespace controller {
         explicit IControllerGUI(std::shared_ptr<SwagGUI> gui);
 
         virtual ~IControllerGUI() {
-         std::cout << "IControllerGUI destructor" << std::endl;
+            std::cout << "IControllerGUI destructor" << std::endl;
         }
 
 
         /**
          * This method connects gui to this controller. Must run this method whenever
-         * swapping controllers for GUI. Call this method in the factory class.
+         * swapping controllers for GUI. Call this method in the manager class.
          *
          */
 //        void setup_gui();
@@ -43,10 +43,6 @@ namespace controller {
          */
         virtual void update(const IFormsPayload &payload) = 0;
 
-
-        std::vector<std::string> get_all_scans();
-
-        std::vector<std::string> get_all_calibrations();
 
     signals:
 

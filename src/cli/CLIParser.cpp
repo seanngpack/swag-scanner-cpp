@@ -12,7 +12,6 @@ cli::CLIParser::CLIParser() {
             ("scan", "scan object")
             ("calibrate", "calibrate scanner")
             ("process", "process scanned data")
-            ("filter_test", "test filtering")
             ("move", "move calibration bed")
             ("set_home", "move calibration bed")
 

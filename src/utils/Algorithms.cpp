@@ -2,6 +2,7 @@
 #include "Normal.h"
 #include "Plane.h"
 #include "CameraTypes.h"
+#include <pcl/common/transforms.h>
 
 pcl::PointXYZ algos::deproject_pixel_to_point(float x_pixel,
                                               float y_pixel,
@@ -52,7 +53,6 @@ bool algos::check_point_in_plane(const pcl::PointXYZ &pt,
     return false;
 }
 
-
 pcl::PointXYZ algos::find_point_in_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                          const equations::Plane &plane,
                                          double delta) {
@@ -65,6 +65,24 @@ pcl::PointXYZ algos::find_point_in_plane(const std::shared_ptr<pcl::PointCloud<p
     return pcl::PointXYZ(0, 0, 0);
 }
 
+
+pcl::PointCloud<pcl::PointXYZ>
+algos::rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                               const std::vector<float> &pt,
+                               const std::vector<float> &line_direction,
+                               float theta) {
+    pcl::PointCloud<pcl::PointXYZ> transformed;
+
+    transformed.resize(cloud->size());
+
+    for (int i = 0; i < cloud->size(); i++) {
+        transformed.points[i] = rotate_point_about_line(cloud->points[i],
+                                                        pt,
+                                                        line_direction,
+                                                        theta);
+    }
+    return transformed;
+}
 
 pcl::PointXYZ algos::rotate_point_about_line(const pcl::PointXYZ &point,
                                              const std::vector<float> &line_point,
@@ -91,6 +109,16 @@ pcl::PointXYZ algos::rotate_point_about_line(const pcl::PointXYZ &point,
     return p;
 }
 
+pcl::PointCloud<pcl::PointXYZ>
+algos::rotate_cloud_about_z_axis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud, float theta) {
+    pcl::PointCloud<pcl::PointXYZ> rotated;
+    Eigen::Affine3f transform(Eigen::Affine3f::Identity());
+    // note, rotating in negative direction
+    transform.rotate(Eigen::AngleAxisf(-(theta * M_PI) / 180, Eigen::Vector3f::UnitZ()));
+    pcl::transformPointCloud(*cloud, rotated, transform);
+    return rotated;
+}
+
 Eigen::Matrix4f algos::calc_transform_to_world_matrix(const pcl::PointXYZ &center,
                                                       const equations::Normal &ground_normal) {
     Eigen::Vector3f translation_vect(center.getVector3fMap());
@@ -105,4 +133,27 @@ Eigen::Matrix4f algos::calc_transform_to_world_matrix(const pcl::PointXYZ &cente
     Eigen::AngleAxis<float> rotation(angle, Eigen::Vector3f(1, 0, 0));
     Eigen::Transform<float, 3, Eigen::Affine> transform = rotation * translation;
     return transform.matrix();
+}
+
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+algos::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                const pcl::PointXYZ &center,
+                                const equations::Normal &ground_normal) {
+    Eigen::Matrix4f transform = calc_transform_to_world_matrix(center, ground_normal);
+    pcl::transformPointCloud(*cloud, *cloud, transform);
+}
+
+equations::Plane algos::average_planes(const std::vector<equations::Plane> &planes) {
+    equations::Plane avg;
+    for (auto &g: planes) {
+        avg.A += g.A;
+        avg.B += g.B;
+        avg.C += g.C;
+        avg.D += g.D;
+    }
+    avg.A /= planes.size();
+    avg.B /= planes.size();
+    avg.C /= planes.size();
+    avg.D /= planes.size();
+    return avg;
 }

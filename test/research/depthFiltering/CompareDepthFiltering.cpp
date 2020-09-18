@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <iostream>
 #include "Visualizer.h"
-#include "Model.h"
+#include "ScanModel.h"
 #include "Constants.h"
 
 namespace fs = std::filesystem;
@@ -14,11 +14,11 @@ namespace fs = std::filesystem;
 class CompareDepthFilteringFixture : public ::testing::Test {
 
 protected:
-    model::Model *mod;
+    model::ScanModel *mod;
     visual::Visualizer *viewer;
 
     virtual void SetUp() {
-        mod = new model::Model();
+        mod = new model::ScanModel();
         viewer = new visual::Visualizer();
     }
 
@@ -58,7 +58,7 @@ TEST_F(CompareDepthFilteringFixture, CompareCalFixture) {
     pcl::io::loadPLYFile<pcl::PointXYZ>( "/Users/seanngpack/Desktop/test.ply", *fixture_3);
 //    pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_3.pcd", *fixture_3);
 
-    fixture_1 = mod->crop_cloud(fixture_1, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
+    fixture_1 = mod->crop_cloud_cpy(fixture_1, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
 
     viewer->compareVisFour(fixture_raw, fixture_1, fixture_2, fixture_3);
 }

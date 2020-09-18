@@ -1,14 +1,14 @@
 #include "CLIParser.h"
 #include "IController.h"
-#include "ControllerFactory.h"
-#include "ControllerFactoryCache.h"
+#include "ControllerManager.h"
+#include "ControllerManagerCache.h"
 #include "IFileHandler.h"
 #include "SwagGUI.h"
 #include "Logger.h"
 #include <spdlog/logger.h>
 #include <spdlog/sinks/stdout_sinks.h>
 #include <boost/program_options.hpp>
-#include <iostream>ardui
+#include <iostream>
 #include <QApplication>
 
 
@@ -25,12 +25,12 @@ int main(int argc, char *argv[]) {
 
     if (vm.count("gui")) {
         QApplication app(argc, argv);
-        controller::ControllerFactory factory;
+        controller::ControllerManager factory;
         std::shared_ptr<SwagGUI> gui = factory.get_gui();
         gui->show();
         return app.exec();
     } else {
-        controller::ControllerFactory factory;
+        controller::ControllerManager factory;
         std::shared_ptr<controller::IController> controller = factory.get_controller(vm);
         controller->run();
         return 0;

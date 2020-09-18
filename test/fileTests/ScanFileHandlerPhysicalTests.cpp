@@ -28,44 +28,44 @@
 //    */
 //    void set_up_test_files() {
 //        if (boost::filesystem::is_empty(folder_path)) {
-//            std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = set_up_point_cloud();
-//            pcl::io::savePCDFileASCII(folder_path + "/" + "test_cloud.pcd", *cloud);
+//            std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> calibration = set_up_point_cloud();
+//            pcl::io::savePCDFileASCII(folder_path + "/" + "test_cloud.pcd", *calibration);
 //        }
 //    }
 //
 //    static std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> set_up_point_cloud() {
-//        // set up point cloud
-//        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud(new pcl::PointCloud<pcl::PointXYZ>);
-//        cloud->height = 10;
-//        cloud->width = 10;
-//        cloud->is_dense = true;
-//        cloud->points.resize(10 * 10);
+//        // set up point calibration
+//        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> calibration(new pcl::PointCloud<pcl::PointXYZ>);
+//        calibration->height = 10;
+//        calibration->width = 10;
+//        calibration->is_dense = true;
+//        calibration->points.resize(10 * 10);
 //
 //        for (int y = 0; y < 10; y++) {
 //            for (int x = 0; x < 10; x++) {
-//                cloud->points[y * 10 + x] = pcl::PointXYZ(x, y, 1);
+//                calibration->points[y * 10 + x] = pcl::PointXYZ(x, y, 1);
 //            }
 //        }
-//        return cloud;
+//        return calibration;
 //    }
 //};
 //
 //
 //TEST_F(ScanFileHandlerPhysicalFixture, TestLoadCloud) {
-//    // make an empty cloud to cloud the file into.
-//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud(new pcl::PointCloud<pcl::PointXYZ>);
+//    // make an empty calibration to calibration the file into.
+//    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> calibration(new pcl::PointCloud<pcl::PointXYZ>);
 //    // load the file
-//    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/" + "test_cloud.pcd", *cloud);
-//    ASSERT_EQ(cloud->height, 10);
-//    ASSERT_EQ(cloud->width, 10);
-//    ASSERT_EQ(cloud->size(), 100);
+//    pcl::io::loadPCDFile<pcl::PointXYZ>(folder_path + "/" + "test_cloud.pcd", *calibration);
+//    ASSERT_EQ(calibration->height, 10);
+//    ASSERT_EQ(calibration->width, 10);
+//    ASSERT_EQ(calibration->size(), 100);
 //}
 //
 ///**
 // * Load clouds from a folder
 // */
 //TEST_F(ScanFileHandlerPhysicalFixture, TestLoadClouds) {
-//    // make an empty cloud to cloud the file into.
+//    // make an empty calibration to calibration the file into.
 //    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>,
 //            Eigen::aligned_allocator<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> > data;
 //    handler->load_clouds(data, CloudType::Type::RAW);

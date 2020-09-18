@@ -1,6 +1,7 @@
 #include "SR305.h"
 #include "CameraTypes.h"
 #include "IFileHandler.h"
+#include <librealsense2/rsutil.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -69,17 +70,17 @@ void camera::SR305::initialize_camera() {
     auto sensor = pipe_profile.get_device().first<rs2::depth_sensor>();
 
     // set custom settings
-        sensor.set_option(RS2_OPTION_LASER_POWER, 1.f);
-        printf("SR300 New Laser Power: %f\r\n", sensor.get_option(rs2_option::RS2_OPTION_LASER_POWER));
+    sensor.set_option(RS2_OPTION_LASER_POWER, 1.f);
+    printf("SR300 New Laser Power: %f\r\n", sensor.get_option(rs2_option::RS2_OPTION_LASER_POWER));
 
-    auto range = sensor.get_option_range( RS2_OPTION_ACCURACY );
-        sensor.set_option(RS2_OPTION_ACCURACY, range.max);
+    auto range = sensor.get_option_range(RS2_OPTION_ACCURACY);
+    sensor.set_option(RS2_OPTION_ACCURACY, range.max);
     printf("SR300 New accuracy: %f\r\n", sensor.get_option(rs2_option::RS2_OPTION_ACCURACY));
 
-        sensor.set_option(RS2_OPTION_MOTION_RANGE, 16.f);
+    sensor.set_option(RS2_OPTION_MOTION_RANGE, 16.f);
     printf("SR300 New motion range: %f\r\n", sensor.get_option(rs2_option::RS2_OPTION_MOTION_RANGE));
 
-        sensor.set_option(RS2_OPTION_CONFIDENCE_THRESHOLD, 1.f);
+    sensor.set_option(RS2_OPTION_CONFIDENCE_THRESHOLD, 1.f);
     printf("SR300 New confidence: %f\r\n", sensor.get_option(rs2_option::RS2_OPTION_CONFIDENCE_THRESHOLD));
 
 
@@ -128,6 +129,38 @@ void camera::SR305::set_spatial_smooth_delta(int d) {
 
 camera::SR305::~SR305() {
     std::cout << "calling SR305 destructor \n";;
+}
+
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+camera::SR305::create_point_cloud(const std::vector<uint16_t> &depth_frame, const camera::intrinsics &intrinsics) {
+    // calibration setup
+    auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    cloud->height = intrinsics.height;
+    cloud->width = intrinsics.width;
+    cloud->is_dense = true;
+    cloud->points.resize(intrinsics.width * intrinsics.height);
+    for (int y = 0; y < intrinsics.height; y++) {
+        for (int x = 0; x < intrinsics.width; x++) {
+
+            uint16_t depth = depth_frame[y * intrinsics.width + x];
+            float depth_in_meters = depth * intrinsics.depth_scale;
+            if (depth == 0) continue;
+            float pixel[2] = {(float) x, (float) y};
+            float point_array[3] = {(float) x, (float) y, 0};
+            const rs2_intrinsics intrin = {intrinsics.width, intrinsics.height,
+                                           intrinsics.ppx, intrinsics.ppy,
+                                           intrinsics.fx, intrinsics.fy,
+                                           intrinsics.model, *intrinsics.coeffs};
+            const rs2_intrinsics *ptr = &intrin;
+            rs2_deproject_pixel_to_point(point_array, ptr, pixel, depth_in_meters);
+            pcl::PointXYZ point;
+            point.x = point_array[0];
+            point.y = point_array[1];
+            point.z = point_array[2];
+            cloud->points[y * intrinsics.width + x] = point;
+        }
+    }
+    return cloud;
 }
 
 

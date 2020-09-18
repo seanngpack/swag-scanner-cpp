@@ -12,7 +12,7 @@ namespace visual {
 }
 
 namespace model {
-    class Model;
+    class ProcessingModel;
 }
 
 namespace file {
@@ -27,9 +27,7 @@ namespace controller {
      */
     class ProcessingController : public virtual IController {
     public:
-        ProcessingController(std::shared_ptr<model::Model> model,
-                             std::shared_ptr<visual::Visualizer> viewer,
-                             std::shared_ptr<file::ScanFileHandler> file_handler);
+        explicit ProcessingController(std::shared_ptr<model::ProcessingModel> model);
 
         /**
         * Process the data. Filters, segments, and rotates the clouds.
@@ -37,24 +35,8 @@ namespace controller {
         void run() override;
 
 
-        /**
-         * Crop clouds based on box boundary defined in constants.h, remove all NaN points,
-         * @param cloud_type which cloud types do you want to crop.
-         * @param leaf size.
-         */
-        void filter(const CloudType::Type &cloud_type);
-
-
-        /**
-         * Register all point clouds in given folder location.
-         * @param folder_path the path to the scan folder.
-         * @param cloud_type the type of the cloud, tells which folder to look into for clouds.
-         */
-        void register_all_clouds(const CloudType::Type &cloud_type);
-
-
-    private:
-        std::shared_ptr<model::Model> model;
+    protected:
+        std::shared_ptr<model::ProcessingModel> model;
         std::shared_ptr<visual::Visualizer> viewer;
         std::shared_ptr<file::ScanFileHandler> file_handler;
     };

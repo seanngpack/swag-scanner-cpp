@@ -18,7 +18,7 @@ namespace arduino {
 }
 
 namespace model {
-    class Model;
+    class CalibrationModel;
 }
 
 namespace visual {
@@ -45,9 +45,7 @@ namespace controller {
     public:
         CalibrationController(std::shared_ptr<camera::ICamera> camera,
                               std::shared_ptr<arduino::Arduino> arduino,
-                              std::shared_ptr<model::Model> model,
-                              std::shared_ptr<file::CalibrationFileHandler> file_handler,
-                              std::shared_ptr<visual::Visualizer> viewer);
+                              std::shared_ptr<model::CalibrationModel> model);
 
         /**
          * Scan calibration fixture with member info for degs and # of rotations into a new
@@ -57,19 +55,15 @@ namespace controller {
 
         void set_deg(int deg);
 
-        void set_num_rot(int num_rot);
+        void set_num_rot(int rot);
 
 
     protected:
         std::shared_ptr<camera::ICamera> camera;
         std::shared_ptr<arduino::Arduino> arduino;
-        std::shared_ptr<model::Model> model;
-        std::shared_ptr<file::CalibrationFileHandler> file_handler;
-        std::shared_ptr<visual::Visualizer> viewer;
+        std::shared_ptr<model::CalibrationModel> model;
         int deg = 15;
         int num_rot = 8;
-        std::vector<equations::Plane> upright_planes;
-        std::vector<equations::Plane> ground_planes;
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
 
 
@@ -78,17 +72,6 @@ namespace controller {
          */
         void scan();
 
-        /**
-         * Load the recently scanned calibration clouds and calculate the planes equations. Store them
-         * into class members.
-         */
-        void get_calibration_planes();
-
-        /**
-         * Perform center point calculations and then refine the calculation.
-         * Also update JSON file with the center point coordinate and axis of rotation direction.
-         */
-        void calculate();
 
     };
 }

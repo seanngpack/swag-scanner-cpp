@@ -4,11 +4,11 @@
 #include <string>
 
 /**
- * Enumeration for point cloud states.
- * RAW = cloud that has had no processing done to it yet.
- * FILTERED = cloud has downsampling and point nuking done to it.
- * SEGMENTED = cloud that is both FILTERED and has its plane removed.
- * NORMAL = normal cloud.
+ * Enumeration for point calibration states.
+ * RAW = calibration that has had no processing done to it yet.
+ * FILTERED = calibration has downsampling and point nuking done to it.
+ * SEGMENTED = calibration that is both FILTERED and has its plane removed.
+ * NORMAL = normal calibration.
  */
 namespace CloudType {
     enum class Type {

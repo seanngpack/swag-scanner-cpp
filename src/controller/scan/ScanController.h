@@ -9,7 +9,7 @@ namespace visual {
 }
 
 namespace model {
-    class Model;
+    class ScanModel;
 }
 
 namespace file {
@@ -32,8 +32,7 @@ namespace controller {
     public:
         ScanController(std::shared_ptr<camera::ICamera> camera,
                        std::shared_ptr<arduino::Arduino> arduino,
-                       std::shared_ptr<model::Model> model,
-                       std::shared_ptr<file::ScanFileHandler> file_handler);
+                       std::shared_ptr<model::ScanModel> model);
 
         void run() override;
 
@@ -53,12 +52,10 @@ namespace controller {
     protected:
         std::shared_ptr<camera::ICamera> camera;
         std::shared_ptr<arduino::Arduino> arduino;
-        std::shared_ptr<model::Model> model;
-        std::shared_ptr<file::ScanFileHandler> file_handler;
+        std::shared_ptr<model::ScanModel> model;
         int deg = 20;
         int num_rot = 18;
 
-        void update_json_time();
     };
 }
 

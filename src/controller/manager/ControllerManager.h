@@ -1,5 +1,5 @@
-#ifndef SWAG_SCANNER_CONTROLLERFACTORY_H
-#define SWAG_SCANNER_CONTROLLERFACTORY_H
+#ifndef SWAG_SCANNER_CONTROLLERMANAGER_H
+#define SWAG_SCANNER_CONTROLLERMANAGER_H
 
 #include <boost/program_options.hpp>
 #include <memory>
@@ -7,18 +7,18 @@
 namespace controller {
     class IController;
     class IControllerGUI;
-    class ControllerFactoryCache;
+    class ControllerManagerCache;
 }
 
 class SwagGUI;
 
 namespace controller {
-    class ControllerFactory {
+    class ControllerManager {
     public:
 
-        ControllerFactory();
+        ControllerManager();
 
-        ~ControllerFactory();
+        ~ControllerManager();
 
         std::shared_ptr<IController> get_controller(const boost::program_options::variables_map &vm);
 
@@ -30,9 +30,9 @@ namespace controller {
 
 
     private:
-        std::unique_ptr<ControllerFactoryCache> cache;
+        std::unique_ptr<ControllerManagerCache> cache;
 
     };
 }
 
-#endif //SWAG_SCANNER_CONTROLLERFACTORY_H
+#endif //SWAG_SCANNER_CONTROLLERMANAGER_H

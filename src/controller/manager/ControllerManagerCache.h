@@ -1,5 +1,5 @@
-#ifndef SWAG_SCANNER_CONTROLLERFACTORYCACHE_H
-#define SWAG_SCANNER_CONTROLLERFACTORYCACHE_H
+#ifndef SWAG_SCANNER_CONTROLLERMANAGERCACHE_H
+#define SWAG_SCANNER_CONTROLLERMANAGERCACHE_H
 
 #include <memory>
 #include <boost/program_options.hpp>
@@ -13,7 +13,11 @@ namespace arduino {
 }
 
 namespace model {
-    class Model;
+    class CalibrationModel;
+
+    class ScanModel;
+
+    class ProcessingModel;
 }
 
 namespace visual {
@@ -49,7 +53,7 @@ namespace controller {
 
     class MoveControllerGUI;
 
-    class ControllerFactory;
+    class ControllerManager;
 }
 
 
@@ -57,15 +61,15 @@ namespace controller {
     /**
      * This manages objects needed to create controllers.
      */
-    class ControllerFactoryCache {
+    class ControllerManagerCache {
     public:
         /**
          * Default constructor preallocates expensive objects that are probably gonna be used.
          * Preallocated objects: Model, ScanFileHandler, CalibrationFileHandler
          */
-        ControllerFactoryCache(ControllerFactory *factory);
+        ControllerManagerCache(ControllerManager *factory);
 
-        ~ControllerFactoryCache();
+        ~ControllerManagerCache();
 
         // --------------------------------------------------------------------------------
         //                          Get objects
@@ -75,13 +79,11 @@ namespace controller {
 
         std::shared_ptr<arduino::Arduino> get_arduino();
 
-        std::shared_ptr<model::Model> get_model();
+        std::shared_ptr<model::CalibrationModel> get_calibration_model();
 
-        std::shared_ptr<visual::Visualizer> get_viewer();
+        std::shared_ptr<model::ScanModel> get_scan_model();
 
-        std::shared_ptr<file::ScanFileHandler> get_scan_file_handler();
-
-        std::shared_ptr<file::CalibrationFileHandler> get_calibration_file_handler();
+        std::shared_ptr<model::ProcessingModel> get_processing_model();
 
         std::shared_ptr<SwagGUI> get_gui();
 
@@ -111,9 +113,6 @@ namespace controller {
 
         std::shared_ptr<controller::ProcessingControllerGUI> get_process_controller_gui();
 
-        std::shared_ptr<controller::FilterTestingController>
-        get_filter_testing_controller(const boost::program_options::variables_map &vm);
-
         std::shared_ptr<controller::MoveController>
         get_move_controller(const boost::program_options::variables_map &vm);
 
@@ -123,14 +122,13 @@ namespace controller {
         get_home_controller(const boost::program_options::variables_map &vm);
 
     private:
-        ControllerFactory *factory;
+        ControllerManager *factory;
 
         std::shared_ptr<camera::SR305> camera;
         std::shared_ptr<arduino::Arduino> arduino;
-        std::shared_ptr<model::Model> model;
-        std::shared_ptr<visual::Visualizer> viewer;
-        std::shared_ptr<file::ScanFileHandler> scan_file_handler;
-        std::shared_ptr<file::CalibrationFileHandler> calibration_file_handler;
+        std::shared_ptr<model::CalibrationModel> calibration_model;
+        std::shared_ptr<model::ScanModel> scan_model;
+        std::shared_ptr<model::ProcessingModel> processing_model;
 
         // controllers
         std::shared_ptr<controller::ScanController> scan_controller;
@@ -151,4 +149,4 @@ namespace controller {
     };
 }
 
-#endif //SWAG_SCANNER_CONTROLLERFACTORYCACHE_H
+#endif //SWAG_SCANNER_CONTROLLERMANAGERCACHE_H

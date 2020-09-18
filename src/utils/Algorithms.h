@@ -53,9 +53,9 @@ namespace algos {
                                          const equations::Normal &normal);
 
     /**
-     * Find a point lying on the given plane in the cloud.
+     * Find a point lying on the given plane in the calibration.
      *
-     * @param cloud cloud.
+     * @param cloud calibration.
      * @param plane plane.
      * @param delta error threshold for finding the point.
      * @return point in the plane or point of 0,0,0.
@@ -76,6 +76,22 @@ namespace algos {
                               const equations::Plane &plane,
                               double delta);
 
+
+    /**
+     * Rotate a point calibration about a line.
+     *
+     * @param cloud the calibration you want to rotate. Must be an unorganized calibration.
+     * @param pt a point on the axis you want to rotate about.
+     * @param line_direction direction vector for the line (normalized)
+     * @param theta angle in radians you want to rotate.
+     * @return the rotated calibration.
+     */
+    pcl::PointCloud<pcl::PointXYZ>
+    rotate_cloud_about_line(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                            const std::vector<float> &pt,
+                            const std::vector<float> &line_direction,
+                            float theta);
+
     /**
      * Given a copy of a point from the pointcloud, a point that a line passes through,
      * and a direction vector, rotate the pointcloud point about that line and return
@@ -92,14 +108,44 @@ namespace algos {
                                           const std::vector<float> &line_direction,
                                           float theta);
 
+
+    /**
+      * Rotate calibration about the z-axis.
+      *
+      * @param cloud calibration to rotate.
+      * @param theta rotation degree.
+      * @return
+      */
+    pcl::PointCloud<pcl::PointXYZ>
+    rotate_cloud_about_z_axis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                              float theta);
+
     /**
      * Calculate the transformation matrix from center of turntable to origin (0,0,0).
+     *
      * @param center center of turntable.
      * @param ground_normal normal vector of ground plane.
-     * @return
+     * @return matrix of the transformation.
      */
     Eigen::Matrix4f calc_transform_to_world_matrix(const pcl::PointXYZ &center,
                                                    const equations::Normal &ground_normal);
+
+    /**
+     * Transform cloud to world coordinate and return a copy.
+     */
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+    transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                             const pcl::PointXYZ &center,
+                             const equations::Normal &ground_normal);
+
+
+    /**
+     * Given a vector of planes, average them.
+     *
+     * @param planes planes.
+     * @return average of the planes.
+     */
+    equations::Plane average_planes(const std::vector<equations::Plane> &planes);
 }
 
 #endif //SWAG_SCANNER_ALGORITHMS_H
