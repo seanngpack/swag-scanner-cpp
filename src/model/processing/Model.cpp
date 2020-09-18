@@ -65,13 +65,6 @@ model::Model::remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 }
 
 
-
-
-
-
-
-
-
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 model::Model::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                        const pcl::PointXYZ &center,

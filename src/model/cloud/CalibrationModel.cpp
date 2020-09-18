@@ -19,7 +19,7 @@ void model::CalibrationModel::set_calibration(const std::string &cal_name) {
 }
 
 void model::CalibrationModel::save_cloud(const std::string &cloud_name) {
-    auto cloud = clouds[clouds_map["cloud_name"]];
+    auto cloud = clouds[clouds_map[cloud_name]];
     file_handler.save_cloud(cloud, cloud_name);
 }
 

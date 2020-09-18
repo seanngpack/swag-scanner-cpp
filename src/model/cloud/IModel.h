@@ -36,6 +36,23 @@ namespace model {
         }
 
         /**
+         * Return shared pointer to the cloud given its name.
+         *
+         * @param cloud_name name of cloud you want to get.
+         * @return the cloud.
+         * @throws runtime error if the name does not exist in the map.
+         */
+        inline std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> get_cloud(const std::string &cloud_name) {
+            int index;
+            if (clouds_map.find(cloud_name) == clouds_map.end()) {
+                throw std::runtime_error("Error, cloud with name" + cloud_name + "does not exist");
+            } else {
+                index = clouds_map[cloud_name];
+                return clouds[index];
+            }
+        }
+
+        /**
          * Applies crop box filtering to remove outside points from cloud in place.
          *
          * @param cloud the cloud you want to crop.
@@ -109,9 +126,7 @@ namespace model {
             clouds_map.clear();
         }
 
-        virtual ~
-
-        IModel() {}
+        virtual ~IModel() {}
 
     protected:
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
