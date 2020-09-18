@@ -3,6 +3,7 @@
 #include "Plane.h"
 #include "Equations.h"
 #include "Algorithms.h"
+#include "Visualizer.h"
 #include <pcl/ModelCoefficients.h>
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/sample_consensus/model_types.h>
@@ -52,13 +53,14 @@ pcl::PointXYZ model::CalibrationModel::calculate_center_point() {
     return pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
 }
 
-pcl::PointXYZ model::CalibrationModel::refine_center_point(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                                           double delta) {
+pcl::PointXYZ model::CalibrationModel::refine_center_point(double delta) {
     if (center_point.x == 0) {
         throw std::runtime_error("Error, cannot refine because center point has not been calculated yet");
     }
     equations::Plane averaged_ground_plane = algos::average_planes(ground_planes);
-    pcl::PointXYZ plane_pt = algos::find_point_in_plane(cloud, averaged_ground_plane, delta);
+    // just use the first cloud as the candidate to find a point from. in the future i can use
+    // more statistical methods to determine which is the best cloud to find the best cloud to extract from
+    pcl::PointXYZ plane_pt = algos::find_point_in_plane(clouds[0], averaged_ground_plane, delta);
     center_point = algos::project_point_to_plane(center_point, plane_pt, averaged_ground_plane.get_normal());
     return center_point;
 }
@@ -77,13 +79,9 @@ std::vector<equations::Plane>
 model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                                       bool visual_flag) {
 
-    std::vector<equations::Plane>
-    visual::Visualizer *viewer = nullptr;
     std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
-    if (visual_flag) {
-        viewer = new visual::Visualizer();
-    }
     std::vector<equations::Plane> planes;
+
     auto cloud_cpy = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     *cloud_cpy = *cloud;
     auto cloud_plane = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
@@ -136,10 +134,8 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
 
     if (visual_flag) {
         clouds = {cloud_cpy, cloud_plane};
-        viewer->simpleVis(clouds);
+        visual::Visualizer::simpleVis(clouds);
     }
-
-
 
     // Remove the planar inliers, extract the rest
     extract.setNegative(true);
@@ -182,7 +178,7 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
 
     if (visual_flag) {
         clouds = {cloud_cpy, cloud_plane};
-        viewer->simpleVis(clouds);
+        visual::Visualizer::simpleVis(clouds);
     }
 
     auto ground_vect = Eigen::Vector3f(ground_coeff->values[0], ground_coeff->values[1], ground_coeff->values[2]);
@@ -193,7 +189,6 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
     std::cout << "the angle between two planes is " << angle_deg << std::endl;
     std::cout << "the error is: " << abs((angle_deg - 90) / 90.0) * 100.0 << "%" << std::endl;
 
-    delete viewer;
     return planes;
 }
 

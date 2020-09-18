@@ -77,8 +77,7 @@ namespace model {
          * @return projected point on the plane.
          * @throws if the center point has not been calculated yet.
          */
-        pcl::PointXYZ refine_center_point(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                          double delta = .00001);
+        pcl::PointXYZ refine_center_point(double delta = .00001);
 
         /**
          * Update calibration json with axis of rotation and center point info.

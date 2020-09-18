@@ -37,9 +37,6 @@ void controller::CalibrationController::scan() {
         std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = camera->create_point_cloud(depth_frame, intrin);
 
-        // todo: move crop and voxel to IModel.h, i guess all models should access to these methods lol
-        // crop and voxel should be in-place
-        // parameter should be cloud name
         model->crop_cloud(cloud, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
         model->voxel_grid_filter(cloud, .001);
         model->add_cloud(cloud, cloud_name);

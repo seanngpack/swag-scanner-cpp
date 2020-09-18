@@ -51,23 +51,7 @@ pcl::PointCloud<pcl::FPFHSignature33>::Ptr model::Model::compute_local_features(
 
 
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::voxel_grid_filter(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                float leafSize) {
-    return filtering::voxel_grid_filter(cloud, leafSize);
-}
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::remove_outliers(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                              float mean_k,
-                              float thresh_mult) {
-    return filtering::remove_outliers(cloud, mean_k, thresh_mult);
-}
-
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::remove_nan(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
-    return filtering::remove_nan(cloud);
-}
 
 
 

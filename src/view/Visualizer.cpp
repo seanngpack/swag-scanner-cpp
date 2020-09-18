@@ -7,8 +7,6 @@
 
 using namespace std::chrono_literals;
 
-visual::Visualizer::Visualizer() {}
-
 void
 visual::Visualizer::pointPickingEventOccurred(const pcl::visualization::PointPickingEvent &event, void *viewer_void) {
     std::cout << "[INFO] Point picking event occurred." << std::endl;

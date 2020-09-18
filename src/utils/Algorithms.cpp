@@ -53,7 +53,6 @@ bool algos::check_point_in_plane(const pcl::PointXYZ &pt,
     return false;
 }
 
-
 pcl::PointXYZ algos::find_point_in_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                          const equations::Plane &plane,
                                          double delta) {

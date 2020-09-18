@@ -56,18 +56,6 @@ namespace model {
 
 
 
-        /**
-         * Remove outliers from cloud.
-         *
-         * @param cloud cloud to filter.
-         * @param mean_k number of neighbors to analyze.
-         * @param thresh_mult multipler for standard deviation, members outside st will be removed.
-         * @return filtered cloud.
-         */
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-        remove_outliers(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                        float mean_k = 50,
-                        float thresh_mult = 1);
 
         /**
          * Remove NaN points from cloud.

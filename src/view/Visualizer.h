@@ -15,38 +15,36 @@ namespace visual {
     class Visualizer {
     public:
 
-        Visualizer();
-
         static void pointPickingEventOccurred(const pcl::visualization::PointPickingEvent& event, void* viewer_void);
 
         /**
          * Visualize one pointcloud
          * @param cloud pointcloud you want to visualize
          */
-        void simpleVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
+        static void simpleVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
 
         /**
          * Visualize pointclouds. first cloud is white, then successive clouds are red and lighter shades of red.
          * @param clouds vector of pointcloud you want to visualize
          */
-        void simpleVis(const std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &clouds);
+        static void simpleVis(const std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &clouds);
 
-        void simpleVisColor(const std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &clouds);
+        static void simpleVisColor(const std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> &clouds);
 
         /**
          * Visualize a cloud and a point.
          * @param cloud the cloud.
          * @param pt the point.
          */
-        void ptVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud, const pcl::PointXYZ &pt);
+        static void ptVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud, const pcl::PointXYZ &pt);
 
         /**
          * Visualize two point clouds side by side.
          * @param cloud1
          * @param cloud2
          */
-        void compareVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud1,
+        static void compareVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud1,
                         const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud2);
 
         /**
@@ -56,7 +54,7 @@ namespace visual {
          * @param cloud3
          * @param cloud4
          */
-        void compareVisFour(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud1,
+        static void compareVisFour(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud1,
                             const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud2,
                             const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud3,
                             const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud4,
@@ -70,11 +68,8 @@ namespace visual {
          * @param cloud base cloud.
          * @param normal normal cloud for base cloud.
          */
-        void normalsVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+        static void normalsVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                         const std::shared_ptr<pcl::PointCloud<pcl::Normal>> &normal);
-
-
-    private:
 
     };
 }

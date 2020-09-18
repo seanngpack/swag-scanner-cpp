@@ -6,6 +6,8 @@
 #include <map>
 #include <pcl/filters/crop_box.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/filters/filter.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 
 namespace pcl {
     class PointXYZ;
@@ -66,6 +68,37 @@ namespace model {
             grid.filter(*cloud);
             std::cout << "PointCloud after filtering: " << cloud->width * cloud->height
                       << " data points (" << pcl::getFieldsList(*cloud) << ")." << std::endl;
+        }
+
+
+        /**
+         * Remove outliers from cloud in place. Keep cloud organized.
+         *
+         * @param cloud cloud to filter.
+         * @param mean_k number of neighbors to analyze.
+         * @param thresh_mult multipler for standard deviation, members outside st will be removed.
+         * @return filtered cloud.
+         */
+        inline void remove_outliers(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                    int mean_k = 50,
+                                    float thresh_mult = 1) {
+            pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+            sor.setInputCloud(cloud);
+            sor.setMeanK(mean_k);
+            sor.setStddevMulThresh(thresh_mult);
+            sor.setKeepOrganized(true);
+            sor.filter(*cloud);
+        }
+
+        /**
+         * Remove NaN points from cloud in place. Organized clouds become unorganized from this.
+         *
+         * @param cloud cloud to remove points from.
+         * @return
+         */
+        inline void remove_nan(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+            std::vector<int> indices;
+            pcl::removeNaNFromPointCloud(*cloud, *cloud, indices);
         }
 
         /**
