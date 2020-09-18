@@ -1,6 +1,6 @@
 #include "ProcessingControllerGUI.h"
 #include "ProcessingController.h"
-#include "ScanFileHandler.h"
+#include "ProcessingModel.h"
 #include "FormsPayload.h"
 
 
@@ -17,9 +17,6 @@ void controller::ProcessingControllerGUI::run() {
 
 void controller::ProcessingControllerGUI::update(const IFormsPayload &payload) {
     const auto &p = dynamic_cast<const FormsPayload &>(payload);
-    if (p.name.empty()) {
-        return;
-    }
-    file_handler->set_scan(p.name);
+    model->set_scan(p.name);
 }
 

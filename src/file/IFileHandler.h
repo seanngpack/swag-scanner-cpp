@@ -108,7 +108,7 @@ namespace file {
          */
         virtual std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>
         load_clouds(const CloudType::Type &cloud_type) = 0;
-
+        
 
         virtual ~IFileHandler() {
             std::cout << "IFilehandler destructor" << std::endl;

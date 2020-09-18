@@ -1,6 +1,7 @@
 #include "ProcessingModel.h"
 #include "Normal.h"
 #include "Algorithms.h"
+#include "Constants.h"
 #include <pcl/registration/icp.h>
 #include <nlohmann/json.hpp>
 
@@ -12,6 +13,8 @@ model::ProcessingModel::ProcessingModel() :
 
 void model::ProcessingModel::set_scan(const std::string &scan_name) {
     file_handler.set_scan(scan_name);
+    clouds = file_handler.load_clouds(CloudType::Type::FILTERED);
+    // TODO: dont forget to assign cloud names to the map
 }
 
 void model::ProcessingModel::save_cloud(const std::string &cloud_name, const CloudType::Type &cloud_type) {
@@ -28,9 +31,16 @@ void model::ProcessingModel::save_cloud(
 
 void model::ProcessingModel::filter(int mean_k,
                                     float thresh_mult) {
-    for (auto &cloud: clouds) {
-        remove_nan(cloud);
-        remove_outliers(cloud);
+    using namespace constants;
+    for (int i = 0; i < clouds.size(); i++) {
+        crop_cloud(clouds[i],
+                   scan_min_x, scan_max_x,
+                   scan_min_y, scan_max_y,
+                   scan_min_z, scan_max_z);
+        remove_nan(clouds[i]);
+        remove_outliers(clouds[i]);
+        // do cloud saving here, try to get the name from the map
+        save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
     }
 }
 

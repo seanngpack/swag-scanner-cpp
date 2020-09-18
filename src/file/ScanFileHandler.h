@@ -46,7 +46,7 @@ namespace file {
         void auto_create_new_scan();
 
         /**
-         * Point to the given scan. If the scan does not exist then create a new one.
+         * Point to the given scan. If the scan does not exist then create a new one. If the input is empty, then return.
          *
          * @param scan name of the scan.
          */
@@ -61,6 +61,7 @@ namespace file {
 
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> load_clouds(
                 const CloudType::Type &cloud_type) override;
+
 
         std::string get_scan_name();
 

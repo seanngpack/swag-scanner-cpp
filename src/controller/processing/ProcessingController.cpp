@@ -10,7 +10,10 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Pr
         model(std::move(model)) {}
 
 void controller::ProcessingController::run() {
+    std::cout << "transforming.." << std::endl;
     model->transform_clouds_to_world();
+    std::cout << "filtering.." << std::endl;
     model->filter();
+    std::cout << "registering.." << std::endl;
     model->register_clouds();
 }
