@@ -49,8 +49,8 @@ void controller::CalibrationController::set_deg(int deg) {
     this->deg = deg;
 }
 
-void controller::CalibrationController::set_num_rot(int num_rot) {
-    this->num_rot = num_rot;
+void controller::CalibrationController::set_num_rot(int rot) {
+    this->num_rot = rot;
 }
 
 

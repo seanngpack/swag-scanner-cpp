@@ -45,6 +45,7 @@ namespace file {
          */
         void set_calibration(const std::string &cal_name);
 
+        // TODO: Later refactor this and load cloud... They don't need to take in CloudTypes
         void save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                         const std::string &cloud_name,
                         const CloudType::Type &cloud_type) override;

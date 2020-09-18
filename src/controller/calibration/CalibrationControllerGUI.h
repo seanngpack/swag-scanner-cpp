@@ -14,9 +14,7 @@ namespace controller {
     public:
         CalibrationControllerGUI(std::shared_ptr<camera::ICamera> camera,
                                  std::shared_ptr<arduino::Arduino> arduino,
-                                 std::shared_ptr<model::Model> model,
-                                 std::shared_ptr<file::CalibrationFileHandler> file_handler,
-                                 std::shared_ptr<visual::Visualizer> viewer,
+                                 std::unique_ptr<model::CalibrationModel> model,
                                  std::shared_ptr<SwagGUI> gui);
 
         /**
@@ -26,12 +24,11 @@ namespace controller {
         void run() override;
 
 
+        /**
+         *
+         * @param payload
+         */
         void update(const IFormsPayload &payload) override;
-
-
-    private:
-//        std::shared_ptr<SwagGUI> gui;
-
 
     };
 

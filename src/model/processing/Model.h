@@ -57,34 +57,6 @@ namespace model {
 
 
 
-        /**
-         * Remove NaN points from cloud.
-         *
-         * @param cloud cloud to remove points from.
-         * @return cloud without NaN points.
-         */
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-        remove_nan(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
-
-
-
-        /**
-         * Get the coefficients of the base plane of the given cloud.
-         * @param cloud input cloud.
-         * @return vector of size 4 of the plane coefficients.
-         */
-        std::vector<float> get_plane_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
-
-        /**
-         * Remove scanning bed plane from the cloud.
-         * @param cloudIn cloud you want to remove the plane from.
-         * @return cloud with the remove plane
-         */
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-        remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn);
-
-
-
 
 
 

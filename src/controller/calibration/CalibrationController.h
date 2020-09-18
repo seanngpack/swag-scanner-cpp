@@ -55,7 +55,7 @@ namespace controller {
 
         void set_deg(int deg);
 
-        void set_num_rot(int num_rot);
+        void set_num_rot(int rot);
 
 
     protected:

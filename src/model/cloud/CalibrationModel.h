@@ -33,28 +33,18 @@ namespace model {
         CalibrationModel();
 
         /**
-         * Set the calibration name.
+         * Set the calibration name. This triggers the filehandler to set the current working directory
+         * to the given input. This will also clear any existing clouds in the model.
          *
          * @param cal_name calibration name.
          */
         void set_calibration(const std::string &cal_name);
 
         /**
-         * Save cloud to calibration folder.
+         * Save cloud to the current calibration folder.
          */
         void save_cloud(const std::string &cloud_name);
 
-        /**
-         * Load clouds from latest calibration.
-         */
-        void load_clouds();
-
-        /**
-         * Load clouds given calibration name.
-         *
-         * @param cal_name name of calibration you want to load clouds from.
-         */
-        void load_clouds(const std::string &cal_name);
 
         /**
          * Calculate the center point of the turntable.

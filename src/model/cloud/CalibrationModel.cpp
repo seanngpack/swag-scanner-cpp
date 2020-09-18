@@ -4,6 +4,7 @@
 #include "Equations.h"
 #include "Algorithms.h"
 #include "Visualizer.h"
+#include "CloudType.h"
 #include <pcl/ModelCoefficients.h>
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/sample_consensus/model_types.h>
@@ -16,21 +17,14 @@ model::CalibrationModel::CalibrationModel() :
 
 void model::CalibrationModel::set_calibration(const std::string &cal_name) {
     file_handler.set_calibration(cal_name);
+    clouds = file_handler.load_clouds(CloudType::Type::CALIBRATION);
+    ground_planes.clear();
+    upright_planes.clear();
 }
 
 void model::CalibrationModel::save_cloud(const std::string &cloud_name) {
     auto cloud = clouds[clouds_map[cloud_name]];
-    file_handler.save_cloud(cloud, cloud_name);
-}
-
-void model::CalibrationModel::load_clouds() {
-//    clouds = file_handler->load_clouds();
-// TODO: modify load_clouds in calibrationFileHandler to have a default laod_clouds
-// that loads form latest
-}
-
-void model::CalibrationModel::load_clouds(const std::string &cal_name) {
-// TODO: overload load_clouds in calibrationFileHandler to accept a file name
+    file_handler.save_cloud(cloud, cloud_name, CloudType::Type::CALIBRATION);
 }
 
 
@@ -74,6 +68,7 @@ void model::CalibrationModel::update_calibration_json() {
 // --------------------------------------------------------------------------------
 //                          PRIVATE METHODS
 // --------------------------------------------------------------------------------
+
 
 std::vector<equations::Plane>
 model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,

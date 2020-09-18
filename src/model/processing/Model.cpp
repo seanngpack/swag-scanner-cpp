@@ -55,16 +55,6 @@ pcl::PointCloud<pcl::FPFHSignature33>::Ptr model::Model::compute_local_features(
 
 
 
-std::vector<float> model::Model::get_plane_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
-    return segmentation::get_plane_coefs(cloud);
-}
-
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::remove_plane(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloudIn) {
-    return segmentation::remove_plane(cloudIn);
-}
-
-
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 model::Model::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                        const pcl::PointXYZ &center,
