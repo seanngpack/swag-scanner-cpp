@@ -25,7 +25,7 @@ namespace controller {
         explicit IControllerGUI(std::shared_ptr<SwagGUI> gui);
 
         virtual ~IControllerGUI() {
-         std::cout << "IControllerGUI destructor" << std::endl;
+            std::cout << "IControllerGUI destructor" << std::endl;
         }
 
 
@@ -43,10 +43,6 @@ namespace controller {
          */
         virtual void update(const IFormsPayload &payload) = 0;
 
-
-        std::vector<std::string> get_all_scans();
-
-        std::vector<std::string> get_all_calibrations();
 
     signals:
 

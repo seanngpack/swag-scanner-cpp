@@ -7,9 +7,7 @@
 namespace controller {
     class ProcessingControllerGUI : public ProcessingController, public IControllerGUI {
     public:
-        ProcessingControllerGUI(std::shared_ptr<model::Model> model,
-                                std::shared_ptr<visual::Visualizer> viewer,
-                                std::shared_ptr<file::ScanFileHandler> file_handler,
+        ProcessingControllerGUI(std::unique_ptr<model::ProcessingModel> model,
                                 std::shared_ptr<SwagGUI> gui);
 
         /**

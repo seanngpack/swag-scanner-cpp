@@ -1,16 +1,12 @@
-#include "ProcessingController.h"
 #include "ProcessingControllerGUI.h"
+#include "ProcessingController.h"
 #include "ScanFileHandler.h"
 #include "FormsPayload.h"
 
 
-controller::ProcessingControllerGUI::ProcessingControllerGUI(std::shared_ptr<model::Model> model,
-                                                             std::shared_ptr<visual::Visualizer> viewer,
-                                                             std::shared_ptr<file::ScanFileHandler> file_handler,
+controller::ProcessingControllerGUI::ProcessingControllerGUI(std::unique_ptr<model::ProcessingModel> model,
                                                              std::shared_ptr<SwagGUI> gui) :
-        ProcessingController(std::move(model),
-                             std::move(viewer),
-                             std::move(file_handler)),
+        ProcessingController(std::move(model)),
         IControllerGUI(std::move(gui)) {}
 
 void controller::ProcessingControllerGUI::run() {

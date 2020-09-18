@@ -55,15 +55,6 @@ pcl::PointCloud<pcl::FPFHSignature33>::Ptr model::Model::compute_local_features(
 
 
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-model::Model::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                       const pcl::PointXYZ &center,
-                                       const equations::Normal &rotation_axis) {
-    auto result = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    Eigen::Matrix4f transform = algos::calc_transform_to_world_matrix(center, rotation_axis);
-    pcl::transformPointCloud(*cloud, *result, transform);
-    return result;
-}
 
 Eigen::Matrix4f model::Model::icp_register_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_in,
                                                        const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_target,
