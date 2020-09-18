@@ -1,9 +1,9 @@
 add_subdirectory(arduino)
-add_subdirectory(camera)
 add_subdirectory(calibration)
-add_subdirectory(scan)
+add_subdirectory(camera)
 add_subdirectory(equations)
 add_subdirectory(processing)
+add_subdirectory(scan)
 
 
 target_sources(swag_scanner_lib PRIVATE

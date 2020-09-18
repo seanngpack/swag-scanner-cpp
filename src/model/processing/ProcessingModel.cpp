@@ -1,6 +1,7 @@
 #include "ProcessingModel.h"
 #include "Normal.h"
 #include "Algorithms.h"
+#include <pcl/registration/icp.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -61,5 +62,29 @@ void model::ProcessingModel::register_clouds() {
         *global_cloud += rotated;
     }
     save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::PROCESSED);
+}
+
+Eigen::Matrix4f
+model::ProcessingModel::icp_register_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_src,
+                                                 const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_target,
+                                                 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &transformed_cloud) {
+    pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
+    icp.setInputSource(cloud_src);
+    icp.setInputTarget(cloud_target);
+    icp.setMaximumIterations(100);
+    icp.setTransformationEpsilon(1e-10);
+    icp.setMaxCorrespondenceDistance(.05); // not really sure how this affects results
+    icp.setEuclideanFitnessEpsilon(.0001); // big effect
+    icp.setRANSACOutlierRejectionThreshold(.0001); // doesn't seem to affect results much
+    std::cout << "registering clouds..." << std::endl;
+    icp.align(*transformed_cloud);
+    if (icp.hasConverged()) {
+        std::cout << "\nICP has converged, score is " << icp.getFitnessScore() << std::endl;
+        auto trans = icp.getFinalTransformation().cast<double>();
+        std::cout << trans << std::endl;
+    } else {
+        PCL_ERROR ("\nICP has not converged.\n");
+    }
+    return icp.getFinalTransformation();
 }
 

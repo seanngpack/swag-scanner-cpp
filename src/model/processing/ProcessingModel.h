@@ -31,6 +31,19 @@ namespace model {
                         const std::string &cloud_name,
                         const CloudType::Type &cloud_type);
 
+
+        /**
+         * Use ICP registration between two clouds.
+         *
+         * @param cloud_src cloud source.
+         * @param cloud_target cloud target.
+         * @param transformed_cloud copy of source -> target.
+         * @return matrix transformation of source -> target.
+         */
+        Eigen::Matrix4f icp_register_pair_clouds(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_src,
+                                                 const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud_target,
+                                                 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &transformed_cloud);
+
         /**
          *  Remove NaN points, remove outliers.
          *
