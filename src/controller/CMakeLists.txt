@@ -1,5 +1,5 @@
 add_subdirectory(calibration)
-add_subdirectory(factory)
+add_subdirectory(manager)
 add_subdirectory(home)
 add_subdirectory(move)
 add_subdirectory(processing)

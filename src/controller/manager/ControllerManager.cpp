@@ -1,9 +1,11 @@
-#include "ControllerFactory.h"
+#include "ControllerManager.h"
 #include "IController.h"
 #include "IControllerGUI.h"
 #include "SR305.h"
 #include "Arduino.h"
-#include "Model.h"
+#include "CalibrationModel.h"
+#include "ScanModel.h"
+#include "ProcessingModel.h"
 #include "Visualizer.h"
 #include "CalibrationFileHandler.h"
 #include "CalibrationController.h"
@@ -13,10 +15,9 @@
 #include "ScanControllerGUI.h"
 #include "MoveController.h"
 #include "MoveControllerGUI.h"
-#include "FilterTestingController.h"
 #include "CalibrationControllerGUI.h"
 #include "HomeController.h"
-#include "ControllerFactoryCache.h"
+#include "ControllerManagerCache.h"
 #include "MoveController.h"
 #include "SwagGUI.h"
 #include "spdlog/spdlog.h"
@@ -24,9 +25,9 @@
 
 namespace po = boost::program_options;
 
-controller::ControllerFactory::ControllerFactory() : cache(std::make_unique<ControllerFactoryCache>(this)) {}
+controller::ControllerManager::ControllerManager() : cache(std::make_unique<ControllerManagerCache>(this)) {}
 
-std::shared_ptr<controller::IController> controller::ControllerFactory::get_controller(const po::variables_map &vm) {
+std::shared_ptr<controller::IController> controller::ControllerManager::get_controller(const po::variables_map &vm) {
     if (vm.count("scan")) {
         return cache->get_scan_controller(vm);
     } else if (vm.count("calibrate")) {
@@ -42,7 +43,7 @@ std::shared_ptr<controller::IController> controller::ControllerFactory::get_cont
     }
 }
 
-std::shared_ptr<controller::IController> controller::ControllerFactory::get_controller(const std::string &name) {
+std::shared_ptr<controller::IController> controller::ControllerManager::get_controller(const std::string &name) {
     if (name == "scan") {
         return cache->get_scan_controller();
     } else if (name == "calibrate") {
@@ -54,7 +55,7 @@ std::shared_ptr<controller::IController> controller::ControllerFactory::get_cont
     }
 }
 
-std::shared_ptr<controller::IControllerGUI> controller::ControllerFactory::get_gui_controller(const std::string &name) {
+std::shared_ptr<controller::IControllerGUI> controller::ControllerManager::get_gui_controller(const std::string &name) {
     if (name == "scan") {
         return cache->get_scan_controller_gui();
     } else if (name == "calibrate") {
@@ -69,10 +70,10 @@ std::shared_ptr<controller::IControllerGUI> controller::ControllerFactory::get_g
     }
 }
 
-std::shared_ptr<SwagGUI> controller::ControllerFactory::get_gui() {
+std::shared_ptr<SwagGUI> controller::ControllerManager::get_gui() {
     return cache->get_gui();
 }
 
-controller::ControllerFactory::~ControllerFactory() {
-    spdlog::get("swag_logger")->debug("ControllerFactory destructor called");
+controller::ControllerManager::~ControllerManager() {
+    spdlog::get("swag_logger")->debug("ControllerManager destructor called");
 }

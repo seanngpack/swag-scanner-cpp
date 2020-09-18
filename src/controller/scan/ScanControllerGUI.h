@@ -10,7 +10,7 @@ namespace controller {
     public:
         ScanControllerGUI(std::shared_ptr<camera::ICamera> camera,
                           std::shared_ptr<arduino::Arduino> arduino,
-                          std::unique_ptr<model::ScanModel> model,
+                          std::shared_ptr<model::ScanModel> model,
                           std::shared_ptr<SwagGUI> gui);
 
         /**

@@ -14,7 +14,7 @@ namespace controller {
     public:
         CalibrationControllerGUI(std::shared_ptr<camera::ICamera> camera,
                                  std::shared_ptr<arduino::Arduino> arduino,
-                                 std::unique_ptr<model::CalibrationModel> model,
+                                 std::shared_ptr<model::CalibrationModel> model,
                                  std::shared_ptr<SwagGUI> gui);
 
         /**

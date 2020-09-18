@@ -6,7 +6,7 @@
 
 using json = nlohmann::json;
 
-controller::ProcessingController::ProcessingController(std::unique_ptr<model::ProcessingModel> model) :
+controller::ProcessingController::ProcessingController(std::shared_ptr<model::ProcessingModel> model) :
         model(std::move(model)) {}
 
 void controller::ProcessingController::run() {

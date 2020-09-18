@@ -18,7 +18,7 @@
 #include <QPlainTextEdit>
 
 
-SwagGUI::SwagGUI(controller::ControllerFactory *factory, QWidget *parent) :
+SwagGUI::SwagGUI(controller::ControllerManager *factory, QWidget *parent) :
         factory(factory),
         QMainWindow(parent) {
     thread_pool = QThreadPool::globalInstance();

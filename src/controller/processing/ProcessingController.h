@@ -27,7 +27,7 @@ namespace controller {
      */
     class ProcessingController : public virtual IController {
     public:
-        explicit ProcessingController(std::unique_ptr<model::ProcessingModel> model);
+        explicit ProcessingController(std::shared_ptr<model::ProcessingModel> model);
 
         /**
         * Process the data. Filters, segments, and rotates the clouds.

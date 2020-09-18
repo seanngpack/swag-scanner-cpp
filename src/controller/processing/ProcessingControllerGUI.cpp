@@ -4,7 +4,7 @@
 #include "FormsPayload.h"
 
 
-controller::ProcessingControllerGUI::ProcessingControllerGUI(std::unique_ptr<model::ProcessingModel> model,
+controller::ProcessingControllerGUI::ProcessingControllerGUI(std::shared_ptr<model::ProcessingModel> model,
                                                              std::shared_ptr<SwagGUI> gui) :
         ProcessingController(std::move(model)),
         IControllerGUI(std::move(gui)) {}

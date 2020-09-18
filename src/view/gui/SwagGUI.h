@@ -20,7 +20,7 @@ class MoveFormsPayload;
 class QThreadPool;
 
 namespace controller {
-    class ControllerFactory;
+    class ControllerManager;
 
     class IControllerGUI;
 }
@@ -28,7 +28,7 @@ namespace controller {
 class SwagGUI : public QMainWindow {
 Q_OBJECT
 public:
-    explicit SwagGUI(controller::ControllerFactory *factory, QWidget *parent = 0);
+    explicit SwagGUI(controller::ControllerManager *factory, QWidget *parent = 0);
 
     ~SwagGUI();
 
@@ -62,7 +62,7 @@ private slots:
     void handle_scan_button_pressed(const FormsPayload &vars);
 
     /**
-     * When the "calibrate" button is pressed, will retrieve a calibration controller from the factory,
+     * When the "calibrate" button is pressed, will retrieve a calibration controller from the manager,
      * update the controller with form parameters, and finally call the run() method.
      *
      * @param vars payload variables.
@@ -78,7 +78,7 @@ private slots:
 
 
     /**
-     * When the "move" button is pressed, will retrieve a move controller from the factory,
+     * When the "move" button is pressed, will retrieve a move controller from the manager,
      * update the controller with form parameters, and finall call the run() method.
      * If both the move_to and move_by forms are filled, then it will use the move_to value.
      *
@@ -113,7 +113,7 @@ private slots:
 
 
 private:
-    controller::ControllerFactory *factory;
+    controller::ControllerManager *factory;
 //    controller::IControllerGUI *controller;
 
     QThreadPool *thread_pool;

@@ -31,7 +31,7 @@ namespace controller {
 
         /**
          * This method connects gui to this controller. Must run this method whenever
-         * swapping controllers for GUI. Call this method in the factory class.
+         * swapping controllers for GUI. Call this method in the manager class.
          *
          */
 //        void setup_gui();
