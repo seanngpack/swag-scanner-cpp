@@ -18,7 +18,7 @@ namespace arduino {
 }
 
 namespace model {
-    class Model;
+    class CalibrationModel;
 }
 
 namespace visual {
@@ -45,9 +45,7 @@ namespace controller {
     public:
         CalibrationController(std::shared_ptr<camera::ICamera> camera,
                               std::shared_ptr<arduino::Arduino> arduino,
-                              std::shared_ptr<model::Model> model,
-                              std::shared_ptr<file::CalibrationFileHandler> file_handler,
-                              std::shared_ptr<visual::Visualizer> viewer);
+                              std::shared_ptr<model::CalibrationModel> model);
 
         /**
          * Scan calibration fixture with member info for degs and # of rotations into a new
@@ -63,13 +61,9 @@ namespace controller {
     protected:
         std::shared_ptr<camera::ICamera> camera;
         std::shared_ptr<arduino::Arduino> arduino;
-        std::shared_ptr<model::Model> model;
-        std::shared_ptr<file::CalibrationFileHandler> file_handler;
-        std::shared_ptr<visual::Visualizer> viewer;
+        std::shared_ptr<model::CalibrationModel> model;
         int deg = 15;
         int num_rot = 8;
-        std::vector<equations::Plane> upright_planes;
-        std::vector<equations::Plane> ground_planes;
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
 
 
