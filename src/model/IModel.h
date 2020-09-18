@@ -70,6 +70,23 @@ namespace model {
         }
 
         /**
+         * Crop box and return a copy, does not affect input cloud.
+         */
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> crop_cloud_cpy(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                               float minX, float maxX,
+                               float minY, float maxY,
+                               float minZ, float maxZ) {
+            auto cropped = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+            pcl::CropBox<pcl::PointXYZ> boxFilter;
+            boxFilter.setKeepOrganized(1);
+            boxFilter.setMin(Eigen::Vector4f(minX, minY, minZ, 1.0));
+            boxFilter.setMax(Eigen::Vector4f(maxX, maxY, maxZ, 1.0));
+            boxFilter.setInputCloud(cloud);
+            boxFilter.filter(*cropped);
+            return cropped;
+        }
+
+        /**
         * Downsample the given calibration using voxel grid in place.
          *
         * @param cloud calibration you want to downsample.

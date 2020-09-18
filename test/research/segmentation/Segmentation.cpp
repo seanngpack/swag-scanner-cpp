@@ -13,7 +13,7 @@
 #include <vector>
 #include <memory>
 #include "Visualizer.h"
-#include "Model.h"
+#include "ProcessingModel.h"
 #include "Normal.h"
 #include "Plane.h"
 #include "Point.h"
@@ -25,11 +25,11 @@ namespace fs = std::filesystem;
 class SegmentationFixture : public ::testing::Test {
 
 protected:
-    model::Model *mod;
+    model::ProcessingModel *mod;
     visual::Visualizer *viewer;
 
     virtual void SetUp() {
-        mod = new model::Model();
+        mod = new model::ProcessingModel();
         viewer = new visual::Visualizer();
     }
 
@@ -54,7 +54,7 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
     auto cloud_normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
 
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/segmentation/data/0.pcd", *cloud);;
-    cloud = (mod->crop_cloud(cloud, -.10, .10, -100, .11, -100, .49));
+    cloud = (mod->crop_cloud_cpy(cloud, -.10, .10, -100, .11, -100, .49));
 
     // calculate the normals
     pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;

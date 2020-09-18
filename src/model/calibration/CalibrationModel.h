@@ -57,6 +57,16 @@ namespace model {
          */
         pcl::PointXYZ calculate_center_point();
 
+        /**
+         * Overloaded method also accepts axis direction planes instead of using model's.
+         *
+         * @param axis_dir direction of rotation axis.
+         * @param upright_planes vector of upright plane equations.
+         * @return
+         */
+        pcl::PointXYZ calculate_center_point(const equations::Normal &axis_dir,
+                                             const std::vector<equations::Plane> &upright_planes);
+
 
         /**
          * Project center point to ground plane.

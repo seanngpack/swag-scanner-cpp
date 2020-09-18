@@ -1,3 +1,5 @@
+#define private public
+
 #include <gtest/gtest.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -7,7 +9,7 @@
 #include <vector>
 #include <memory>
 #include "Visualizer.h"
-#include "Model.h"
+#include "CalibrationModel.h"
 #include "Normal.h"
 #include "Plane.h"
 #include "Point.h"
@@ -20,11 +22,11 @@ namespace fs = std::filesystem;
 class CalibrationFixture : public ::testing::Test {
 
 protected:
-    model::Model *mod;
+    model::CalibrationModel *mod;
     visual::Visualizer *viewer;
 
     virtual void SetUp() {
-        mod = new model::Model();
+        mod = new model::CalibrationModel();
         viewer = new visual::Visualizer();
     }
 
@@ -57,7 +59,7 @@ TEST_F(CalibrationFixture, CalibrationTests) {
     }
 
     equations::Normal axis_dir = mod->calculate_axis_dir(ground_planes);
-    pcl::PointXYZ center = mod->calculate_center_pt(axis_dir, upright_planes);
+    pcl::PointXYZ center = mod->calculate_center_point(axis_dir, upright_planes);
     std::cout << axis_dir.A << " " << axis_dir.B << " " << axis_dir.C << std::endl;
     std::cout << "found point" << center.x << " " << center.y << " " << center.z << std::endl;
 

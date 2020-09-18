@@ -47,6 +47,17 @@ pcl::PointXYZ model::CalibrationModel::calculate_center_point() {
     return pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
 }
 
+pcl::PointXYZ model::CalibrationModel::calculate_center_point(const equations::Normal &axis_dir,
+                                                              const std::vector<equations::Plane> &upright_planes) {
+    Eigen::MatrixXd A = build_A_matrix(axis_dir, upright_planes);
+    Eigen::MatrixXd b = build_b_matrix(axis_dir, upright_planes);
+
+    Eigen::MatrixXd sol_mat = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
+    std::vector<double> sol_vec(sol_mat.data(), sol_mat.data() + sol_mat.rows() * sol_mat.cols());
+    return pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
+
+}
+
 pcl::PointXYZ model::CalibrationModel::refine_center_point(double delta) {
     if (center_point.x == 0) {
         throw std::runtime_error("Error, cannot refine because center point has not been calculated yet");

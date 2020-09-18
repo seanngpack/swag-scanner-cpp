@@ -122,12 +122,21 @@ namespace algos {
 
     /**
      * Calculate the transformation matrix from center of turntable to origin (0,0,0).
+     *
      * @param center center of turntable.
      * @param ground_normal normal vector of ground plane.
-     * @return
+     * @return matrix of the transformation.
      */
     Eigen::Matrix4f calc_transform_to_world_matrix(const pcl::PointXYZ &center,
                                                    const equations::Normal &ground_normal);
+
+    /**
+     * Transform cloud to world coordinate and return a copy.
+     */
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+    transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                             const pcl::PointXYZ &center,
+                             const equations::Normal &ground_normal);
 
 
     /**

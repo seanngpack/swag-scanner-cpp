@@ -1,3 +1,5 @@
+#define private public
+
 #include <gtest/gtest.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -9,10 +11,9 @@
 #include <vector>
 #include <memory>
 #include <pcl/visualization/pcl_visualizer.h>
-#include <pcl/console/time.h>   // TicToc
 #include <pcl/filters/filter.h>
 #include "Visualizer.h"
-#include "Model.h"
+#include "ProcessingModel.h"
 #include "Normal.h"
 #include "Plane.h"
 #include "Point.h"
@@ -29,11 +30,11 @@ namespace fs = std::filesystem;
 class RegistrationFixture : public ::testing::Test {
 
 protected:
-    model::Model *mod;
+    model::ProcessingModel *mod;
     visual::Visualizer *viewer;
 
     virtual void SetUp() {
-        mod = new model::Model();
+        mod = new model::ProcessingModel();
         viewer = new visual::Visualizer();
     }
 
@@ -71,7 +72,7 @@ TEST_F(RegistrationFixture, TestRegistration) {
     *global_cloud = *world_clouds[0];
     pcl::PointCloud<pcl::PointXYZ> rotated;
     for (int i = 1; i < world_clouds.size(); i++) {
-        rotated = mod->rotate_cloud_about_z_axis(world_clouds[i], angle * i);
+        rotated = algos::rotate_cloud_about_z_axis(world_clouds[i], angle * i);
         *global_cloud += rotated;
         rotated.clear();
     }
@@ -95,7 +96,7 @@ TEST_F(RegistrationFixture, TestRegistration) {
     for (int i = 1; i < world_clouds.size(); i++) {
         target = world_clouds[i - 1];
         source = world_clouds[i];
-        *src_to_tgt = mod->rotate_cloud_about_z_axis(source, angle); // rotate target to source
+        *src_to_tgt = algos::rotate_cloud_about_z_axis(source, angle); // rotate target to source
 
         pair_trans = mod->icp_register_pair_clouds(src_to_tgt, target, temp);
         // verify icp at each step
@@ -123,7 +124,7 @@ TEST_F(RegistrationFixture, TestRegistration) {
 
     viewer->compareVis(global_cloud, global_cloud_icp);
 
-    global_cloud = mod->remove_outliers(global_cloud);
+    mod->remove_outliers(global_cloud);
     viewer->simpleVis(global_cloud);
 
 }
@@ -140,15 +141,15 @@ TEST_F(RegistrationFixture, TestICPSwag) {
                                         *cloud_src);
     equations::Normal rot_axis(0.002451460662859972, -0.8828002989292145, -0.4696775645017624);
     pcl::PointXYZ center_pt(-0.005918797571212053, 0.06167422607541084, 0.42062291502952576);
-    cloud_tgt = mod->crop_cloud(cloud_tgt, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
-    cloud_src = mod->crop_cloud(cloud_src, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
+    cloud_tgt = mod->crop_cloud_cpy(cloud_tgt, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
+    cloud_src = mod->crop_cloud_cpy(cloud_src, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
 
-    cloud_tgt = mod->transform_cloud_to_world(cloud_tgt, center_pt, rot_axis);
-    cloud_src = mod->transform_cloud_to_world(cloud_src, center_pt, rot_axis);
+    cloud_tgt = algos::transform_cloud_to_world(cloud_tgt, center_pt, rot_axis);
+    cloud_src = algos::transform_cloud_to_world(cloud_src, center_pt, rot_axis);
 
-    cloud_tgt = mod->crop_cloud(cloud_tgt, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
+    cloud_tgt = mod->crop_cloud_cpy(cloud_tgt, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
                                 scan_min_z, scan_max_z);
-    cloud_src = mod->crop_cloud(cloud_src, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
+    cloud_src = mod->crop_cloud_cpy(cloud_src, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
                                 scan_min_z, scan_max_z);
 
     std::vector<int> indices;
@@ -159,7 +160,7 @@ TEST_F(RegistrationFixture, TestICPSwag) {
 
     // somewhat align the calibration to within 4 deg of the target 0 calibration
 //    *cloud_src = mod->rotate_cloud_about_z_axis(cloud_src, 16);
-    *cloud_src = mod->rotate_cloud_about_z_axis(cloud_src, 20);
+    *cloud_src = algos::rotate_cloud_about_z_axis(cloud_src, 20);
 
     std::cout << "rotated" << std::endl;
 

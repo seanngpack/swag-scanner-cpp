@@ -5,7 +5,7 @@
 #include "ScanControls.h"
 #include "CalibrateControls.h"
 #include "MoveControls.h"
-#include "factory/ControllerFactory.h"
+#include "ControllerManager.h"
 #include "ProcessControls.h"
 #include "IControllerGUI.h"
 #include "MoveControllerGUI.h"

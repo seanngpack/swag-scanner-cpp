@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "Algorithms.h"
 #include "Visualizer.h"
-#include "Model.h"
 #include "CameraTypes.h"
 #include <pcl/point_types.h>
 #include <librealsense2/h/rs_types.h>
@@ -84,7 +83,7 @@ TEST_F(AlgosFixture, TestDeprojectDistortion) {
  * Then visualize it.
  */
 TEST_F(AlgosFixture, TestTransformCoordinate) {
-
+    GTEST_SKIP();
     std::string folder_path = "/Users/seanngpack/Library/Application Support/SwagScanner/calibration/test5/12.pcd";
     auto cloud_in = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto result = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
@@ -119,16 +118,7 @@ TEST_F(AlgosFixture, TestTransformCoordinate) {
     std::cout << combined.matrix() << std::endl;
     pcl::transformPointCloud(*cloud_in, *result, combined.matrix());
 
-    model::Model model;
-    result_cropped = model.crop_cloud(result, -.089, .089,
-                                      -.089, .089,
-                                      -.03, .05);
 
-    visual::Visualizer visualizer;
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds{cloud_in, result};
-//    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds{result, result_cropped};
-//    visualizer.simpleVisColor(clouds);
-//    visualizer.ptVis(cloudIn, pt);
 }
 
 
