@@ -144,8 +144,8 @@ TEST_F(RegistrationFixture, TestICPSwag) {
     cloud_tgt = mod->crop_cloud_cpy(cloud_tgt, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
     cloud_src = mod->crop_cloud_cpy(cloud_src, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
 
-    cloud_tgt = algos::transform_cloud_to_world(cloud_tgt, center_pt, rot_axis);
-    cloud_src = algos::transform_cloud_to_world(cloud_src, center_pt, rot_axis);
+    algos::transform_cloud_to_world(cloud_tgt, center_pt, rot_axis);
+    algos::transform_cloud_to_world(cloud_src, center_pt, rot_axis);
 
     cloud_tgt = mod->crop_cloud_cpy(cloud_tgt, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
                                 scan_min_z, scan_max_z);

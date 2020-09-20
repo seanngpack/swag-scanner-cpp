@@ -133,10 +133,9 @@ namespace algos {
     /**
      * Transform cloud to world coordinate and return a copy.
      */
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-    transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                             const pcl::PointXYZ &center,
-                             const equations::Normal &ground_normal);
+    void transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                  const pcl::PointXYZ &center,
+                                  const equations::Normal &ground_normal);
 
 
     /**

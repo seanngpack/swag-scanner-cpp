@@ -135,10 +135,9 @@ Eigen::Matrix4f algos::calc_transform_to_world_matrix(const pcl::PointXYZ &cente
     return transform.matrix();
 }
 
-std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
-algos::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                                const pcl::PointXYZ &center,
-                                const equations::Normal &ground_normal) {
+void algos::transform_cloud_to_world(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                     const pcl::PointXYZ &center,
+                                     const equations::Normal &ground_normal) {
     Eigen::Matrix4f transform = calc_transform_to_world_matrix(center, ground_normal);
     pcl::transformPointCloud(*cloud, *cloud, transform);
 }
