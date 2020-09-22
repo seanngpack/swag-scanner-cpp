@@ -15,11 +15,11 @@ struct FormsPayload : public IFormsPayload {
      * @param deg degree field.
      * @param rot rotation field.
      */
-    explicit FormsPayload(const QString &name, const QString &deg = QString(""), const QString &rot = QString(""));
+    explicit FormsPayload(const QString &name, int angle, int rotations);
 
     std::string name;
-    int deg;
-    int rot;
+    int angle;
+    int rotations;
 };
 
 #endif //SWAG_SCANNER_FORMSPAYLOAD_H

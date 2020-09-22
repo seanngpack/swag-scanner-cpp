@@ -37,6 +37,6 @@ void controller::CalibrationControllerGUI::run() {
 void controller::CalibrationControllerGUI::update(const IFormsPayload &payload) {
     const auto &p = dynamic_cast<const FormsPayload &>(payload);
     model->set_calibration(p.name);
-    this->deg = p.deg;
-    this->num_rot = p.rot;
+    this->deg = p.angle;
+    this->num_rot = p.rotations;
 }

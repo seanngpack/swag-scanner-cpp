@@ -14,10 +14,10 @@ struct MoveFormsPayload : public IFormsPayload {
      * This constructor creates a new MoveFormsPayload object.
      * If both the to and by forms are filled, then it will use the to form.
      *
-     * @param to to field.
-     * @param by by field.
+     * @param method either to or by.
+     * @param deg the number of degrees.
      */
-    explicit MoveFormsPayload(const QString &to, const QString &by);
+    explicit MoveFormsPayload(const MoveMethod &method, int deg);
 
     MoveMethod move_method;
     int deg;
