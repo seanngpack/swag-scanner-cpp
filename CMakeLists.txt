@@ -25,7 +25,7 @@ option(BUILD_TESTS_VISUAL "Build the visual tests" OFF)
 # --------------------------------------------------------------------------------
 find_package(PCL 1.11 REQUIRED)
 find_package(VTK REQUIRED)
-find_package(Qt5 COMPONENTS Core Widgets Quick REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Quick Designer REQUIRED)
 find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(feeling-blue REQUIRED)
@@ -38,15 +38,13 @@ include_directories(
         ${PCL_INCLUDE_DIRS}
         ${realsense_INCLUDE_DIR})
 
-add_subdirectory(extern/json)
-add_subdirectory(extern/SwagScannerWidgets)
-include_directories(extern/SwagScannerWidgets/swagscanner_widgets)
-
-
 # --------------------------------------------------------------------------------
 #                          Subdirectories
 # --------------------------------------------------------------------------------
 
+add_subdirectory(extern/json)
+add_subdirectory(extern/SwagScannerWidgets)
+include_directories(extern/SwagScannerWidgets/swagscanner_widgets/include)
 add_subdirectory(src)
 
 # --------------------------------------------------------------------------------
