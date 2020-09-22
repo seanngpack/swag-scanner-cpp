@@ -22,7 +22,6 @@ SwagGUI::SwagGUI(QWidget *parent, controller::ControllerManager *manager) :
     ui->cloud_viewer->SetRenderWindow(viewer->getRenderWindow());
     viewer->setupInteractor(ui->cloud_viewer->GetInteractor(), ui->cloud_viewer->GetRenderWindow());
     ui->cloud_viewer->update();
-
 }
 
 SwagGUI::~SwagGUI() {
