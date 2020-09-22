@@ -14,6 +14,9 @@ target_link_libraries(swag_scanner_lib PRIVATE
         Qt5::Quick Qt5::Core Qt5::Widgets
         nlohmann_json::nlohmann_json
         spdlog::spdlog
+        ${VTK_LIBRARIES}
+        calibration_basic_widget
+        scan_basic_widget
         )
 
 # --------------------------------------------------------------------------------

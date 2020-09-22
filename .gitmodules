@@ -4,3 +4,6 @@
 [submodule "extern/json"]
 	path = extern/json
 	url = https://github.com/nlohmann/json
+[submodule "extern/SwagScannerWidgets"]
+	path = extern/SwagScannerWidgets
+	url = https://github.com/seanngpack/qt-collapsible-section

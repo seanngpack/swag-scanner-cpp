@@ -70,7 +70,7 @@ std::shared_ptr<model::ProcessingModel> controller::ControllerManagerCache::get_
 
 std::shared_ptr<SwagGUI> controller::ControllerManagerCache::get_gui() {
     if (gui == nullptr) {
-        gui = std::make_shared<SwagGUI>(factory);
+        gui = std::make_shared<SwagGUI>(nullptr, factory);
         gui->show();
         return gui;
     }

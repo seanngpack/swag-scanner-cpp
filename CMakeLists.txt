@@ -24,6 +24,7 @@ option(BUILD_TESTS_VISUAL "Build the visual tests" OFF)
 #                          Find libraries
 # --------------------------------------------------------------------------------
 find_package(PCL 1.11 REQUIRED)
+find_package(VTK REQUIRED)
 find_package(Qt5 COMPONENTS Core Widgets Quick REQUIRED)
 find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
@@ -38,6 +39,8 @@ include_directories(
         ${realsense_INCLUDE_DIR})
 
 add_subdirectory(extern/json)
+add_subdirectory(extern/SwagScannerWidgets)
+include_directories(extern/SwagScannerWidgets/swagscanner_widgets)
 
 
 # --------------------------------------------------------------------------------
