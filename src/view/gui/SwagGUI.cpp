@@ -22,6 +22,10 @@ SwagGUI::SwagGUI(QWidget *parent, controller::ControllerManager *manager) :
     ui->cloud_viewer->SetRenderWindow(viewer->getRenderWindow());
     viewer->setupInteractor(ui->cloud_viewer->GetInteractor(), ui->cloud_viewer->GetRenderWindow());
     ui->cloud_viewer->update();
+
+    // set up basic calibration info
+    cal_angle = ui->calDropdownBasic->get_angle_slider_value() * 3;
+    cal_rotations = ui->calDropdownBasic->get_rotation_slider_value();
 }
 
 SwagGUI::~SwagGUI() {
@@ -47,6 +51,9 @@ void SwagGUI::on_calDropdownBasic_rotationSliderValueChanged(int value) {
 void SwagGUI::on_runCalButton_clicked() {
     controller::IControllerGUI *c = manager->get_gui_controller("calibrate").get();
     FormsPayload vars(cal_name, cal_angle, cal_rotations);
+    std::cout << vars.name << std::endl;
+    std::cout << vars.angle << std::endl;
+    std::cout << vars.rotations << std::endl;
     c->update(vars);
     c->setAutoDelete(false);
     // dont need this for now as the GUI may not have its own console

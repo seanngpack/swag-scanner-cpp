@@ -59,7 +59,6 @@ std::shared_ptr<controller::IControllerGUI> controller::ControllerManager::get_g
     if (name == "scan") {
         return cache->get_scan_controller_gui();
     } else if (name == "calibrate") {
-        std::cout << "calling cache to retrieve controller" << std::endl;
         return cache->get_calibration_controller_gui();
     } else if (name == "move") {
         return cache->get_move_controller_gui();

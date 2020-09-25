@@ -70,6 +70,7 @@ TEST_F(CompareDepthFilteringFixture, CompareCalFixture) {
 
 /**
  * This test compares realsense spatial filtering to pcl bilateral filtering
+ * Results so far: Seems like realsense filtering vastly outperforms pcl bilateral filtering.
  * fixture_raw is raw cloud
  *
  * Doesn't seem like bilateral filtering does a very good job,
@@ -90,10 +91,14 @@ TEST_F(CompareDepthFilteringFixture, CompareRealsensePCL) {
     pcl::io::loadPCDFile<pcl::PointXYZ>(fs::current_path().string() + "/research/depthFiltering/data/fixture_1.pcd",
                                         *fixture_1);
 
+    std::cout << fixture_1->size() << std::endl;
+
+
     *fixture_2 = *fixture_raw;
     mod->crop_cloud(fixture_2, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
-    mod->voxel_grid_filter(fixture_2, .001);
+    mod->voxel_grid_filter(fixture_2, .0005);
     mod->bilateral_filter(fixture_2, 50, .05);
+    std::cout << fixture_2->size() << std::endl;
     *fixture_3 = *fixture_raw;
     mod->bilateral_filter(fixture_3, 1, .01);
     mod->crop_cloud(fixture_3, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
