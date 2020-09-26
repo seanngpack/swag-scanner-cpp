@@ -13,7 +13,8 @@ model::ProcessingModel::ProcessingModel() :
 
 void model::ProcessingModel::set_scan(const std::string &scan_name) {
     file_handler.set_scan(scan_name);
-    clouds = file_handler.load_clouds(CloudType::Type::FILTERED);
+    clouds = file_handler.load_clouds(CloudType::Type::RAW);
+    std::cout << clouds.size() << std::endl;
     // TODO: dont forget to assign cloud names to the map
 }
 

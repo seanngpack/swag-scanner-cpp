@@ -26,6 +26,10 @@ SwagGUI::SwagGUI(QWidget *parent, controller::ControllerManager *manager) :
     // set up basic calibration info
     cal_angle = ui->calDropdownBasic->get_angle_slider_value() * 3;
     cal_rotations = ui->calDropdownBasic->get_rotation_slider_value();
+
+    // set up basic scan info
+    scan_angle = ui->scanDropdownBasic->get_angle_slider_value() * 3;
+    scan_rotations = ui->scanDropdownBasic->get_rotation_slider_value();
 }
 
 SwagGUI::~SwagGUI() {
@@ -71,7 +75,7 @@ void SwagGUI::on_scanNameEdit_textChanged(const QString &text) {
 }
 
 void SwagGUI::on_scanDropdownBasic_angleSliderValueChanged(int value) {
-    scan_angle = value;
+    scan_angle = value * 3;
 }
 
 void SwagGUI::on_scanDropdownBasic_rotationSliderValueChanged(int value) {
@@ -96,7 +100,7 @@ void SwagGUI::on_processNameEdit_textChanged(const QString &text) {
 }
 
 
-void SwagGUI::on_runProcessButton() {
+void SwagGUI::on_runProcessButton_clicked() {
     controller::IControllerGUI *c = manager->get_gui_controller("process").get();
     FormsPayload vars(process_name, 0, 0);
     c->update(vars);

@@ -55,7 +55,7 @@ public Q_SLOTS:
 
     void on_processNameEdit_textChanged(const QString &text);
 
-    void on_runProcessButton();
+    void on_runProcessButton_clicked();
 
     // table slots
 

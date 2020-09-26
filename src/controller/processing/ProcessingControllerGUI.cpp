@@ -12,6 +12,8 @@ controller::ProcessingControllerGUI::ProcessingControllerGUI(std::shared_ptr<mod
 void controller::ProcessingControllerGUI::run() {
     emit update_console("Starting processing");
     ProcessingController::run();
+
+    gui->
     emit update_console("Processing done!");
 }
 
