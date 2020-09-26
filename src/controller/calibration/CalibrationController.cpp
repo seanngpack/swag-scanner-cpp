@@ -35,6 +35,7 @@ void controller::CalibrationController::scan() {
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = camera->create_point_cloud(depth_frame, intrin);
 
         model->crop_cloud(cloud, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
+        model->bilateral_filter(cloud, 10, .001);
         model->voxel_grid_filter(cloud, .001);
         model->add_cloud(cloud, cloud_name);
         model->save_cloud(cloud_name);

@@ -19,19 +19,14 @@ void controller::ScanControllerGUI::run() {
     model->update_info_json(deg, num_rot);
 
     const camera::intrinsics intrin = camera->get_intrinsics();
-    const camera::intrinsics intrin_filt = camera->get_intrinsics_processed();
     emit update_console("Started scanning...");
 
     if (num_rot == 0) {
         camera->scan();
         std::vector<uint16_t> depth_frame_raw = camera->get_depth_frame();
-        std::vector<uint16_t> depth_frame_filt = camera->get_depth_frame_processed();
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_raw = camera->create_point_cloud(depth_frame_raw, intrin);
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filt = camera->create_point_cloud(depth_frame_filt,
-                                                                                                intrin_filt);
-        model->add_cloud(cloud_filt, "0.pcd");
-        model->save_cloud(cloud_raw, "0.pcd", CloudType::Type::RAW);
-        model->save_cloud(cloud_filt, "0.pcd", CloudType::Type::FILTERED);
+        model->add_cloud(cloud_raw, "0.pcd");
+        model->save_cloud("0.pcd", CloudType::Type::RAW);
     }
 
     for (int i = 0; i < num_rot; i++) {
@@ -41,13 +36,8 @@ void controller::ScanControllerGUI::run() {
         std::this_thread::sleep_for(timespan);
         camera->scan();
         std::vector<uint16_t> depth_frame_raw = camera->get_depth_frame();
-        std::vector<uint16_t> depth_frame_filt = camera->get_depth_frame_processed();
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_raw = camera->create_point_cloud(depth_frame_raw, intrin);
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filt = camera->create_point_cloud(depth_frame_filt,
-                                                                                               intrin_filt);
-        model->add_cloud(cloud_filt, "0.pcd");
-        model->save_cloud(cloud_raw, name, CloudType::Type::RAW);
-        model->save_cloud(cloud_filt, name, CloudType::Type::FILTERED);
+        model->save_cloud(name, CloudType::Type::RAW);
         arduino->rotate_by(deg);
         // add a delay to avoid ghosting
         std::this_thread::sleep_for(timespan);

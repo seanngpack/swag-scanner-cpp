@@ -29,7 +29,9 @@ void model::ProcessingModel::save_cloud(
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
 }
 
-void model::ProcessingModel::filter(int mean_k,
+void model::ProcessingModel::filter(int sigma_s,
+                                    float sigma_r,
+                                    int mean_k,
                                     float thresh_mult) {
     using namespace constants;
     for (int i = 0; i < clouds.size(); i++) {
@@ -37,6 +39,7 @@ void model::ProcessingModel::filter(int mean_k,
                    scan_min_x, scan_max_x,
                    scan_min_y, scan_max_y,
                    scan_min_z, scan_max_z);
+        bilateral_filter(clouds[i], sigma_s, sigma_r);
         remove_nan(clouds[i]);
         remove_outliers(clouds[i]);
         // do cloud saving here, try to get the name from the map

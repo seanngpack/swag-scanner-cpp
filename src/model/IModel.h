@@ -110,7 +110,7 @@ namespace model {
          * //Note: when I move on to XYZRGB, use just the bilateral filter
          *
          * @param cloud cloud to filter.
-         * @param sigma_s size of Gaussian bialteral filter window.
+         * @param sigma_s size of Gaussian bilateral filter window.
          * @param sigma_r  the standard deviation of the Gaussian used to control how much an
          * adjacent pixel is downweighted because of the intensity difference (depth in our case).
          */
