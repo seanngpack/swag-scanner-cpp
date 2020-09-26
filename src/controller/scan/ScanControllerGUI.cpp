@@ -36,11 +36,8 @@ void controller::ScanControllerGUI::run() {
         std::chrono::milliseconds timespan(500);
         std::this_thread::sleep_for(timespan);
         camera->scan();
-        std::cout << "made it past scan" << std::endl;
         std::vector<uint16_t> depth_frame_raw = camera->get_depth_frame();
-        std::cout << "made it past get depth frame" << std::endl;
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_raw = camera->create_point_cloud(depth_frame_raw, intrin);
-        std::cout << "made it past creating cloud" << std::endl;
         model->add_cloud(cloud_raw, name);
         model->save_cloud(name, CloudType::Type::RAW);
         arduino->rotate_by(deg);
