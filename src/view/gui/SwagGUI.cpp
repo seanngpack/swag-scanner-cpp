@@ -5,6 +5,8 @@
 #include "FormsPayload.h"
 #include "IControllerGUI.h"
 #include "MoveControllerGUI.h"
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 #include <iostream>
 #include <QThread>
 
@@ -34,6 +36,16 @@ SwagGUI::SwagGUI(QWidget *parent, controller::ControllerManager *manager) :
 
 SwagGUI::~SwagGUI() {
     delete ui;
+}
+
+// --------------------------------------------------------------------------------
+//                          Public methods
+// --------------------------------------------------------------------------------
+
+void SwagGUI::display_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+    viewer->addPointCloud(cloud, "cloud");
+    viewer->resetCamera();
+    ui->cloud_viewer->update();
 }
 
 // --------------------------------------------------------------------------------

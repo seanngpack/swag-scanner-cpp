@@ -22,6 +22,14 @@ namespace Ui {
     class SwagGUI;
 }
 
+namespace pcl
+{
+    class PointXYZ;
+    template<class pointT> class PointCloud;
+}
+template<class T>
+using foo = boost::shared_ptr<pcl::PointCloud<T>>;
+
 class SwagGUI : public QMainWindow {
 Q_OBJECT
 
@@ -29,6 +37,11 @@ public:
     explicit SwagGUI(QWidget *parent = 0, controller::ControllerManager *manager = nullptr);
 
     ~SwagGUI();
+
+    /**
+     * Show the cloud in the vtk viewer. Does not support modifications yet.
+     */
+    void display_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
 public Q_SLOTS:
 
