@@ -44,7 +44,8 @@ pcl::PointXYZ model::CalibrationModel::calculate_center_point() {
     // solve!!
     Eigen::MatrixXd sol_mat = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
     std::vector<double> sol_vec(sol_mat.data(), sol_mat.data() + sol_mat.rows() * sol_mat.cols());
-    return pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
+    center_point = pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
+    return center_point;
 }
 
 pcl::PointXYZ model::CalibrationModel::calculate_center_point(const equations::Normal &axis_dir,

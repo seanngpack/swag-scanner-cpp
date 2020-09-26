@@ -13,7 +13,7 @@ model::ProcessingModel::ProcessingModel() :
 
 void model::ProcessingModel::set_scan(const std::string &scan_name) {
     file_handler.set_scan(scan_name);
-    clouds = file_handler.load_clouds(CloudType::Type::FILTERED);
+    clouds = file_handler.load_clouds(CloudType::Type::RAW);
     // TODO: dont forget to assign cloud names to the map
 }
 
@@ -29,17 +29,22 @@ void model::ProcessingModel::save_cloud(
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
 }
 
-void model::ProcessingModel::filter(int mean_k,
+void model::ProcessingModel::filter(int sigma_s,
+                                    float sigma_r,
+                                    int mean_k,
                                     float thresh_mult) {
     using namespace constants;
-    for (int i = 0; i < clouds.size(); i++) {
+    int clouds_vector_size = clouds.size();
+    for (int i = 0; i < clouds_vector_size; i++) {
         crop_cloud(clouds[i],
                    scan_min_x, scan_max_x,
                    scan_min_y, scan_max_y,
                    scan_min_z, scan_max_z);
+        bilateral_filter(clouds[i], sigma_s, sigma_r);
         remove_nan(clouds[i]);
         remove_outliers(clouds[i]);
         // do cloud saving here, try to get the name from the map
+        add_cloud(clouds[i], std::to_string(i) + ".pcd");
         save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
     }
 }
@@ -71,6 +76,8 @@ void model::ProcessingModel::register_clouds() {
         rotated = algos::rotate_cloud_about_z_axis(clouds[i], angle * i);
         *global_cloud += rotated;
     }
+    remove_outliers(global_cloud, 50, 1);
+    add_cloud(global_cloud, "REGISTERED.pcd");
     save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::PROCESSED);
 }
 

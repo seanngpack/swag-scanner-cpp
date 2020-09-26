@@ -5,6 +5,8 @@
 #include "FormsPayload.h"
 #include "IControllerGUI.h"
 #include "MoveControllerGUI.h"
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
 #include <iostream>
 #include <QThread>
 
@@ -23,10 +25,27 @@ SwagGUI::SwagGUI(QWidget *parent, controller::ControllerManager *manager) :
     viewer->setupInteractor(ui->cloud_viewer->GetInteractor(), ui->cloud_viewer->GetRenderWindow());
     ui->cloud_viewer->update();
 
+    // set up basic calibration info
+    cal_angle = ui->calDropdownBasic->get_angle_slider_value() * 3;
+    cal_rotations = ui->calDropdownBasic->get_rotation_slider_value();
+
+    // set up basic scan info
+    scan_angle = ui->scanDropdownBasic->get_angle_slider_value() * 3;
+    scan_rotations = ui->scanDropdownBasic->get_rotation_slider_value();
 }
 
 SwagGUI::~SwagGUI() {
     delete ui;
+}
+
+// --------------------------------------------------------------------------------
+//                          Public methods
+// --------------------------------------------------------------------------------
+
+void SwagGUI::display_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+    viewer->addPointCloud(cloud, "cloud");
+    viewer->resetCamera();
+    ui->cloud_viewer->update();
 }
 
 // --------------------------------------------------------------------------------
@@ -48,6 +67,9 @@ void SwagGUI::on_calDropdownBasic_rotationSliderValueChanged(int value) {
 void SwagGUI::on_runCalButton_clicked() {
     controller::IControllerGUI *c = manager->get_gui_controller("calibrate").get();
     FormsPayload vars(cal_name, cal_angle, cal_rotations);
+    std::cout << vars.name << std::endl;
+    std::cout << vars.angle << std::endl;
+    std::cout << vars.rotations << std::endl;
     c->update(vars);
     c->setAutoDelete(false);
     // dont need this for now as the GUI may not have its own console
@@ -65,7 +87,7 @@ void SwagGUI::on_scanNameEdit_textChanged(const QString &text) {
 }
 
 void SwagGUI::on_scanDropdownBasic_angleSliderValueChanged(int value) {
-    scan_angle = value;
+    scan_angle = value * 3;
 }
 
 void SwagGUI::on_scanDropdownBasic_rotationSliderValueChanged(int value) {
@@ -90,7 +112,7 @@ void SwagGUI::on_processNameEdit_textChanged(const QString &text) {
 }
 
 
-void SwagGUI::on_runProcessButton() {
+void SwagGUI::on_runProcessButton_clicked() {
     controller::IControllerGUI *c = manager->get_gui_controller("process").get();
     FormsPayload vars(process_name, 0, 0);
     c->update(vars);

@@ -45,12 +45,16 @@ namespace model {
                                                  std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &transformed_cloud);
 
         /**
-         *  Remove NaN points, remove outliers.
+         *  Do cropping, Run bilateral filter, Remove NaN points, remove outliers.
          *
+         * @param sigma_s filter window for bilateral filter.
+         * @param sigma_r standard deviation of the gaussian for bilateral filter.
          * @param mean_k number of neighbors to analyze.
          * @param thresh_mult multipler for standard deviation, members outside st will be removed.
          */
-        void filter(int mean_k = 50,
+        void filter(int sigma_s = 10,
+                    float sigma_r = .01,
+                    int mean_k = 50,
                     float thresh_mult = 1);
 
         /**

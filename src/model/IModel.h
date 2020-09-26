@@ -7,6 +7,7 @@
 #include <pcl/filters/crop_box.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/filter.h>
+#include <pcl/filters/fast_bilateral.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 
 namespace pcl {
@@ -102,6 +103,25 @@ namespace model {
             grid.filter(*cloud);
             std::cout << "PointCloud after filtering: " << cloud->width * cloud->height
                       << " data points (" << pcl::getFieldsList(*cloud) << ")." << std::endl;
+        }
+
+        /**
+         * Fast Bilateral filtering for cloud in place.
+         * //Note: when I move on to XYZRGB, use just the bilateral filter
+         *
+         * @param cloud cloud to filter.
+         * @param sigma_s size of Gaussian bilateral filter window.
+         * @param sigma_r  the standard deviation of the Gaussian used to control how much an
+         * adjacent pixel is downweighted because of the intensity difference (depth in our case).
+         */
+        inline void bilateral_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                     float sigma_s = 5,
+                                     float sigma_r = 5e-3) {
+            pcl::FastBilateralFilter<pcl::PointXYZ> bilateral;
+            bilateral.setInputCloud(cloud);
+            bilateral.setSigmaS(sigma_s);
+            bilateral.setSigmaR(sigma_r);
+            bilateral.applyFilter(*cloud);
         }
 
 
