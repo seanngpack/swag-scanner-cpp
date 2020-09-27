@@ -32,6 +32,9 @@ SwagGUI::SwagGUI(QWidget *parent, controller::ControllerManager *manager) :
     // set up basic scan info
     scan_angle = ui->scanDropdownBasic->get_angle_slider_value() * 3;
     scan_rotations = ui->scanDropdownBasic->get_rotation_slider_value();
+
+    // set up left widget stack current page to scanning
+    ui->leftStack->setCurrentIndex(2);
 }
 
 SwagGUI::~SwagGUI() {
@@ -152,5 +155,29 @@ void SwagGUI::on_setHomeButton_clicked() {
     // intentially casting because the alternative would be to use a HomeController class
     // where the run() method sets home. I think this is cleaner.
     dynamic_cast<controller::MoveControllerGUI *>(c)->set_home();
+}
+
+// --------------------------------------------------------------------------------
+//                          Menu slots
+// --------------------------------------------------------------------------------
+
+void SwagGUI::on_setupMenuButton_clicked() {
+    ui->leftStack->setCurrentIndex(0);
+}
+
+void SwagGUI::on_calibrateMenuButton_clicked() {
+    ui->leftStack->setCurrentIndex(1);
+}
+
+void SwagGUI::on_scanMenuButton_clicked() {
+    ui->leftStack->setCurrentIndex(2);
+}
+
+void SwagGUI::on_processMenuButton_clicked() {
+    ui->leftStack->setCurrentIndex(3);
+}
+
+void SwagGUI::on_editMenuButton_clicked() {
+    ui->leftStack->setCurrentIndex(4);
 }
 
