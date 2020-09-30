@@ -58,7 +58,7 @@ TEST_F(RegistrationFixture, TestRegistration) {
     using namespace constants;
 
     auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    auto *file_handler = new file::ScanFileHandler();
+    auto *file_handler = new file::ScanFileHandler("sponge_one_more");
     auto world_clouds = file_handler->load_clouds(CloudType::Type::FILTERED);
 
 //    file_handler->save_cloud(world_clouds[0], "0.pcd", CloudType::Type::PROCESSED);
@@ -98,26 +98,13 @@ TEST_F(RegistrationFixture, TestRegistration) {
         source = world_clouds[i];
         *src_to_tgt = algos::rotate_cloud_about_z_axis(source, angle); // rotate target to source
 
-        pair_trans = mod->icp_register_pair_clouds(src_to_tgt, target, temp);
-        // verify icp at each step
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = {source, src_to_tgt};
-//        viewer->simpleVis(clouds);
         clouds = {target, temp};
-//        viewer->simpleVis(clouds);
 
-        pcl::transformPointCloud(*temp, *result, global_trans);
-
-        // visualize result as red, and original target calibration [0] as white
         clouds = {world_clouds[0], result};
-//        viewer->simpleVis(clouds);
-        // rotate global trans by angle * i
-        // note, rotating in negative direction
-        global_trans *= pair_trans;
-        global_trans *= rot_trans.matrix();
+
 
         *global_cloud_icp += *result;
-
-        // shgows the global calibration beind added
 //        viewer->simpleVis(global_cloud_icp);
 
     }
