@@ -2,6 +2,8 @@
 #include "ProcessingModel.h"
 #include "SwagGUI.h"
 #include "CloudType.h"
+#include "FormsPayload.h"
+#include <filesystem>
 
 controller::EditingControllerGUI::EditingControllerGUI(std::shared_ptr<model::ProcessingModel> model,
                                                        std::shared_ptr<SwagGUI> gui) :
@@ -9,15 +11,13 @@ controller::EditingControllerGUI::EditingControllerGUI(std::shared_ptr<model::Pr
         IControllerGUI(std::move(gui)) {}
 
 void controller::EditingControllerGUI::run() {
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = model->load_cloud("REGISTERED",
+    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = model->load_cloud("REGISTERED.pcd",
                                                                               CloudType::Type::REGISTERED);
     gui->display_cloud(cloud);
 }
 
-void controller::EditingControllerGUI::set_cloud_path(const std::string &path) {
-    cloud_path = path;
-}
-
 void controller::EditingControllerGUI::update(const IFormsPayload &payload) {
-    // do nothing for now.
+    const auto &p = dynamic_cast<const FormsPayload &>(payload);
+    std::filesystem::path scan_path = p.name;
+    model->set_scan(scan_path.filename().string());
 }

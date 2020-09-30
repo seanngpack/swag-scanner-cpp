@@ -65,8 +65,9 @@ void file::ScanFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::ScanFileHandler::load_cloud(const std::string &cloud_name,
                                                                                   const CloudType::Type &cloud_type) {
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud;
+    auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     fs::path open_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
+    std::cout << open_path << std::endl;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
     }

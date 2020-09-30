@@ -47,6 +47,7 @@ SwagGUI::~SwagGUI() {
 // --------------------------------------------------------------------------------
 
 void SwagGUI::display_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+    viewer->removeAllPointClouds();
     viewer->addPointCloud(cloud, "cloud");
     viewer->resetCamera();
     ui->cloud_viewer->update();
@@ -168,6 +169,15 @@ void SwagGUI::on_openProjectButton_clicked() {
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
     std::cout << dir.toUtf8().constData() << std::endl;
+
+    controller::IControllerGUI *c = manager->get_gui_controller("edit").get();
+    std::cout << c << std::endl;
+
+    // TODO: fix this horrible way to move data lol
+    FormsPayload vars(dir.toUtf8().constData(), 0,0);
+    c->update(vars);
+    c->setAutoDelete(false);
+    thread_pool->start(c);
 }
 
 void SwagGUI::on_saveProjectButton_clicked() {

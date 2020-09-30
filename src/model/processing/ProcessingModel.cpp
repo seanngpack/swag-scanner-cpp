@@ -17,6 +17,7 @@ std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::ProcessingModel::load_clo
 
 void model::ProcessingModel::set_scan(const std::string &scan_name) {
     file_handler.set_scan(scan_name);
+    // TODO: probably decouple loading clouds from this method
     clouds = file_handler.load_clouds(CloudType::Type::RAW);
     // TODO: dont forget to assign cloud names to the map
 }

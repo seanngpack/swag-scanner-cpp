@@ -30,15 +30,6 @@ namespace controller {
         void run() override;
 
         /**
-         * Set the path of the cloud to load.
-         *
-         * Note: Right now this method does nothing
-         *
-         * @param path path of the cloud to load.
-         */
-        void set_cloud_path(const std::string &path);
-
-        /**
          * TBH, this doesn't really need to anything either, but need to override to conform to superclass.
          */
         void update(const IFormsPayload &payload) override;
