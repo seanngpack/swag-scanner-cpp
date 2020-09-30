@@ -87,6 +87,7 @@ namespace file {
          */
         void update_info_json(const std::string &date,
                               int angle,
+                              int num_rot,
                               const std::string &cal = "None");
 
     private:

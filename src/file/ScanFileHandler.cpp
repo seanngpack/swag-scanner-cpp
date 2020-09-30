@@ -119,10 +119,12 @@ json file::ScanFileHandler::get_info_json() {
 
 void file::ScanFileHandler::update_info_json(const std::string &date,
                                              int angle,
+                                             int num_rot,
                                              const std::string &cal) {
     json info_json = get_info_json();
     info_json["date"] = date;
     info_json["angle"] = angle;
+    info_json["rotations"] = num_rot;
     info_json["calibration"] = cal;
 
     std::ofstream updated_file(scan_folder_path / "info/info.json");

@@ -34,7 +34,7 @@ void model::ScanModel::update_info_json(int deg, int num_rot) {
     fs::path latest_cal_path = file_handler.find_latest_calibration();
     std::string info_json_path = latest_cal_path.string()
                                  + "/" + latest_cal_path.filename().string() + ".json";;
-    file_handler.update_info_json(date, deg, info_json_path);
+    file_handler.update_info_json(date, deg, num_rot, info_json_path);
 }
 
 
