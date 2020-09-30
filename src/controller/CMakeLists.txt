@@ -1,4 +1,5 @@
 add_subdirectory(calibration)
+add_subdirectory(edit)
 add_subdirectory(manager)
 add_subdirectory(home)
 add_subdirectory(move)

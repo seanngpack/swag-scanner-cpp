@@ -11,6 +11,9 @@ namespace model {
 
         ~ProcessingModel() = default;
 
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> load_cloud(const std::string &name,
+                                                                   const CloudType::Type type);
+
         /**
          * Set the scan to the input. This triggers the filehandler to set the current working directory
          * to the given input. This will also clear any existing clouds in the model.

@@ -25,8 +25,9 @@ namespace controller {
 
 
         /**
+         * Update params using given payload.
          *
-         * @param payload
+         * @param payload payload containing cloud path info.
          */
         void update(const IFormsPayload &payload) override;
 

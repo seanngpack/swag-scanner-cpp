@@ -10,6 +10,10 @@ using json = nlohmann::json;
 model::ProcessingModel::ProcessingModel() :
         file_handler() {}
 
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::ProcessingModel::load_cloud(const std::string &name,
+                                                                                   const CloudType::Type type) {
+    return file_handler.load_cloud(name, type);
+}
 
 void model::ProcessingModel::set_scan(const std::string &scan_name) {
     file_handler.set_scan(scan_name);
@@ -22,10 +26,9 @@ void model::ProcessingModel::save_cloud(const std::string &cloud_name, const Clo
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
 }
 
-void model::ProcessingModel::save_cloud(
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-        const std::string &cloud_name,
-        const CloudType::Type &cloud_type) {
+void model::ProcessingModel::save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+                                        const std::string &cloud_name,
+                                        const CloudType::Type &cloud_type) {
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
 }
 

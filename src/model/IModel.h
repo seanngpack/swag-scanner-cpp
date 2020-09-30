@@ -1,6 +1,7 @@
 #ifndef SWAG_SCANNER_IMODEL_H
 #define SWAG_SCANNER_IMODEL_H
 
+#include "CloudType.h"
 #include <memory>
 #include <vector>
 #include <map>
@@ -73,10 +74,11 @@ namespace model {
         /**
          * Crop box and return a copy, does not affect input cloud.
          */
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> crop_cloud_cpy(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
-                               float minX, float maxX,
-                               float minY, float maxY,
-                               float minZ, float maxZ) {
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+        crop_cloud_cpy(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                       float minX, float maxX,
+                       float minY, float maxY,
+                       float minZ, float maxZ) {
             auto cropped = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
             pcl::CropBox<pcl::PointXYZ> boxFilter;
             boxFilter.setKeepOrganized(1);

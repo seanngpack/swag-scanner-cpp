@@ -20,6 +20,7 @@ namespace model {
         ScanModel();
 
         ~ScanModel() = default;
+        
 
         /**
          * Set the scan to the input. This triggers the filehandler to set the current working directory
