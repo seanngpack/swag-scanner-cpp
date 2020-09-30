@@ -5,6 +5,7 @@
 #include "FormsPayload.h"
 #include "IControllerGUI.h"
 #include "MoveControllerGUI.h"
+#include "IFileHandler.h"
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <iostream>
@@ -155,6 +156,22 @@ void SwagGUI::on_setHomeButton_clicked() {
     // intentially casting because the alternative would be to use a HomeController class
     // where the run() method sets home. I think this is cleaner.
     dynamic_cast<controller::MoveControllerGUI *>(c)->set_home();
+}
+
+// --------------------------------------------------------------------------------
+//                          edit slots
+// --------------------------------------------------------------------------------
+
+void SwagGUI::on_openProjectButton_clicked() {
+    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                                                    QString::fromStdString(file::IFileHandler::swag_scanner_path.string() + "/scans"),
+                                                    QFileDialog::ShowDirsOnly
+                                                    | QFileDialog::DontResolveSymlinks);
+    std::cout << dir.toUtf8().constData() << std::endl;
+}
+
+void SwagGUI::on_saveProjectButton_clicked() {
+
 }
 
 // --------------------------------------------------------------------------------

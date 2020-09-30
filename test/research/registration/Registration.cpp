@@ -59,7 +59,7 @@ TEST_F(RegistrationFixture, TestRegistration) {
 
     auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     auto *file_handler = new file::ScanFileHandler();
-    auto world_clouds = file_handler->load_clouds(CloudType::Type::PROCESSED);
+    auto world_clouds = file_handler->load_clouds(CloudType::Type::FILTERED);
 
 //    file_handler->save_cloud(world_clouds[0], "0.pcd", CloudType::Type::PROCESSED);
 //    file_handler->save_cloud(world_clouds[1], "angle.pcd", CloudType::Type::PROCESSED);

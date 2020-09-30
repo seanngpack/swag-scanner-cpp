@@ -84,6 +84,12 @@ public Q_SLOTS:
 
     void on_setHomeButton_clicked();
 
+    // edit slots
+
+    void on_openProjectButton_clicked();
+
+    void on_saveProjectButton_clicked();
+
     // menu slots
     void on_setupMenuButton_clicked();
 
@@ -94,6 +100,7 @@ public Q_SLOTS:
     void on_processMenuButton_clicked();
 
     void on_editMenuButton_clicked();
+
 
 
 protected:

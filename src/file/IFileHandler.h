@@ -18,6 +18,7 @@ namespace file {
      */
     class IFileHandler {
     public:
+        static std::filesystem::path swag_scanner_path;
 
         /**
          * Checks to see if a /SwagScanner folder exists in Library/Application Support.
@@ -115,7 +116,7 @@ namespace file {
         }
 
     protected:
-        static std::filesystem::path swag_scanner_path;
+
         std::filesystem::path scan_folder_path;
         std::string scan_name;
 

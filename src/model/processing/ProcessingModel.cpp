@@ -45,7 +45,7 @@ void model::ProcessingModel::filter(int sigma_s,
         remove_outliers(clouds[i]);
         // do cloud saving here, try to get the name from the map
         add_cloud(clouds[i], std::to_string(i) + ".pcd");
-        save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
+        save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
     }
 }
 
@@ -78,7 +78,7 @@ void model::ProcessingModel::register_clouds() {
     }
     remove_outliers(global_cloud, 50, 1);
     add_cloud(global_cloud, "REGISTERED.pcd");
-    save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::PROCESSED);
+    save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::REGISTERED);
 }
 
 Eigen::Matrix4f
