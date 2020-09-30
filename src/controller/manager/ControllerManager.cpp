@@ -16,6 +16,7 @@
 #include "MoveController.h"
 #include "MoveControllerGUI.h"
 #include "CalibrationControllerGUI.h"
+#include "EditingControllerGUI.h"
 #include "HomeController.h"
 #include "ControllerManagerCache.h"
 #include "MoveController.h"
@@ -64,6 +65,8 @@ std::shared_ptr<controller::IControllerGUI> controller::ControllerManager::get_g
         return cache->get_move_controller_gui();
     } else if (name == "process") {
         return cache->get_process_controller_gui();
+    } else if (name == "edit") {
+        return cache->get_edit_controller_gui();
     } else {
         throw std::invalid_argument("Error, must enter a valid controller name.");
     }

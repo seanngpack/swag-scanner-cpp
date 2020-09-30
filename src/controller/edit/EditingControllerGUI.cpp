@@ -17,3 +17,7 @@ void controller::EditingControllerGUI::run() {
 void controller::EditingControllerGUI::set_cloud_path(const std::string &path) {
     cloud_path = path;
 }
+
+void controller::EditingControllerGUI::update(const IFormsPayload &payload) {
+    // do nothing for now.
+}

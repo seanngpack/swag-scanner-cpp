@@ -38,6 +38,11 @@ namespace controller {
          */
         void set_cloud_path(const std::string &path);
 
+        /**
+         * TBH, this doesn't really need to anything either, but need to override to conform to superclass.
+         */
+        void update(const IFormsPayload &payload) override;
+
     protected:
         std::shared_ptr<model::ProcessingModel> model;
         std::string cloud_path;

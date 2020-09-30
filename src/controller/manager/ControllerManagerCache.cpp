@@ -13,6 +13,7 @@
 #include "ScanControllerGUI.h"
 #include "MoveController.h"
 #include "MoveControllerGUI.h"
+#include "EditingControllerGUI.h"
 #include "CalibrationControllerGUI.h"
 #include "HomeController.h"
 #include "SwagGUI.h"
@@ -205,6 +206,14 @@ std::shared_ptr<controller::ProcessingControllerGUI> controller::ControllerManag
     return process_controller_gui;
 }
 
+std::shared_ptr<controller::EditingControllerGUI> controller::ControllerManagerCache::get_edit_controller_gui() {
+    if (edit_controller_gui == nullptr) {
+        edit_controller_gui = std::make_shared<controller::EditingControllerGUI>(get_processing_model(),
+                                                                                 get_gui());
+        return edit_controller_gui;
+    }
+    return edit_controller_gui;
+}
 
 std::shared_ptr<controller::MoveController>
 controller::ControllerManagerCache::get_move_controller(const boost::program_options::variables_map &vm) {
