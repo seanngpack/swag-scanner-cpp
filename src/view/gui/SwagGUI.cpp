@@ -168,10 +168,8 @@ void SwagGUI::on_openProjectButton_clicked() {
                                                     QString::fromStdString(file::IFileHandler::swag_scanner_path.string() + "/scans"),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
-    std::cout << dir.toUtf8().constData() << std::endl;
 
     controller::IControllerGUI *c = manager->get_gui_controller("edit").get();
-    std::cout << c << std::endl;
 
     // TODO: fix this horrible way to move data lol
     FormsPayload vars(dir.toUtf8().constData(), 0,0);
