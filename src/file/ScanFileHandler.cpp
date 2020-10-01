@@ -106,10 +106,6 @@ file::ScanFileHandler::load_clouds(const CloudType::Type &cloud_type) {
     return cloud_vector;
 }
 
-std::string file::ScanFileHandler::get_scan_name() {
-    return this->scan_name;
-}
-
 
 json file::ScanFileHandler::get_info_json() {
     std::ifstream info(scan_folder_path / "info/info.json");
@@ -183,4 +179,5 @@ void file::ScanFileHandler::set_swag_scanner_info_latest_scan(const fs::path &fo
     std::ofstream updated_file(swag_scanner_path / "settings/info.json");
     updated_file << std::setw(4) << settings_json << std::endl; // write to file
 }
+
 

@@ -11,6 +11,10 @@ namespace pcl {
     class PointCloud;
 }
 
+namespace spdlog {
+    class logger;
+}
+
 namespace model {
     /**
      * Represents a model for scanning.
@@ -20,7 +24,7 @@ namespace model {
         ScanModel();
 
         ~ScanModel() = default;
-        
+
 
         /**
          * Set the scan to the input. This triggers the filehandler to set the current working directory
@@ -52,6 +56,7 @@ namespace model {
 
     private:
         file::ScanFileHandler file_handler;
+        std::shared_ptr<spdlog::logger> logger;
 
     };
 }

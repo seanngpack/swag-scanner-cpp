@@ -96,9 +96,6 @@ std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> file::CalibrationFi
     return cloud_vector;
 }
 
-std::string file::CalibrationFileHandler::get_scan_name() {
-    return this->scan_name;
-}
 
 void file::CalibrationFileHandler::update_calibration_json(const equations::Normal &dir, const equations::Point &pt) {
     json calibration_json = get_calibration_json();

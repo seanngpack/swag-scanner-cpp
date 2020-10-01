@@ -1,10 +1,14 @@
 #include "ScanModel.h"
+#include "Logger.h"
 #include <filesystem>
+
 
 namespace fs = std::filesystem;
 
 model::ScanModel::ScanModel() :
-        file_handler() {}
+        file_handler(), logger(logger::get_file_logger()) {
+    logger::set_file_logger_location(file_handler.get_scan_path());
+}
 
 void model::ScanModel::set_scan(const std::string &scan_name) {
     file_handler.set_scan(scan_name);
