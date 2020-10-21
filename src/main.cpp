@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
     if (vm.count("gui")) {
         QApplication app(argc, argv);
         controller::ControllerManager factory;
+
         std::shared_ptr<SwagGUI> gui = factory.get_gui();
         gui->show();
         return app.exec();
