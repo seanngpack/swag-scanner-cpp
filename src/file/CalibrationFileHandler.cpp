@@ -1,6 +1,7 @@
 #include "CalibrationFileHandler.h"
 #include "Normal.h"
 #include "Point.h"
+#include "Logger.h"
 #include <pcl/io/pcd_io.h>
 #include <memory>
 
@@ -9,8 +10,9 @@ using json = nlohmann::json;
 
 file::CalibrationFileHandler::CalibrationFileHandler() {
     scan_folder_path = find_latest_calibration();
-    std::cout << scan_folder_path << std::endl;
     scan_name = scan_folder_path.stem().string();
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/log.txt");
 }
 
 file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {
@@ -20,10 +22,14 @@ file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {
         scan_folder_path = find_latest_calibration();
         scan_name = scan_folder_path.stem().string();
     }
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/log.txt");
 }
 
 file::CalibrationFileHandler::CalibrationFileHandler(const char *scan_name) {
     set_calibration((std::string) scan_name);
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/log.txt");
 }
 
 void file::CalibrationFileHandler::auto_create_new_calibration() {
@@ -42,6 +48,7 @@ void file::CalibrationFileHandler::set_calibration(const std::string &cal_name) 
         create_directory(scan_folder_path);
         create_calibration_json();
     }
+    logger::set_file_logger_location(get_scan_path() + "/log.txt");
 }
 
 void file::CalibrationFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
@@ -51,6 +58,7 @@ void file::CalibrationFileHandler::save_cloud(const std::shared_ptr<pcl::PointCl
     fs::path out_path = scan_folder_path / cloud_name;
     std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
+    logger::file_logger_write("saved cloud: " + cloud_name + " of type: " + CloudType::String(cloud_type));
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::CalibrationFileHandler::load_cloud(const std::string &cloud_name,

@@ -8,9 +8,7 @@
 
 using json = nlohmann::json;
 
-model::ProcessingModel::ProcessingModel() :
-        file_handler(),
-        logger(logger::get_file_logger()) {}
+model::ProcessingModel::ProcessingModel() : file_handler() {}
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::ProcessingModel::load_cloud(const std::string &name,
                                                                                    const CloudType::Type type) {
@@ -53,6 +51,7 @@ void model::ProcessingModel::filter(int sigma_s,
         add_cloud(clouds[i], std::to_string(i) + ".pcd");
         save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
     }
+    logger::file_logger_write("finished filtering");
 }
 
 void model::ProcessingModel::transform_clouds_to_world() {
@@ -69,6 +68,7 @@ void model::ProcessingModel::transform_clouds_to_world() {
         Eigen::Matrix4f transform = algos::calc_transform_to_world_matrix(center_pt, rot_axis);
         pcl::transformPointCloud(*cloud, *cloud, transform);
     }
+    logger::file_logger_write("finished transforming clouds to world");
 }
 
 void model::ProcessingModel::register_clouds() {
@@ -85,6 +85,7 @@ void model::ProcessingModel::register_clouds() {
     remove_outliers(global_cloud, 50, 1);
     add_cloud(global_cloud, "REGISTERED.pcd");
     save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::REGISTERED);
+    logger::file_logger_write("finished registering clouds");
 }
 
 Eigen::Matrix4f

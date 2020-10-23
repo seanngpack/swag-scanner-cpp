@@ -5,8 +5,7 @@
 
 namespace fs = std::filesystem;
 
-model::ScanModel::ScanModel() :
-        file_handler(), logger(logger::get_file_logger()) {}
+model::ScanModel::ScanModel() : file_handler() {}
 
 void model::ScanModel::set_scan(const std::string &scan_name) {
     file_handler.set_scan(scan_name);
@@ -15,14 +14,12 @@ void model::ScanModel::set_scan(const std::string &scan_name) {
 void model::ScanModel::save_cloud(const std::string &cloud_name, const CloudType::Type &cloud_type) {
     auto cloud = clouds[clouds_map[cloud_name]];
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
-    logger::file_logger_write("saved cloud " + cloud_name + " | type:" + CloudType::String(cloud_type));
 }
 
 void model::ScanModel::save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
                                   const std::string &cloud_name,
                                   const CloudType::Type &cloud_type) {
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
-    logger::file_logger_write("saved cloud " + cloud_name + " | type:" + CloudType::String(cloud_type));
 }
 
 // TODO: later add functionality where you can set whatever calibration you want to use

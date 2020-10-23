@@ -5,6 +5,7 @@
 #include "Algorithms.h"
 #include "Visualizer.h"
 #include "CloudType.h"
+#include "Logger.h"
 #include <pcl/ModelCoefficients.h>
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/sample_consensus/model_types.h>
@@ -45,6 +46,10 @@ pcl::PointXYZ model::CalibrationModel::calculate_center_point() {
     Eigen::MatrixXd sol_mat = A.bdcSvd(Eigen::ComputeThinU | Eigen::ComputeThinV).solve(b);
     std::vector<double> sol_vec(sol_mat.data(), sol_mat.data() + sol_mat.rows() * sol_mat.cols());
     center_point = pcl::PointXYZ(sol_vec[0], sol_vec[1], sol_vec[2]);
+    logger::file_logger_write("calculated center point: (" +
+                              std::to_string(center_point.x) + ", " +
+                              std::to_string(center_point.y) + ", " +
+                              std::to_string(center_point.z) + ")");
     return center_point;
 }
 
@@ -68,6 +73,11 @@ pcl::PointXYZ model::CalibrationModel::refine_center_point(double delta) {
     // more statistical methods to determine which is the best calibration to find the best calibration to extract from
     pcl::PointXYZ plane_pt = algos::find_point_in_plane(clouds[0], averaged_ground_plane, delta);
     center_point = algos::project_point_to_plane(center_point, plane_pt, averaged_ground_plane.get_normal());
+    logger::file_logger_write("refined center point using point to plane projection");
+    logger::file_logger_write("refined calculated center point: (" +
+                              std::to_string(center_point.x) + ", " +
+                              std::to_string(center_point.y) + ", " +
+                              std::to_string(center_point.z) + ")");
     return center_point;
 }
 
@@ -130,6 +140,12 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
               << ground_coeff->values[2] << " "
               << ground_coeff->values[3] << std::endl;
 
+    logger::file_logger_write("Ground model coefficients: (" +
+                              std::to_string(ground_coeff->values[0]) + "," +
+                              std::to_string(ground_coeff->values[1]) + "," +
+                              std::to_string(ground_coeff->values[2]) + "," +
+                              std::to_string(ground_coeff->values[3]) + ",");
+
     pcl::ExtractIndices<pcl::PointXYZ> extract;
     pcl::ExtractIndices<pcl::Normal> extract_normals;
     extract.setInputCloud(cloud_cpy);
@@ -176,6 +192,12 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
               << up_coeff->values[2] << " "
               << up_coeff->values[3] << std::endl;
 
+    logger::file_logger_write("Upright model coefficients: (" +
+                              std::to_string(up_coeff->values[0]) + "," +
+                              std::to_string(up_coeff->values[1]) + "," +
+                              std::to_string(up_coeff->values[2]) + "," +
+                              std::to_string(up_coeff->values[3]) + ",");
+
     extract.setInputCloud(cloud_cpy);
     extract.setIndices(inliers);
     extract.setNegative(false);
@@ -193,8 +215,11 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
 
     double angle = std::atan2(ground_vect.cross(up_vect).norm(), ground_vect.dot(up_vect));
     double angle_deg = angle * (180.0 / 3.141592653589793238463);
+    double error = abs((angle_deg - 90) / 90.0) * 100.0;
     std::cout << "the angle between two planes is " << angle_deg << std::endl;
-    std::cout << "the error is: " << abs((angle_deg - 90) / 90.0) * 100.0 << "%" << std::endl;
+    std::cout << "the error is: " << error << "%" << std::endl;
+    logger::file_logger_write("Angle between two planes: " + std::to_string(angle_deg) +
+                              ", error: " + std::to_string(error));
 
     return planes;
 }

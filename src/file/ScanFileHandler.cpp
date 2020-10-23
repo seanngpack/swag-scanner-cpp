@@ -6,8 +6,8 @@ namespace fs = std::filesystem;
 using json = nlohmann::json;
 
 file::ScanFileHandler::ScanFileHandler() {
-    logger = logger::get_file_logger();
     scan_folder_path = find_latest_scan();
+    logger = logger::get_file_logger();
     logger::set_file_logger_location(get_scan_path() + "/info/log.txt");
 }
 

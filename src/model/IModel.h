@@ -2,6 +2,7 @@
 #define SWAG_SCANNER_IMODEL_H
 
 #include "CloudType.h"
+#include "Logger.h"
 #include <memory>
 #include <vector>
 #include <map>
@@ -17,6 +18,7 @@ namespace pcl {
     template<class pointT>
     class PointCloud;
 }
+
 
 namespace model {
     /**
@@ -100,11 +102,14 @@ namespace model {
             pcl::VoxelGrid<pcl::PointXYZ> grid;
             std::cout << "PointCloud before filtering: " << cloud->width * cloud->height
                       << " data points (" << pcl::getFieldsList(*cloud) << ")." << std::endl;
+            logger::file_logger_write("PointCloud before filtering: " + std::to_string(cloud->width * cloud->height)
+                                      + " data points (" + pcl::getFieldsList(*cloud) + ").");
             grid.setInputCloud(cloud);
             grid.setLeafSize(leafSize, leafSize, leafSize);
             grid.filter(*cloud);
-            std::cout << "PointCloud after filtering: " << cloud->width * cloud->height
-                      << " data points (" << pcl::getFieldsList(*cloud) << ")." << std::endl;
+            logger::file_logger_write("PointCloud after filtering: " + std::to_string(cloud->width * cloud->height)
+                                      + " data points (" + pcl::getFieldsList(*cloud) + ").");
+
         }
 
         /**
@@ -124,6 +129,7 @@ namespace model {
             bilateral.setSigmaS(sigma_s);
             bilateral.setSigmaR(sigma_r);
             bilateral.applyFilter(*cloud);
+            logger::file_logger_write("applied bilateral filter");
         }
 
 
@@ -144,6 +150,7 @@ namespace model {
             sor.setStddevMulThresh(thresh_mult);
             sor.setKeepOrganized(true);
             sor.filter(*cloud);
+            logger::file_logger_write("removed outliers");
         }
 
         /**
@@ -155,6 +162,7 @@ namespace model {
         inline void remove_nan(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
             std::vector<int> indices;
             pcl::removeNaNFromPointCloud(*cloud, *cloud, indices);
+            logger::file_logger_write("removed NaN points");
         }
 
         /**
@@ -170,7 +178,6 @@ namespace model {
     protected:
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
         std::map<std::string, int> clouds_map;
-
     };
 }
 

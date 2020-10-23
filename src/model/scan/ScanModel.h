@@ -11,10 +11,6 @@ namespace pcl {
     class PointCloud;
 }
 
-namespace spdlog {
-    class logger;
-}
-
 namespace model {
     /**
      * Represents a model for scanning.

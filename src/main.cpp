@@ -37,4 +37,5 @@ int main(int argc, char *argv[]) {
         controller->run();
         return 0;
     }
+    spdlog::shutdown();
 }
