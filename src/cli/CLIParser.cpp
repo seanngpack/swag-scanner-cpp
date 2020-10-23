@@ -1,9 +1,11 @@
 #include "CLIParser.h"
+#include "Logger.h"
 #include <boost/bind.hpp>
 
 namespace po = boost::program_options;
 
 cli::CLIParser::CLIParser() {
+    logger::setup_file_logger();
 //    desc = po::options_description
 //    desc("SwagScanner options");
     desc.add_options()

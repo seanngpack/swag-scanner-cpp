@@ -1,21 +1,14 @@
 #include "ScanFileHandler.h"
+#include "Logger.h"
 #include <pcl/io/pcd_io.h>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 
 file::ScanFileHandler::ScanFileHandler() {
-//    bool exists = check_program_folder();
-//    if (!exists) {
-//        scan_folder_path = find_next_scan_folder_numeric();
-//        scan_name = scan_folder_path.stem().string();
-//        create_directory(scan_folder_path);
-//        create_sub_folders();
-//        set_swag_scanner_info_latest_scan(scan_folder_path);
-//    } else {
-    // probably gonna be an error if I use the GUI for the first time and then forget to enter a scan name
+    logger = logger::get_file_logger();
     scan_folder_path = find_latest_scan();
-//    }
+    logger::set_file_logger_location(get_scan_path() + "/info/log.txt");
 }
 
 file::ScanFileHandler::ScanFileHandler(bool auto_create_flag) {
@@ -25,11 +18,15 @@ file::ScanFileHandler::ScanFileHandler(bool auto_create_flag) {
         scan_folder_path = find_latest_scan().parent_path();
         scan_name = scan_folder_path.stem().string();
     }
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/info/log.txt");
 }
 
 
 file::ScanFileHandler::ScanFileHandler(const char *scan_name) {
     set_scan((std::string) scan_name);
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/info/log.txt");
 }
 
 void file::ScanFileHandler::auto_create_new_scan() {
@@ -51,6 +48,7 @@ void file::ScanFileHandler::set_scan(const std::string &scan_name) {
         create_sub_folders();
         set_swag_scanner_info_latest_scan(scan_folder_path);
     }
+    logger::set_file_logger_location(get_scan_path() + "/info/log.txt");
 }
 
 
@@ -61,6 +59,7 @@ void file::ScanFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl
     fs::path out_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
     std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
+    logger::file_logger_write("saved cloud: " + cloud_name + " of type: " + CloudType::String(cloud_type));
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::ScanFileHandler::load_cloud(const std::string &cloud_name,

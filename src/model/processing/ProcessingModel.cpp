@@ -2,13 +2,15 @@
 #include "Normal.h"
 #include "Algorithms.h"
 #include "Constants.h"
+#include "Logger.h"
 #include <pcl/registration/icp.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
 model::ProcessingModel::ProcessingModel() :
-        file_handler() {}
+        file_handler(),
+        logger(logger::get_file_logger()) {}
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::ProcessingModel::load_cloud(const std::string &name,
                                                                                    const CloudType::Type type) {

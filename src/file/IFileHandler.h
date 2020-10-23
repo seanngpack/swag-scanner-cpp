@@ -9,6 +9,10 @@
 #include <unordered_map>
 #include <nlohmann/json.hpp>
 
+namespace spdlog {
+    class logger;
+}
+
 namespace file {
     /**
      * Abstract base class for File Handling objects.
@@ -133,7 +137,7 @@ namespace file {
         }
 
     protected:
-
+        std::shared_ptr<spdlog::logger> logger;
         std::filesystem::path scan_folder_path;
         std::string scan_name;
 

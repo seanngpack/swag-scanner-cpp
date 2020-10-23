@@ -2,12 +2,14 @@
 #include "CameraTypes.h"
 #include "IFileHandler.h"
 #include <librealsense2/rsutil.h>
+#include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
-camera::SR305::SR305() {
+camera::SR305::SR305() : logger(spdlog::get("backend_logger")) {
     initialize_camera();
+    logger->info("Finished initializing SR305 camera");
 }
 
 camera::intrinsics camera::SR305::get_intrinsics() {

@@ -11,6 +11,10 @@ namespace file {
     class CalibrationFileHandler;
 }
 
+namespace spdlog {
+    class logger;
+}
+
 namespace equations {
     class Normal;
 

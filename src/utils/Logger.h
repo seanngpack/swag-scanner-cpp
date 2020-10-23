@@ -3,27 +3,24 @@
 #define SWAG_SCANNER_LOGGER_H
 
 
-#include "IFileHandler.h"
 #include <memory>
 #include <vector>
 #include <spdlog/spdlog.h>
+#include <spdlog/async.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_sinks.h>
 #include <spdlog/sinks/dist_sink.h>
 
-
-// TODO:
-// rename the file logger to scan file logger
-// make a calibration file logger
-// make a console logger..maybe
 namespace logger {
 
-    static auto default_file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("");
+//    static auto default_file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("");
+    static std::shared_ptr<spdlog::details::thread_pool> _tp = std::make_shared<spdlog::details::thread_pool>(51200, 4);
     static auto dist_sink = std::make_shared<spdlog::sinks::dist_sink_mt>(
-            std::vector<spdlog::sink_ptr>({default_file_sink}));
+            std::vector<spdlog::sink_ptr>({}));
 
-    std::shared_ptr<spdlog::logger> setup_logger() {
+
+    inline std::shared_ptr<spdlog::logger> setup_logger() {
         std::vector<spdlog::sink_ptr> sinks;
         sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
         auto logger = spdlog::get("basic_logger");
@@ -31,22 +28,23 @@ namespace logger {
             logger = std::make_shared<spdlog::logger>("basic_logger",
                                                       std::begin(sinks),
                                                       std::end(sinks));
-            spdlog::register_logger(logger);
-
+//            spdlog::register_logger(logger);
             return logger;
         }
     }
 
-    std::shared_ptr<spdlog::logger> setup_file_logger() {
+    inline std::shared_ptr<spdlog::logger> setup_file_logger() {
         {
             auto logger = std::make_shared<spdlog::logger>("backend_logger",
                                                            dist_sink);
-            spdlog::register_logger(logger);
+            // [Oct 20 2020] some logging message
+            logger->flush_on(spdlog::level::info);
+//            logger->set_pattern("[%b %d %Y] %v");
             return logger;
         }
     }
 
-    std::shared_ptr<spdlog::logger> get_file_logger() {
+    inline std::shared_ptr<spdlog::logger> get_file_logger() {
         return spdlog::get("backend_logger");
     }
 
@@ -58,9 +56,17 @@ namespace logger {
      *
      * @param path full path to the new log text file.
      */
-    void set_file_logger_location(const std::string &path) {
+    inline void set_file_logger_location(const std::string &path) {
         auto new_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path);
         dist_sink->set_sinks(std::vector<spdlog::sink_ptr>({new_sink}));
+    }
+
+    inline void file_logger_write(const std::string &message) {
+        auto logger = spdlog::get("backend_logger");
+        if (logger == nullptr) {
+            return;
+        }
+        logger->info(message);
     }
 
 }

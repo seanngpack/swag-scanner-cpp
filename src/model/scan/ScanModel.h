@@ -55,8 +55,8 @@ namespace model {
         void update_info_json(int deg, int num_rot);
 
     private:
-        file::ScanFileHandler file_handler;
         std::shared_ptr<spdlog::logger> logger;
+        file::ScanFileHandler file_handler;
 
     };
 }

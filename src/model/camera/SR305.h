@@ -3,6 +3,10 @@
 
 #include "ICamera.h"
 
+namespace spdlog {
+    class logger;
+}
+
 namespace camera {
 
     /**
@@ -65,6 +69,7 @@ namespace camera {
 
 
     private:
+        std::shared_ptr<spdlog::logger> logger;
         rs2::device dev;
         rs2::pipeline pipe;
         rs2::pipeline_profile pipe_profile;

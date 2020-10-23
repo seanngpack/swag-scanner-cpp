@@ -201,7 +201,6 @@ std::vector<std::string> file::IFileHandler::get_all_scans() {
                 scans.push_back(x.path().filename().string());
             }
         }
-
     }
     return scans;
 }
