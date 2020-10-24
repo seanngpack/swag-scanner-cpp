@@ -20,13 +20,13 @@
 #include "ControllerManager.h"
 #include <iostream>
 
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-
-#include "spdlog/spdlog.h"
-
 controller::ControllerManagerCache::ControllerManagerCache(controller::ControllerManager *factory) :
         factory(factory),
         arduino(std::make_shared<arduino::Arduino>()) {}
+
+controller::ControllerManagerCache::~ControllerManagerCache() {
+    std::cout << "exiting controller manager cache" << std::endl;
+}
 
 std::shared_ptr<camera::SR305> controller::ControllerManagerCache::get_camera() {
     if (camera == nullptr) {
@@ -246,10 +246,5 @@ controller::ControllerManagerCache::get_move_controller_gui() {
 std::shared_ptr<controller::HomeController>
 controller::ControllerManagerCache::get_home_controller(const boost::program_options::variables_map &vm) {
     return std::make_shared<controller::HomeController>();
-}
-
-
-controller::ControllerManagerCache::~ControllerManagerCache() {
-    spdlog::get("swag_logger")->debug("ControllerManagerCache destructor called");
 }
 

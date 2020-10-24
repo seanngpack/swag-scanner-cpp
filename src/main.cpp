@@ -27,15 +27,16 @@ int main(int argc, char *argv[]) {
 
     if (vm.count("gui")) {
         QApplication app(argc, argv);
-        controller::ControllerManager factory;
-        std::shared_ptr<SwagGUI> gui = factory.get_gui();
+        controller::ControllerManager manager;
+        std::shared_ptr<SwagGUI> gui = manager.get_gui();
         gui->show();
         return app.exec();
     } else {
-        controller::ControllerManager factory;
-        std::shared_ptr<controller::IController> controller = factory.get_controller(vm);
+        controller::ControllerManager manager;
+        std::shared_ptr<controller::IController> controller = manager.get_controller(vm);
         controller->run();
         return 0;
     }
+    // pretty sure this does nothing
     spdlog::shutdown();
 }

@@ -7,6 +7,8 @@ namespace spdlog {
     class logger;
 }
 
+// TODO: add method to start the pipe, add method to stop pipe (use it when scanning is complete), add method to close and release the device (put in destructor)
+// https://github.com/IntelRealSense/librealsense/wiki/Frame-Buffering-Management-in-RealSense-SDK-2.0
 namespace camera {
 
     /**
@@ -16,6 +18,12 @@ namespace camera {
 
     public:
         SR305();
+
+        /**
+         * Release camera resources at shutdown.
+         */
+        ~SR305();
+
 
         intrinsics get_intrinsics() override;
 
@@ -30,6 +38,16 @@ namespace camera {
          * @return processed depth frame.
          */
         std::vector<uint16_t> get_depth_frame_processed() override;
+
+        /**
+         * Start the pipeline.
+         */
+        void start_pipe();
+
+        /**
+         * Stop the pipeline.
+         */
+        void stop_pipe();
 
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
         create_point_cloud(const std::vector<uint16_t> &depth_frame,
@@ -65,11 +83,8 @@ namespace camera {
          */
         virtual void set_spatial_smooth_delta(int d);
 
-        ~SR305();
-
 
     private:
-        std::shared_ptr<spdlog::logger> logger;
         rs2::device dev;
         rs2::pipeline pipe;
         rs2::pipeline_profile pipe_profile;
