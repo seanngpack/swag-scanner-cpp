@@ -7,8 +7,6 @@ namespace spdlog {
     class logger;
 }
 
-// TODO: add method to start the pipe, add method to stop pipe (use it when scanning is complete), add method to close and release the device (put in destructor)
-// https://github.com/IntelRealSense/librealsense/wiki/Frame-Buffering-Management-in-RealSense-SDK-2.0
 namespace camera {
 
     /**

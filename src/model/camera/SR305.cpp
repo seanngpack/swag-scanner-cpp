@@ -61,6 +61,7 @@ void camera::SR305::start_pipe() {
 }
 
 void camera::SR305::stop_pipe() {
+    // todo: use this in controller methods. also consider putting this in ICamera
     pipe.stop();
 }
 
