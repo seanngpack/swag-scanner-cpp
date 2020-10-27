@@ -24,9 +24,7 @@ namespace controller {
 
         explicit IControllerGUI(std::shared_ptr<SwagGUI> gui);
 
-        virtual ~IControllerGUI() {
-            std::cout << "IControllerGUI destructor" << std::endl;
-        }
+        virtual ~IControllerGUI() {}
 
 
         /**

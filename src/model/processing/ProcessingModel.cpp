@@ -85,7 +85,6 @@ void model::ProcessingModel::register_clouds() {
     remove_outliers(global_cloud, 50, 1);
     add_cloud(global_cloud, "REGISTERED.pcd");
     save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::REGISTERED);
-    logger::info("finished registering clouds");
 }
 
 Eigen::Matrix4f

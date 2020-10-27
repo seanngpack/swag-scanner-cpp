@@ -132,9 +132,7 @@ namespace file {
         load_clouds(const CloudType::Type &cloud_type) = 0;
 
 
-        virtual ~IFileHandler() {
-            std::cout << "IFilehandler destructor" << std::endl;
-        }
+        virtual ~IFileHandler() {}
 
     protected:
         std::shared_ptr<spdlog::logger> logger;

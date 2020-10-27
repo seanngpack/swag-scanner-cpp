@@ -54,9 +54,7 @@ void file::CalibrationFileHandler::set_calibration(const std::string &cal_name) 
 void file::CalibrationFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                               const std::string &cloud_name,
                                               const CloudType::Type &cloud_type) {
-    std::cout << "saving file to ";
     fs::path out_path = scan_folder_path / cloud_name;
-    std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
     logger::info("saved cloud: " + cloud_name + " of type: " + CloudType::String(cloud_type));
 }
@@ -89,15 +87,14 @@ std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> file::CalibrationFi
     std::sort(cloud_paths.begin(), cloud_paths.end(), path_sort);
 
     // finally we load the clouds into the cloud_vector
+    logger::info("loading clouds from: " + load_path.string());
     for (auto &p : cloud_paths) {
         auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
         if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {
             PCL_ERROR ("Couldn't read file \n");
         }
-        std::cout << "loading " << p.string() << std::endl;
         cloud_vector.push_back(cloud);
     }
-    std::cout << "finished loading clouds" << std::endl;
     return cloud_vector;
 }
 

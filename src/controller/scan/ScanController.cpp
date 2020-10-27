@@ -4,6 +4,7 @@
 #include "SR305.h"
 #include "Visualizer.h"
 #include "ScanFileHandler.h"
+#include "Logger.h"
 #include <utility>
 #include <filesystem>
 
@@ -32,7 +33,7 @@ void controller::ScanController::scan() {
     model->update_info_json(deg, num_rot);
     camera->scan();
     const camera::intrinsics intrin = camera->get_intrinsics();
-    std::cout << "started scanning..." << std::endl;
+    logger::info("started scanning...");
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";
         camera->scan();

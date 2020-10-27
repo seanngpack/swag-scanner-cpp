@@ -18,6 +18,7 @@
 #include "HomeController.h"
 #include "SwagGUI.h"
 #include "ControllerManager.h"
+#include "Logger.h"
 #include <iostream>
 
 controller::ControllerManagerCache::ControllerManagerCache(controller::ControllerManager *factory) :
@@ -25,13 +26,12 @@ controller::ControllerManagerCache::ControllerManagerCache(controller::Controlle
         arduino(std::make_shared<arduino::Arduino>()) {}
 
 controller::ControllerManagerCache::~ControllerManagerCache() {
-    std::cout << "exiting controller manager cache" << std::endl;
+    logger::debug("ControllerManagerCache ~destructor");
 }
 
 std::shared_ptr<camera::SR305> controller::ControllerManagerCache::get_camera() {
     if (camera == nullptr) {
         camera = std::make_shared<camera::SR305>();
-        std::cout << "memory address of camera: " << camera.get() << std::endl;
         return camera;
     }
     return camera;

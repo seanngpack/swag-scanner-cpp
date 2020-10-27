@@ -65,6 +65,15 @@ namespace logger {
         default_logger->info(message);
     }
 
+    inline void debug(const std::string &message) {
+        auto default_logger = spdlog::get("default_logger");
+        auto file_logger = spdlog::get("backend_logger");
+        if (file_logger != nullptr) {
+            file_logger->debug(message);
+        }
+        default_logger->debug(message);
+    }
+
 }
 
 #endif //SWAG_SCANNER_LOGGER_H

@@ -14,7 +14,7 @@ camera::SR305::SR305() {
 }
 
 camera::SR305::~SR305() {
-    std::cout << "calling SR305 destructor \n";;
+    logger::debug("calling SR305 destructor");
     stop_pipe();
 }
 
@@ -114,7 +114,7 @@ void camera::SR305::initialize_camera() {
     spatial_smooth_alpha = config_json["spatial_smooth_alpha"];
     spatial_smooth_delta = config_json["spatial_smooth_delta"];
 
-    std::cout << "dec magnitude " << decimation_magnitude << std::endl;
+//    std::cout << "dec magnitude " << decimation_magnitude << std::endl;
     // set filter parameters
 //    set_decimation_magnitude(decimation_magnitude);
 //    set_spatial_filter_magnitude(spatial_filter_magnitude);
