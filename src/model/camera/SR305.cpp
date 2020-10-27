@@ -10,7 +10,7 @@ using json = nlohmann::json;
 
 camera::SR305::SR305() {
     initialize_camera();
-    logger::file_logger_write("Finished initializing SR305 camera");
+    logger::info("Finished initializing SR305 camera");
 }
 
 camera::SR305::~SR305() {

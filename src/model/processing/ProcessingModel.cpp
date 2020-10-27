@@ -51,7 +51,7 @@ void model::ProcessingModel::filter(int sigma_s,
         add_cloud(clouds[i], std::to_string(i) + ".pcd");
         save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
     }
-    logger::file_logger_write("finished filtering");
+    logger::info("finished filtering");
 }
 
 void model::ProcessingModel::transform_clouds_to_world() {
@@ -68,7 +68,7 @@ void model::ProcessingModel::transform_clouds_to_world() {
         Eigen::Matrix4f transform = algos::calc_transform_to_world_matrix(center_pt, rot_axis);
         pcl::transformPointCloud(*cloud, *cloud, transform);
     }
-    logger::file_logger_write("finished transforming clouds to world");
+    logger::info("finished transforming clouds to world");
 }
 
 void model::ProcessingModel::register_clouds() {
@@ -85,7 +85,7 @@ void model::ProcessingModel::register_clouds() {
     remove_outliers(global_cloud, 50, 1);
     add_cloud(global_cloud, "REGISTERED.pcd");
     save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::REGISTERED);
-    logger::file_logger_write("finished registering clouds");
+    logger::info("finished registering clouds");
 }
 
 Eigen::Matrix4f

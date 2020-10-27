@@ -59,7 +59,7 @@ void file::ScanFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl
     fs::path out_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
     std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
-    logger::file_logger_write("saved cloud: " + cloud_name + " of type: " + CloudType::String(cloud_type));
+    logger::info("saved cloud: " + cloud_name + " of type: " + CloudType::String(cloud_type));
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::ScanFileHandler::load_cloud(const std::string &cloud_name,

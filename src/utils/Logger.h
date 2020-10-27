@@ -14,34 +14,24 @@
 
 namespace logger {
 
-//    static auto default_file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("");
     static std::shared_ptr<spdlog::details::thread_pool> _tp = std::make_shared<spdlog::details::thread_pool>(51200, 4);
     static auto dist_sink = std::make_shared<spdlog::sinks::dist_sink_mt>(
             std::vector<spdlog::sink_ptr>({}));
 
 
-    inline std::shared_ptr<spdlog::logger> setup_logger() {
-        std::vector<spdlog::sink_ptr> sinks;
-        sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
-        auto logger = spdlog::get("basic_logger");
-        {
-            logger = std::make_shared<spdlog::logger>("basic_logger",
-                                                      std::begin(sinks),
-                                                      std::end(sinks));
-//            spdlog::register_logger(logger);
-            return logger;
-        }
+    inline std::shared_ptr<spdlog::logger> setup_default_logger() {
+        auto default_logger = spdlog::stdout_logger_mt("default_logger");
+        return default_logger;
     }
 
+
     inline std::shared_ptr<spdlog::logger> setup_file_logger() {
-        {
-            auto logger = std::make_shared<spdlog::logger>("backend_logger",
-                                                           dist_sink);
-            // [Oct 20 2020] some logging message
-            logger->flush_on(spdlog::level::info);
+        auto logger = std::make_shared<spdlog::logger>("backend_logger",
+                                                       dist_sink);
+        // [Oct 20 2020] some logging message
+        logger->flush_on(spdlog::level::info);
 //            logger->set_pattern("[%b %d %Y] %v");
-            return logger;
-        }
+        return logger;
     }
 
     inline std::shared_ptr<spdlog::logger> get_file_logger() {
@@ -61,12 +51,18 @@ namespace logger {
         dist_sink->set_sinks(std::vector<spdlog::sink_ptr>({new_sink}));
     }
 
-    inline void file_logger_write(const std::string &message) {
-        auto logger = spdlog::get("backend_logger");
-        if (logger == nullptr) {
-            return;
+    /**
+     * Write an info level message. Write to both file and console. If the file sink hasn't been set up,
+     * then only write to console.
+     * @param message message you want to write.
+     */
+    inline void info(const std::string &message) {
+        auto default_logger = spdlog::get("default_logger");
+        auto file_logger = spdlog::get("backend_logger");
+        if (file_logger != nullptr) {
+            file_logger->info(message);
         }
-        logger->info(message);
+        default_logger->info(message);
     }
 
 }
