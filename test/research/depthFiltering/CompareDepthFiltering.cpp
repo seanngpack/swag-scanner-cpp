@@ -88,7 +88,7 @@ TEST_F(CompareDepthFilteringFixture, CompareCalFixture) {
  * fixture_2 is pcl filtered cloud
  * fixture_3 is pcl filtered cloud
  */
-TEST_F(CompareDepthFilteringFixture, CompareRealsensePCL) {
+TEST_F(CompareDepthFilteringFixture, CompareBilateralFilters) {
     using namespace constants;
     std::cout << "Current path is " << fs::current_path() << '\n';
     auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();

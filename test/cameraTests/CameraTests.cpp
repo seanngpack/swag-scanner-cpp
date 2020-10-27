@@ -1,14 +1,14 @@
-#include <gtest/gtest.h>
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-#include "SR305.h"
-#include "CameraTypes.h"
-#include <memory>
-
-/**
- * TODO: implement these tests for the camera, making sure to test pointcloud creation
- */
-
+//#include <gtest/gtest.h>
+//#include <pcl/point_cloud.h>
+//#include <pcl/point_types.h>
+//#include "SR305.h"
+//#include "CameraTypes.h"
+//#include <memory>
+//
+///**
+// * TODO: implement these tests for the camera, making sure to test pointcloud creation
+// */
+//
 //class CameraFixture : public ::testing::Test {
 //
 //protected:
@@ -75,5 +75,5 @@
 //    ASSERT_EQ(test->width, 10);
 //    ASSERT_EQ(test->height, 10);
 //}
-
-
+//
+//
