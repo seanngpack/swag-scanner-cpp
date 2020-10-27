@@ -21,4 +21,7 @@ void controller::ProcessingController::run() {
     logger::info("[REGISTERING]");
     model->register_clouds();
     logger::info("[FINISHED REGISTERING]");
+    logger::info("[MESHING]");
+    model->mesh();
+    logger::info("[FINISHED MESHING]");
 }

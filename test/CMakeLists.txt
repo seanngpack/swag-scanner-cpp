@@ -11,6 +11,7 @@ include_directories(
 
 add_executable(${TEST_MAIN} main.cpp)
 target_link_libraries(${TEST_MAIN} PRIVATE swag_scanner_lib
+        nlohmann_json::nlohmann_json
         gtest
         gtest_main)
 
