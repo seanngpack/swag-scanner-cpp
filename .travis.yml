@@ -3,7 +3,7 @@ language: cpp
 branches:
   only:
     - master
-    - model
+    - model-dev
     - gui-overhaul
     - registration-algo-dev
 
