@@ -72,9 +72,6 @@ void SwagGUI::on_calDropdownBasic_rotationSliderValueChanged(int value) {
 void SwagGUI::on_runCalButton_clicked() {
     controller::IControllerGUI *c = manager->get_gui_controller("calibrate").get();
     FormsPayload vars(cal_name, cal_angle, cal_rotations);
-    std::cout << vars.name << std::endl;
-    std::cout << vars.angle << std::endl;
-    std::cout << vars.rotations << std::endl;
     c->update(vars);
     c->setAutoDelete(false);
     // dont need this for now as the GUI may not have its own console
@@ -144,7 +141,6 @@ void SwagGUI::on_moveButton_clicked() {
     controller::IControllerGUI *c = manager->get_gui_controller("move").get();
     MoveFormsPayload vars(move_method, move_deg);
     c->update(vars);
-    std::cout << move_deg << std::endl;
     c->setAutoDelete(false);
 //    connect(c, SIGNAL(update_console(const std::string &)), this, SLOT(update_console(const std::string &)),
 //            Qt::UniqueConnection);

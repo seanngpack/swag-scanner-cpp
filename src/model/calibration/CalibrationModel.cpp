@@ -97,17 +97,17 @@ std::vector<equations::Plane>
 model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                                       bool visual_flag) {
 
-    std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
-    std::vector<equations::Plane> planes;
+    std::vector < std::shared_ptr < pcl::PointCloud < pcl::PointXYZ>>> clouds;
+    std::vector <equations::Plane> planes;
 
-    auto cloud_cpy = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    auto cloud_cpy = std::make_shared < pcl::PointCloud < pcl::PointXYZ >> ();
     *cloud_cpy = *cloud;
-    auto cloud_plane = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    auto cloud_normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
+    auto cloud_plane = std::make_shared < pcl::PointCloud < pcl::PointXYZ >> ();
+    auto cloud_normals = std::make_shared < pcl::PointCloud < pcl::Normal >> ();
 
     // calculate the normals
-    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
-    auto tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
+    pcl::NormalEstimation <pcl::PointXYZ, pcl::Normal> ne;
+    auto tree = std::make_shared < pcl::search::KdTree < pcl::PointXYZ >> ();
     ne.setSearchMethod(tree);
     ne.setInputCloud(cloud_cpy);
     ne.setKSearch(50);
@@ -115,7 +115,7 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
 
     auto ground_coeff = std::make_shared<pcl::ModelCoefficients>();
     auto inliers = std::make_shared<pcl::PointIndices>();
-    pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> seg;
+    pcl::SACSegmentationFromNormals <pcl::PointXYZ, pcl::Normal> seg;
 
     seg.setOptimizeCoefficients(true);
     seg.setModelType(pcl::SACMODEL_NORMAL_PARALLEL_PLANE);
@@ -147,8 +147,8 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
                  std::to_string(ground_coeff->values[2]) + "," +
                  std::to_string(ground_coeff->values[3]) + ",");
 
-    pcl::ExtractIndices<pcl::PointXYZ> extract;
-    pcl::ExtractIndices<pcl::Normal> extract_normals;
+    pcl::ExtractIndices <pcl::PointXYZ> extract;
+    pcl::ExtractIndices <pcl::Normal> extract_normals;
     extract.setInputCloud(cloud_cpy);
     extract.setIndices(inliers);
     extract.setNegative(false);
@@ -174,7 +174,7 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
     // LETS GET THE UPRIGHT PLANE!!
 
     auto up_coeff = std::make_shared<pcl::ModelCoefficients>();
-    pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> seg2;
+    pcl::SACSegmentationFromNormals <pcl::PointXYZ, pcl::Normal> seg2;
 
     seg2.setOptimizeCoefficients(true);
     seg2.setModelType(pcl::SACMODEL_NORMAL_PLANE);
@@ -217,9 +217,7 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
     double angle = std::atan2(ground_vect.cross(up_vect).norm(), ground_vect.dot(up_vect));
     double angle_deg = angle * (180.0 / 3.141592653589793238463);
     double error = abs((angle_deg - 90) / 90.0) * 100.0;
-    std::cout << "the angle between two planes is " << angle_deg << std::endl;
-    std::cout << "the error is: " << error << "%" << std::endl;
-    logger::info("Angle between two planes: " + std::to_string(angle_deg) +
+    logger::info("angle between two planes: " + std::to_string(angle_deg) +
                  ", error: " + std::to_string(error));
 
     return planes;

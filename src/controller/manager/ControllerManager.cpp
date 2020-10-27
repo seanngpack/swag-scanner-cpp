@@ -21,6 +21,7 @@
 #include "ControllerManagerCache.h"
 #include "MoveController.h"
 #include "SwagGUI.h"
+#include "Logger.h"
 
 
 namespace po = boost::program_options;
@@ -28,7 +29,7 @@ namespace po = boost::program_options;
 controller::ControllerManager::ControllerManager() : cache(std::make_unique<ControllerManagerCache>(this)) {}
 
 controller::ControllerManager::~ControllerManager() {
-  std::cout << "manager destructor called" << std::endl;
+  logger::debug("ControllerManger ~destructor called");
 }
 
 std::shared_ptr<controller::IController> controller::ControllerManager::get_controller(const po::variables_map &vm) {

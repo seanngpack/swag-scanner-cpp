@@ -2,6 +2,7 @@
 #include "Normal.h"
 #include "Plane.h"
 #include "CameraTypes.h"
+#include "Logger.h"
 #include <pcl/common/transforms.h>
 
 pcl::PointXYZ algos::deproject_pixel_to_point(float x_pixel,
@@ -47,7 +48,7 @@ bool algos::check_point_in_plane(const pcl::PointXYZ &pt,
 
     double lhs = pt.x * plane.A + pt.y * plane.B + pt.z * plane.C + plane.D;
     if (lhs > -delta && lhs < delta) {
-        std::cout << "Found point with error: " << lhs << std::endl;
+        logger::info("found point for projection with error: " + std::to_string(lhs));
         return true;
     }
     return false;
@@ -61,7 +62,7 @@ pcl::PointXYZ algos::find_point_in_plane(const std::shared_ptr<pcl::PointCloud<p
             return pt;
         }
     }
-    std::cout << "cannot find point in threshold, try loosening it" << std::endl;
+    logger::error("cannot find point in threshold, try loosening it");
     return pcl::PointXYZ(0, 0, 0);
 }
 

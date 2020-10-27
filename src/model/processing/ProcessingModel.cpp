@@ -99,12 +99,14 @@ model::ProcessingModel::icp_register_pair_clouds(const std::shared_ptr<pcl::Poin
     icp.setMaxCorrespondenceDistance(.05); // not really sure how this affects results
     icp.setEuclideanFitnessEpsilon(.0001); // big effect
     icp.setRANSACOutlierRejectionThreshold(.0001); // doesn't seem to affect results much
-    std::cout << "registering clouds..." << std::endl;
+    logger::info("ICP registering clouds...");
     icp.align(*transformed_cloud);
     if (icp.hasConverged()) {
-        std::cout << "\nICP has converged, score is " << icp.getFitnessScore() << std::endl;
+        logger::info("ICP has converged, score is: " + std::to_string(icp.getFitnessScore()));
         auto trans = icp.getFinalTransformation().cast<double>();
-        std::cout << trans << std::endl;
+        std::stringstream ss;
+        ss << trans;
+        logger::info(ss.str());
     } else {
         PCL_ERROR ("\nICP has not converged.\n");
     }
