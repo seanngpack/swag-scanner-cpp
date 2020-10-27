@@ -4,6 +4,8 @@
 #include "Constants.h"
 #include "Logger.h"
 #include <pcl/registration/icp.h>
+#include <pcl/surface/gp3.h>
+#include <pcl/PolygonMesh.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -51,6 +53,46 @@ void model::ProcessingModel::filter(int sigma_s,
         add_cloud(clouds[i], std::to_string(i) + ".pcd");
         save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
     }
+}
+
+void model::ProcessingModel::mesh() {
+    auto cloud_with_normals = std::make_shared<pcl::PointCloud<pcl::PointNormal>>();
+    auto registered = load_cloud("REGISTERED.pcd", CloudType::Type::REGISTERED);
+    auto normals = calculate_normals(registered);
+
+    // Concatenate the XYZ and normal fields*
+    pcl::concatenateFields(*registered, *normals, *cloud_with_normals);
+    //* cloud_with_normals = cloud + normals
+
+    // Create search tree*
+    auto tree = std::make_shared<pcl::search::KdTree<pcl::PointNormal>>();
+    tree->setInputCloud(cloud_with_normals);
+
+    // Initialize objects
+    pcl::GreedyProjectionTriangulation<pcl::PointNormal> gp3;
+    auto triangles = std::make_shared<pcl::PolygonMesh>();
+
+    // Set the maximum distance between connected points (maximum edge length)
+    gp3.setSearchRadius(0.025);
+
+    // Set typical values for the parameters
+    gp3.setMu(2.5);
+    gp3.setMaximumNearestNeighbors(100);
+    gp3.setMaximumSurfaceAngle(M_PI / 4); // 45 degrees
+    gp3.setMinimumAngle(M_PI / 18); // 10 degrees
+    gp3.setMaximumAngle(2 * M_PI / 3); // 120 degrees
+    gp3.setNormalConsistency(false);
+
+    // Get result
+    gp3.setInputCloud(cloud_with_normals);
+    gp3.setSearchMethod(tree);
+    gp3.reconstruct(*triangles);
+
+    // Additional vertex information
+    std::vector<int> parts = gp3.getPartIDs();
+    std::vector<int> states = gp3.getPointStates();
+
+    file_handler.save_mesh(triangles, "mesh.obj", CloudType::Type::MESH);
 }
 
 void model::ProcessingModel::transform_clouds_to_world() {

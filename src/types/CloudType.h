@@ -19,7 +19,8 @@ namespace CloudType {
 //        PROCESSED,
         REGISTERED,
 //        NORMAL,
-        CALIBRATION
+        CALIBRATION,
+        MESH
     };
 
     static const Type All[] = {CloudType::Type::RAW,
@@ -27,7 +28,8 @@ namespace CloudType {
 //                               CloudType::Type::PROCESSED,
                                CloudType::Type::REGISTERED,
 //                               CloudType::Type::NORMAL,
-                               CloudType::Type::CALIBRATION};
+                               CloudType::Type::CALIBRATION,
+                               CloudType::Type::MESH};
 
     inline std::string String(CloudType::Type type) {
         switch (type) {
@@ -43,6 +45,8 @@ namespace CloudType {
                 return "registered";
             case CloudType::Type::CALIBRATION:
                 return "calibration";
+            case CloudType::Type::MESH:
+                return "mesh";
             default:
                 return "error, enum not defined for cloudtype";
         }

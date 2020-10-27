@@ -11,6 +11,8 @@
 #include <pcl/filters/filter.h>
 #include <pcl/filters/fast_bilateral.h>
 #include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/kdtree/kdtree_flann.h>
+#include <pcl/features/normal_3d.h>
 
 namespace pcl {
     class PointXYZ;
@@ -54,6 +56,24 @@ namespace model {
                 index = clouds_map[cloud_name];
                 return clouds[index];
             }
+        }
+
+        /**
+         * Calculate and return the normals for input cloud.
+         *
+         * @param cloud cloud you want to calculate normals for.
+         * @return the normals.
+         */
+        inline std::shared_ptr<pcl::PointCloud<pcl::Normal>> calculate_normals(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+            pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> n;
+            auto normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
+            auto tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
+            tree->setInputCloud(cloud);
+            n.setInputCloud(cloud);
+            n.setSearchMethod(tree);
+            n.setKSearch(20);
+            n.compute(*normals);
+            return normals;
         }
 
         /**

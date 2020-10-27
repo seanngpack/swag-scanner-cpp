@@ -7,6 +7,10 @@
 
 #include "IFileHandler.h"
 
+namespace pcl {
+    class PolygonMesh;
+}
+
 namespace file {
     /**
      * Represents a file handler for scanning related processes.
@@ -55,6 +59,18 @@ namespace file {
         void save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                         const std::string &cloud_name,
                         const CloudType::Type &cloud_type) override;
+
+        /**
+         * Todo: add functionality to save to different file formats.
+         * Save mesh file as .obj file to given cloud type folder.
+         *
+         * @param mesh the mesh you want to save.
+         * @param mesh_name name of the mesh.
+         * @param cloud_type determines which folder to save to.
+         */
+        void save_mesh(const std::shared_ptr<pcl::PolygonMesh> &mesh,
+                       const std::string &mesh_name,
+                       const CloudType::Type &cloud_type);
 
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> load_cloud(const std::string &cloud_name,
                                                                    const CloudType::Type &cloud_type) override;

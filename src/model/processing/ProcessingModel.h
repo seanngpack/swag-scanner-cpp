@@ -52,7 +52,7 @@ namespace model {
                                                  std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &transformed_cloud);
 
         /**
-         *  Do cropping, Run bilateral filter, Remove NaN points, remove outliers.
+         * Do cropping, Run bilateral filter, Remove NaN points, remove outliers.
          *
          * @param sigma_s filter window for bilateral filter.
          * @param sigma_r standard deviation of the gaussian for bilateral filter.
@@ -63,6 +63,12 @@ namespace model {
                     float sigma_r = .01,
                     int mean_k = 50,
                     float thresh_mult = 1);
+
+
+        /**
+         * Mesh registered cloud. Will explode if registered folder does not exist with cloud inside.
+         */
+        void mesh();
 
         /**
          * Transform clouds to world coordinate.

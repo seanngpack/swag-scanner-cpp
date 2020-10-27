@@ -1,6 +1,8 @@
 #include "ScanFileHandler.h"
 #include "Logger.h"
+#include <pcl/PolygonMesh.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/io/obj_io.h>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -58,6 +60,13 @@ void file::ScanFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl
     fs::path out_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
     logger::info("saved cloud: " + cloud_name + " of type: " + CloudType::String(cloud_type));
+}
+
+void file::ScanFileHandler::save_mesh(const std::shared_ptr<pcl::PolygonMesh> &mesh,
+                                      const std::string &mesh_name,
+                                      const CloudType::Type &cloud_type) {
+    fs::path out_path = scan_folder_path / CloudType::String(cloud_type) / mesh_name;
+    pcl::io::saveOBJFile(out_path, *mesh);
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::ScanFileHandler::load_cloud(const std::string &cloud_name,
@@ -174,5 +183,3 @@ void file::ScanFileHandler::set_swag_scanner_info_latest_scan(const fs::path &fo
     std::ofstream updated_file(swag_scanner_path / "settings/info.json");
     updated_file << std::setw(4) << settings_json << std::endl; // write to file
 }
-
-
