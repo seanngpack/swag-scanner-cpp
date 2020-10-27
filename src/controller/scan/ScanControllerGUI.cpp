@@ -30,7 +30,7 @@ void controller::ScanControllerGUI::run() {
         model->save_cloud("0.pcd", CloudType::Type::RAW);
     }
 
-    logger::info("started scanning...");
+    logger::info("[STARTED SCANNING]");
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";
         // add delay to avoid ghosting
@@ -45,6 +45,7 @@ void controller::ScanControllerGUI::run() {
         // add a delay to avoid ghosting
         std::this_thread::sleep_for(timespan);
     }
+    logger::info("[SCANNING COMPLETE]");
     emit update_console("Scan complete!");
 }
 

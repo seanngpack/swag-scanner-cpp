@@ -12,13 +12,13 @@ controller::ProcessingController::ProcessingController(std::shared_ptr<model::Pr
 
 void controller::ProcessingController::run() {
     logger::info("starting processing");
-    logger::info("TRANSFORMING-------");
+    logger::info("[TRANSFORMING]");
     model->transform_clouds_to_world();
-    logger::info("FINISHED TRANSFORMING-------");
-    logger::info("FILTERING-------");
+    logger::info("[FINISHED TRANSFORMING]");
+    logger::info("[FILTERING]");
     model->filter();
-    logger::info("FINISHED FILTERING-------");
-    logger::info("REGISTERING-------");
+    logger::info("[FINISHED FILTERING]");
+    logger::info("[REGISTERING]");
     model->register_clouds();
-    logger::info("FINISHED REGISTERING-------");
+    logger::info("[FINISHED REGISTERING]");
 }

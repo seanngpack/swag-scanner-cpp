@@ -51,7 +51,6 @@ void model::ProcessingModel::filter(int sigma_s,
         add_cloud(clouds[i], std::to_string(i) + ".pcd");
         save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
     }
-    logger::info("finished filtering");
 }
 
 void model::ProcessingModel::transform_clouds_to_world() {
@@ -68,7 +67,6 @@ void model::ProcessingModel::transform_clouds_to_world() {
         Eigen::Matrix4f transform = algos::calc_transform_to_world_matrix(center_pt, rot_axis);
         pcl::transformPointCloud(*cloud, *cloud, transform);
     }
-    logger::info("finished transforming clouds to world");
 }
 
 void model::ProcessingModel::register_clouds() {
