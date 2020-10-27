@@ -2,11 +2,9 @@
 #include <iostream>
 
 void controller::IController::run() {
-// do nothing
+    // do nothing
 }
 
 controller::IController::~IController() {
-    {
-        std::cout << "IController destructor" << std::endl;
-    }
+    // do nothing
 }

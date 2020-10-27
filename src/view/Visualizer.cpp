@@ -1,4 +1,5 @@
 #include "Visualizer.h"
+#include "Logger.h"
 #include <algorithm>
 #include <pcl/features/normal_3d.h>
 #include <pcl/io/pcd_io.h>
@@ -9,14 +10,16 @@ using namespace std::chrono_literals;
 
 void
 visual::Visualizer::pointPickingEventOccurred(const pcl::visualization::PointPickingEvent &event, void *viewer_void) {
-    std::cout << "[INFO] Point picking event occurred." << std::endl;
+    logger::info("[INFO] Point picking event occurred.");
 
     float x, y, z;
     if (event.getPointIndex() == -1) {
         return;
     }
     event.getPoint(x, y, z);
-    std::cout << "[INFO] Point coordinate ( " << x << ", " << y << ", " << z << ")" << std::endl;
+    logger::info(
+            "[INFO] Point coordinate ( " + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) +
+            ")");
 }
 
 void visual::Visualizer::simpleVis(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {

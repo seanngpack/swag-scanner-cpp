@@ -3,6 +3,10 @@
 
 #include "ICamera.h"
 
+namespace spdlog {
+    class logger;
+}
+
 namespace camera {
 
     /**
@@ -12,6 +16,12 @@ namespace camera {
 
     public:
         SR305();
+
+        /**
+         * Release camera resources at shutdown.
+         */
+        ~SR305();
+
 
         intrinsics get_intrinsics() override;
 
@@ -26,6 +36,16 @@ namespace camera {
          * @return processed depth frame.
          */
         std::vector<uint16_t> get_depth_frame_processed() override;
+
+        /**
+         * Start the pipeline.
+         */
+        void start_pipe();
+
+        /**
+         * Stop the pipeline.
+         */
+        void stop_pipe();
 
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
         create_point_cloud(const std::vector<uint16_t> &depth_frame,
@@ -60,8 +80,6 @@ namespace camera {
          * @param d [1 - 50], default = 20
          */
         virtual void set_spatial_smooth_delta(int d);
-
-        ~SR305();
 
 
     private:

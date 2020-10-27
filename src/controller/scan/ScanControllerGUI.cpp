@@ -4,6 +4,7 @@
 #include "SR305.h"
 #include "ScanModel.h"
 #include "Arduino.h"
+#include "Logger.h"
 #include <thread>
 
 controller::ScanControllerGUI::ScanControllerGUI(std::shared_ptr<camera::ICamera> camera,
@@ -29,7 +30,7 @@ void controller::ScanControllerGUI::run() {
         model->save_cloud("0.pcd", CloudType::Type::RAW);
     }
 
-    std::cout << "we starting scanning" << std::endl;
+    logger::info("[STARTED SCANNING]");
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";
         // add delay to avoid ghosting
@@ -44,6 +45,7 @@ void controller::ScanControllerGUI::run() {
         // add a delay to avoid ghosting
         std::this_thread::sleep_for(timespan);
     }
+    logger::info("[SCANNING COMPLETE]");
     emit update_console("Scan complete!");
 }
 

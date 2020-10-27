@@ -1,12 +1,12 @@
 #include "Arduino.h"
-
 #include "IFileHandler.h"
+#include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 using namespace std::literals::chrono_literals;
 
-arduino::Arduino::Arduino() {
+arduino::Arduino::Arduino() : logger(spdlog::get("backend_logger")) {
     current_pos = file::IFileHandler::load_swag_scanner_info_json()["current_position"];
 
     // connect to peripheral, service, chars...
@@ -24,6 +24,7 @@ arduino::Arduino::Arduino() {
             &Arduino::handle_rotation_notification, this, std::placeholders::_1);
     is_table_rot_char->notify(binded_handler);
 
+    logger->info("Finished setting up Arduino bluetooth connections");
 }
 
 void arduino::Arduino::handle_rotation_notification(const std::vector<std::byte> &data) {

@@ -4,6 +4,10 @@
 #include "IModel.h"
 #include "ScanFileHandler.h"
 
+namespace spdlog {
+    class logger;
+}
+
 namespace model {
     class ProcessingModel : public IModel {
     public:
@@ -76,6 +80,7 @@ namespace model {
 
 
     private:
+        std::shared_ptr<spdlog::logger> logger;
         file::ScanFileHandler file_handler;
 
     };

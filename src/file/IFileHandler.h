@@ -9,6 +9,10 @@
 #include <unordered_map>
 #include <nlohmann/json.hpp>
 
+namespace spdlog {
+    class logger;
+}
+
 namespace file {
     /**
      * Abstract base class for File Handling objects.
@@ -50,6 +54,23 @@ namespace file {
          * @return config.json file
          */
         static nlohmann::json get_swag_scanner_config_json();
+
+        /**
+         * Get the current scan name.
+         *
+         * @return current scan name.
+         */
+        inline std::string get_scan_name() {
+            return this->scan_name;
+        }
+
+        /**
+          * Get the path of the current scan.
+          * @return path of current scan.
+          */
+        inline std::string get_scan_path() {
+            return this->scan_folder_path;
+        }
 
         /**
          * Go to the SwagScanner/calibration directory and find the latest calibration by date.
@@ -109,14 +130,12 @@ namespace file {
          */
         virtual std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>>
         load_clouds(const CloudType::Type &cloud_type) = 0;
-        
 
-        virtual ~IFileHandler() {
-            std::cout << "IFilehandler destructor" << std::endl;
-        }
+
+        virtual ~IFileHandler() {}
 
     protected:
-
+        std::shared_ptr<spdlog::logger> logger;
         std::filesystem::path scan_folder_path;
         std::string scan_name;
 

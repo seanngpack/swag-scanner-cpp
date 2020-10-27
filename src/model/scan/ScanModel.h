@@ -20,7 +20,7 @@ namespace model {
         ScanModel();
 
         ~ScanModel() = default;
-        
+
 
         /**
          * Set the scan to the input. This triggers the filehandler to set the current working directory
@@ -51,6 +51,7 @@ namespace model {
         void update_info_json(int deg, int num_rot);
 
     private:
+        std::shared_ptr<spdlog::logger> logger;
         file::ScanFileHandler file_handler;
 
     };

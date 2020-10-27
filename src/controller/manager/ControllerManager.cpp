@@ -21,12 +21,16 @@
 #include "ControllerManagerCache.h"
 #include "MoveController.h"
 #include "SwagGUI.h"
-#include "spdlog/spdlog.h"
+#include "Logger.h"
 
 
 namespace po = boost::program_options;
 
 controller::ControllerManager::ControllerManager() : cache(std::make_unique<ControllerManagerCache>(this)) {}
+
+controller::ControllerManager::~ControllerManager() {
+  logger::debug("ControllerManger ~destructor called");
+}
 
 std::shared_ptr<controller::IController> controller::ControllerManager::get_controller(const po::variables_map &vm) {
     if (vm.count("scan")) {
@@ -74,8 +78,4 @@ std::shared_ptr<controller::IControllerGUI> controller::ControllerManager::get_g
 
 std::shared_ptr<SwagGUI> controller::ControllerManager::get_gui() {
     return cache->get_gui();
-}
-
-controller::ControllerManager::~ControllerManager() {
-    spdlog::get("swag_logger")->debug("ControllerManager destructor called");
 }

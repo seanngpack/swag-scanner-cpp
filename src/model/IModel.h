@@ -2,6 +2,7 @@
 #define SWAG_SCANNER_IMODEL_H
 
 #include "CloudType.h"
+#include "Logger.h"
 #include <memory>
 #include <vector>
 #include <map>
@@ -17,6 +18,7 @@ namespace pcl {
     template<class pointT>
     class PointCloud;
 }
+
 
 namespace model {
     /**
@@ -56,6 +58,7 @@ namespace model {
 
         /**
          * Applies crop box filtering to remove outside points from calibration in place.
+         * Keeps track of removed indices, slightly slower but necessary for logging.
          *
          * @param cloud the calibration you want to crop.
          */
@@ -69,10 +72,14 @@ namespace model {
             boxFilter.setMax(Eigen::Vector4f(maxX, maxY, maxZ, 1.0));
             boxFilter.setInputCloud(cloud);
             boxFilter.filter(*cloud);
+            auto removed_indices = boxFilter.getRemovedIndices();
+            logger::info("applied box filter, removed " + std::to_string(removed_indices->size()) + " points");
         }
 
         /**
          * Crop box and return a copy, does not affect input cloud.
+         * Keeps track of removed indices, slightly slower but necessary for logging.
+         *
          */
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
         crop_cloud_cpy(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
@@ -80,12 +87,14 @@ namespace model {
                        float minY, float maxY,
                        float minZ, float maxZ) {
             auto cropped = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-            pcl::CropBox<pcl::PointXYZ> boxFilter;
+            pcl::CropBox<pcl::PointXYZ> boxFilter(true);
             boxFilter.setKeepOrganized(1);
             boxFilter.setMin(Eigen::Vector4f(minX, minY, minZ, 1.0));
             boxFilter.setMax(Eigen::Vector4f(maxX, maxY, maxZ, 1.0));
             boxFilter.setInputCloud(cloud);
             boxFilter.filter(*cropped);
+            auto removed_indices = boxFilter.getRemovedIndices();
+            logger::info("applied box filter, removed " + std::to_string(removed_indices->size()) + " points");
             return cropped;
         }
 
@@ -98,13 +107,15 @@ namespace model {
         inline void voxel_grid_filter(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                       float leafSize = .01) {
             pcl::VoxelGrid<pcl::PointXYZ> grid;
-            std::cout << "PointCloud before filtering: " << cloud->width * cloud->height
-                      << " data points (" << pcl::getFieldsList(*cloud) << ")." << std::endl;
+            int cloud_size_before = cloud->width * cloud->height;
             grid.setInputCloud(cloud);
             grid.setLeafSize(leafSize, leafSize, leafSize);
             grid.filter(*cloud);
-            std::cout << "PointCloud after filtering: " << cloud->width * cloud->height
-                      << " data points (" << pcl::getFieldsList(*cloud) << ")." << std::endl;
+            int cloud_size_after = cloud->width * cloud->height;
+            logger::info("applied voxel grid downsampling (leafSize=" + std::to_string(leafSize) + ")" +
+                         " point cloud size before: " + std::to_string(cloud_size_before) + ", after: " +
+                         std::to_string(cloud_size_after));
+
         }
 
         /**
@@ -124,6 +135,8 @@ namespace model {
             bilateral.setSigmaS(sigma_s);
             bilateral.setSigmaR(sigma_r);
             bilateral.applyFilter(*cloud);
+            logger::info("applied bilateral filter (sigma_s=" + std::to_string(sigma_s) +
+                         ", sigma_r=" + std::to_string(sigma_r) + ")");
         }
 
 
@@ -144,6 +157,10 @@ namespace model {
             sor.setStddevMulThresh(thresh_mult);
             sor.setKeepOrganized(true);
             sor.filter(*cloud);
+
+            auto removed_indices = sor.getRemovedIndices();
+            logger::info("applied outlier removal (mean_k= " + std::to_string(mean_k) + ", thresh_mult=" +
+            std::to_string(thresh_mult) + ") removed " + std::to_string(removed_indices->size()) + " outliers");
         }
 
         /**
@@ -155,6 +172,7 @@ namespace model {
         inline void remove_nan(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
             std::vector<int> indices;
             pcl::removeNaNFromPointCloud(*cloud, *cloud, indices);
+            logger::info("applied NaN filter, removed " + std::to_string(indices.size()) + " NaN points");
         }
 
         /**
@@ -170,7 +188,6 @@ namespace model {
     protected:
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds;
         std::map<std::string, int> clouds_map;
-
     };
 }
 

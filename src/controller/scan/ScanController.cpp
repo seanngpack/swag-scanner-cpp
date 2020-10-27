@@ -4,6 +4,7 @@
 #include "SR305.h"
 #include "Visualizer.h"
 #include "ScanFileHandler.h"
+#include "Logger.h"
 #include <utility>
 #include <filesystem>
 
@@ -32,7 +33,7 @@ void controller::ScanController::scan() {
     model->update_info_json(deg, num_rot);
     camera->scan();
     const camera::intrinsics intrin = camera->get_intrinsics();
-    std::cout << "started scanning..." << std::endl;
+    logger::info("started scanning...");
     for (int i = 0; i < num_rot; i++) {
         std::string name = std::to_string(i * deg) + ".pcd";
         camera->scan();
@@ -43,30 +44,3 @@ void controller::ScanController::scan() {
         arduino->rotate_by(deg);
     }
 }
-
-//void controller::ScanController::scan() {
-//    model->update_info_json(deg, num_rot);
-//    camera->scan();
-//    const camera::intrinsics intrin = camera->get_intrinsics();
-//    const camera::intrinsics intrin_filt = camera->get_intrinsics_processed();
-//    std::cout << "started scanning..." << std::endl;
-//    for (int i = 0; i < num_rot; i++) {
-//        std::string name = std::to_string(i * deg) + ".pcd";
-//        camera->scan();
-//        std::vector<uint16_t> depth_frame_raw = camera->get_depth_frame();
-//        std::vector<uint16_t> depth_frame_filt = camera->get_depth_frame_processed();
-//        // TODO: later remove this filter folder nonsense, it makes the pipeline really confusing
-//        // test the pcl bilateral filter first then commit to filtering.
-//        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_raw = camera->create_point_cloud(depth_frame_raw, intrin);
-//        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud_filt = camera->create_point_cloud(depth_frame_filt,
-//                                                                                                intrin_filt);
-//        model->add_cloud(cloud_filt, name);
-//        model->save_cloud(name, CloudType::Type::RAW);
-//        model->save_cloud(name, CloudType::Type::FILTERED);
-//        arduino->rotate_by(deg);
-//    }
-//}
-
-
-
-
