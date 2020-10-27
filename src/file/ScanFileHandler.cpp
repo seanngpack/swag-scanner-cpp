@@ -1,21 +1,14 @@
 #include "ScanFileHandler.h"
+#include "Logger.h"
 #include <pcl/io/pcd_io.h>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 
 file::ScanFileHandler::ScanFileHandler() {
-//    bool exists = check_program_folder();
-//    if (!exists) {
-//        scan_folder_path = find_next_scan_folder_numeric();
-//        scan_name = scan_folder_path.stem().string();
-//        create_directory(scan_folder_path);
-//        create_sub_folders();
-//        set_swag_scanner_info_latest_scan(scan_folder_path);
-//    } else {
-    // probably gonna be an error if I use the GUI for the first time and then forget to enter a scan name
     scan_folder_path = find_latest_scan();
-//    }
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/info/log.txt");
 }
 
 file::ScanFileHandler::ScanFileHandler(bool auto_create_flag) {
@@ -25,11 +18,15 @@ file::ScanFileHandler::ScanFileHandler(bool auto_create_flag) {
         scan_folder_path = find_latest_scan().parent_path();
         scan_name = scan_folder_path.stem().string();
     }
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/info/log.txt");
 }
 
 
 file::ScanFileHandler::ScanFileHandler(const char *scan_name) {
     set_scan((std::string) scan_name);
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/info/log.txt");
 }
 
 void file::ScanFileHandler::auto_create_new_scan() {
@@ -51,21 +48,21 @@ void file::ScanFileHandler::set_scan(const std::string &scan_name) {
         create_sub_folders();
         set_swag_scanner_info_latest_scan(scan_folder_path);
     }
+    logger::set_file_logger_location(get_scan_path() + "/info/log.txt");
 }
 
 
 void file::ScanFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                        const std::string &cloud_name,
                                        const CloudType::Type &cloud_type) {
-    std::cout << "saving file to ";
     fs::path out_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
-    std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
+    logger::info("saved cloud: " + cloud_name + " of type: " + CloudType::String(cloud_type));
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::ScanFileHandler::load_cloud(const std::string &cloud_name,
                                                                                   const CloudType::Type &cloud_type) {
-    std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud;
+    auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     fs::path open_path = scan_folder_path / CloudType::String(cloud_type) / cloud_name;
     if (pcl::io::loadPCDFile<pcl::PointXYZ>(open_path.string(), *cloud) == -1) {
         PCL_ERROR ("Couldn't read file \n");
@@ -93,20 +90,15 @@ file::ScanFileHandler::load_clouds(const CloudType::Type &cloud_type) {
     std::sort(cloud_paths.begin(), cloud_paths.end(), path_sort);
 
     // finally we load the clouds into the cloud_vector
+    logger::info("loading clouds from: " + load_path.string());
     for (auto &p : cloud_paths) {
         auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
         if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {
             PCL_ERROR ("Couldn't read file \n");
         }
-        std::cout << "loading " << p.string() << std::endl;
         cloud_vector.push_back(cloud);
     }
-    std::cout << "finished loading clouds" << std::endl;
     return cloud_vector;
-}
-
-std::string file::ScanFileHandler::get_scan_name() {
-    return this->scan_name;
 }
 
 
@@ -119,10 +111,12 @@ json file::ScanFileHandler::get_info_json() {
 
 void file::ScanFileHandler::update_info_json(const std::string &date,
                                              int angle,
+                                             int num_rot,
                                              const std::string &cal) {
     json info_json = get_info_json();
     info_json["date"] = date;
     info_json["angle"] = angle;
+    info_json["rotations"] = num_rot;
     info_json["calibration"] = cal;
 
     std::ofstream updated_file(scan_folder_path / "info/info.json");
@@ -143,7 +137,7 @@ fs::path file::ScanFileHandler::find_latest_scan() {
     json info_json;
     info >> info_json;
     std::string latest = info_json["latest_scan"];
-    std::cout << "found latest scan in /settings/info.json file to be " << latest << std::endl;
+    logger::info("found latest scan in /settings/info.json file to be " + latest);
     return latest;
 }
 
@@ -152,13 +146,13 @@ void file::ScanFileHandler::create_sub_folders() {
         fs::path p = scan_folder_path / CloudType::String(element);
         if (!exists(p) && element != CloudType::Type::CALIBRATION) {
             create_directory(p);
-            std::cout << "Creating folder " + p.string() << std::endl;
+            logger::info("creating folder " + p.string());
         }
     }
     fs::path info_p = scan_folder_path / "info";
     if (!exists(info_p)) {
         create_directory(info_p);
-        std::cout << "Creating folder " + info_p.string() << std::endl;
+        logger::info("creating folder " + info_p.string());
         std::ofstream info(scan_folder_path / "info/info.json");
         json info_json = {
                 {"date",        "null"},
@@ -180,4 +174,5 @@ void file::ScanFileHandler::set_swag_scanner_info_latest_scan(const fs::path &fo
     std::ofstream updated_file(swag_scanner_path / "settings/info.json");
     updated_file << std::setw(4) << settings_json << std::endl; // write to file
 }
+
 

@@ -1,4 +1,5 @@
 #include "IFileHandler.h"
+#include "Logger.h"
 #include <CoreServices/CoreServices.h>
 #include <fstream>
 
@@ -19,8 +20,7 @@ fs::path file::IFileHandler::swag_scanner_path = []() {
 
 bool file::IFileHandler::check_program_folder() {
     if (!exists(swag_scanner_path)) {
-        std::cout << "No SwagScanner application folder detected, creating one at: " + swag_scanner_path.string()
-                  << std::endl;
+        logger::info("No SwagScanner application folder detected, creating one at: " + swag_scanner_path.string());
         create_directory(swag_scanner_path);
         create_directory(swag_scanner_path / "settings");
         create_directory(swag_scanner_path / "scans");
@@ -201,7 +201,6 @@ std::vector<std::string> file::IFileHandler::get_all_scans() {
                 scans.push_back(x.path().filename().string());
             }
         }
-
     }
     return scans;
 }

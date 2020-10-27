@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
-#include "../../src/model/equations/Equations.h"
+#include "Equations.h"
 
 
 #endif //SWAG_SCANNER_EQUATIONSTESTS_CPP

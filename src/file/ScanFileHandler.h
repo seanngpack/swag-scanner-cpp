@@ -62,10 +62,6 @@ namespace file {
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> load_clouds(
                 const CloudType::Type &cloud_type) override;
 
-
-        std::string get_scan_name();
-
-
         /**
          * Get the latest calibration json file.
          * Finds the latest calibration file via info.json.
@@ -87,6 +83,7 @@ namespace file {
          */
         void update_info_json(const std::string &date,
                               int angle,
+                              int num_rot,
                               const std::string &cal = "None");
 
     private:

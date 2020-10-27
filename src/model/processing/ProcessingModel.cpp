@@ -2,18 +2,23 @@
 #include "Normal.h"
 #include "Algorithms.h"
 #include "Constants.h"
+#include "Logger.h"
 #include <pcl/registration/icp.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
-model::ProcessingModel::ProcessingModel() :
-        file_handler() {}
+model::ProcessingModel::ProcessingModel() : file_handler() {}
 
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> model::ProcessingModel::load_cloud(const std::string &name,
+                                                                                   const CloudType::Type type) {
+    return file_handler.load_cloud(name, type);
+}
 
 void model::ProcessingModel::set_scan(const std::string &scan_name) {
     file_handler.set_scan(scan_name);
-    clouds = file_handler.load_clouds(CloudType::Type::FILTERED);
+    // TODO: probably decouple loading clouds from this method
+    clouds = file_handler.load_clouds(CloudType::Type::RAW);
     // TODO: dont forget to assign cloud names to the map
 }
 
@@ -22,25 +27,29 @@ void model::ProcessingModel::save_cloud(const std::string &cloud_name, const Clo
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
 }
 
-void model::ProcessingModel::save_cloud(
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-        const std::string &cloud_name,
-        const CloudType::Type &cloud_type) {
+void model::ProcessingModel::save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+                                        const std::string &cloud_name,
+                                        const CloudType::Type &cloud_type) {
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
 }
 
-void model::ProcessingModel::filter(int mean_k,
+void model::ProcessingModel::filter(int sigma_s,
+                                    float sigma_r,
+                                    int mean_k,
                                     float thresh_mult) {
     using namespace constants;
-    for (int i = 0; i < clouds.size(); i++) {
+    int clouds_vector_size = clouds.size();
+    for (int i = 0; i < clouds_vector_size; i++) {
         crop_cloud(clouds[i],
                    scan_min_x, scan_max_x,
                    scan_min_y, scan_max_y,
                    scan_min_z, scan_max_z);
+        bilateral_filter(clouds[i], sigma_s, sigma_r);
         remove_nan(clouds[i]);
         remove_outliers(clouds[i]);
         // do cloud saving here, try to get the name from the map
-        save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::PROCESSED);
+        add_cloud(clouds[i], std::to_string(i) + ".pcd");
+        save_cloud(clouds[i], std::to_string(i) + ".pcd", CloudType::Type::FILTERED);
     }
 }
 
@@ -71,7 +80,9 @@ void model::ProcessingModel::register_clouds() {
         rotated = algos::rotate_cloud_about_z_axis(clouds[i], angle * i);
         *global_cloud += rotated;
     }
-    save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::PROCESSED);
+    remove_outliers(global_cloud, 50, 1);
+    add_cloud(global_cloud, "REGISTERED.pcd");
+    save_cloud(global_cloud, "REGISTERED.pcd", CloudType::Type::REGISTERED);
 }
 
 Eigen::Matrix4f
@@ -86,12 +97,14 @@ model::ProcessingModel::icp_register_pair_clouds(const std::shared_ptr<pcl::Poin
     icp.setMaxCorrespondenceDistance(.05); // not really sure how this affects results
     icp.setEuclideanFitnessEpsilon(.0001); // big effect
     icp.setRANSACOutlierRejectionThreshold(.0001); // doesn't seem to affect results much
-    std::cout << "registering clouds..." << std::endl;
+    logger::info("ICP registering clouds...");
     icp.align(*transformed_cloud);
     if (icp.hasConverged()) {
-        std::cout << "\nICP has converged, score is " << icp.getFitnessScore() << std::endl;
+        logger::info("ICP has converged, score is: " + std::to_string(icp.getFitnessScore()));
         auto trans = icp.getFinalTransformation().cast<double>();
-        std::cout << trans << std::endl;
+        std::stringstream ss;
+        ss << trans;
+        logger::info(ss.str());
     } else {
         PCL_ERROR ("\nICP has not converged.\n");
     }

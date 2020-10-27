@@ -1,13 +1,21 @@
 #include "SR305.h"
 #include "CameraTypes.h"
 #include "IFileHandler.h"
+#include "Logger.h"
 #include <librealsense2/rsutil.h>
+#include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
 camera::SR305::SR305() {
     initialize_camera();
+    logger::info("Finished initializing SR305 camera");
+}
+
+camera::SR305::~SR305() {
+    logger::debug("calling SR305 destructor");
+    stop_pipe();
 }
 
 camera::intrinsics camera::SR305::get_intrinsics() {
@@ -46,6 +54,15 @@ std::vector<uint16_t> camera::SR305::get_depth_frame_processed() {
     const auto *arr = static_cast<const uint16_t *>(filtered_frame.get_data());
     std::vector<uint16_t> filtered_frame_vector(arr, arr + (filtered_frame.get_data_size() / sizeof(arr[0])));
     return filtered_frame_vector;
+}
+
+void camera::SR305::start_pipe() {
+    pipe.start();
+}
+
+void camera::SR305::stop_pipe() {
+    // todo: use this in controller methods. also consider putting this in ICamera
+    pipe.stop();
 }
 
 
@@ -97,12 +114,12 @@ void camera::SR305::initialize_camera() {
     spatial_smooth_alpha = config_json["spatial_smooth_alpha"];
     spatial_smooth_delta = config_json["spatial_smooth_delta"];
 
-    std::cout << "dec magnitude " << decimation_magnitude << std::endl;
+//    std::cout << "dec magnitude " << decimation_magnitude << std::endl;
     // set filter parameters
-    set_decimation_magnitude(decimation_magnitude);
-    set_spatial_filter_magnitude(spatial_filter_magnitude);
-    set_spatial_smooth_alpha(spatial_smooth_alpha);
-    set_spatial_smooth_delta(spatial_smooth_delta);
+//    set_decimation_magnitude(decimation_magnitude);
+//    set_spatial_filter_magnitude(spatial_filter_magnitude);
+//    set_spatial_smooth_alpha(spatial_smooth_alpha);
+//    set_spatial_smooth_delta(spatial_smooth_delta);
 }
 
 
@@ -126,10 +143,6 @@ void camera::SR305::set_spatial_smooth_delta(int d) {
     spat_filter.set_option(RS2_OPTION_FILTER_SMOOTH_DELTA, d);
 }
 
-
-camera::SR305::~SR305() {
-    std::cout << "calling SR305 destructor \n";;
-}
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
 camera::SR305::create_point_cloud(const std::vector<uint16_t> &depth_frame, const camera::intrinsics &intrinsics) {

@@ -1,21 +1,14 @@
+//
+// Created by Sean ng pack on 9/22/20.
+//
+
 #ifndef SWAG_SCANNER_SWAGGUI_H
 #define SWAG_SCANNER_SWAGGUI_H
 
-
+#include "MoveMethod.h"
 #include <QMainWindow>
-
-
-class QPlainTextEdit;
-
-class QVBoxLayout;
-
-class QHBoxLayout;
-
-class QComboBox;
-
-class FormsPayload;
-
-class MoveFormsPayload;
+#include <pcl/visualization/pcl_visualizer.h>
+#include <vtkRenderWindow.h>
 
 class QThreadPool;
 
@@ -25,116 +18,118 @@ namespace controller {
     class IControllerGUI;
 }
 
+namespace Ui {
+    class SwagGUI;
+}
+
+namespace pcl
+{
+    class PointXYZ;
+    template<class pointT> class PointCloud;
+}
+template<class T>
+using foo = boost::shared_ptr<pcl::PointCloud<T>>;
+
 class SwagGUI : public QMainWindow {
 Q_OBJECT
+
 public:
-    explicit SwagGUI(controller::ControllerManager *factory, QWidget *parent = 0);
+    explicit SwagGUI(QWidget *parent = 0, controller::ControllerManager *manager = nullptr);
 
     ~SwagGUI();
 
-//    void set_controller(controller::IControllerGUI *c);
+    /**
+     * Show the cloud in the vtk viewer. Does not support modifications yet.
+     */
+    void display_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
+public Q_SLOTS:
 
-signals:
+    // calibration slots
+    void on_calNameEdit_textChanged(const QString &text);
+
+    void on_calDropdownBasic_angleSliderValueChanged(int value);
+
+    void on_calDropdownBasic_rotationSliderValueChanged(int value);
+
+    void on_runCalButton_clicked();
+
+    // scan slots
+
+    void on_scanNameEdit_textChanged(const QString &text);
+
+    void on_scanDropdownBasic_angleSliderValueChanged(int value);
+
+    void on_scanDropdownBasic_rotationSliderValueChanged(int value);
+
+    void on_runScanButton_clicked();
+
+    // process slots
+
+    void on_processNameEdit_textChanged(const QString &text);
+
+    void on_runProcessButton_clicked();
+
+    // table slots
 
     /**
-     * Send signal to update the scans in the left bar scan list.
-     *
-     * @param scans vector of scan names.
+     * Edited does not call signal when set programatically. Need this behavior to link
+     * the moveTo and moveBy signals to each other.
      */
-    void update_scan_list(const std::vector<std::string> &scans);
+    void on_moveByEdit_textEdited(const QString &text);
 
-    /**
-     * Send signal to update the calibrations in the left bar scan list.
-     *
-     * @param scans vector of calibration names.
-     */
-    void update_cal_list(const std::vector<std::string> &scans);
+    void on_moveToEdit_textEdited(const QString &text);
 
+    void on_moveButton_clicked();
 
-private slots:
+    void on_setHomeButton_clicked();
 
-    /**
-     * Handler what happens when the "scan" button is pressed.
-     *
-     * @param vars vector containing scan, rot, and deg text fields.
-     */
-    void handle_scan_button_pressed(const FormsPayload &vars);
+    // edit slots
 
-    /**
-     * When the "calibrate" button is pressed, will retrieve a calibration controller from the manager,
-     * update the controller with form parameters, and finally call the run() method.
-     *
-     * @param vars payload variables.
-     */
-    void handle_calibrate_button_pressed(const FormsPayload &vars);
+    void on_openProjectButton_clicked();
 
-    /**
-     * Handle what happens when "process" button is pressed.
-     *
-     * @param vars
-     */
-    void handle_process_button_pressed(const FormsPayload &vars);
+    void on_saveProjectButton_clicked();
+
+    // menu slots
+    void on_setupMenuButton_clicked();
+
+    void on_scanMenuButton_clicked();
+
+    void on_calibrateMenuButton_clicked();
+
+    void on_processMenuButton_clicked();
+
+    void on_editMenuButton_clicked();
 
 
-    /**
-     * When the "move" button is pressed, will retrieve a move controller from the manager,
-     * update the controller with form parameters, and finall call the run() method.
-     * If both the move_to and move_by forms are filled, then it will use the move_to value.
-     *
-     * @param vars
-     */
-    void handle_move_button_pressed(const MoveFormsPayload &vars);
 
-    /**
-     * Set the home position to current position when the "set home" button is pressed.
-     */
-    void handle_set_home_button_pressed();
-
-    /**
-     * Handle when combobox for selecting "scan", "calibrate", or "process" changes.
-     * @param index
-     */
-    void handle_combo_index_changed(int index);
-
-    /**
-     * Handler when the previous scans section for "scan" or "calibrate" changes.
-     * Will emit update_scan_list or update_cal_list signal
-     * @param index
-     */
-    void handle_scan_cal_combo_changed(int index);
-
-    /**
-     * Append info to the console. This method is called from a threaded worker.
-     *
-     * @param info the information you want to append.
-     */
-    void update_console(const std::string &info);
-
+protected:
+    std::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
 
 private:
-    controller::ControllerManager *factory;
-//    controller::IControllerGUI *controller;
-
     QThreadPool *thread_pool;
-    QWidget *main;
-    QHBoxLayout *main_layout;
-    QWidget *left_side;
-    QVBoxLayout *right_side;
-    QComboBox *options_combo_box;
-    QPlainTextEdit *console_widget;
-    QWidget *scan_controls;
-    QWidget *calibrate_controls;
-    QWidget *process_controls;
-    QWidget *move_controls;
 
-    void set_up_main();
+    Ui::SwagGUI *ui;
+    controller::ControllerManager *manager;
 
-    void set_up_left();
+    // scan_tab component state variables
+    QString scan_name;
+    int scan_angle;
+    int scan_rotations;
 
-    void set_up_right();
+    // cal_tab component state variables
+    QString cal_name;
+    int cal_angle;
+    int cal_rotations;
 
+    // process_tab component state varibles
+    QString process_name;
+
+    // table_tab copmopnent state variables
+    MoveMethod move_method;
+    int move_deg;
 
 };
+
 
 #endif //SWAG_SCANNER_SWAGGUI_H

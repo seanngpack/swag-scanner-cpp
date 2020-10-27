@@ -13,6 +13,7 @@ add_custom_command(OUTPUT
         DEPENDS ${TEST_MAIN}
         )
 
+message("make it here ")
 add_custom_target(copy_files ALL
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/research/DepthFiltering/data/${temp_file}
         )

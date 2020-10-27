@@ -1,10 +1,11 @@
 #include "ScanModel.h"
+#include "Logger.h"
 #include <filesystem>
+
 
 namespace fs = std::filesystem;
 
-model::ScanModel::ScanModel() :
-        file_handler() {}
+model::ScanModel::ScanModel() : file_handler() {}
 
 void model::ScanModel::set_scan(const std::string &scan_name) {
     file_handler.set_scan(scan_name);
@@ -15,10 +16,9 @@ void model::ScanModel::save_cloud(const std::string &cloud_name, const CloudType
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
 }
 
-void model::ScanModel::save_cloud(
-        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
-        const std::string &cloud_name,
-        const CloudType::Type &cloud_type) {
+void model::ScanModel::save_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud,
+                                  const std::string &cloud_name,
+                                  const CloudType::Type &cloud_type) {
     file_handler.save_cloud(cloud, cloud_name, cloud_type);
 }
 
@@ -34,7 +34,7 @@ void model::ScanModel::update_info_json(int deg, int num_rot) {
     fs::path latest_cal_path = file_handler.find_latest_calibration();
     std::string info_json_path = latest_cal_path.string()
                                  + "/" + latest_cal_path.filename().string() + ".json";;
-    file_handler.update_info_json(date, deg, info_json_path);
+    file_handler.update_info_json(date, deg, num_rot, info_json_path);
 }
 
 

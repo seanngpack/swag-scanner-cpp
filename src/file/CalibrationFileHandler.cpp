@@ -1,6 +1,7 @@
 #include "CalibrationFileHandler.h"
 #include "Normal.h"
 #include "Point.h"
+#include "Logger.h"
 #include <pcl/io/pcd_io.h>
 #include <memory>
 
@@ -8,12 +9,10 @@ namespace fs = std::filesystem;
 using json = nlohmann::json;
 
 file::CalibrationFileHandler::CalibrationFileHandler() {
-    std::cout << "calibration file handler constructor called" << std::endl;
     scan_folder_path = find_latest_calibration();
-    std::cout << "make it ehre " << std::endl;
-    std::cout << scan_folder_path << std::endl;
     scan_name = scan_folder_path.stem().string();
-    std::cout << "make it ehre " << std::endl;
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/log.txt");
 }
 
 file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {
@@ -23,10 +22,14 @@ file::CalibrationFileHandler::CalibrationFileHandler(bool auto_create_flag) {
         scan_folder_path = find_latest_calibration();
         scan_name = scan_folder_path.stem().string();
     }
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/log.txt");
 }
 
 file::CalibrationFileHandler::CalibrationFileHandler(const char *scan_name) {
     set_calibration((std::string) scan_name);
+    logger = logger::get_file_logger();
+    logger::set_file_logger_location(get_scan_path() + "/log.txt");
 }
 
 void file::CalibrationFileHandler::auto_create_new_calibration() {
@@ -45,15 +48,15 @@ void file::CalibrationFileHandler::set_calibration(const std::string &cal_name) 
         create_directory(scan_folder_path);
         create_calibration_json();
     }
+    logger::set_file_logger_location(get_scan_path() + "/log.txt");
 }
 
 void file::CalibrationFileHandler::save_cloud(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                               const std::string &cloud_name,
                                               const CloudType::Type &cloud_type) {
-    std::cout << "saving file to ";
     fs::path out_path = scan_folder_path / cloud_name;
-    std::cout << out_path << std::endl;
     pcl::io::savePCDFileASCII(out_path.string(), *cloud);
+    logger::info("saved cloud: " + cloud_name + " of type: " + CloudType::String(cloud_type));
 }
 
 std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> file::CalibrationFileHandler::load_cloud(const std::string &cloud_name,
@@ -84,21 +87,17 @@ std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> file::CalibrationFi
     std::sort(cloud_paths.begin(), cloud_paths.end(), path_sort);
 
     // finally we load the clouds into the cloud_vector
+    logger::info("loading clouds from: " + load_path.string());
     for (auto &p : cloud_paths) {
         auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
         if (pcl::io::loadPCDFile<pcl::PointXYZ>(p.string(), *cloud) == -1) {
             PCL_ERROR ("Couldn't read file \n");
         }
-        std::cout << "loading " << p.string() << std::endl;
         cloud_vector.push_back(cloud);
     }
-    std::cout << "finished loading clouds" << std::endl;
     return cloud_vector;
 }
 
-std::string file::CalibrationFileHandler::get_scan_name() {
-    return this->scan_name;
-}
 
 void file::CalibrationFileHandler::update_calibration_json(const equations::Normal &dir, const equations::Point &pt) {
     json calibration_json = get_calibration_json();

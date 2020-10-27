@@ -47,6 +47,8 @@ namespace controller {
 
     class FilterTestingController;
 
+    class EditingControllerGUI;
+
     class HomeController;
 
     class MoveController;
@@ -113,6 +115,8 @@ namespace controller {
 
         std::shared_ptr<controller::ProcessingControllerGUI> get_process_controller_gui();
 
+        std::shared_ptr<controller::EditingControllerGUI> get_edit_controller_gui();
+
         std::shared_ptr<controller::MoveController>
         get_move_controller(const boost::program_options::variables_map &vm);
 
@@ -144,6 +148,7 @@ namespace controller {
         std::shared_ptr<controller::CalibrationControllerGUI> calibration_controller_gui;
         std::shared_ptr<controller::MoveControllerGUI> move_controller_gui;
         std::shared_ptr<controller::ProcessingControllerGUI> process_controller_gui;
+        std::shared_ptr<controller::EditingControllerGUI> edit_controller_gui;
 
 
     };

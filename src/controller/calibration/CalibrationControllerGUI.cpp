@@ -8,6 +8,7 @@
 #include "Visualizer.h"
 #include "SwagGUI.h"
 #include "FormsPayload.h"
+#include "Logger.h"
 
 controller::CalibrationControllerGUI::CalibrationControllerGUI(std::shared_ptr<camera::ICamera> camera,
                                                                std::shared_ptr<arduino::Arduino> arduino,
@@ -21,7 +22,9 @@ controller::CalibrationControllerGUI::CalibrationControllerGUI(std::shared_ptr<c
 
 void controller::CalibrationControllerGUI::run() {
     emit update_console("Starting scan");
+    logger::info("[STARTED CALIBRATION SCANNING]");
     scan();
+    logger::info("[CALIBRATION SCANNING COMPLETE]");
     emit update_console("Scan complete");
     emit update_console("Calculating center point...");
     model->calculate_center_point();
@@ -30,6 +33,7 @@ void controller::CalibrationControllerGUI::run() {
     model->refine_center_point();
     emit update_console("Refined");
     model->update_calibration_json();
+    logger::info("[CALIBRATION COMPLETE]");
     emit update_console("Calibration done");
 }
 
@@ -37,6 +41,6 @@ void controller::CalibrationControllerGUI::run() {
 void controller::CalibrationControllerGUI::update(const IFormsPayload &payload) {
     const auto &p = dynamic_cast<const FormsPayload &>(payload);
     model->set_calibration(p.name);
-    this->deg = p.deg;
-    this->num_rot = p.rot;
+    this->deg = p.angle;
+    this->num_rot = p.rotations;
 }

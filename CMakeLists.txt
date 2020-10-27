@@ -11,7 +11,7 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
-set(PCL_DIR /usr/local/Cellar/pcl/1.11.1/share/pcl-1.11/)
+set(PCL_DIR /usr/local/Cellar/pcl/1.11.1_5/share/pcl-1.11/)
 if(NOT Qt5_DIR)
     set(Qt5_DIR "/usr/local/opt/qt/lib/cmake/Qt5")
 endif()
@@ -24,7 +24,8 @@ option(BUILD_TESTS_VISUAL "Build the visual tests" OFF)
 #                          Find libraries
 # --------------------------------------------------------------------------------
 find_package(PCL 1.11 REQUIRED)
-find_package(Qt5 COMPONENTS Core Widgets Quick REQUIRED)
+find_package(VTK REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Quick Designer REQUIRED)
 find_package(Boost 1.72.0 COMPONENTS program_options REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(feeling-blue REQUIRED)
@@ -37,13 +38,13 @@ include_directories(
         ${PCL_INCLUDE_DIRS}
         ${realsense_INCLUDE_DIR})
 
-add_subdirectory(extern/json)
-
-
 # --------------------------------------------------------------------------------
 #                          Subdirectories
 # --------------------------------------------------------------------------------
 
+add_subdirectory(extern/json)
+add_subdirectory(extern/SwagScannerWidgets)
+include_directories(extern/SwagScannerWidgets/swagscanner_widgets/include)
 add_subdirectory(src)
 
 # --------------------------------------------------------------------------------
@@ -53,7 +54,6 @@ add_subdirectory(src)
 if (BUILD_TESTS)
     include(CTest)
     enable_testing()
-    message("enabled building tests")
     add_subdirectory(${PROJECT_SOURCE_DIR}/extern/googletest)
     add_subdirectory(test)
 endif ()

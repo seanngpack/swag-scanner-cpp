@@ -6,6 +6,10 @@
 #include <mutex>
 #include <condition_variable>
 
+namespace spdlog {
+    class logger;
+}
+
 namespace arduino {
     class Arduino {
     public:
@@ -31,6 +35,7 @@ namespace arduino {
 
 
     private:
+        std::shared_ptr<spdlog::logger> logger;
         int current_pos;
         std::unique_ptr<bluetooth::Central> central_manager;
         std::shared_ptr<bluetooth::Peripheral> arduino;

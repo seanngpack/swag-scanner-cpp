@@ -7,7 +7,6 @@
 #include <filesystem>
 #include <iostream>
 #include <pcl/registration/icp.h>
-#include <pcl/registration/ia_ransac.h>
 #include <vector>
 #include <memory>
 #include <pcl/visualization/pcl_visualizer.h>
@@ -15,12 +14,10 @@
 #include "Visualizer.h"
 #include "ProcessingModel.h"
 #include "Normal.h"
-#include "Plane.h"
-#include "Point.h"
 #include "ScanFileHandler.h"
 #include "Algorithms.h"
 #include "Constants.h"
-#include "CalibrationFileHandler.h"
+#include "Logger.h"
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -58,15 +55,14 @@ TEST_F(RegistrationFixture, TestRegistration) {
     using namespace constants;
 
     auto fixture_raw = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    auto *file_handler = new file::ScanFileHandler();
-    auto world_clouds = file_handler->load_clouds(CloudType::Type::PROCESSED);
+    auto *file_handler = new file::ScanFileHandler("sponge_one_more");
+    auto world_clouds = file_handler->load_clouds(CloudType::Type::FILTERED);
 
 //    file_handler->save_cloud(world_clouds[0], "0.pcd", CloudType::Type::PROCESSED);
 //    file_handler->save_cloud(world_clouds[1], "angle.pcd", CloudType::Type::PROCESSED);
 
     json info_json = file_handler->get_info_json();
     int angle = info_json["angle"];
-    std::cout << "degrees per rotation: " << angle << std::endl;
 
     auto global_cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
     *global_cloud = *world_clouds[0];
@@ -98,26 +94,13 @@ TEST_F(RegistrationFixture, TestRegistration) {
         source = world_clouds[i];
         *src_to_tgt = algos::rotate_cloud_about_z_axis(source, angle); // rotate target to source
 
-        pair_trans = mod->icp_register_pair_clouds(src_to_tgt, target, temp);
-        // verify icp at each step
         std::vector<std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>> clouds = {source, src_to_tgt};
-//        viewer->simpleVis(clouds);
         clouds = {target, temp};
-//        viewer->simpleVis(clouds);
 
-        pcl::transformPointCloud(*temp, *result, global_trans);
-
-        // visualize result as red, and original target calibration [0] as white
         clouds = {world_clouds[0], result};
-//        viewer->simpleVis(clouds);
-        // rotate global trans by angle * i
-        // note, rotating in negative direction
-        global_trans *= pair_trans;
-        global_trans *= rot_trans.matrix();
+
 
         *global_cloud_icp += *result;
-
-        // shgows the global calibration beind added
 //        viewer->simpleVis(global_cloud_icp);
 
     }
@@ -144,25 +127,22 @@ TEST_F(RegistrationFixture, TestICPSwag) {
     cloud_tgt = mod->crop_cloud_cpy(cloud_tgt, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
     cloud_src = mod->crop_cloud_cpy(cloud_src, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
 
-    cloud_tgt = algos::transform_cloud_to_world(cloud_tgt, center_pt, rot_axis);
-    cloud_src = algos::transform_cloud_to_world(cloud_src, center_pt, rot_axis);
+    algos::transform_cloud_to_world(cloud_tgt, center_pt, rot_axis);
+    algos::transform_cloud_to_world(cloud_src, center_pt, rot_axis);
 
     cloud_tgt = mod->crop_cloud_cpy(cloud_tgt, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
-                                scan_min_z, scan_max_z);
+                                    scan_min_z, scan_max_z);
     cloud_src = mod->crop_cloud_cpy(cloud_src, scan_min_x, scan_max_x, scan_min_y, scan_max_y,
-                                scan_min_z, scan_max_z);
+                                    scan_min_z, scan_max_z);
 
     std::vector<int> indices;
     pcl::removeNaNFromPointCloud(*cloud_tgt, *cloud_tgt, indices);
     std::vector<int> indices2;
     pcl::removeNaNFromPointCloud(*cloud_src, *cloud_src, indices2);
-    std::cout << "removed" << std::endl;
 
     // somewhat align the calibration to within 4 deg of the target 0 calibration
 //    *cloud_src = mod->rotate_cloud_about_z_axis(cloud_src, 16);
     *cloud_src = algos::rotate_cloud_about_z_axis(cloud_src, 20);
-
-    std::cout << "rotated" << std::endl;
 
     // apply translation in x direction and y direction of 1.4cm
 //    Eigen::Matrix4f trans = Eigen::Matrix4f::Identity();
@@ -181,11 +161,11 @@ TEST_F(RegistrationFixture, TestICPSwag) {
     icp.setMaxCorrespondenceDistance(.05); // not really sure how this affects results
     icp.setEuclideanFitnessEpsilon(.000001); // big effect
     icp.setRANSACOutlierRejectionThreshold(.000001); // doesn't seem to affect results much
-    std::cout << "aligning..." << std::endl;
+    logger::info("aligning...");
     icp.align(*cloud_icp);
 
     if (icp.hasConverged()) {
-        std::cout << "\nICP has converged, score is " << icp.getFitnessScore() << std::endl;
+        logger::info("ICP has converged, score is " + std::to_string(icp.getFitnessScore()));
         transformation_matrix = icp.getFinalTransformation().cast<double>();
         std::cout << transformation_matrix << std::endl;
     } else {
@@ -200,8 +180,9 @@ TEST_F(RegistrationFixture, TestICPSwag) {
 
 TEST_F(RegistrationFixture, ViewRegisteredPCD) {
     auto cloud = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
-    pcl::io::loadPCDFile<pcl::PointXYZ>("/Users/seanngpack/Library/Application Support/SwagScanner/scans/lotion/processed/REGISTERED.pcd",
-                                        *cloud);
-    std::cout << cloud->size() << std::endl;
+    pcl::io::loadPCDFile<pcl::PointXYZ>(
+            "/Users/seanngpack/Library/Application Support/SwagScanner/scans/lotion/processed/REGISTERED.pcd",
+            *cloud);
+    logger::info(std::to_string(cloud->size()));
     viewer->simpleVis(cloud);
 }

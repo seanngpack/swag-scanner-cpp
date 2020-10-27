@@ -15,6 +15,7 @@ target_link_libraries(${TEST_MAIN} PRIVATE swag_scanner_lib
         gtest_main)
 
 add_subdirectory(calibrationTests)
+add_subdirectory(cameraTests)
 add_subdirectory(equationsTests)
 add_subdirectory(fileTests)
 add_subdirectory(processingTests)
@@ -22,6 +23,7 @@ add_subdirectory(typesTests)
 add_subdirectory(utilsTests)
 
 if (BUILD_TESTS_VISUAL)
+    message("building visual tests")
     add_subdirectory(research)
 
 endif()

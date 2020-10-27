@@ -27,14 +27,15 @@ void controller::CalibrationController::run() {
 void controller::CalibrationController::scan() {
     using namespace constants;
 
-    const camera::intrinsics intrin = camera->get_intrinsics_processed();
+    const camera::intrinsics intrin = camera->get_intrinsics();
     for (int i = 0; i < num_rot; i++) {
         std::string cloud_name = std::to_string(i * deg) + ".pcd";
         camera->scan();
-        std::vector<uint16_t> depth_frame = camera->get_depth_frame_processed();
+        std::vector<uint16_t> depth_frame = camera->get_depth_frame();
         std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> cloud = camera->create_point_cloud(depth_frame, intrin);
 
         model->crop_cloud(cloud, cal_min_x, cal_max_x, cal_min_y, cal_max_y, cal_min_z, cal_max_z);
+        model->bilateral_filter(cloud, 10, .001);
         model->voxel_grid_filter(cloud, .001);
         model->add_cloud(cloud, cloud_name);
         model->save_cloud(cloud_name);

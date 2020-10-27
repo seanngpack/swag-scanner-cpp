@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <iostream>
-#include "../../src/model/equations/Normal.h"
+#include "Normal.h"
 
 TEST(NormalTests, TestConstructor1) {
     equations::Normal n(1.1, 1.3, -1.1);

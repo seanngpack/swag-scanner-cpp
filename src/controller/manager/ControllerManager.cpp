@@ -16,16 +16,21 @@
 #include "MoveController.h"
 #include "MoveControllerGUI.h"
 #include "CalibrationControllerGUI.h"
+#include "EditingControllerGUI.h"
 #include "HomeController.h"
 #include "ControllerManagerCache.h"
 #include "MoveController.h"
 #include "SwagGUI.h"
-#include "spdlog/spdlog.h"
+#include "Logger.h"
 
 
 namespace po = boost::program_options;
 
 controller::ControllerManager::ControllerManager() : cache(std::make_unique<ControllerManagerCache>(this)) {}
+
+controller::ControllerManager::~ControllerManager() {
+  logger::debug("ControllerManger ~destructor called");
+}
 
 std::shared_ptr<controller::IController> controller::ControllerManager::get_controller(const po::variables_map &vm) {
     if (vm.count("scan")) {
@@ -59,12 +64,13 @@ std::shared_ptr<controller::IControllerGUI> controller::ControllerManager::get_g
     if (name == "scan") {
         return cache->get_scan_controller_gui();
     } else if (name == "calibrate") {
-        std::cout << "calling cache to retrieve controller" << std::endl;
         return cache->get_calibration_controller_gui();
     } else if (name == "move") {
         return cache->get_move_controller_gui();
     } else if (name == "process") {
         return cache->get_process_controller_gui();
+    } else if (name == "edit") {
+        return cache->get_edit_controller_gui();
     } else {
         throw std::invalid_argument("Error, must enter a valid controller name.");
     }
@@ -72,8 +78,4 @@ std::shared_ptr<controller::IControllerGUI> controller::ControllerManager::get_g
 
 std::shared_ptr<SwagGUI> controller::ControllerManager::get_gui() {
     return cache->get_gui();
-}
-
-controller::ControllerManager::~ControllerManager() {
-    spdlog::get("swag_logger")->debug("ControllerManager destructor called");
 }

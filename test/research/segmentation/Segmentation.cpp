@@ -146,11 +146,11 @@ TEST_F(SegmentationFixture, TestCalibrationPlaneSegmentation) {
     clouds = {cloud, cloud_plane};
     visualizer.simpleVis(clouds);
 
-    auto ground_vect = Eigen::Vector3f(ground_coeff->values[0], ground_coeff->values[1],ground_coeff->values[2]);
+    auto ground_vect = Eigen::Vector3f(ground_coeff->values[0], ground_coeff->values[1], ground_coeff->values[2]);
     auto up_vect = Eigen::Vector3f(up_coeff->values[0], up_coeff->values[1], up_coeff->values[2]);
 
     double angle = std::atan2(ground_vect.cross(up_vect).norm(), ground_vect.dot(up_vect));
-    double angle_deg = angle * (180.0/3.141592653589793238463);
-    std::cout << "the angle between two planes is " << angle_deg << std::endl;
-    std::cout << "the error is: " << abs((angle_deg-90)/90.0) * 100.0 << "%" << std::endl;
+    double angle_deg = angle * (180.0 / 3.141592653589793238463);
+    logger::info("the angle between two planes is " + std::to_string(angle_deg) + ", error: " +
+                 std::to_string(abs((angle_deg - 90) / 90.0) * 100.0) + "%");
 }
