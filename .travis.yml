@@ -4,7 +4,7 @@ branches:
   only:
     - master
     - model
-    - gui-implementation
+    - gui-overhaul
     - registration-algo-dev
 
 matrix:
@@ -26,6 +26,7 @@ matrix:
             - librealsense
             - opencv
             - spdlog
+            - qt
             - pcl
 
 dist: trusty

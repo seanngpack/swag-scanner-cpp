@@ -3,7 +3,7 @@
 #include "Plane.h"
 #include "Equations.h"
 #include "Algorithms.h"
-#include "Visualizer.h"
+//#include "Visualizer.h"
 #include "CloudType.h"
 #include "Logger.h"
 #include <pcl/ModelCoefficients.h>
@@ -158,7 +158,7 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
 
     if (visual_flag) {
         clouds = {cloud_cpy, cloud_plane};
-        visual::Visualizer::simpleVis(clouds);
+//        visual::Visualizer::simpleVis(clouds);
     }
 
     // Remove the planar inliers, extract the rest
@@ -208,7 +208,7 @@ model::CalibrationModel::get_calibration_planes_coefs(const std::shared_ptr<pcl:
 
     if (visual_flag) {
         clouds = {cloud_cpy, cloud_plane};
-        visual::Visualizer::simpleVis(clouds);
+//        visual::Visualizer::simpleVis(clouds);
     }
 
     auto ground_vect = Eigen::Vector3f(ground_coeff->values[0], ground_coeff->values[1], ground_coeff->values[2]);
