@@ -26,6 +26,7 @@ matrix:
             - librealsense
             - opencv
             - spdlog
+            - qt
             - pcl
 
 dist: trusty
