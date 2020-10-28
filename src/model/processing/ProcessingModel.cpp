@@ -3,9 +3,11 @@
 #include "Algorithms.h"
 #include "Constants.h"
 #include "Logger.h"
+#include <pcl/point_types.h>
 #include <pcl/registration/icp.h>
-#include <pcl/surface/gp3.h>
+#include <pcl/surface/poisson.h>
 #include <pcl/PolygonMesh.h>
+#include <pcl/surface/mls.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -55,6 +57,28 @@ void model::ProcessingModel::filter(int sigma_s,
     }
 }
 
+std::shared_ptr<pcl::PointCloud<pcl::PointNormal>>
+model::ProcessingModel::upsample_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+    // Create a KD-Tree
+    auto tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
+    auto upsampled_cloud = std::make_shared<pcl::PointCloud<pcl::PointNormal>>();
+
+    // Init object (second point type is for the normals, even if unused)
+    pcl::MovingLeastSquares<pcl::PointXYZ, pcl::PointNormal> mls;
+
+    mls.setComputeNormals(true);
+
+    // Set parameters
+    mls.setInputCloud(cloud);
+    mls.setPolynomialOrder(2);
+    mls.setSearchMethod(tree);
+    mls.setSearchRadius(0.03);
+
+    // Reconstruct
+    mls.process(*upsampled_cloud);
+    return upsampled_cloud;
+}
+
 void model::ProcessingModel::mesh() {
     auto cloud_with_normals = std::make_shared<pcl::PointCloud<pcl::PointNormal>>();
     auto registered = load_cloud("REGISTERED.pcd", CloudType::Type::REGISTERED);
@@ -62,37 +86,18 @@ void model::ProcessingModel::mesh() {
 
     // Concatenate the XYZ and normal fields*
     pcl::concatenateFields(*registered, *normals, *cloud_with_normals);
-    //* cloud_with_normals = cloud + normals
 
-    // Create search tree*
-    auto tree = std::make_shared<pcl::search::KdTree<pcl::PointNormal>>();
-    tree->setInputCloud(cloud_with_normals);
+    auto mesh = std::make_shared<pcl::PolygonMesh>();
+    pcl::Poisson<pcl::PointNormal> poisson;
+    poisson.setInputCloud(cloud_with_normals);
+//    poisson.setSearchMethod(tree);
+    poisson.setDepth(8);
+//    poisson.setSolverDivide(8);
+//    poisson.setIsoDivide(8);
+//    poisson.setSamplesPerNode(1);
+    poisson.reconstruct(*mesh);
 
-    // Initialize objects
-    pcl::GreedyProjectionTriangulation<pcl::PointNormal> gp3;
-    auto triangles = std::make_shared<pcl::PolygonMesh>();
-
-    // Set the maximum distance between connected points (maximum edge length)
-    gp3.setSearchRadius(0.025);
-
-    // Set typical values for the parameters
-    gp3.setMu(2.5);
-    gp3.setMaximumNearestNeighbors(100);
-    gp3.setMaximumSurfaceAngle(M_PI / 4); // 45 degrees
-    gp3.setMinimumAngle(M_PI / 18); // 10 degrees
-    gp3.setMaximumAngle(2 * M_PI / 3); // 120 degrees
-    gp3.setNormalConsistency(false);
-
-    // Get result
-    gp3.setInputCloud(cloud_with_normals);
-    gp3.setSearchMethod(tree);
-    gp3.reconstruct(*triangles);
-
-    // Additional vertex information
-    std::vector<int> parts = gp3.getPartIDs();
-    std::vector<int> states = gp3.getPointStates();
-
-    file_handler.save_mesh(triangles, "mesh.obj", CloudType::Type::MESH);
+    file_handler.save_mesh(mesh, "mesh.obj", CloudType::Type::MESH);
 }
 
 void model::ProcessingModel::transform_clouds_to_world() {

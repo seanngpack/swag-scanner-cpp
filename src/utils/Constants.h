@@ -24,7 +24,7 @@ namespace constants {
     inline constexpr float scan_min_y = - .11;
     inline constexpr float scan_max_y = .11;
     inline constexpr float scan_min_z = 0;
-    inline constexpr float scan_max_z = .17;
+    inline constexpr float scan_max_z = .24;
 
 }
 

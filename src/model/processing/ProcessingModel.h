@@ -8,6 +8,10 @@ namespace spdlog {
     class logger;
 }
 
+namespace pcl {
+    class PointNormal;
+}
+
 namespace model {
     class ProcessingModel : public IModel {
     public:
@@ -64,11 +68,13 @@ namespace model {
                     int mean_k = 50,
                     float thresh_mult = 1);
 
+        std::shared_ptr<pcl::PointCloud<pcl::PointNormal>> upsample_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
         /**
          * Mesh registered cloud. Will explode if registered folder does not exist with cloud inside.
          */
         void mesh();
+
 
         /**
          * Transform clouds to world coordinate.
