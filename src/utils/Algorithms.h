@@ -44,7 +44,6 @@ namespace algos {
      *
      * @param pt point you want to project.
      * @param plane_pt a point on the plane.
-     * @param plane the plane you want to project onto.
      * @param normal normal of the plane.
      * @return projected point on the plane.
      */

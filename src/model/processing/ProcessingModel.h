@@ -68,7 +68,21 @@ namespace model {
                     int mean_k = 50,
                     float thresh_mult = 1);
 
+        /**
+         * Todo: ensure this is in place
+         *
+         * @param cloud cloud you want to upsample.
+         * @return upsamples cloud
+         */
         std::shared_ptr<pcl::PointCloud<pcl::PointNormal>> upsample_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
+
+        /**
+         * Calculate pointcloud containing concave hull representation.
+         *
+         * @param cloud cloud you want to find concave hull for.
+         * @return cloud containing points of concave hull representation.
+         */
+        std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> calculate_concave_hull(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud);
 
         /**
          * Mesh registered cloud. Will explode if registered folder does not exist with cloud inside.

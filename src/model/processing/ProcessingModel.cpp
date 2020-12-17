@@ -8,6 +8,7 @@
 #include <pcl/surface/poisson.h>
 #include <pcl/PolygonMesh.h>
 #include <pcl/surface/mls.h>
+#include <pcl/surface/concave_hull.h>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -59,7 +60,9 @@ void model::ProcessingModel::filter(int sigma_s,
 
 std::shared_ptr<pcl::PointCloud<pcl::PointNormal>>
 model::ProcessingModel::upsample_cloud(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+    voxel_grid_filter(cloud, .001);
     // Create a KD-Tree
+    logger::info("upsampling cloud");
     auto tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
     auto upsampled_cloud = std::make_shared<pcl::PointCloud<pcl::PointNormal>>();
 
@@ -79,17 +82,29 @@ model::ProcessingModel::upsample_cloud(std::shared_ptr<pcl::PointCloud<pcl::Poin
     return upsampled_cloud;
 }
 
+std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>
+model::ProcessingModel::calculate_concave_hull(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+    auto cloud_hull = std::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+    pcl::ConcaveHull<pcl::PointXYZ> chull;
+    chull.setInputCloud(cloud);
+    chull.setAlpha(0.1);
+    chull.reconstruct(*cloud_hull);
+    return cloud_hull;
+}
+
 void model::ProcessingModel::mesh() {
-    auto cloud_with_normals = std::make_shared<pcl::PointCloud<pcl::PointNormal>>();
+//    auto cloud_with_normals = std::make_shared<pcl::PointCloud<pcl::PointNormal>>();
     auto registered = load_cloud("REGISTERED.pcd", CloudType::Type::REGISTERED);
-    auto normals = calculate_normals(registered);
+//    auto normals = calculate_normals(registered);
 
     // Concatenate the XYZ and normal fields*
-    pcl::concatenateFields(*registered, *normals, *cloud_with_normals);
+//    pcl::concatenateFields(*registered, *normals, *cloud_with_normals);
 
+    auto upsampled_cloud_with_normals = upsample_cloud(registered);
     auto mesh = std::make_shared<pcl::PolygonMesh>();
     pcl::Poisson<pcl::PointNormal> poisson;
-    poisson.setInputCloud(cloud_with_normals);
+    logger::info("performing poisson reconstruction");
+    poisson.setInputCloud(upsampled_cloud_with_normals);
 //    poisson.setSearchMethod(tree);
     poisson.setDepth(8);
 //    poisson.setSolverDivide(8);

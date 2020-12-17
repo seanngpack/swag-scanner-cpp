@@ -11,6 +11,7 @@
 #include <pcl/filters/filter.h>
 #include <pcl/filters/fast_bilateral.h>
 #include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/radius_outlier_removal.h>
 #include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/features/normal_3d.h>
 
@@ -64,7 +65,8 @@ namespace model {
          * @param cloud cloud you want to calculate normals for.
          * @return the normals.
          */
-        inline std::shared_ptr<pcl::PointCloud<pcl::Normal>> calculate_normals(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
+        inline std::shared_ptr<pcl::PointCloud<pcl::Normal>>
+        calculate_normals(const std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud) {
             pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> n;
             auto normals = std::make_shared<pcl::PointCloud<pcl::Normal>>();
             auto tree = std::make_shared<pcl::search::KdTree<pcl::PointXYZ>>();
@@ -161,12 +163,12 @@ namespace model {
 
 
         /**
-         * Remove outliers from calibration in place. Keep calibration organized.
+         * Remove outliers from cloud in place. Keeps cloud organized.
          *
-         * @param cloud calibration to filter.
+         * @param cloud to filter.
          * @param mean_k number of neighbors to analyze.
          * @param thresh_mult multipler for standard deviation, members outside st will be removed.
-         * @return filtered calibration.
+         * @return filtered cloud.
          */
         inline void remove_outliers(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
                                     int mean_k = 50,
@@ -180,7 +182,30 @@ namespace model {
 
             auto removed_indices = sor.getRemovedIndices();
             logger::info("applied outlier removal (mean_k= " + std::to_string(mean_k) + ", thresh_mult=" +
-            std::to_string(thresh_mult) + ") removed " + std::to_string(removed_indices->size()) + " outliers");
+                         std::to_string(thresh_mult) + ") removed " + std::to_string(removed_indices->size()) +
+                         " outliers");
+        }
+
+        /**
+         * Remove outliers from given cloud using radius search.
+         * @param cloud cloud to filter.
+         * @param radius the search radius.
+         * @param min_neighbors the minimum number of neighbors the point needs to have in given search radius.
+         */
+        inline void remove_outliers_radius(std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>> &cloud,
+                                           float radius = .1,
+                                           int min_neighbors = 5) {
+            pcl::RadiusOutlierRemoval<pcl::PointXYZ> outrem;
+            outrem.setInputCloud(cloud);
+            outrem.setRadiusSearch(radius);
+            outrem.setMinNeighborsInRadius(min_neighbors);
+            outrem.setKeepOrganized(true);
+            outrem.filter(*cloud);
+
+            auto removed_indices = outrem.getRemovedIndices();
+            logger::info("applied radius outlier removal (radius= " + std::to_string(radius) + ", min_neighbors=" +
+                         std::to_string(min_neighbors) + ") removed " + std::to_string(removed_indices->size()) +
+                         " outliers");
         }
 
         /**

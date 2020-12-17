@@ -1,4 +1,6 @@
+add_subdirectory(algoDev)
 add_subdirectory(depthFiltering)
+add_subdirectory(meshing)
 add_subdirectory(registration)
 add_subdirectory(segmentation)
 add_subdirectory(calibration)
